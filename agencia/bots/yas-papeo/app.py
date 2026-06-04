@@ -29,6 +29,14 @@ from telegram.ext import (
     filters,
 )
 
+# La consola de Windows (dev) suele ser cp1252 y rompe al loguear acentos/emojis.
+# Forzamos UTF-8 con errors="replace": los logs nunca más tiran UnicodeEncodeError.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
+
 load_dotenv()
 
 logging.basicConfig(
@@ -278,12 +286,46 @@ def _register_handlers(ptb_app: Application) -> None:
     ptb_app.add_handler(MessageHandler(filters.VOICE | filters.AUDIO, handle_audio))
 
 
+# ── Autodiagnóstico de arranque ───────────────────────────────────────────────
+async def _self_test() -> None:
+    """
+    Ejercita el camino REAL de chat contra Gemini al arrancar (incluido
+    Part.from_text). Si algo está roto, lo gritamos en el log ANTES de la demo:
+    la clienta nunca tiene que ser quien descubra la falla. No tumba el bot si
+    falla (un parpadeo de red al boot no debe dejarlo offline) — sólo avisa.
+    """
+    bar = "=" * 64
+    try:
+        probe = types.Content(role="user", parts=[types.Part.from_text(text="hola")])
+        reply = await _generate([], probe)
+        if reply and reply.strip():
+            logger.info(bar)
+            logger.info("[ OK ] AUTODIAGNOSTICO: el bot responde contra Gemini. LISTO PARA DEMO.")
+            logger.info(bar)
+        else:
+            logger.error(bar)
+            logger.error("[FALLO] AUTODIAGNOSTICO: Gemini respondio vacio. REVISAR antes de demo.")
+            logger.error(bar)
+    except Exception:
+        logger.error(bar)
+        logger.exception("[FALLO] AUTODIAGNOSTICO: NO MOSTRAR A LA CLIENTA. Revisar el bot.")
+        logger.error(bar)
+
+
+async def _post_init(_application: Application) -> None:
+    """Hook que PTB ejecuta tras initialize() y antes de empezar a recibir updates."""
+    await _self_test()
+
+
 # ── Entrypoints ───────────────────────────────────────────────────────────────
 async def run_webhook() -> None:
     ptb_app = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
     _register_handlers(ptb_app)
     await ptb_app.initialize()
     await ptb_app.start()
+
+    # Autodiagnóstico antes de exponer el webhook al público
+    await _self_test()
 
     web_app = _build_web_app(ptb_app)
     runner = web.AppRunner(web_app)
@@ -323,7 +365,12 @@ async def run_webhook() -> None:
 def main() -> None:
     if USE_POLLING:
         logger.info("POLLING mode — dev only, DO NOT use in production")
-        ptb_app = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
+        ptb_app = (
+            Application.builder()
+            .token(TELEGRAM_BOT_TOKEN)
+            .post_init(_post_init)
+            .build()
+        )
         _register_handlers(ptb_app)
         ptb_app.run_polling()
     else:
