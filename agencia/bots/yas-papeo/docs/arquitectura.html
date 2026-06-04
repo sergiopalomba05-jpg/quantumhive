@@ -3,100 +3,205 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Yas Papeo — Cómo funciona el bot</title>
+<title>Yas Papeo — Sistema de venta automática</title>
 <style>
   :root {
     --rosa: #d6336c;
+    --rosa-fuerte: #c2255c;
     --rosa-claro: #ffe0ec;
     --rosa-suave: #fff0f6;
     --texto: #5a1133;
+    --tinta: #3d0a24;
+    --borde: #ffd0e0;
+    --verde: #2f9e44;
+    --verde-bg: #e9fbef;
+    --azul: #1c7ed6;
+    --naranja: #f08c00;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
     font-family: "Segoe UI", Helvetica, Arial, sans-serif;
-    background: linear-gradient(160deg, #fff7fb 0%, #fce7f0 100%);
+    background: #fff7fb;
     color: var(--texto);
-    padding: 0 0 60px;
+    padding: 0 0 70px;
+    line-height: 1.5;
   }
   header {
     background: linear-gradient(135deg, #d6336c 0%, #f06595 100%);
     color: #fff;
-    padding: 36px 24px 28px;
+    padding: 44px 24px 36px;
     text-align: center;
-    box-shadow: 0 4px 18px rgba(214,51,108,0.25);
+    box-shadow: 0 4px 22px rgba(214,51,108,0.30);
   }
-  header h1 { margin: 0; font-size: 2.1rem; letter-spacing: 0.5px; }
-  header p  { margin: 8px 0 0; opacity: 0.95; font-size: 1.05rem; }
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+  header h1 { margin: 0; font-size: 2.25rem; letter-spacing: 0.5px; }
+  header p  { margin: 10px 0 0; opacity: 0.96; font-size: 1.1rem; }
+  header .sub { margin-top: 6px; font-size: 0.92rem; opacity: 0.85; letter-spacing: 1.5px; text-transform: uppercase; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+
   section {
     background: #fff;
-    border-radius: 18px;
-    padding: 28px 30px;
+    border-radius: 20px;
+    padding: 30px 32px 34px;
     margin-top: 30px;
-    box-shadow: 0 6px 22px rgba(214,51,108,0.10);
-    border: 1px solid #ffd6e6;
+    box-shadow: 0 8px 26px rgba(214,51,108,0.10);
+    border: 1px solid var(--borde);
+  }
+  .step-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--rosa); color: #fff; font-weight: 700; font-size: 1.05rem;
+    margin-right: 12px; flex: 0 0 auto;
   }
   h2 {
-    color: var(--rosa);
+    color: var(--rosa-fuerte);
     margin-top: 0;
-    font-size: 1.45rem;
+    font-size: 1.5rem;
     display: flex;
     align-items: center;
-    gap: 10px;
   }
-  .mermaid { text-align: center; margin: 10px 0; }
+  h2 .badge {
+    margin-left: auto;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    text-transform: uppercase;
+  }
+  .badge.vivo   { background: var(--verde-bg); color: var(--verde); border: 1px solid #b6f0c6; }
+  .badge.prox   { background: #fff4e6; color: var(--naranja); border: 1px solid #ffd8a8; }
+  .badge.activar{ background: #e7f5ff; color: var(--azul); border: 1px solid #b6e0ff; }
+
+  .lead { font-size: 1.05rem; margin: 4px 0 18px; color: var(--tinta); }
+
+  /* lienzo tipo n8n: fondo de puntos */
+  .canvas {
+    background-color: #fff8fc;
+    background-image: radial-gradient(rgba(214,51,108,0.18) 1.3px, transparent 1.3px);
+    background-size: 22px 22px;
+    border: 1px solid var(--borde);
+    border-radius: 16px;
+    padding: 18px 10px;
+    margin: 6px 0 2px;
+    overflow-x: auto;
+  }
+  .mermaid { text-align: center; margin: 0 auto; }
+
   ul.reglas { list-style: none; padding: 0; margin: 0; }
   ul.reglas li {
     background: var(--rosa-suave);
     border-left: 4px solid var(--rosa);
-    padding: 12px 16px;
+    padding: 13px 16px;
     margin: 10px 0;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 1.02rem;
-    line-height: 1.45;
   }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 6px; }
+  @media (max-width: 760px){ .cols { grid-template-columns: 1fr; } }
+  .card {
+    border: 1px solid var(--borde);
+    border-radius: 14px;
+    padding: 18px 20px;
+    background: var(--rosa-suave);
+  }
+  .card h3 { margin: 0 0 10px; color: var(--rosa-fuerte); font-size: 1.12rem; }
+  ul.check { list-style: none; padding: 0; margin: 0; }
+  ul.check li { padding: 7px 0 7px 30px; position: relative; font-size: 1rem; }
+  ul.check li::before {
+    content: "✔"; position: absolute; left: 0; top: 7px;
+    color: var(--verde); font-weight: 700;
+  }
+  ul.todo li::before { content: "▢"; color: var(--azul); }
+
   .frase {
-    background: var(--rosa-claro);
-    border-radius: 12px;
-    padding: 18px 22px;
-    font-size: 1.1rem;
-    line-height: 1.55;
-    margin-top: 18px;
+    background: linear-gradient(135deg, #ffe0ec 0%, #fff0f6 100%);
+    border: 1px solid var(--borde);
+    border-radius: 14px;
+    padding: 20px 24px;
+    font-size: 1.12rem;
+    line-height: 1.6;
+    margin-top: 22px;
   }
-  .frase strong { color: var(--rosa); }
-  footer { text-align: center; margin-top: 40px; opacity: 0.6; font-size: 0.85rem; }
+  .frase strong { color: var(--rosa-fuerte); }
+
+  footer { text-align: center; margin-top: 46px; opacity: 0.6; font-size: 0.85rem; }
 </style>
 </head>
 <body>
 <header>
   <h1>🌸 Yas Papeo — Belleza Capilar</h1>
-  <p>Cómo funciona la atención automática por Telegram</p>
+  <p>Sistema de venta y atención automática 24/7</p>
+  <div class="sub">Propuesta QuantumHive</div>
 </header>
 
 <div class="wrap">
 
+  <!-- 1 · EMBUDO DE VENTA -->
   <section>
-    <h2>👩 El recorrido de la clienta</h2>
-    <pre class="mermaid">
+    <h2><span class="step-num">1</span> El embudo de venta <span class="badge vivo">El corazón</span></h2>
+    <p class="lead">Todo arranca en <strong>Instagram</strong>: la clienta ve un post o una historia, toca el
+      link y cae directo en el asistente, que la atiende sola y la lleva hasta el turno reservado y pago.</p>
+    <div class="canvas">
+      <pre class="mermaid">
+flowchart LR
+    subgraph CAP["🎯 Captación"]
+        ADS[📣 Meta Ads<br/>Instagram + Facebook<br/>para llegar a más mujeres]
+        IG[📸 Instagram<br/>perfil · posts · historias]
+    end
+
+    subgraph AT["🤖 Atención automática 24/7"]
+        LINK[🔗 Link en la bio<br/>o en la historia]
+        BOT[🌸 Asistente Yas Papeo<br/>responde al instante<br/>por texto y por audio]
+    end
+
+    subgraph CIE["💚 Cierre de venta"]
+        WABOT[📲 Bot de WhatsApp<br/>agenda el turno · da precios<br/>y medios de pago]
+        TURNO[📅 Turno reservado<br/>+ seña cobrada]
+    end
+
+    ADS --> IG
+    IG --> LINK
+    LINK --> BOT
+    BOT -->|la clienta quiere turno| WABOT
+    WABOT --> TURNO
+
+    classDef cap fill:#e7f5ff,stroke:#1c7ed6,stroke-width:2px,color:#0b2545;
+    classDef at fill:#ffe0ec,stroke:#d6336c,stroke-width:2px,color:#5a1133;
+    classDef cie fill:#d3f9d8,stroke:#2f9e44,stroke-width:2px,color:#143601;
+
+    class ADS,IG cap;
+    class LINK,BOT at;
+    class WABOT,TURNO cie;
+      </pre>
+    </div>
+  </section>
+
+  <!-- 2 · QUÉ HACE HOY -->
+  <section>
+    <h2><span class="step-num">2</span> Qué hace el asistente hoy <span class="badge vivo">Funcionando</span></h2>
+    <p class="lead">Esto ya está vivo y se puede probar ahora mismo desde el celular.</p>
+    <div class="canvas">
+      <pre class="mermaid">
 flowchart TD
     A([👩 La clienta escribe<br/>por Telegram]) --> B{¿Mandó texto<br/>o audio?}
 
-    B -->|Texto 💬| BOT[🌸 Bot de Yas Papeo<br/>atiende al instante, 24/7]
+    B -->|Texto 💬| BOT[🌸 Asistente Yas Papeo<br/>atiende al instante, 24/7]
     B -->|Audio 🎤| BOT
 
-    BOT --> G[🧠 Entiende el mensaje<br/>con la personalidad y las<br/>reglas del salón cargadas]
+    BOT --> G[🧠 Entiende el mensaje<br/>con la personalidad y la info<br/>del salón cargadas]
     G --> R[Arma una respuesta cálida<br/>en voseo argentino]
 
     R --> Q{¿Cómo había<br/>escrito la clienta?}
-    Q -->|Había escrito texto| T[💬 Le responde en texto]
-    Q -->|Había mandado audio| V[🔊 Convierte la respuesta a voz<br/>y le manda una nota de audio]
+    Q -->|Texto| T[💬 Le responde en texto]
+    Q -->|Audio| V[🔊 Le responde con una<br/>nota de voz natural]
 
     T --> REC([👩 La clienta recibe<br/>la respuesta])
     V --> REC
 
     REC --> D{¿Quiere turno<br/>o precio?}
-    D -->|Sí| W[📲 La deriva con cariño<br/>al WhatsApp oficial del salón]
+    D -->|Sí| W[📲 La pasa al bot de WhatsApp<br/>que agenda y cobra]
     D -->|Sigue charlando| A
 
     classDef cliente fill:#f9c5d1,stroke:#d6336c,stroke-width:2px,color:#5a1133;
@@ -108,63 +213,117 @@ flowchart TD
     class BOT,G bot;
     class R,T,V accion;
     class W deriva;
-    </pre>
-  </section>
+      </pre>
+    </div>
 
-  <section>
-    <h2>💎 Las reglas de oro del bot</h2>
+    <h3 style="color:var(--rosa-fuerte);margin:24px 0 4px;">💎 Cómo atiende (las reglas del asistente)</h3>
     <ul class="reglas">
-      <li>🤫 <strong>Nunca dice que es un bot.</strong> Atiende como quien atiende el chat del salón.</li>
-      <li>💲 <strong>Nunca da precios.</strong> Cada cabello necesita diagnóstico → deriva a las chicas.</li>
-      <li>📅 <strong>Nunca agenda turnos.</strong> Los turnos se coordinan por el WhatsApp oficial.</li>
+      <li>🤫 <strong>Nunca dice que es un bot.</strong> Atiende como una asesora más del salón.</li>
+      <li>🎤 <strong>Entiende y responde por texto y por audio</strong>, en voseo argentino cálido.</li>
+      <li>⚡ <strong>Responde al instante, 24/7, los 365 días.</strong> Ninguna clienta queda sin respuesta.</li>
       <li>🧠 <strong>Se acuerda de la conversación</strong> de cada clienta mientras chatean.</li>
-      <li>🛟 <strong>Si se corta la conexión, responde en personaje</strong> — la clienta nunca ve un error feo.</li>
-      <li>🚫 <strong>No inventa.</strong> Si no sabe algo, pide una foto y deriva a Yas o Cami.</li>
+      <li>📲 <strong>Cuando quiere turno o precio, la pasa al bot de WhatsApp</strong> que agenda y cobra.</li>
+      <li>🚫 <strong>No inventa.</strong> Trabaja siempre con la info real del salón.</li>
     </ul>
   </section>
 
+  <!-- 3 · ROADMAP -->
   <section>
-    <h2>⚙️ Cómo está hecho por dentro</h2>
-    <pre class="mermaid">
+    <h2><span class="step-num">3</span> Cómo lo llevamos al 100% automático <span class="badge prox">Próximo paso</span></h2>
+    <p class="lead">El asistente que ya atiende es el primer ladrillo. El siguiente salto es que
+      <strong>agende el turno solo y cobre la seña</strong>, sin que nadie del salón tenga que tocar el teléfono.</p>
+    <div class="canvas">
+      <pre class="mermaid">
 flowchart LR
-    subgraph TG[Telegram]
-        U([👩 Clienta])
+    subgraph HOY["✅ Funcionando hoy"]
+        A1[🌸 Asistente en Telegram<br/>texto + audio · 24/7]
     end
 
-    subgraph CR["☁️ Google Cloud Run — corre 24/7, siempre prendido"]
-        WH[Servidor del bot<br/>recibe los mensajes]
-        PROMPT[[system_prompt<br/>personalidad + reglas]]
+    subgraph CONST["🔧 Lo que construimos"]
+        B1[📲 Bot oficial de WhatsApp]
+        B2[📅 Calendario / agenda<br/>conectado en vivo]
+        B3[🧠 Memoria real de cada clienta<br/>historial · gustos · turnos]
     end
 
-    subgraph GOOGLE["🧠 Google AI (Gemini)"]
-        CHAT[Gemini<br/>entiende texto y audio]
-        TTS[Gemini TTS<br/>genera la voz argentina]
+    subgraph META["🚀 Resultado"]
+        C1[🤖 Agenda el turno sola,<br/>da precio y cobra la seña<br/>sin intervención humana]
     end
 
-    WA([📲 WhatsApp oficial<br/>del salón])
+    A1 --> B1
+    B1 --> B2
+    B2 --> B3
+    B3 --> C1
 
-    U <-->|mensajes| WH
-    WH --> PROMPT
-    WH <-->|consulta| CHAT
-    WH <-->|texto a voz| TTS
-    WH -.->|deriva turnos/precios| WA
+    classDef hoy fill:#d3f9d8,stroke:#2f9e44,stroke-width:2px,color:#143601;
+    classDef con fill:#fff4e6,stroke:#f08c00,stroke-width:2px,color:#5c3c00;
+    classDef meta fill:#ffe0ec,stroke:#d6336c,stroke-width:2.5px,color:#5a1133;
 
-    classDef tg fill:#e7f5ff,stroke:#1c7ed6,stroke-width:2px,color:#0b2545;
-    classDef cr fill:#fff0f6,stroke:#d6336c,stroke-width:2px,color:#5a1133;
-    classDef g fill:#fff9db,stroke:#f08c00,stroke-width:2px,color:#5c3c00;
-    classDef wa fill:#d3f9d8,stroke:#2f9e44,stroke-width:2px,color:#143601;
+    class A1 hoy;
+    class B1,B2,B3 con;
+    class C1 meta;
+      </pre>
+    </div>
 
-    class U tg;
-    class WH,PROMPT cr;
-    class CHAT,TTS g;
-    class WA wa;
-    </pre>
+    <div class="cols">
+      <div class="card">
+        <h3>✅ Ya está listo</h3>
+        <ul class="check">
+          <li>Asistente que atiende por Telegram</li>
+          <li>Texto y audio, voz argentina natural</li>
+          <li>Personalidad del salón cargada</li>
+          <li>Responde 24/7 al instante</li>
+        </ul>
+      </div>
+      <div class="card" style="background:#fff8f0;border-color:#ffd8a8;">
+        <h3>▢ Para activar la automatización total</h3>
+        <ul class="check todo">
+          <li>WhatsApp oficial (número verificado + proveedor)</li>
+          <li>Meta Ads (Business Manager + pauta)</li>
+          <li>Conexión al calendario / agenda del salón</li>
+          <li>Pasarela de cobro para la seña</li>
+          <li>Lista de precios y servicios para cargar</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · INFRAESTRUCTURA -->
+  <section>
+    <h2><span class="step-num">4</span> La infraestructura empresarial <span class="badge activar">La base</span></h2>
+    <p class="lead">No es "un bot suelto": es la base sobre la que se monta <strong>toda la operación digital del salón</strong>
+      (y mañana, varios bots trabajando juntos como un enjambre).</p>
+    <div class="canvas">
+      <pre class="mermaid">
+flowchart LR
+    subgraph CANALES["📥 Canales de la clienta"]
+        IG2[📸 Instagram]
+        TG2[💬 Telegram]
+        WA2[📲 WhatsApp]
+    end
+
+    subgraph SERVIDOR["🖥️ Servidor externo dedicado — placa de video + GPU, RAM y almacenamiento propios · prendido 24/7 en su entorno virtual"]
+        MOTOR[[🧠 Motor de IA pro<br/>inteligencia + memoria<br/>persistente multimodal]]
+        BOTS[🤖 Todos los bots de la empresa<br/>corriendo en el mismo entorno]
+    end
+
+    IG2 --> SERVIDOR
+    TG2 --> SERVIDOR
+    WA2 --> SERVIDOR
+    MOTOR --- BOTS
+
+    classDef canal fill:#e7f5ff,stroke:#1c7ed6,stroke-width:2px,color:#0b2545;
+    classDef serv fill:#fff0f6,stroke:#d6336c,stroke-width:2px,color:#5a1133;
+
+    class IG2,TG2,WA2 canal;
+    class MOTOR,BOTS serv;
+      </pre>
+    </div>
 
     <div class="frase">
-      <strong>En una frase:</strong> la clienta escribe (o manda audio) por Telegram, un servicio
-      que vive prendido 24/7 en Google entiende el mensaje con la inteligencia de Gemini
-      —siguiendo la personalidad y las reglas del salón—, y le contesta al instante en texto
-      o en voz, derivando al WhatsApp cuando quiere reservar.
+      <strong>En una frase:</strong> la clienta llega desde Instagram, un <strong>motor de IA pro con memoria
+      persistente multimodal</strong> la atiende al instante por texto o voz, y la lleva hasta el turno agendado y la seña
+      cobrada por WhatsApp — todo corriendo en un <strong>servidor externo dedicado con GPU propia</strong>, listo para
+      escalar a una <strong>agencia de bots automatizados (swarm)</strong> que opere todo el negocio sola.
     </div>
   </section>
 
