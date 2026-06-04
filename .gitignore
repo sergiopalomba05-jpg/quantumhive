@@ -5,6 +5,7 @@
 .env.local
 .env.*.local
 agencia/agentes/**/.env
+agencia/bots/**/.env
 
 # Python
 __pycache__/
