@@ -2,7 +2,7 @@
 
 **@yaspapeobeauty** · Arquitectura · Propuesta QuantumHive
 
-Arquitectura para presentación. Cinco vistas:
+Arquitectura para presentación. **Primero la esencia** —el trato humano y cálido que es el corazón del negocio— y, sobre eso, cinco vistas:
 1. **Embudo de conversión** — de Instagram al turno cobrado
 2. **Capacidades en producción** — el módulo ya operativo
 3. **Roadmap a la automatización integral** — próxima fase + requerimientos
@@ -14,7 +14,20 @@ Arquitectura para presentación. Cinco vistas:
 
 ---
 
-## 1. Embudo de conversión (el corazón)
+## 🌸 El corazón de todo: tu esencia, intacta y amplificada
+
+Todo lo que sigue está al servicio de una sola cosa: **tu forma de tratar a cada clienta** — cálida, cercana, femenina y atenta. La tecnología **no la reemplaza por algo frío**: la cuida, la replica y la multiplica, para que **ninguna clienta quede sin esa atención** — ni de madrugada, ni un feriado, ni cuando entran diez mensajes al mismo tiempo.
+
+- **💬 Habla con tu voz** — voseo argentino, mimo y cercanía. Suena a alguien del salón que quiere a sus clientas, *nunca a un robot*.
+- **🤗 Ninguna clienta sin respuesta** — cada mensaje atendido al instante y con calidez, las 24 horas. *Nadie espera, nadie se siente un número.*
+- **💕 Te conoce y te recuerda** — recuerda a cada clienta (qué se hizo, qué le gusta, cuándo vino) para tratarla *como en persona*, no como a una desconocida.
+- **✨ Vos seguís siendo el alma** — la marca, el trato y el cariño son tuyos. La plataforma sólo hace que *ese alma llegue a más clientas, siempre igual de cálida*.
+
+> **La promesa:** que cada clienta sienta el mismo cariño de Yas Papeo en cada mensaje —**aunque sean mil a la vez y a cualquier hora**—. La tecnología queda invisible; lo único que se siente es **tu calidez**.
+
+---
+
+## 1. Embudo de conversión (punto de partida)
 
 Toda la demanda se origina en **Instagram** y se canaliza, vía link, hacia el asistente con IA *(el que atiende solo)*, que la recibe en el momento y la lleva por el camino hasta el turno reservado y la seña cobrada.
 
@@ -260,4 +273,4 @@ flowchart TB
 - **🎭 Avatar humanizado de cada una** — un avatar digital realista de cada una que hace publicidad y contenido en automático.
 - **🏢 Estructura de empresa + 🚀 expansión masiva** — todo ordenado como empresa y listo para crecer en serie (el enjambre de agentes que opera el negocio).
 
-**En una frase:** una **arquitectura de orquestación multi-agente propietaria** *(varios asistentes coordinados)*, desplegada en un **servidor externo dedicado con GPU y entorno virtual aislado** *(una máquina potente, prendida siempre, sólo para esto)*, unifica Instagram, Telegram y WhatsApp en un solo núcleo con **memoria persistente por clienta**: capta, atiende en el momento por texto y voz, agenda y cobra sola, y queda lista para escalar a un **ecosistema completo** —web 3D, avatares, captación automática y un enjambre de agentes— que opere todo el negocio.
+**En una frase:** una **arquitectura de orquestación multi-agente propietaria** *(varios asistentes coordinados)*, desplegada en un **servidor externo dedicado con GPU y entorno virtual aislado** *(una máquina potente, prendida siempre, sólo para esto)*, unifica Instagram, Telegram y WhatsApp en un solo núcleo con **memoria persistente por clienta**: capta, atiende en el momento por texto y voz, agenda y cobra sola, y queda lista para escalar a un **ecosistema completo** —web 3D, avatares, captación automática y un enjambre de agentes— que opere todo el negocio, **siempre con el mismo trato cálido y humano que es el sello de Yas Papeo**.
