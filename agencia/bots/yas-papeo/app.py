@@ -111,9 +111,9 @@ async def _generate(history: list, user_content: types.Content) -> str:
 @with_retries()
 async def chat_text(chat_id: int, text: str) -> str:
     history = _get_history(chat_id)
-    user_content = types.Content(role="user", parts=[types.Part.from_text(text)])
+    user_content = types.Content(role="user", parts=[types.Part.from_text(text=text)])
     reply = await _generate(history, user_content)
-    model_turn = types.Content(role="model", parts=[types.Part.from_text(reply)])
+    model_turn = types.Content(role="model", parts=[types.Part.from_text(text=reply)])
     _save_history(chat_id, history + [user_content, model_turn])
     return reply
 
@@ -133,9 +133,9 @@ async def chat_audio(chat_id: int, audio_bytes: bytes) -> str:
     reply = await _generate(history, user_content)
     # Store placeholder — audio bytes are never persisted to history
     placeholder = types.Content(
-        role="user", parts=[types.Part.from_text("[nota de voz]")]
+        role="user", parts=[types.Part.from_text(text="[nota de voz]")]
     )
-    model_turn = types.Content(role="model", parts=[types.Part.from_text(reply)])
+    model_turn = types.Content(role="model", parts=[types.Part.from_text(text=reply)])
     _save_history(chat_id, history + [placeholder, model_turn])
     return reply
 
