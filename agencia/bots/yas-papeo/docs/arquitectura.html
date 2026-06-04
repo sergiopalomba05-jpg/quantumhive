@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Yas Papeo — Cómo funciona el bot</title>
+<style>
+  :root {
+    --rosa: #d6336c;
+    --rosa-claro: #ffe0ec;
+    --rosa-suave: #fff0f6;
+    --texto: #5a1133;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    background: linear-gradient(160deg, #fff7fb 0%, #fce7f0 100%);
+    color: var(--texto);
+    padding: 0 0 60px;
+  }
+  header {
+    background: linear-gradient(135deg, #d6336c 0%, #f06595 100%);
+    color: #fff;
+    padding: 36px 24px 28px;
+    text-align: center;
+    box-shadow: 0 4px 18px rgba(214,51,108,0.25);
+  }
+  header h1 { margin: 0; font-size: 2.1rem; letter-spacing: 0.5px; }
+  header p  { margin: 8px 0 0; opacity: 0.95; font-size: 1.05rem; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+  section {
+    background: #fff;
+    border-radius: 18px;
+    padding: 28px 30px;
+    margin-top: 30px;
+    box-shadow: 0 6px 22px rgba(214,51,108,0.10);
+    border: 1px solid #ffd6e6;
+  }
+  h2 {
+    color: var(--rosa);
+    margin-top: 0;
+    font-size: 1.45rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .mermaid { text-align: center; margin: 10px 0; }
+  ul.reglas { list-style: none; padding: 0; margin: 0; }
+  ul.reglas li {
+    background: var(--rosa-suave);
+    border-left: 4px solid var(--rosa);
+    padding: 12px 16px;
+    margin: 10px 0;
+    border-radius: 8px;
+    font-size: 1.02rem;
+    line-height: 1.45;
+  }
+  .frase {
+    background: var(--rosa-claro);
+    border-radius: 12px;
+    padding: 18px 22px;
+    font-size: 1.1rem;
+    line-height: 1.55;
+    margin-top: 18px;
+  }
+  .frase strong { color: var(--rosa); }
+  footer { text-align: center; margin-top: 40px; opacity: 0.6; font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🌸 Yas Papeo — Belleza Capilar</h1>
+  <p>Cómo funciona la atención automática por Telegram</p>
+</header>
+
+<div class="wrap">
+
+  <section>
+    <h2>👩 El recorrido de la clienta</h2>
+    <pre class="mermaid">
+flowchart TD
+    A([👩 La clienta escribe<br/>por Telegram]) --> B{¿Mandó texto<br/>o audio?}
+
+    B -->|Texto 💬| BOT[🌸 Bot de Yas Papeo<br/>atiende al instante, 24/7]
+    B -->|Audio 🎤| BOT
+
+    BOT --> G[🧠 Entiende el mensaje<br/>con la personalidad y las<br/>reglas del salón cargadas]
+    G --> R[Arma una respuesta cálida<br/>en voseo argentino]
+
+    R --> Q{¿Cómo había<br/>escrito la clienta?}
+    Q -->|Había escrito texto| T[💬 Le responde en texto]
+    Q -->|Había mandado audio| V[🔊 Convierte la respuesta a voz<br/>y le manda una nota de audio]
+
+    T --> REC([👩 La clienta recibe<br/>la respuesta])
+    V --> REC
+
+    REC --> D{¿Quiere turno<br/>o precio?}
+    D -->|Sí| W[📲 La deriva con cariño<br/>al WhatsApp oficial del salón]
+    D -->|Sigue charlando| A
+
+    classDef cliente fill:#f9c5d1,stroke:#d6336c,stroke-width:2px,color:#5a1133;
+    classDef bot fill:#ffe0ec,stroke:#d6336c,stroke-width:2px,color:#5a1133;
+    classDef accion fill:#fff0f6,stroke:#e64980,stroke-width:1.5px,color:#5a1133;
+    classDef deriva fill:#d3f9d8,stroke:#2f9e44,stroke-width:2px,color:#143601;
+
+    class A,REC cliente;
+    class BOT,G bot;
+    class R,T,V accion;
+    class W deriva;
+    </pre>
+  </section>
+
+  <section>
+    <h2>💎 Las reglas de oro del bot</h2>
+    <ul class="reglas">
+      <li>🤫 <strong>Nunca dice que es un bot.</strong> Atiende como quien atiende el chat del salón.</li>
+      <li>💲 <strong>Nunca da precios.</strong> Cada cabello necesita diagnóstico → deriva a las chicas.</li>
+      <li>📅 <strong>Nunca agenda turnos.</strong> Los turnos se coordinan por el WhatsApp oficial.</li>
+      <li>🧠 <strong>Se acuerda de la conversación</strong> de cada clienta mientras chatean.</li>
+      <li>🛟 <strong>Si se corta la conexión, responde en personaje</strong> — la clienta nunca ve un error feo.</li>
+      <li>🚫 <strong>No inventa.</strong> Si no sabe algo, pide una foto y deriva a Yas o Cami.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>⚙️ Cómo está hecho por dentro</h2>
+    <pre class="mermaid">
+flowchart LR
+    subgraph TG[Telegram]
+        U([👩 Clienta])
+    end
+
+    subgraph CR["☁️ Google Cloud Run — corre 24/7, siempre prendido"]
+        WH[Servidor del bot<br/>recibe los mensajes]
+        PROMPT[[system_prompt<br/>personalidad + reglas]]
+    end
+
+    subgraph GOOGLE["🧠 Google AI (Gemini)"]
+        CHAT[Gemini<br/>entiende texto y audio]
+        TTS[Gemini TTS<br/>genera la voz argentina]
+    end
+
+    WA([📲 WhatsApp oficial<br/>del salón])
+
+    U <-->|mensajes| WH
+    WH --> PROMPT
+    WH <-->|consulta| CHAT
+    WH <-->|texto a voz| TTS
+    WH -.->|deriva turnos/precios| WA
+
+    classDef tg fill:#e7f5ff,stroke:#1c7ed6,stroke-width:2px,color:#0b2545;
+    classDef cr fill:#fff0f6,stroke:#d6336c,stroke-width:2px,color:#5a1133;
+    classDef g fill:#fff9db,stroke:#f08c00,stroke-width:2px,color:#5c3c00;
+    classDef wa fill:#d3f9d8,stroke:#2f9e44,stroke-width:2px,color:#143601;
+
+    class U tg;
+    class WH,PROMPT cr;
+    class CHAT,TTS g;
+    class WA wa;
+    </pre>
+
+    <div class="frase">
+      <strong>En una frase:</strong> la clienta escribe (o manda audio) por Telegram, un servicio
+      que vive prendido 24/7 en Google entiende el mensaje con la inteligencia de Gemini
+      —siguiendo la personalidad y las reglas del salón—, y le contesta al instante en texto
+      o en voz, derivando al WhatsApp cuando quiere reservar.
+    </div>
+  </section>
+
+  <footer>QuantumHive · Yas Papeo — Belleza Capilar 🌸</footer>
+</div>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: 'base', securityLevel: 'loose',
+    themeVariables: { fontFamily: 'Segoe UI, Helvetica, Arial, sans-serif' } });
+</script>
+</body>
+</html>
