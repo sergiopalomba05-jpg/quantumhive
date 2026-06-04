@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Yas Papeo — Sistema de venta automática</title>
+<title>Yas Papeo · Belleza Capilar — Plataforma de IA conversacional</title>
 <style>
   :root {
     --rosa: #d6336c;
@@ -17,6 +17,7 @@
     --verde-bg: #e9fbef;
     --azul: #1c7ed6;
     --naranja: #f08c00;
+    --violeta: #7048e8;
   }
   * { box-sizing: border-box; }
   body {
@@ -72,8 +73,10 @@
   .badge.vivo   { background: var(--verde-bg); color: var(--verde); border: 1px solid #b6f0c6; }
   .badge.prox   { background: #fff4e6; color: var(--naranja); border: 1px solid #ffd8a8; }
   .badge.activar{ background: #e7f5ff; color: var(--azul); border: 1px solid #b6e0ff; }
+  .badge.vision { background: #f3e8ff; color: var(--violeta); border: 1px solid #d0bfff; }
 
   .lead { font-size: 1.05rem; margin: 4px 0 18px; color: var(--tinta); }
+  .lead b, .lead strong { color: var(--rosa-fuerte); }
 
   /* lienzo tipo n8n: fondo de puntos */
   .canvas {
@@ -97,6 +100,7 @@
     border-radius: 10px;
     font-size: 1.02rem;
   }
+  ul.reglas li .aclara { color: #9a6b80; font-style: italic; }
 
   .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 6px; }
   @media (max-width: 760px){ .cols { grid-template-columns: 1fr; } }
@@ -114,6 +118,24 @@
     color: var(--verde); font-weight: 700;
   }
   ul.todo li::before { content: "▢"; color: var(--azul); }
+  ul.check li .aclara { color: #9a6b80; font-style: italic; }
+
+  /* glosario "en criollo" */
+  .glos { background: #fbf3ff; border-color: #e3d0ff; margin-top: 18px; }
+  .glos h3 { color: var(--violeta); }
+  ul.gloss { list-style: none; padding: 0; margin: 0; }
+  ul.gloss li { padding: 8px 0; border-bottom: 1px dashed #e3d0ff; font-size: 1rem; }
+  ul.gloss li:last-child { border-bottom: none; }
+  ul.gloss b { color: var(--rosa-fuerte); }
+  ul.gloss .que { color: #5a4a66; }
+
+  .vlist { list-style: none; padding: 0; margin: 14px 0 0; }
+  .vlist li {
+    background: #faf5ff; border: 1px solid #e9dbff; border-radius: 12px;
+    padding: 13px 16px; margin: 10px 0; font-size: 1.02rem;
+  }
+  .vlist li b { color: var(--violeta); }
+  .vlist li .aclara { color: #6b5a80; }
 
   .frase {
     background: linear-gradient(135deg, #ffe0ec 0%, #fff0f6 100%);
@@ -131,40 +153,41 @@
 </head>
 <body>
 <header>
-  <h1>🌸 Yas Papeo — Belleza Capilar</h1>
-  <p>Sistema de venta y atención automática 24/7</p>
-  <div class="sub">Propuesta QuantumHive</div>
+  <h1>🌸 Yas Papeo · Belleza Capilar</h1>
+  <p>Plataforma de captación y atención con IA conversacional · 24/7</p>
+  <div class="sub">@yaspapeobeauty · Arquitectura · Propuesta QuantumHive</div>
 </header>
 
 <div class="wrap">
 
   <!-- 1 · EMBUDO DE VENTA -->
   <section>
-    <h2><span class="step-num">1</span> El embudo de venta <span class="badge vivo">El corazón</span></h2>
-    <p class="lead">Todo arranca en <strong>Instagram</strong>: la clienta ve un post o una historia, toca el
-      link y cae directo en el asistente, que la atiende sola y la lleva hasta el turno reservado y pago.</p>
+    <h2><span class="step-num">1</span> Embudo de conversión <span class="badge vivo">El corazón</span></h2>
+    <p class="lead">Toda la demanda se origina en <strong>Instagram</strong> y se canaliza, vía link, hacia el
+      asistente con IA <em>(el que atiende solo)</em>, que la recibe en el momento y la lleva por el camino hasta el
+      turno reservado y la seña cobrada.</p>
     <div class="canvas">
       <pre class="mermaid">
 flowchart LR
-    subgraph CAP["🎯 Captación"]
-        ADS[📣 Meta Ads<br/>Instagram + Facebook<br/>para llegar a más mujeres]
+    subgraph CAP["🎯 Captación / Top of funnel"]
+        ADS[📣 Meta Ads<br/>anuncios en IG + Facebook<br/>a las mujeres justas de la zona]
         IG[📸 Instagram<br/>perfil · posts · historias]
     end
 
-    subgraph AT["🤖 Atención automática 24/7"]
-        LINK[🔗 Link en la bio<br/>o en la historia]
-        BOT[🌸 Asistente Yas Papeo<br/>responde al instante<br/>por texto y por audio]
+    subgraph AT["🤖 Atención automatizada 24/7"]
+        LINK[🔗 Deep link<br/>link que abre el chat directo]
+        BOT[🌸 Asistente con IA conversacional<br/>atiende solo · entiende texto y voz]
     end
 
-    subgraph CIE["💚 Cierre de venta"]
-        WABOT[📲 Bot de WhatsApp<br/>agenda el turno · da precios<br/>y medios de pago]
+    subgraph CIE["💚 Conversión / cierre"]
+        WABOT[📲 Agente de WhatsApp<br/>reserva · pasa precios · cobra seña]
         TURNO[📅 Turno reservado<br/>+ seña cobrada]
     end
 
     ADS --> IG
     IG --> LINK
     LINK --> BOT
-    BOT -->|la clienta quiere turno| WABOT
+    BOT -->|intención de turno| WABOT
     WABOT --> TURNO
 
     classDef cap fill:#e7f5ff,stroke:#1c7ed6,stroke-width:2px,color:#0b2545;
@@ -180,29 +203,30 @@ flowchart LR
 
   <!-- 2 · QUÉ HACE HOY -->
   <section>
-    <h2><span class="step-num">2</span> Qué hace el asistente hoy <span class="badge vivo">Funcionando</span></h2>
-    <p class="lead">Esto ya está vivo y se puede probar ahora mismo desde el celular.</p>
+    <h2><span class="step-num">2</span> Capacidades en producción <span class="badge vivo">Operativo</span></h2>
+    <p class="lead">Módulo ya desplegado y funcionando <em>(ya está hecho y prendido)</em>. Se puede probar en vivo
+      desde el celular ahora mismo.</p>
     <div class="canvas">
       <pre class="mermaid">
 flowchart TD
-    A([👩 La clienta escribe<br/>por Telegram]) --> B{¿Mandó texto<br/>o audio?}
+    A([👩 Clienta inicia conversación<br/>por Telegram]) --> B{¿Texto o audio?}
 
-    B -->|Texto 💬| BOT[🌸 Asistente Yas Papeo<br/>atiende al instante, 24/7]
+    B -->|Texto 💬| BOT[🌸 Asistente con IA conversacional<br/>atiende en el momento, 24/7]
     B -->|Audio 🎤| BOT
 
-    BOT --> G[🧠 Entiende el mensaje<br/>con la personalidad y la info<br/>del salón cargadas]
-    G --> R[Arma una respuesta cálida<br/>en voseo argentino]
+    BOT --> G[🧠 Comprensión multimodal<br/>entiende el mensaje con la info<br/>del salón ya cargada]
+    G --> R[Arma la respuesta<br/>voseo argentino · tono de marca]
 
-    R --> Q{¿Cómo había<br/>escrito la clienta?}
-    Q -->|Texto| T[💬 Le responde en texto]
-    Q -->|Audio| V[🔊 Le responde con una<br/>nota de voz natural]
+    R --> Q{¿Cómo había escrito?}
+    Q -->|Texto| T[💬 Responde en texto]
+    Q -->|Audio| V[🔊 Síntesis de voz neuronal<br/>nota de voz que suena humana]
 
     T --> REC([👩 La clienta recibe<br/>la respuesta])
     V --> REC
 
     REC --> D{¿Quiere turno<br/>o precio?}
-    D -->|Sí| W[📲 La pasa al bot de WhatsApp<br/>que agenda y cobra]
-    D -->|Sigue charlando| A
+    D -->|Sí| W[📲 Deriva al agente de WhatsApp<br/>que agenda y cobra]
+    D -->|Sigue conversando| A
 
     classDef cliente fill:#f9c5d1,stroke:#d6336c,stroke-width:2px,color:#5a1133;
     classDef bot fill:#ffe0ec,stroke:#d6336c,stroke-width:2px,color:#5a1133;
@@ -216,37 +240,38 @@ flowchart TD
       </pre>
     </div>
 
-    <h3 style="color:var(--rosa-fuerte);margin:24px 0 4px;">💎 Cómo atiende (las reglas del asistente)</h3>
+    <h3 style="color:var(--rosa-fuerte);margin:24px 0 4px;">💎 Características del módulo de atención</h3>
     <ul class="reglas">
-      <li>🤫 <strong>Nunca dice que es un bot.</strong> Atiende como una asesora más del salón.</li>
-      <li>🎤 <strong>Entiende y responde por texto y por audio</strong>, en voseo argentino cálido.</li>
-      <li>⚡ <strong>Responde al instante, 24/7, los 365 días.</strong> Ninguna clienta queda sin respuesta.</li>
-      <li>🧠 <strong>Se acuerda de la conversación</strong> de cada clienta mientras chatean.</li>
-      <li>📲 <strong>Cuando quiere turno o precio, la pasa al bot de WhatsApp</strong> que agenda y cobra.</li>
-      <li>🚫 <strong>No inventa.</strong> Trabaja siempre con la info real del salón.</li>
+      <li>🤫 <strong>Atención conversacional indistinguible de una asesora humana</strong> <span class="aclara">(nunca se nota que es un sistema).</span></li>
+      <li>🎤 <strong>Procesamiento multimodal</strong> <span class="aclara">(entiende y responde en texto y en voz, con voz que suena humana).</span></li>
+      <li>⚡ <strong>Disponibilidad 24/7/365</strong> <span class="aclara">(siempre disponible, sin horarios ni esperas).</span></li>
+      <li>🧠 <strong>Memoria contextual</strong> <span class="aclara">(sigue el hilo de la charla con cada clienta).</span></li>
+      <li>📲 <strong>Derivación inteligente</strong> <span class="aclara">(cuando hay que cerrar, pasa sola al WhatsApp que agenda y cobra).</span></li>
+      <li>🚫 <strong>Respuestas ancladas a la base de conocimiento real del salón</strong> <span class="aclara">(solo dice info verdadera, no inventa).</span></li>
     </ul>
   </section>
 
   <!-- 3 · ROADMAP -->
   <section>
-    <h2><span class="step-num">3</span> Cómo lo llevamos al 100% automático <span class="badge prox">Próximo paso</span></h2>
-    <p class="lead">El asistente que ya atiende es el primer ladrillo. El siguiente salto es que
-      <strong>agende el turno solo y cobre la seña</strong>, sin que nadie del salón tenga que tocar el teléfono.</p>
+    <h2><span class="step-num">3</span> Roadmap a la automatización integral <span class="badge prox">Próxima fase</span></h2>
+    <p class="lead">El módulo de atención ya operativo es la primera capa. La siguiente fase suma
+      <strong>memoria, agenda y cobro autónomos</strong> <em>(el sistema reserva el turno y cobra la seña solo,
+      sin que nadie del salón toque el teléfono)</em>.</p>
     <div class="canvas">
       <pre class="mermaid">
 flowchart LR
-    subgraph HOY["✅ Funcionando hoy"]
-        A1[🌸 Asistente en Telegram<br/>texto + audio · 24/7]
+    subgraph HOY["✅ En producción"]
+        A1[🌸 Módulo de atención<br/>texto + voz · 24/7]
     end
 
-    subgraph CONST["🔧 Lo que construimos"]
-        B1[📲 Bot oficial de WhatsApp]
-        B2[📅 Calendario / agenda<br/>conectado en vivo]
-        B3[🧠 Memoria real de cada clienta<br/>historial · gustos · turnos]
+    subgraph CONST["🔧 En construcción"]
+        B1[📲 Agente de WhatsApp Business API<br/>la línea oficial automatizada]
+        B2[📅 Motor de agendamiento<br/>reserva en la agenda del salón]
+        B3[🧠 Memoria persistente por clienta<br/>recuerda historial y gustos]
     end
 
     subgraph META["🚀 Resultado"]
-        C1[🤖 Agenda el turno sola,<br/>da precio y cobra la seña<br/>sin intervención humana]
+        C1[🤖 Agenda y cobra sola<br/>precio · medios de pago · seña<br/>sin intervención humana]
     end
 
     A1 --> B1
@@ -266,22 +291,22 @@ flowchart LR
 
     <div class="cols">
       <div class="card">
-        <h3>✅ Ya está listo</h3>
+        <h3>✅ Ya desplegado</h3>
         <ul class="check">
-          <li>Asistente que atiende por Telegram</li>
-          <li>Texto y audio, voz argentina natural</li>
-          <li>Personalidad del salón cargada</li>
-          <li>Responde 24/7 al instante</li>
+          <li>Módulo de atención conversacional <span class="aclara">(atiende solo por chat)</span></li>
+          <li>Texto + voz neuronal <span class="aclara">(escribe y manda audios naturales)</span></li>
+          <li>Personalidad de marca y base de conocimiento <span class="aclara">(habla como el salón, con su info)</span></li>
+          <li>Disponibilidad 24/7 en tiempo real</li>
         </ul>
       </div>
       <div class="card" style="background:#fff8f0;border-color:#ffd8a8;">
-        <h3>▢ Para activar la automatización total</h3>
+        <h3>▢ Requerido para automatización integral</h3>
         <ul class="check todo">
-          <li>WhatsApp oficial (número verificado + proveedor)</li>
-          <li>Meta Ads (Business Manager + pauta)</li>
-          <li>Conexión al calendario / agenda del salón</li>
-          <li>Pasarela de cobro para la seña</li>
-          <li>Lista de precios y servicios para cargar</li>
+          <li>WhatsApp Business API <span class="aclara">(la línea oficial de WhatsApp habilitada para automatizar)</span></li>
+          <li>Meta Ads <span class="aclara">(cuenta de empresa de Meta + plata para los anuncios)</span></li>
+          <li>Integración con la agenda <span class="aclara">(conectar el calendario del salón)</span></li>
+          <li>Pasarela de pagos <span class="aclara">(para cobrar la seña online)</span></li>
+          <li>Catálogo de servicios y tarifario <span class="aclara">(cargar precios y tratamientos)</span></li>
         </ul>
       </div>
     </div>
@@ -289,45 +314,140 @@ flowchart LR
 
   <!-- 4 · INFRAESTRUCTURA -->
   <section>
-    <h2><span class="step-num">4</span> La infraestructura empresarial <span class="badge activar">La base</span></h2>
-    <p class="lead">No es "un bot suelto": es la base sobre la que se monta <strong>toda la operación digital del salón</strong>
-      (y mañana, varios bots trabajando juntos como un enjambre).</p>
+    <h2><span class="step-num">4</span> Arquitectura e infraestructura <span class="badge activar">La base</span></h2>
+    <p class="lead">No es un asistente suelto: es una <strong>plataforma de orquestación multi-agente</strong>
+      <em>(varios asistentes coordinados como un equipo, con un director)</em> sobre la que se monta toda la
+      operación digital del negocio — y, a futuro, un enjambre de agentes especializados trabajando en conjunto.</p>
     <div class="canvas">
       <pre class="mermaid">
-flowchart LR
-    subgraph CANALES["📥 Canales de la clienta"]
+flowchart TB
+    subgraph OMNI["📥 Capa de ingesta omnicanal — recibe todos los canales"]
         IG2[📸 Instagram]
         TG2[💬 Telegram]
-        WA2[📲 WhatsApp]
+        WA2[📲 WhatsApp Business API]
     end
 
-    subgraph SERVIDOR["🖥️ Servidor externo dedicado — placa de video + GPU, RAM y almacenamiento propios · prendido 24/7 en su entorno virtual"]
-        MOTOR[[🧠 Motor de IA pro<br/>inteligencia + memoria<br/>persistente multimodal]]
-        BOTS[🤖 Todos los bots de la empresa<br/>corriendo en el mismo entorno]
+    subgraph CORE["🖥️ Servidor externo dedicado · GPU + placa de video · RAM y almacenamiento propios · entorno virtual aislado · prendido 24/7"]
+        ORCH[[⚙️ Orquestador central propietario<br/>el director que reparte el trabajo - swarm]]
+        MOTOR[[🧠 Núcleo de inferencia multimodal<br/>la inteligencia: texto · voz · imagen]]
+        MEM[(🗄️ Memoria persistente por clienta<br/>recuerda a cada una a largo plazo)]
+        KB[(📚 Base de conocimiento del salón<br/>servicios · políticas · tono de marca)]
     end
 
-    IG2 --> SERVIDOR
-    TG2 --> SERVIDOR
-    WA2 --> SERVIDOR
-    MOTOR --- BOTS
+    subgraph ACC["🔌 Capa de integración y acciones — hace cosas en el mundo real"]
+        AGENDA[📅 Motor de agendamiento]
+        PAGO[💳 Pasarela de cobro]
+        CRM[📇 CRM de clientas]
+    end
+
+    IG2 --> ORCH
+    TG2 --> ORCH
+    WA2 --> ORCH
+    ORCH <--> MOTOR
+    MOTOR <--> MEM
+    MOTOR <--> KB
+    ORCH --> AGENDA
+    ORCH --> PAGO
+    ORCH --> CRM
 
     classDef canal fill:#e7f5ff,stroke:#1c7ed6,stroke-width:2px,color:#0b2545;
-    classDef serv fill:#fff0f6,stroke:#d6336c,stroke-width:2px,color:#5a1133;
+    classDef core fill:#fff0f6,stroke:#d6336c,stroke-width:2px,color:#5a1133;
+    classDef acc fill:#fff4e6,stroke:#f08c00,stroke-width:2px,color:#5c3c00;
 
     class IG2,TG2,WA2 canal;
-    class MOTOR,BOTS serv;
+    class ORCH,MOTOR,MEM,KB core;
+    class AGENDA,PAGO,CRM acc;
       </pre>
     </div>
 
-    <div class="frase">
-      <strong>En una frase:</strong> la clienta llega desde Instagram, un <strong>motor de IA pro con memoria
-      persistente multimodal</strong> la atiende al instante por texto o voz, y la lleva hasta el turno agendado y la seña
-      cobrada por WhatsApp — todo corriendo en un <strong>servidor externo dedicado con GPU propia</strong>, listo para
-      escalar a una <strong>agencia de bots automatizados (swarm)</strong> que opere todo el negocio sola.
+    <div class="card glos">
+      <h3>🔎 Qué significa cada parte (en criollo)</h3>
+      <ul class="gloss">
+        <li><b>Orquestación multi-agente</b> — <span class="que">varios asistentes trabajando coordinados como un equipo, dirigidos por un "director".</span></li>
+        <li><b>Núcleo de inferencia multimodal</b> — <span class="que">la inteligencia que entiende y responde texto, voz e imágenes.</span></li>
+        <li><b>Memoria persistente por clienta</b> — <span class="que">recuerda a cada clienta a largo plazo: qué se hizo, qué le gusta, cuándo vino.</span></li>
+        <li><b>Base de conocimiento</b> — <span class="que">toda la info real del salón cargada (servicios, estilo, reglas).</span></li>
+        <li><b>Capa de ingesta omnicanal</b> — <span class="que">un solo cerebro que recibe los mensajes de todos los canales (IG, Telegram, WhatsApp).</span></li>
+        <li><b>Servidor dedicado con GPU</b> — <span class="que">una máquina industrial potente, prendida siempre, exclusiva para esto.</span></li>
+        <li><b>Entorno virtual aislado · alta disponibilidad</b> — <span class="que">su propio espacio seguro, que funciona 24/7 sin caerse.</span></li>
+        <li><b>Enjambre (swarm) de agentes</b> — <span class="que">muchos asistentes especializados que se van sumando a medida que el negocio crece.</span></li>
+      </ul>
     </div>
   </section>
 
-  <footer>QuantumHive · Yas Papeo — Belleza Capilar 🌸</footer>
+  <!-- 5 · VISIÓN A FUTURO -->
+  <section>
+    <h2><span class="step-num">5</span> Visión a futuro — el ecosistema completo <span class="badge vision">Expansión</span></h2>
+    <p class="lead">Sobre esta misma base se construye <strong>todo el ecosistema digital de la empresa</strong>:
+      presencia premium, una máquina de captación que trabaja sola, el equipo potenciado con IA y la estructura
+      lista para escalar.</p>
+    <div class="canvas">
+      <pre class="mermaid">
+flowchart TB
+    PLAT([🌸 Plataforma Yas Papeo<br/>el motor central que ya funciona])
+
+    subgraph PRES["✨ Presencia digital premium"]
+        WEB[🌐 Web profesional 3D]
+        CAT[🧴 Catálogo vivo 3D<br/>con asistente integrado]
+    end
+
+    subgraph CAPT["🎯 Máquina de captación"]
+        PROSP[🛰️ Agentes de prospección<br/>buscan clientas y arman propuestas]
+        FUN[📣 Embudos de publicidad]
+        CONT[🗓️ Plan de contenido y posts de IG]
+    end
+
+    subgraph EQ["👯 Equipo aumentado con IA"]
+        ASIST[🤖 Un asistente por integrante<br/>todos interconectados]
+        AV[🎭 Avatar humanizado de cada una<br/>publicidad y contenido en automático]
+    end
+
+    subgraph ESC["🏛️ Escala empresarial"]
+        EMP[🏢 Estructura de empresa]
+        EXP[🚀 Expansión masiva<br/>enjambre de agentes - swarm]
+    end
+
+    PLAT --> PRES
+    PLAT --> CAPT
+    PLAT --> EQ
+    PLAT --> ESC
+
+    classDef plat fill:#ffe0ec,stroke:#d6336c,stroke-width:2.5px,color:#5a1133;
+    classDef pres fill:#f3e8ff,stroke:#7048e8,stroke-width:2px,color:#3d1a66;
+    classDef capt fill:#e7f5ff,stroke:#1c7ed6,stroke-width:2px,color:#0b2545;
+    classDef eq fill:#fff0f6,stroke:#e64980,stroke-width:2px,color:#5a1133;
+    classDef esc fill:#fff4e6,stroke:#f08c00,stroke-width:2px,color:#5c3c00;
+
+    class PLAT plat;
+    class WEB,CAT pres;
+    class PROSP,FUN,CONT capt;
+    class ASIST,AV eq;
+    class EMP,EXP esc;
+      </pre>
+    </div>
+
+    <ul class="vlist">
+      <li><b>🌐 Web profesional 3D</b> — <span class="aclara">una página premium con efectos 3D que impacta apenas entrás.</span></li>
+      <li><b>🧴 Catálogo vivo 3D con asistente integrado</b> — <span class="aclara">los tratamientos en 3D que se ven y giran, con el asistente respondiendo ahí mismo.</span></li>
+      <li><b>🛰️ Agentes de prospección</b> — <span class="aclara">asistentes que salen a buscar clientas nuevas y les arman la propuesta solos.</span></li>
+      <li><b>📣 Embudos de publicidad</b> — <span class="aclara">circuitos de anuncios que atraen clientas de forma constante.</span></li>
+      <li><b>🗓️ Plan de contenido y posts de IG</b> — <span class="aclara">un calendario de contenido pensado y producido para crecer en redes.</span></li>
+      <li><b>🤖 Un asistente por integrante, interconectado</b> — <span class="aclara">cada integrante del equipo con su propio asistente, todos conectados entre sí.</span></li>
+      <li><b>🎭 Avatar humanizado de cada una</b> — <span class="aclara">un avatar digital realista de cada una que hace publicidad y contenido en automático.</span></li>
+      <li><b>🏢 Estructura de empresa + 🚀 expansión masiva</b> — <span class="aclara">todo ordenado como empresa y listo para crecer en serie (el enjambre de agentes que opera el negocio).</span></li>
+    </ul>
+
+    <div class="frase">
+      <strong>En una frase:</strong> una <strong>arquitectura de orquestación multi-agente propietaria</strong>
+      <em>(varios asistentes coordinados)</em>, desplegada en un <strong>servidor externo dedicado con GPU y entorno
+      virtual aislado</strong> <em>(una máquina potente, prendida siempre, sólo para esto)</em>, unifica Instagram,
+      Telegram y WhatsApp en un solo núcleo con <strong>memoria persistente por clienta</strong>: capta, atiende en el
+      momento por texto y voz, agenda y cobra sola, y queda lista para escalar a un <strong>ecosistema completo</strong>
+      —web 3D, avatares, captación automática y un enjambre de agentes— que opere todo el negocio.
+    </div>
+  </section>
+
+  <footer>QuantumHive · Yas Papeo · Belleza Capilar 🌸</footer>
 </div>
 
 <script type="module">

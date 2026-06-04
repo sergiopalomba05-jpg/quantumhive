@@ -1,40 +1,44 @@
-# Yas Papeo — Sistema de venta y atención automática 🌸
+# Yas Papeo · Belleza Capilar — Plataforma de IA conversacional 🌸
 
-Mapa de negocio para presentación. Cuatro vistas:
-1. **El embudo de venta** — de Instagram al turno cobrado
-2. **Qué hace el asistente hoy** — lo que ya funciona
-3. **Cómo lo llevamos al 100% automático** — roadmap + qué hace falta activar
-4. **La infraestructura empresarial** — la base que escala
+**@yaspapeobeauty** · Arquitectura · Propuesta QuantumHive
 
-> Para presentarlo lindo en la reunión, abrí `arquitectura.html` en el navegador.
+Arquitectura para presentación. Cinco vistas:
+1. **Embudo de conversión** — de Instagram al turno cobrado
+2. **Capacidades en producción** — el módulo ya operativo
+3. **Roadmap a la automatización integral** — próxima fase + requerimientos
+4. **Arquitectura e infraestructura** — la plataforma que escala (con glosario "en criollo")
+5. **Visión a futuro** — el ecosistema completo de la empresa
+
+> Para presentarlo en la reunión, abrí `arquitectura.html` en el navegador.
+> Las aclaraciones *(entre paréntesis e itálica)* explican cada término técnico en palabras simples.
 
 ---
 
-## 1. El embudo de venta (el corazón)
+## 1. Embudo de conversión (el corazón)
 
-Todo arranca en **Instagram**: la clienta ve un post o una historia, toca el link y cae directo en el asistente, que la atiende sola y la lleva hasta el turno reservado y pago.
+Toda la demanda se origina en **Instagram** y se canaliza, vía link, hacia el asistente con IA *(el que atiende solo)*, que la recibe en el momento y la lleva por el camino hasta el turno reservado y la seña cobrada.
 
 ```mermaid
 flowchart LR
-    subgraph CAP["🎯 Captación"]
-        ADS[📣 Meta Ads<br/>Instagram + Facebook<br/>para llegar a más mujeres]
+    subgraph CAP["🎯 Captación / Top of funnel"]
+        ADS[📣 Meta Ads<br/>anuncios en IG + Facebook<br/>a las mujeres justas de la zona]
         IG[📸 Instagram<br/>perfil · posts · historias]
     end
 
-    subgraph AT["🤖 Atención automática 24/7"]
-        LINK[🔗 Link en la bio<br/>o en la historia]
-        BOT[🌸 Asistente Yas Papeo<br/>responde al instante<br/>por texto y por audio]
+    subgraph AT["🤖 Atención automatizada 24/7"]
+        LINK[🔗 Deep link<br/>link que abre el chat directo]
+        BOT[🌸 Asistente con IA conversacional<br/>atiende solo · entiende texto y voz]
     end
 
-    subgraph CIE["💚 Cierre de venta"]
-        WABOT[📲 Bot de WhatsApp<br/>agenda el turno · da precios<br/>y medios de pago]
+    subgraph CIE["💚 Conversión / cierre"]
+        WABOT[📲 Agente de WhatsApp<br/>reserva · pasa precios · cobra seña]
         TURNO[📅 Turno reservado<br/>+ seña cobrada]
     end
 
     ADS --> IG
     IG --> LINK
     LINK --> BOT
-    BOT -->|la clienta quiere turno| WABOT
+    BOT -->|intención de turno| WABOT
     WABOT --> TURNO
 
     classDef cap fill:#e7f5ff,stroke:#1c7ed6,stroke-width:2px,color:#0b2545;
@@ -48,28 +52,30 @@ flowchart LR
 
 ---
 
-## 2. Qué hace el asistente hoy (ya funciona)
+## 2. Capacidades en producción (operativo)
+
+Módulo ya desplegado y funcionando *(ya está hecho y prendido)*. Se puede probar en vivo desde el celular ahora mismo.
 
 ```mermaid
 flowchart TD
-    A([👩 La clienta escribe<br/>por Telegram]) --> B{¿Mandó texto<br/>o audio?}
+    A([👩 Clienta inicia conversación<br/>por Telegram]) --> B{¿Texto o audio?}
 
-    B -->|Texto 💬| BOT[🌸 Asistente Yas Papeo<br/>atiende al instante, 24/7]
+    B -->|Texto 💬| BOT[🌸 Asistente con IA conversacional<br/>atiende en el momento, 24/7]
     B -->|Audio 🎤| BOT
 
-    BOT --> G[🧠 Entiende el mensaje<br/>con la personalidad y la info<br/>del salón cargadas]
-    G --> R[Arma una respuesta cálida<br/>en voseo argentino]
+    BOT --> G[🧠 Comprensión multimodal<br/>entiende el mensaje con la info<br/>del salón ya cargada]
+    G --> R[Arma la respuesta<br/>voseo argentino · tono de marca]
 
-    R --> Q{¿Cómo había<br/>escrito la clienta?}
-    Q -->|Texto| T[💬 Le responde en texto]
-    Q -->|Audio| V[🔊 Le responde con una<br/>nota de voz natural]
+    R --> Q{¿Cómo había escrito?}
+    Q -->|Texto| T[💬 Responde en texto]
+    Q -->|Audio| V[🔊 Síntesis de voz neuronal<br/>nota de voz que suena humana]
 
     T --> REC([👩 La clienta recibe<br/>la respuesta])
     V --> REC
 
     REC --> D{¿Quiere turno<br/>o precio?}
-    D -->|Sí| W[📲 La pasa al bot de WhatsApp<br/>que agenda y cobra]
-    D -->|Sigue charlando| A
+    D -->|Sí| W[📲 Deriva al agente de WhatsApp<br/>que agenda y cobra]
+    D -->|Sigue conversando| A
 
     classDef cliente fill:#f9c5d1,stroke:#d6336c,stroke-width:2px,color:#5a1133;
     classDef bot fill:#ffe0ec,stroke:#d6336c,stroke-width:2px,color:#5a1133;
@@ -82,35 +88,35 @@ flowchart TD
     class W deriva;
 ```
 
-**Cómo atiende (las reglas del asistente):**
+**Características del módulo de atención:**
 
-- 🤫 **Nunca dice que es un bot.** Atiende como una asesora más del salón.
-- 🎤 **Entiende y responde por texto y por audio**, en voseo argentino cálido.
-- ⚡ **Responde al instante, 24/7, los 365 días.** Ninguna clienta queda sin respuesta.
-- 🧠 **Se acuerda de la conversación** de cada clienta mientras chatean.
-- 📲 **Cuando quiere turno o precio, la pasa al bot de WhatsApp** que agenda y cobra.
-- 🚫 **No inventa.** Trabaja siempre con la info real del salón.
+- 🤫 **Atención conversacional indistinguible de una asesora humana** *(nunca se nota que es un sistema).*
+- 🎤 **Procesamiento multimodal** *(entiende y responde en texto y en voz, con voz que suena humana).*
+- ⚡ **Disponibilidad 24/7/365** *(siempre disponible, sin horarios ni esperas).*
+- 🧠 **Memoria contextual** *(sigue el hilo de la charla con cada clienta).*
+- 📲 **Derivación inteligente** *(cuando hay que cerrar, pasa sola al WhatsApp que agenda y cobra).*
+- 🚫 **Respuestas ancladas a la base de conocimiento real del salón** *(solo dice info verdadera, no inventa).*
 
 ---
 
-## 3. Cómo lo llevamos al 100% automático (roadmap)
+## 3. Roadmap a la automatización integral (próxima fase)
 
-El asistente que ya atiende es el primer ladrillo. El siguiente salto es que **agende el turno solo y cobre la seña**, sin que nadie del salón tenga que tocar el teléfono.
+El módulo de atención ya operativo es la primera capa. La siguiente fase suma **memoria, agenda y cobro autónomos** *(el sistema reserva el turno y cobra la seña solo, sin que nadie del salón toque el teléfono)*.
 
 ```mermaid
 flowchart LR
-    subgraph HOY["✅ Funcionando hoy"]
-        A1[🌸 Asistente en Telegram<br/>texto + audio · 24/7]
+    subgraph HOY["✅ En producción"]
+        A1[🌸 Módulo de atención<br/>texto + voz · 24/7]
     end
 
-    subgraph CONST["🔧 Lo que construimos"]
-        B1[📲 Bot oficial de WhatsApp]
-        B2[📅 Calendario / agenda<br/>conectado en vivo]
-        B3[🧠 Memoria real de cada clienta<br/>historial · gustos · turnos]
+    subgraph CONST["🔧 En construcción"]
+        B1[📲 Agente de WhatsApp Business API<br/>la línea oficial automatizada]
+        B2[📅 Motor de agendamiento<br/>reserva en la agenda del salón]
+        B3[🧠 Memoria persistente por clienta<br/>recuerda historial y gustos]
     end
 
     subgraph META["🚀 Resultado"]
-        C1[🤖 Agenda el turno sola,<br/>da precio y cobra la seña<br/>sin intervención humana]
+        C1[🤖 Agenda y cobra sola<br/>precio · medios de pago · seña<br/>sin intervención humana]
     end
 
     A1 --> B1
@@ -127,48 +133,131 @@ flowchart LR
     class C1 meta;
 ```
 
-### Ya está listo ✅
-- Asistente que atiende por Telegram
-- Texto y audio, voz argentina natural
-- Personalidad del salón cargada
-- Responde 24/7 al instante
+### Ya desplegado ✅
+- Módulo de atención conversacional *(atiende solo por chat)*
+- Texto + voz neuronal *(escribe y manda audios naturales)*
+- Personalidad de marca y base de conocimiento *(habla como el salón, con su info)*
+- Disponibilidad 24/7 en tiempo real
 
-### Para activar la automatización total ▢
-- **WhatsApp oficial** (número verificado + proveedor)
-- **Meta Ads** (Business Manager + presupuesto de pauta)
-- **Calendario / agenda** del salón conectado en vivo
-- **Pasarela de cobro** para la seña (medios de pago)
-- **Lista de precios y servicios** para cargar al bot
+### Requerido para automatización integral ▢
+- **WhatsApp Business API** *(la línea oficial de WhatsApp habilitada para automatizar)*
+- **Meta Ads** *(cuenta de empresa de Meta + plata para los anuncios)*
+- **Integración con la agenda** *(conectar el calendario del salón)*
+- **Pasarela de pagos** *(para cobrar la seña online)*
+- **Catálogo de servicios y tarifario** *(cargar precios y tratamientos)*
 
 ---
 
-## 4. La infraestructura empresarial (la base que escala)
+## 4. Arquitectura e infraestructura (la plataforma que escala)
 
-No es "un bot suelto": es la base sobre la que se monta **toda la operación digital del salón** (y mañana, varios bots trabajando juntos como un enjambre).
+No es un asistente suelto: es una **plataforma de orquestación multi-agente** *(varios asistentes coordinados como un equipo, con un director)* sobre la que se monta toda la operación digital del negocio — y, a futuro, un enjambre de agentes especializados trabajando en conjunto.
 
 ```mermaid
-flowchart LR
-    subgraph CANALES["📥 Canales de la clienta"]
+flowchart TB
+    subgraph OMNI["📥 Capa de ingesta omnicanal — recibe todos los canales"]
         IG2[📸 Instagram]
         TG2[💬 Telegram]
-        WA2[📲 WhatsApp]
+        WA2[📲 WhatsApp Business API]
     end
 
-    subgraph SERVIDOR["🖥️ Servidor externo dedicado — placa de video + GPU, RAM y almacenamiento propios · prendido 24/7 en su entorno virtual"]
-        MOTOR[[🧠 Motor de IA pro<br/>inteligencia + memoria<br/>persistente multimodal]]
-        BOTS[🤖 Todos los bots de la empresa<br/>corriendo en el mismo entorno]
+    subgraph CORE["🖥️ Servidor externo dedicado · GPU + placa de video · RAM y almacenamiento propios · entorno virtual aislado · prendido 24/7"]
+        ORCH[[⚙️ Orquestador central propietario<br/>el director que reparte el trabajo - swarm]]
+        MOTOR[[🧠 Núcleo de inferencia multimodal<br/>la inteligencia: texto · voz · imagen]]
+        MEM[(🗄️ Memoria persistente por clienta<br/>recuerda a cada una a largo plazo)]
+        KB[(📚 Base de conocimiento del salón<br/>servicios · políticas · tono de marca)]
     end
 
-    IG2 --> SERVIDOR
-    TG2 --> SERVIDOR
-    WA2 --> SERVIDOR
-    MOTOR --- BOTS
+    subgraph ACC["🔌 Capa de integración y acciones — hace cosas en el mundo real"]
+        AGENDA[📅 Motor de agendamiento]
+        PAGO[💳 Pasarela de cobro]
+        CRM[📇 CRM de clientas]
+    end
+
+    IG2 --> ORCH
+    TG2 --> ORCH
+    WA2 --> ORCH
+    ORCH <--> MOTOR
+    MOTOR <--> MEM
+    MOTOR <--> KB
+    ORCH --> AGENDA
+    ORCH --> PAGO
+    ORCH --> CRM
 
     classDef canal fill:#e7f5ff,stroke:#1c7ed6,stroke-width:2px,color:#0b2545;
-    classDef serv fill:#fff0f6,stroke:#d6336c,stroke-width:2px,color:#5a1133;
+    classDef core fill:#fff0f6,stroke:#d6336c,stroke-width:2px,color:#5a1133;
+    classDef acc fill:#fff4e6,stroke:#f08c00,stroke-width:2px,color:#5c3c00;
 
     class IG2,TG2,WA2 canal;
-    class MOTOR,BOTS serv;
+    class ORCH,MOTOR,MEM,KB core;
+    class AGENDA,PAGO,CRM acc;
 ```
 
-**En una frase:** la clienta llega desde Instagram, un **motor de IA pro con memoria persistente multimodal** la atiende al instante por texto o voz, y la lleva hasta el turno agendado y la seña cobrada por WhatsApp — todo corriendo en un **servidor externo dedicado con GPU propia**, listo para escalar a una **agencia de bots automatizados (swarm)** que opere todo el negocio sola.
+### 🔎 Qué significa cada parte (en criollo)
+- **Orquestación multi-agente** — varios asistentes trabajando coordinados como un equipo, dirigidos por un "director".
+- **Núcleo de inferencia multimodal** — la inteligencia que entiende y responde texto, voz e imágenes.
+- **Memoria persistente por clienta** — recuerda a cada clienta a largo plazo: qué se hizo, qué le gusta, cuándo vino.
+- **Base de conocimiento** — toda la info real del salón cargada (servicios, estilo, reglas).
+- **Capa de ingesta omnicanal** — un solo cerebro que recibe los mensajes de todos los canales (IG, Telegram, WhatsApp).
+- **Servidor dedicado con GPU** — una máquina industrial potente, prendida siempre, exclusiva para esto.
+- **Entorno virtual aislado · alta disponibilidad** — su propio espacio seguro, que funciona 24/7 sin caerse.
+- **Enjambre (swarm) de agentes** — muchos asistentes especializados que se van sumando a medida que el negocio crece.
+
+---
+
+## 5. Visión a futuro — el ecosistema completo
+
+Sobre esta misma base se construye **todo el ecosistema digital de la empresa**: presencia premium, una máquina de captación que trabaja sola, el equipo potenciado con IA y la estructura lista para escalar.
+
+```mermaid
+flowchart TB
+    PLAT([🌸 Plataforma Yas Papeo<br/>el motor central que ya funciona])
+
+    subgraph PRES["✨ Presencia digital premium"]
+        WEB[🌐 Web profesional 3D]
+        CAT[🧴 Catálogo vivo 3D<br/>con asistente integrado]
+    end
+
+    subgraph CAPT["🎯 Máquina de captación"]
+        PROSP[🛰️ Agentes de prospección<br/>buscan clientas y arman propuestas]
+        FUN[📣 Embudos de publicidad]
+        CONT[🗓️ Plan de contenido y posts de IG]
+    end
+
+    subgraph EQ["👯 Equipo aumentado con IA"]
+        ASIST[🤖 Un asistente por integrante<br/>todos interconectados]
+        AV[🎭 Avatar humanizado de cada una<br/>publicidad y contenido en automático]
+    end
+
+    subgraph ESC["🏛️ Escala empresarial"]
+        EMP[🏢 Estructura de empresa]
+        EXP[🚀 Expansión masiva<br/>enjambre de agentes - swarm]
+    end
+
+    PLAT --> PRES
+    PLAT --> CAPT
+    PLAT --> EQ
+    PLAT --> ESC
+
+    classDef plat fill:#ffe0ec,stroke:#d6336c,stroke-width:2.5px,color:#5a1133;
+    classDef pres fill:#f3e8ff,stroke:#7048e8,stroke-width:2px,color:#3d1a66;
+    classDef capt fill:#e7f5ff,stroke:#1c7ed6,stroke-width:2px,color:#0b2545;
+    classDef eq fill:#fff0f6,stroke:#e64980,stroke-width:2px,color:#5a1133;
+    classDef esc fill:#fff4e6,stroke:#f08c00,stroke-width:2px,color:#5c3c00;
+
+    class PLAT plat;
+    class WEB,CAT pres;
+    class PROSP,FUN,CONT capt;
+    class ASIST,AV eq;
+    class EMP,EXP esc;
+```
+
+- **🌐 Web profesional 3D** — una página premium con efectos 3D que impacta apenas entrás.
+- **🧴 Catálogo vivo 3D con asistente integrado** — los tratamientos en 3D que se ven y giran, con el asistente respondiendo ahí mismo.
+- **🛰️ Agentes de prospección** — asistentes que salen a buscar clientas nuevas y les arman la propuesta solos.
+- **📣 Embudos de publicidad** — circuitos de anuncios que atraen clientas de forma constante.
+- **🗓️ Plan de contenido y posts de IG** — un calendario de contenido pensado y producido para crecer en redes.
+- **🤖 Un asistente por integrante, interconectado** — cada integrante del equipo con su propio asistente, todos conectados entre sí.
+- **🎭 Avatar humanizado de cada una** — un avatar digital realista de cada una que hace publicidad y contenido en automático.
+- **🏢 Estructura de empresa + 🚀 expansión masiva** — todo ordenado como empresa y listo para crecer en serie (el enjambre de agentes que opera el negocio).
+
+**En una frase:** una **arquitectura de orquestación multi-agente propietaria** *(varios asistentes coordinados)*, desplegada en un **servidor externo dedicado con GPU y entorno virtual aislado** *(una máquina potente, prendida siempre, sólo para esto)*, unifica Instagram, Telegram y WhatsApp en un solo núcleo con **memoria persistente por clienta**: capta, atiende en el momento por texto y voz, agenda y cobra sola, y queda lista para escalar a un **ecosistema completo** —web 3D, avatares, captación automática y un enjambre de agentes— que opere todo el negocio.
