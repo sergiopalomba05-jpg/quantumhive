@@ -173,6 +173,14 @@
   .frase-esencia strong { color: var(--rosa-fuerte); }
 
   footer { text-align: center; margin-top: 46px; opacity: 0.6; font-size: 0.85rem; }
+
+  /* fidelidad al imprimir / exportar a PDF: conservar colores y no cortar diagramas */
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  @media print {
+    body { background: #fff7fb; }
+    .canvas, .card, .card-esencia, .frase, .frase-esencia, .glos, ul.reglas li { break-inside: avoid; }
+    section { break-inside: avoid; }
+  }
 </style>
 </head>
 <body>
