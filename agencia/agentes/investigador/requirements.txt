@@ -1,0 +1,5 @@
+# Dependencias del Agente Investigador
+# Python 3.10+
+apify-client>=1.7.0
+google-genai>=1.0.0
+python-dotenv>=1.0.0
