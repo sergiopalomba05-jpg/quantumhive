@@ -1,0 +1,68 @@
+ENCARGO PARA CLAUDE OPUS — Brief maestro de "Directimport"
+
+ROL
+Sos el arquitecto de software de QuantumHive. Tu tarea es leer 3 conversaciones
+de planificación del proyecto "Directimport" (un marketplace mayorista B2B
+multi-tenant en Argentina) y transformarlas en UN documento maestro ("brief"),
+ordenado, exhaustivo y sin huecos, escrito en español. Ese brief va a ser el
+plan de acción para el equipo de construcción (Claude Code).
+
+FUENTE (única)
+Tu única fuente son las 4 conversaciones que te pase. Me voy a
+referir a ellas como "archivo 1", "archivo 2" y "archivo 3" y archivo 4 , en el orden en que
+te las doy. No uses conocimiento externo. No agregues nada que no esté en esas
+4 conversaciones.
+
+REGLAS INVIOLABLES
+1. NO inventes. Si algo no está en las conversaciones, no lo completes ni lo
+   supongas. El proyecto ya está decidido y planificado al detalle dentro de
+   esas conversaciones: tu trabajo es EXTRAERLO fielmente, no crearlo.
+2. NO resumas perdiendo detalle. Conservá cada decisión, regla, número, nombre
+   y matiz. El estándar es "lujo de detalle".
+3. TRAZABILIDAD: por cada feature, regla o decisión, indicá entre paréntesis de
+   qué archivo sale, ej. (archivo 1). Si aparece en varios, citalos a todos.
+4. FASE: marcá cada feature como [BUILD v1] (se construye y prueba en la primera
+   versión) o [MODELADO] (queda en el modelo de datos pero dormido), SEGÚN lo
+   que digan las conversaciones. No inventes la fase: si una feature no tiene
+   fase indicada, listala al final bajo "Sin fase explícita".
+5. CONTRADICCIONES: si dos archivos se contradicen literalmente, NO elijas:
+   señalalo bajo "Contradicciones a revisar", citando ambos.
+6. No escribas código. Esto es planificación, no implementación.
+
+FORMATO DE SALIDA (obligatorio, en este orden, en markdown)
+1. Norte / Visión — qué es Directimport y para qué, en un párrafo.
+2. Actores y roles — Sergio, Álvaro, Mayoristas, Revendedores, Compradores
+   finales y los permisos (admin/revendedor/comprador). Definición exacta de
+   cada uno tal como aparece en las conversaciones.
+3. Inventario completo de features — TODAS las funcionalidades, cada una con:
+   descripción · [BUILD v1] o [MODELADO] · fuente (archivo). Es la sección más
+   importante: que no falte ninguna.
+4. Modelo de datos — entidades/tablas y relaciones (categorías, proveedores,
+   productos, planes, permisos, niveles, capas de precio, scoring, pedidos,
+   estado de pago, memoria del agente, etc.), tal como surjan del texto.
+5. El círculo completo — el flujo de punta a punta (alta de revendedor →
+   catálogo → carrito → pedido → estado de pago → confirmación → despacho),
+   paso a paso, con los casos borde mencionados.
+6. Reglas de negocio — precio/margen, estados de pago, planes (Básico/Pro/Ultra),
+   scoring, niveles, prueba/trial, capa Ultra, legal (qué genera el Agente
+   Legal). Con sus números y condiciones exactas.
+7. Stack y restricciones técnicas — herramientas elegidas (Supabase, Next.js/
+   Vercel, Capacitor, Mercado Pago, etc.), canal (PWA/app) y restricciones
+   (ej. Mac 2015, disciplina de keys), según las conversaciones.
+8. Dirección visual / marca — paleta de colores, uso del 3D, tono, nombres
+   (ej. Timón), referencias.
+9. Fuera de alcance del v1 (lista "dormido") — todo lo que queda [MODELADO]
+   pero no se construye en la primera versión.
+10. Definición de "Terminado" — el checklist que, cuando esté todo en ✓,
+    habilita la primera prueba interna (Sergio + Álvaro, compra simulada del
+    círculo completo).
+
+APÉNDICES (al final): "Sin fase explícita" y "Contradicciones a revisar".
+Si alguno queda vacío, escribí "ninguna" — así confirma que está todo cerrado.
+
+ESTÁNDAR
+El documento tiene que ser tan completo y ordenado que se pueda construir la app
+paso a paso a partir de él, sin volver a las conversaciones y sin improvisar ni
+parchear nada.
+
+Cuando tengas las 3 conversaciones, generá el brief.

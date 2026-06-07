@@ -1,0 +1,46 @@
+# Entorno y secretos
+.env
+.env.local
+.env.*.local
+*.pem
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+.next/
+dist/
+build/
+.capacitor/
+android/
+ios/
+*.tsbuildinfo
+
+# IDEs y OS
+.obsidian/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Dependencias
+.pnp/
+.pnp.js
+.yarn/
+yarn.lock
+
+# Supabase
+supabase/.branches
+supabase/.temp
+
+# Capacitor
+capacitor.config.json
+
+# OpenCode
+.opencode/plugin/
