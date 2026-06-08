@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { supabase } from './lib/supabase'
 import './App.css'
 
@@ -35,6 +35,29 @@ function App() {
   const [notas, setNotas] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [exito, setExito] = useState(false)
+  const [showInstall, setShowInstall] = useState(false)
+  const installPromptRef = useRef<any>(null)
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      e.preventDefault()
+      installPromptRef.current = e
+      setShowInstall(true)
+    }
+    window.addEventListener('beforeinstallprompt', handler)
+    if (window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone) {
+      setShowInstall(false)
+    }
+    return () => window.removeEventListener('beforeinstallprompt', handler)
+  }, [])
+
+  const handleInstall = async () => {
+    if (!installPromptRef.current) return
+    installPromptRef.current.prompt()
+    const { outcome } = await installPromptRef.current.userChoice
+    if (outcome === 'accepted') setShowInstall(false)
+    installPromptRef.current = null
+  }
 
   useEffect(() => { localStorage.setItem(CART_KEY, JSON.stringify(cart)) }, [cart])
 
@@ -163,6 +186,13 @@ function App() {
   if (vista === 'carrito') {
     return (
       <div className="app">
+        {showInstall && (
+          <div className="install-banner">
+            <span>Instalá Directimport en tu celular para acceso rapido</span>
+            <button className="install-btn" onClick={handleInstall}>Instalar</button>
+            <button className="install-close" onClick={() => setShowInstall(false)}>✕</button>
+          </div>
+        )}
         <div className="header-between">
           <button className="btn-back" onClick={() => setVista('catalogo')}>← Volver</button>
           <h1 className="logo">Carrito</h1>
@@ -215,6 +245,13 @@ function App() {
   if (vista === 'checkout') {
     return (
       <div className="app">
+        {showInstall && (
+          <div className="install-banner">
+            <span>Instalá Directimport en tu celular para acceso rapido</span>
+            <button className="install-btn" onClick={handleInstall}>Instalar</button>
+            <button className="install-close" onClick={() => setShowInstall(false)}>✕</button>
+          </div>
+        )}
         <div className="header-between">
           <button className="btn-back" onClick={() => setVista('carrito')}>← Volver</button>
           <h1 className="logo">Checkout</h1>
@@ -254,6 +291,13 @@ function App() {
 
   return (
     <div className="app">
+      {showInstall && (
+        <div className="install-banner">
+          <span>Instalá Directimport en tu celular para acceso rapido</span>
+          <button className="install-btn" onClick={handleInstall}>Instalar</button>
+          <button className="install-close" onClick={() => setShowInstall(false)}>✕</button>
+        </div>
+      )}
       <div className="header-between">
         <h1 className="logo">Directimport</h1>
         <button className="cart-icon" onClick={() => setVista('carrito')}>
