@@ -1,12 +1,20 @@
-import { createClient } from '@/lib/supabase/server'
+'use client'
+
+import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
-export default async function DashboardPage() {
-  const supabase = await createClient()
+export default function DashboardPage() {
+  const supabase = createClient()
+  const [counts, setCounts] = useState({ productos: 0, rubros: 0, proveedores: 0 })
 
-  const { data: productos } = await supabase.from('productos').select('*', { count: 'exact', head: true })
-  const { data: rubros } = await supabase.from('rubros').select('*', { count: 'exact', head: true })
-  const { data: proveedores } = await supabase.from('proveedores').select('*', { count: 'exact', head: true })
+  useEffect(() => {
+    Promise.all([
+      supabase.from('productos').select('*', { count: 'exact', head: true }).then(({ count }) => count ?? 0),
+      supabase.from('rubros').select('*', { count: 'exact', head: true }).then(({ count }) => count ?? 0),
+      supabase.from('proveedores').select('*', { count: 'exact', head: true }).then(({ count }) => count ?? 0),
+    ]).then(([productos, rubros, proveedores]) => setCounts({ productos, rubros, proveedores }))
+  }, [])
 
   return (
     <div>
@@ -15,15 +23,15 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <div className="bg-[#1a1d23] border border-[#2a2d33] rounded-lg p-6">
           <p className="text-[#a0a0a8] text-sm">Productos</p>
-          <p className="text-3xl font-bold text-white mt-1">{productos?.count ?? 0}</p>
+          <p className="text-3xl font-bold text-white mt-1">{counts.productos}</p>
         </div>
         <div className="bg-[#1a1d23] border border-[#2a2d33] rounded-lg p-6">
           <p className="text-[#a0a0a8] text-sm">Rubros</p>
-          <p className="text-3xl font-bold text-white mt-1">{rubros?.count ?? 0}</p>
+          <p className="text-3xl font-bold text-white mt-1">{counts.rubros}</p>
         </div>
         <div className="bg-[#1a1d23] border border-[#2a2d33] rounded-lg p-6">
           <p className="text-[#a0a0a8] text-sm">Proveedores</p>
-          <p className="text-3xl font-bold text-white mt-1">{proveedores?.count ?? 0}</p>
+          <p className="text-3xl font-bold text-white mt-1">{counts.proveedores}</p>
         </div>
       </div>
 
