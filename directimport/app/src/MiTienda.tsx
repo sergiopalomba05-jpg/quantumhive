@@ -58,7 +58,9 @@ export default function MiTienda({ userId, onBack }: { userId: string; onBack: (
   if (!rev) return <div className="loading">Cargando...</div>
 
   const linkTienda = `${window.location.origin}?r=${rev.codigo_unico}`
-  const puedeEditarPrecios = rev.plan_id >= 2
+  const esPro = rev.plan_id >= 2
+  const esPremium = rev.plan_id >= 3
+  const planes = ['Basico', 'Pro', 'Premium', 'Ultra']
 
   return (
     <div className="app">
@@ -72,23 +74,32 @@ export default function MiTienda({ userId, onBack }: { userId: string; onBack: (
 
       <div className="tienda-info">
         <p className="tienda-nombre">{rev.nombre_negocio}</p>
-        <div className="tienda-link">
-          <span>Link de tu tienda:</span>
-          <input type="text" readOnly value={linkTienda} onClick={e => (e.target as HTMLInputElement).select()} />
-          <button className="btn-small" onClick={() => { navigator.clipboard.writeText(linkTienda); setMsg('Link copiado!'); setTimeout(() => setMsg(''), 2000) }}>Copiar</button>
-        </div>
+        <p style={{ fontSize: 12, color: '#888', marginBottom: 8 }}>Plan {planes[(rev.plan_id || 1) - 1]}</p>
+        {esPro && (
+          <div className="tienda-link">
+            <span>Link de tu tienda:</span>
+            <input type="text" readOnly value={linkTienda} onClick={e => (e.target as HTMLInputElement).select()} />
+            <button className="btn-small" onClick={() => { navigator.clipboard.writeText(linkTienda); setMsg('Link copiado!'); setTimeout(() => setMsg(''), 2000) }}>Copiar</button>
+          </div>
+        )}
       </div>
 
       <div className="tienda-actions">
-        <button className="tienda-btn" onClick={() => setEditando('precios')}>
-          {puedeEditarPrecios ? 'Fijar mis precios' : 'Plan Basico (sin edicion de precios)'}
-        </button>
+        {esPro ? (
+          <button className="tienda-btn" onClick={() => setEditando('precios')}>
+            Fijar mis precios
+          </button>
+        ) : (
+          <div className="tienda-btn" style={{ opacity: 0.5, cursor: 'default' }}>
+            Actualiza a plan Pro para fijar tus precios
+          </div>
+        )}
         <button className="tienda-btn" onClick={() => setEditando('personalizar')}>
-          Personalizar tienda
+          {esPremium ? 'Personalizar colores y datos' : 'Actualiza a Premium para personalizar'}
         </button>
       </div>
 
-      {editando === 'precios' && puedeEditarPrecios && (
+      {editando === 'precios' && esPro && (
         <div className="precios-editor">
           <h3>Precios por producto</h3>
           {productos.map(p => (
@@ -115,6 +126,37 @@ export default function MiTienda({ userId, onBack }: { userId: string; onBack: (
           <input type="text" value={nombreNeg} onChange={e => setNombreNeg(e.target.value)} />
           <label>WhatsApp</label>
           <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} />
+          {esPremium && (
+            <>
+              <label>Color primario (acento)</label>
+              <input type="color" value={typeof rev.colores?.primario === 'string' ? rev.colores.primario : '#d4a843'}
+                onChange={async e => {
+                  const c = { ...(typeof rev.colores === 'object' ? rev.colores : {}), primario: e.target.value }
+                  await supabase.from('revendedores').update({ colores: c }).eq('user_id', userId)
+                  setMsg('Color actualizado')
+                  setTimeout(() => setMsg(''), 2000)
+                }}
+              />
+              <label>Color de fondo</label>
+              <input type="color" value={typeof rev.colores?.fondo === 'string' ? rev.colores.fondo : '#0a0a0a'}
+                onChange={async e => {
+                  const c = { ...(typeof rev.colores === 'object' ? rev.colores : {}), fondo: e.target.value }
+                  await supabase.from('revendedores').update({ colores: c }).eq('user_id', userId)
+                  setMsg('Color actualizado')
+                  setTimeout(() => setMsg(''), 2000)
+                }}
+              />
+              <label>Color de texto</label>
+              <input type="color" value={typeof rev.colores?.texto === 'string' ? rev.colores.texto : '#ffffff'}
+                onChange={async e => {
+                  const c = { ...(typeof rev.colores === 'object' ? rev.colores : {}), texto: e.target.value }
+                  await supabase.from('revendedores').update({ colores: c }).eq('user_id', userId)
+                  setMsg('Color actualizado')
+                  setTimeout(() => setMsg(''), 2000)
+                }}
+              />
+            </>
+          )}
           <button className="btn-primary" onClick={guardarPersonalizar} disabled={guardando}>
             {guardando ? 'Guardando...' : 'Guardar'}
           </button>

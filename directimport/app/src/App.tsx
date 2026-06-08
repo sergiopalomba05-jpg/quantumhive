@@ -263,7 +263,12 @@ function App() {
             <>
               <p><strong>Negocio:</strong> {revendedor.nombre_negocio}</p>
               <p><strong>Codigo:</strong> {revendedor.codigo_unico}</p>
-              <p><strong>Plan:</strong> {['Basico', 'Pro', 'Pro Plus', 'Ultra'][(revendedor.plan_id || 1) - 1]}</p>
+              <p><strong>Plan:</strong> {['Basico', 'Pro', 'Premium', 'Ultra'][(revendedor.plan_id || 1) - 1]}</p>
+              <p style={{ fontSize: 12, color: '#888', marginTop: -4 }}>
+                {revendedor.plan_id === 1 && 'Compra mayorista sin tienda propia'}
+                {revendedor.plan_id === 2 && 'Fija tus precios + link de tienda'}
+                {revendedor.plan_id >= 3 && 'Tienda personalizada con colores y marca'}
+              </p>
               <p><strong>Email:</strong> {session.user.email}</p>
               {revendedor.whatsapp && <p><strong>WhatsApp:</strong> {revendedor.whatsapp}</p>}
             </>
@@ -512,7 +517,7 @@ function App() {
 
       <nav className="bottom-nav">
         <button className="nav-item active" onClick={() => setVista('catalogo')}>Catalogo</button>
-        {session && revendedor && (
+        {session && revendedor && revendedor.plan_id >= 2 && (
           <button className="nav-item" onClick={() => setVista('mitienda')}>
             Mi Tienda
           </button>
