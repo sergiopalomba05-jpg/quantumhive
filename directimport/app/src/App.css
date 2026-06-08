@@ -746,3 +746,56 @@ body {
 .perfil-screen strong {
   color: #fff;
 }
+.planes-list {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.plan-card {
+  background: #1a1d23;
+  border: 1px solid #2a2d33;
+  border-radius: 10px;
+  padding: 16px;
+}
+.plan-card.plan-activo {
+  border-color: #d4a843;
+}
+.plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.plan-header strong {
+  font-size: 16px;
+  color: #fff;
+}
+.plan-precio {
+  font-size: 13px;
+  color: #d4a843;
+  font-weight: 600;
+}
+.plan-desc {
+  font-size: 13px;
+  color: #a0a0a8;
+  margin-bottom: 8px;
+}
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px;
+}
+.plan-features li {
+  font-size: 12px;
+  color: #888;
+  padding: 2px 0;
+}
+.plan-features li::before {
+  content: '✓ ';
+  color: #4caf50;
+}
+.plan-upgrade-btn {
+  width: 100%;
+  text-align: center;
+}

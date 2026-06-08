@@ -517,9 +517,9 @@ function App() {
 
       <nav className="bottom-nav">
         <button className="nav-item active" onClick={() => setVista('catalogo')}>Catalogo</button>
-        {session && revendedor && revendedor.plan_id >= 2 && (
+        {session && revendedor && (
           <button className="nav-item" onClick={() => setVista('mitienda')}>
-            Mi Tienda
+            {revendedor.plan_id >= 2 ? 'Mi Tienda' : 'Mi Tienda'}
           </button>
         )}
         <button className="nav-item" onClick={() => setVista('pedidos')}>Mis pedidos</button>
