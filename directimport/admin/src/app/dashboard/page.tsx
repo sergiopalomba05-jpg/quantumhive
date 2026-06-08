@@ -6,21 +6,22 @@ import { useEffect, useState } from 'react'
 
 export default function DashboardPage() {
   const supabase = createClient()
-  const [counts, setCounts] = useState({ productos: 0, rubros: 0, proveedores: 0 })
+  const [counts, setCounts] = useState({ productos: 0, rubros: 0, proveedores: 0, pedidos: 0 })
 
   useEffect(() => {
     Promise.all([
       supabase.from('productos').select('*', { count: 'exact', head: true }).then(({ count }) => count ?? 0),
       supabase.from('rubros').select('*', { count: 'exact', head: true }).then(({ count }) => count ?? 0),
       supabase.from('proveedores').select('*', { count: 'exact', head: true }).then(({ count }) => count ?? 0),
-    ]).then(([productos, rubros, proveedores]) => setCounts({ productos, rubros, proveedores }))
+      supabase.from('pedidos').select('*', { count: 'exact', head: true }).then(({ count }) => count ?? 0),
+    ]).then(([productos, rubros, proveedores, pedidos]) => setCounts({ productos, rubros, proveedores, pedidos }))
   }, [])
 
   return (
     <div>
       <h1 className="text-2xl font-bold text-white mb-6">Dashboard</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <div className="bg-[#1a1d23] border border-[#2a2d33] rounded-lg p-6">
           <p className="text-[#a0a0a8] text-sm">Productos</p>
           <p className="text-3xl font-bold text-white mt-1">{counts.productos}</p>
@@ -33,9 +34,13 @@ export default function DashboardPage() {
           <p className="text-[#a0a0a8] text-sm">Proveedores</p>
           <p className="text-3xl font-bold text-white mt-1">{counts.proveedores}</p>
         </div>
+        <Link href="/dashboard/pedidos" className="bg-[#1a1d23] border border-[#2a2d33] rounded-lg p-6 hover:border-[#d4a843]/50 transition-colors block">
+          <p className="text-[#a0a0a8] text-sm">Pedidos</p>
+          <p className="text-3xl font-bold text-[#d4a843] mt-1">{counts.pedidos}</p>
+        </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Link
           href="/dashboard/productos"
           className="bg-[#1a1d23] border border-[#2a2d33] rounded-lg p-6 hover:border-[#d4a843]/50 transition-colors"
@@ -49,6 +54,13 @@ export default function DashboardPage() {
         >
           <h3 className="text-white font-semibold">Gestionar Rubros</h3>
           <p className="text-[#a0a0a8] text-sm mt-1">Categorías, sub-filtros y atributos</p>
+        </Link>
+        <Link
+          href="/dashboard/pedidos"
+          className="bg-[#1a1d23] border border-[#2a2d33] rounded-lg p-6 hover:border-[#d4a843]/50 transition-colors"
+        >
+          <h3 className="text-white font-semibold">Ver Pedidos</h3>
+          <p className="text-[#a0a0a8] text-sm mt-1">Revisar y gestionar pedidos de clientes</p>
         </Link>
       </div>
     </div>

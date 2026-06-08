@@ -10,6 +10,16 @@ type Producto = {
   estado_stock: boolean; fotos: string[]; descripcion: string
   rubro_id: number; sub_filtro_id: number | null
 }
+type CartItem = { producto: Producto; cantidad: number }
+
+const CART_KEY = 'directimport_cart'
+
+function cargarCarrito(): CartItem[] {
+  try {
+    const data = localStorage.getItem(CART_KEY)
+    return data ? JSON.parse(data) : []
+  } catch { return [] }
+}
 
 function App() {
   const [rubros, setRubros] = useState<Rubro[]>([])
@@ -17,6 +27,16 @@ function App() {
   const [productos, setProductos] = useState<Producto[]>([])
   const [rubroActivo, setRubroActivo] = useState<number | null>(null)
   const [ruta, setRuta] = useState<{ id: number | null; nombre: string }[]>([])
+  const [cart, setCart] = useState<CartItem[]>(cargarCarrito)
+  const [vista, setVista] = useState<'catalogo' | 'carrito' | 'checkout'>('catalogo')
+  const [nombre, setNombre] = useState('')
+  const [whatsapp, setWhatsapp] = useState('')
+  const [direccion, setDireccion] = useState('')
+  const [notas, setNotas] = useState('')
+  const [enviando, setEnviando] = useState(false)
+  const [exito, setExito] = useState(false)
+
+  useEffect(() => { localStorage.setItem(CART_KEY, JSON.stringify(cart)) }, [cart])
 
   useEffect(() => {
     Promise.all([
@@ -68,18 +88,179 @@ function App() {
   }
 
   const subFiltroFiltro = ruta.length > 1 ? ruta[ruta.length - 1].id : null
-
   const idsFiltro = subFiltroFiltro ? obtenerIdsHijos(subFiltroFiltro) : null
+
   const productosFiltrados = rubroActivo
     ? productos.filter((p) => p.rubro_id === rubroActivo)
         .filter((p) => !idsFiltro || (p.sub_filtro_id && idsFiltro.includes(p.sub_filtro_id)))
     : []
 
+  const totalItems = cart.reduce((sum, i) => sum + i.cantidad, 0)
+  const totalPrecio = cart.reduce((sum, i) => sum + i.cantidad * Number(i.producto.precio_base), 0)
+
+  const agregarAlCarrito = (producto: Producto) => {
+    setCart((prev) => {
+      const existente = prev.find((i) => i.producto.id === producto.id)
+      if (existente) {
+        return prev.map((i) =>
+          i.producto.id === producto.id ? { ...i, cantidad: i.cantidad + 1 } : i
+        )
+      }
+      return [...prev, { producto, cantidad: 1 }]
+    })
+  }
+
+  const cambiarCantidad = (id: number, delta: number) => {
+    setCart((prev) =>
+      prev.map((i) =>
+        i.producto.id === id ? { ...i, cantidad: Math.max(1, i.cantidad + delta) } : i
+      ).filter((i) => i.cantidad > 0)
+    )
+  }
+
+  const eliminarDelCarrito = (id: number) => {
+    setCart((prev) => prev.filter((i) => i.producto.id !== id))
+  }
+
+  const enviarPedido = async () => {
+    if (!nombre.trim() || !whatsapp.trim()) return
+    setEnviando(true)
+    const { error } = await supabase.from('pedidos').insert({
+      nombre: nombre.trim(),
+      whatsapp: whatsapp.trim(),
+      direccion: direccion.trim() || null,
+      notas: notas.trim() || null,
+      items: cart.map((i) => ({
+        id: i.producto.id,
+        nombre: i.producto.nombre,
+        cantidad: i.cantidad,
+        precio: i.producto.precio_base,
+      })),
+      total: totalPrecio,
+    })
+    setEnviando(false)
+    if (!error) {
+      setExito(true)
+      setCart([])
+    }
+  }
+
+  if (exito) {
+    return (
+      <div className="app">
+        <div className="exito-screen">
+          <div className="exito-icon">✓</div>
+          <h2>Pedido enviado</h2>
+          <p>Te vamos a contactar pronto por WhatsApp para coordinar el pago y la entrega.</p>
+          <button className="btn-primary" onClick={() => { setExito(false); setVista('catalogo'); setNombre(''); setWhatsapp(''); setDireccion(''); setNotas('') }}>
+            Seguir comprando
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  if (vista === 'carrito') {
+    return (
+      <div className="app">
+        <div className="header-between">
+          <button className="btn-back" onClick={() => setVista('catalogo')}>← Volver</button>
+          <h1 className="logo">Carrito</h1>
+          <div />
+        </div>
+
+        {cart.length === 0 ? (
+          <div className="empty-cart">
+            <p>El carrito está vacío</p>
+            <button className="btn-primary" onClick={() => setVista('catalogo')}>Ir al catálogo</button>
+          </div>
+        ) : (
+          <div className="cart-list">
+            {cart.map((item) => (
+              <div key={item.producto.id} className="cart-item">
+                <div className="cart-item-img">
+                  {item.producto.fotos?.[0] ? (
+                    <img src={item.producto.fotos[0]} alt={item.producto.nombre} />
+                  ) : (
+                    <div className="producto-placeholder">📦</div>
+                  )}
+                </div>
+                <div className="cart-item-info">
+                  <h4>{item.producto.nombre}</h4>
+                  <p className="cart-item-precio">${Number(item.producto.precio_base).toLocaleString('es-AR')}</p>
+                </div>
+                <div className="cart-item-cantidad">
+                  <button onClick={() => cambiarCantidad(item.producto.id, -1)}>-</button>
+                  <span>{item.cantidad}</span>
+                  <button onClick={() => cambiarCantidad(item.producto.id, 1)}>+</button>
+                </div>
+                <button className="cart-item-remove" onClick={() => eliminarDelCarrito(item.producto.id)}>✕</button>
+              </div>
+            ))}
+
+            <div className="cart-total">
+              <span>Total</span>
+              <span className="cart-total-price">${totalPrecio.toLocaleString('es-AR')}</span>
+            </div>
+
+            <button className="btn-primary btn-full" onClick={() => setVista('checkout')}>
+              Finalizar pedido
+            </button>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  if (vista === 'checkout') {
+    return (
+      <div className="app">
+        <div className="header-between">
+          <button className="btn-back" onClick={() => setVista('carrito')}>← Volver</button>
+          <h1 className="logo">Checkout</h1>
+          <div />
+        </div>
+
+        <form className="checkout-form" onSubmit={(e) => { e.preventDefault(); enviarPedido() }}>
+          <label>
+            Nombre *
+            <input required value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Tu nombre" />
+          </label>
+          <label>
+            WhatsApp *
+            <input required value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="+54 11 1234 5678" />
+          </label>
+          <label>
+            Dirección
+            <input value={direccion} onChange={(e) => setDireccion(e.target.value)} placeholder="Calle, altura, localidad" />
+          </label>
+          <label>
+            Notas
+            <textarea value={notas} onChange={(e) => setNotas(e.target.value)} placeholder="Alguna nota para el pedido" rows={3} />
+          </label>
+
+          <div className="checkout-resumen">
+            <p>Items: {totalItems}</p>
+            <p className="checkout-total">Total: ${totalPrecio.toLocaleString('es-AR')}</p>
+          </div>
+
+          <button className="btn-primary btn-full" disabled={enviando}>
+            {enviando ? 'Enviando...' : 'Confirmar pedido'}
+          </button>
+        </form>
+      </div>
+    )
+  }
+
   return (
     <div className="app">
-      <header className="header">
+      <div className="header-between">
         <h1 className="logo">Directimport</h1>
-      </header>
+        <button className="cart-icon" onClick={() => setVista('carrito')}>
+          🛒
+          {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
+        </button>
+      </div>
 
       <section className="rubros-nav">
         {rubros.map((r) => (
@@ -142,6 +323,7 @@ function App() {
               <div className="producto-info">
                 <h3 className="producto-nombre">{p.nombre}</h3>
                 <p className="producto-precio">${Number(p.precio_base).toLocaleString('es-AR')}</p>
+                {p.descripcion && <p className="producto-desc">{p.descripcion}</p>}
                 {p.metricas && p.metricas.length > 0 && (
                   <div className="producto-metricas">
                     {p.metricas.map((m, i) => (
@@ -155,6 +337,9 @@ function App() {
                   </div>
                 )}
               </div>
+              <button className="btn-add-cart" onClick={() => agregarAlCarrito(p)}>
+                Agregar
+              </button>
             </div>
           ))}
           {productosFiltrados.length === 0 && (
@@ -167,7 +352,9 @@ function App() {
         <button className="nav-item active">Catálogo</button>
         <button className="nav-item">Ofertas</button>
         <button className="nav-item">Mis pedidos</button>
-        <button className="nav-item">Perfil</button>
+        <button className="nav-item" onClick={() => setVista('carrito')}>
+          Carrito ({totalItems})
+        </button>
       </nav>
     </div>
   )
