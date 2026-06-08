@@ -48,7 +48,7 @@ function App() {
   const [session, setSession] = useState<any>(null)
   const [revendedor, setRevendedor] = useState<Revendedor | null>(null)
   const [linkRev, setLinkRev] = useState<Revendedor | null>(null)
-  const [preciosLink, setPreciosLink] = useState<Record<number, number>>({})
+  const [preciosLink, setPreciosLink] = useState<Record<number, { precio_unitario: number; precio_pack_6: number | null }>>({})
   const [misPedidos, setMisPedidos] = useState<any[]>([])
 
   useEffect(() => {
@@ -90,9 +90,9 @@ function App() {
       supabase.from('revendedores').select('*').eq('codigo_unico', codigo.toUpperCase()).single().then(({ data: r }) => {
         if (r) {
           setLinkRev(r)
-          supabase.from('precios_revendedor').select('*').eq('revendedor_id', r.id).then(({ data: pre }) => {
-            const pm: Record<number, number> = {}
-            ;(pre ?? []).forEach((p: any) => { pm[p.producto_id] = p.precio })
+          supabase.from('productos_revendedor').select('*').eq('revendedor_id', r.id).then(({ data: pre }) => {
+            const pm: Record<number, { precio_unitario: number; precio_pack_6: number | null }> = {}
+            ;(pre ?? []).forEach((p: any) => { pm[p.producto_id] = { precio_unitario: p.precio_unitario, precio_pack_6: p.precio_pack_6 } })
             setPreciosLink(pm)
           })
           if (r.colores) {
@@ -130,7 +130,7 @@ function App() {
     }
   }, [session])
 
-  const precioProducto = (p: Producto) => preciosLink[p.id] !== undefined ? preciosLink[p.id] : p.precio_base
+  const precioProducto = (p: Producto) => preciosLink[p.id] !== undefined ? preciosLink[p.id].precio_unitario : p.precio_base
 
   useEffect(() => {
     if (!rubroActivo) return
@@ -170,9 +170,12 @@ function App() {
   const subFiltroFiltro = ruta.length > 1 ? ruta[ruta.length - 1].id : null
   const idsFiltro = subFiltroFiltro ? obtenerIdsHijos(subFiltroFiltro) : null
 
+  const linkProdIds = linkRev ? Object.keys(preciosLink).map(Number) : null
+
   const productosFiltrados = rubroActivo
     ? productos.filter((p) => p.rubro_id === rubroActivo)
         .filter((p) => !idsFiltro || (p.sub_filtro_id && idsFiltro.includes(p.sub_filtro_id)))
+        .filter((p) => !linkProdIds || linkProdIds.includes(p.id))
     : []
 
   const totalItems = cart.reduce((sum, i) => sum + i.cantidad, 0)

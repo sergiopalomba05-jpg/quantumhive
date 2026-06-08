@@ -799,3 +799,119 @@ body {
   width: 100%;
   text-align: center;
 }
+
+/* MiTienda styles */
+.tienda-bar {
+  padding: 12px 16px;
+  border-bottom: 1px solid #2a2d33;
+}
+.tienda-bar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.tienda-nombre-sm {
+  font-size: 14px;
+  font-weight: 600;
+  color: #d4a843;
+}
+.tienda-bar-actions {
+  display: flex;
+  gap: 6px;
+}
+.btn-sm {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid #2a2d33;
+  background: #1a1d23;
+  color: #a0a0a8;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-sm-active {
+  background: #d4a843;
+  color: #000;
+  border-color: #d4a843;
+  font-weight: 600;
+}
+.tienda-link-bar {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 12px;
+}
+.tienda-link-bar .link-label {
+  color: #888;
+  white-space: nowrap;
+}
+.tienda-link-bar input {
+  flex: 1;
+  min-width: 100px;
+  background: #0a0a0a;
+  border: 1px solid #2a2d33;
+  border-radius: 6px;
+  padding: 4px 8px;
+  color: #a0a0a8;
+  font-size: 11px;
+}
+.producto-en-tienda {
+  border-color: #d4a84340;
+}
+.producto-tu-precio {
+  font-size: 13px;
+  font-weight: 600;
+  color: #d4a843;
+  margin-top: 4px;
+}
+.precios-edit {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.precios-edit label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #a0a0a8;
+}
+.precio-input-sm {
+  width: 70px;
+  background: #0a0a0a;
+  border: 1px solid #2a2d33;
+  border-radius: 4px;
+  padding: 3px 6px;
+  color: #fff;
+  font-size: 12px;
+  text-align: center;
+}
+.btn-add-prod {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #d4a843;
+  background: transparent;
+  color: #d4a843;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-add-prod:hover {
+  background: #d4a843;
+  color: #000;
+}
+.btn-remove-prod {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #e44;
+  background: transparent;
+  color: #e44;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}

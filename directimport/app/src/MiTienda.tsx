@@ -2,196 +2,227 @@ import { useEffect, useState } from 'react'
 import { supabase } from './lib/supabase'
 
 type Producto = {
-  id: number; nombre: string; precio_base: number; fotos: string[]
+  id: number; nombre: string; precio_base: number; fotos: string[]; rubro_id: number; sub_filtro_id: number | null
 }
-type Revendedor = {
-  id: number; codigo_unico: string; nombre_negocio: string
-  logo_url: string | null; colores: any; whatsapp: string | null
-  plan_id: number
-}
-
-const PLANES = [
-  { id: 1, nombre: 'Basico', desc: 'Compra mayorista sin tienda propia', precio: 'Gratis' },
-  { id: 2, nombre: 'Pro', desc: 'Fija tus precios + link de tienda', precio: 'Proximamente' },
-  { id: 3, nombre: 'Premium', desc: 'Tienda personalizada con colores y marca', precio: 'Proximamente' },
-]
+type Rubro = { id: number; nombre: string }
+type SubFiltro = { id: number; rubro_id: number; parent_id: number | null; nombre: string }
+type ProductoRev = { producto_id: number; precio_unitario: number; precio_pack_6: number | null }
 
 export default function MiTienda({ userId, onBack }: { userId: string; onBack: () => void }) {
-  const [rev, setRev] = useState<Revendedor | null>(null)
+  const [rev, setRev] = useState<any>(null)
+  const [rubros, setRubros] = useState<Rubro[]>([])
+  const [todosSf, setTodosSf] = useState<SubFiltro[]>([])
   const [productos, setProductos] = useState<Producto[]>([])
-  const [precios, setPrecios] = useState<Record<number, number>>({})
-  const [editando, setEditando] = useState<'precios' | 'personalizar' | null>(null)
-  const [nombreNeg, setNombreNeg] = useState('')
-  const [whatsapp, setWhatsapp] = useState('')
-  const [guardando, setGuardando] = useState(false)
+  const [misProds, setMisProds] = useState<Record<number, ProductoRev>>({})
+  const [rubroActivo, setRubroActivo] = useState<number | null>(null)
+  const [ruta, setRuta] = useState<{ id: number | null; nombre: string }[]>([])
+  const [editando, setEditando] = useState(false)
+  const [soloMios, setSoloMios] = useState(false)
   const [msg, setMsg] = useState('')
 
   useEffect(() => {
     Promise.all([
       supabase.from('revendedores').select('*').eq('user_id', userId).single(),
-      supabase.from('productos').select('id, nombre, precio_base, fotos').eq('activo', true).eq('estado_stock', true).order('nombre'),
-    ]).then(([{ data: r }, { data: prods }]) => {
+      supabase.from('rubros').select('*').eq('activo', true).order('orden'),
+      supabase.from('productos').select('*').eq('activo', true).eq('estado_stock', true),
+    ]).then(([{ data: r }, { data: rub }, { data: prods }]) => {
       setRev(r)
+      setRubros(rub ?? [])
       setProductos(prods ?? [])
-      setNombreNeg(r?.nombre_negocio || '')
-      setWhatsapp(r?.whatsapp || '')
-      if (r && r.plan_id >= 2) {
-        supabase.from('precios_revendedor').select('*').eq('revendedor_id', r.id).then(({ data: pre }) => {
-          const preMap: Record<number, number> = {}
-          ;(pre ?? []).forEach((p: any) => { preMap[p.producto_id] = p.precio })
-          setPrecios(preMap)
+      if (r) {
+        supabase.from('productos_revendedor').select('*').eq('revendedor_id', r.id).then(({ data }) => {
+          const m: Record<number, ProductoRev> = {}
+          ;(data ?? []).forEach((p: any) => { m[p.producto_id] = p })
+          setMisProds(m)
         })
+      }
+      if (rub && rub.length > 0) {
+        setRubroActivo(rub[0].id)
+        setRuta([{ id: rub[0].id, nombre: rub[0].nombre }])
       }
     })
   }, [userId])
 
-  const cambiarPlan = async (planId: number) => {
-    setGuardando(true)
-    const { error } = await supabase.from('revendedores').update({ plan_id: planId }).eq('user_id', userId)
-    setGuardando(false)
-    if (error) { setMsg('Error: ' + error.message) } else {
-      setMsg('Plan actualizado a ' + PLANES[planId - 1].nombre)
-      setRev(prev => prev ? { ...prev, plan_id: planId } : prev)
-      setTimeout(() => setMsg(''), 2000)
-    }
-  }
+  useEffect(() => {
+    if (!rubroActivo) return
+    supabase.from('sub_filtros').select('*').eq('rubro_id', rubroActivo).eq('activo', true).order('orden').then(({ data }) => {
+      setTodosSf(data ?? [])
+    })
+  }, [rubroActivo])
 
-  const guardarPrecios = async () => {
-    setGuardando(true)
-    const inserts = Object.entries(precios).map(([prodId, precio]) => ({
-      revendedor_id: rev!.id,
-      producto_id: parseInt(prodId),
-      precio,
-    }))
-    const { error } = await supabase.from('precios_revendedor').upsert(inserts, { onConflict: 'revendedor_id,producto_id' })
-    setGuardando(false)
-    if (error) { setMsg('Error: ' + error.message) } else { setMsg('Precios guardados'); setEditando(null); setTimeout(() => setMsg(''), 2000) }
-  }
-
-  const guardarPersonalizar = async () => {
-    setGuardando(true)
-    const { error } = await supabase.from('revendedores').update({ nombre_negocio: nombreNeg, whatsapp }).eq('user_id', userId)
-    setGuardando(false)
-    if (error) { setMsg('Error: ' + error.message) } else { setMsg('Guardado'); setEditando(null); setTimeout(() => setMsg(''), 2000) }
-  }
-
-  const actualizarColor = async (campo: string, valor: string) => {
-    const c = { ...(typeof rev?.colores === 'object' ? rev.colores : {}), [campo]: valor }
-    await supabase.from('revendedores').update({ colores: c }).eq('user_id', userId)
-    setRev(prev => prev ? { ...prev, colores: c } : prev)
-    setMsg('Color actualizado')
+  const agregarProducto = async (p: Producto) => {
+    if (!rev) return
+    const { error } = await supabase.from('productos_revendedor').insert({
+      revendedor_id: rev.id, producto_id: p.id, precio_unitario: p.precio_base, activo: true,
+    })
+    if (!error) {
+      setMisProds(prev => ({ ...prev, [p.id]: { producto_id: p.id, precio_unitario: p.precio_base, precio_pack_6: null } }))
+      setMsg('Agregado a tu tienda')
+    } else { setMsg('Error: ' + error.message) }
     setTimeout(() => setMsg(''), 2000)
   }
 
+  const quitarProducto = async (prodId: number) => {
+    if (!rev) return
+    await supabase.from('productos_revendedor').delete().eq('revendedor_id', rev.id).eq('producto_id', prodId)
+    setMisProds(prev => { const n = { ...prev }; delete n[prodId]; return n })
+    setMsg('Quitado de tu tienda')
+    setTimeout(() => setMsg(''), 2000)
+  }
+
+  const actualizarPrecio = async (prodId: number, campo: 'precio_unitario' | 'precio_pack_6', valor: number) => {
+    if (!rev) return
+    const act = { [campo]: valor }
+    await supabase.from('productos_revendedor').update(act).eq('revendedor_id', rev.id).eq('producto_id', prodId)
+    setMisProds(prev => ({
+      ...prev,
+      [prodId]: { ...prev[prodId], [campo]: valor }
+    }))
+  }
+
   if (!rev) return <div className="loading">Cargando...</div>
+
+  const hijosDe = (parentId: number | null) => todosSf.filter((sf) => sf.parent_id == parentId)
+  const ultimoNivel = ruta.length > 0 ? ruta[ruta.length - 1] : null
+  const esNodoRaiz = ruta.length === 1
+  const opciones = esNodoRaiz ? hijosDe(null) : ultimoNivel ? hijosDe(ultimoNivel.id) : []
+
+  const obtenerIdsHijos = (id: number): number[] => {
+    const hijos = todosSf.filter((sf) => sf.parent_id === id)
+    return [id, ...hijos.flatMap((h) => obtenerIdsHijos(h.id))]
+  }
+
+  const seleccionar = (id: number | null, nombre: string) => {
+    const nuevoIdx = ruta.findIndex((r) => r.id === id)
+    if (nuevoIdx >= 0) { setRuta(ruta.slice(0, nuevoIdx + 1)) }
+    else { setRuta([...ruta, { id, nombre }]) }
+  }
+
+  const navegarRubro = (id: number) => {
+    setRubroActivo(id)
+    setRuta([{ id, nombre: rubros.find((r) => r.id === id)?.nombre ?? '' }])
+  }
+
+  const subFiltroFiltro = ruta.length > 1 ? ruta[ruta.length - 1].id : null
+  const idsFiltro = subFiltroFiltro ? obtenerIdsHijos(subFiltroFiltro) : null
+
+  let productosFiltrados = rubroActivo
+    ? productos.filter((p) => p.rubro_id === rubroActivo)
+        .filter((p) => !idsFiltro || (p.sub_filtro_id && idsFiltro.includes(p.sub_filtro_id)))
+    : []
+
+  if (soloMios) {
+    productosFiltrados = productosFiltrados.filter(p => misProds[p.id])
+  }
 
   const linkTienda = `${window.location.origin}?r=${rev.codigo_unico}`
 
   return (
     <div className="app">
       <div className="header-between">
-        <button className="btn-back" onClick={onBack}>Atras</button>
+        <button className="btn-back" onClick={onBack}>← Volver</button>
         <h1 className="logo">Mi Tienda</h1>
         <div />
       </div>
 
       {msg && <div className="toast">{msg}</div>}
 
-      <div className="tienda-info">
-        <p className="tienda-nombre">{rev.nombre_negocio}</p>
-        <p style={{ fontSize: 12, color: '#888' }}>
-          Plan actual: {PLANES[(rev.plan_id || 1) - 1].nombre} &mdash; {PLANES[(rev.plan_id || 1) - 1].desc}
-        </p>
-      </div>
-
-      <div className="planes-list">
-        {PLANES.map(p => {
-          const activo = rev.plan_id === p.id
-          const bloqueado = p.id > rev.plan_id
-          return (
-            <div key={p.id} className={`plan-card ${activo ? 'plan-activo' : ''}`}>
-              <div className="plan-header">
-                <strong>{p.nombre}</strong>
-                <span className="plan-precio">{p.precio}</span>
-              </div>
-              <p className="plan-desc">{p.desc}</p>
-              <ul className="plan-features">
-                <li>Catalogo mayorista</li>
-                {p.id >= 2 && <li>Link de tienda propio</li>}
-                {p.id >= 2 && <li>Precios personalizados</li>}
-                {p.id >= 3 && <li>Colores y personalizacion</li>}
-              </ul>
-              {!activo && (
-                <button className="btn-small plan-upgrade-btn" onClick={() => cambiarPlan(p.id)} disabled={guardando}>
-                  {bloqueado ? 'Activar' : 'Degradar'}
+      <div className="tienda-bar">
+        <div className="tienda-bar-top">
+          <span className="tienda-nombre-sm">{rev.nombre_negocio}</span>
+          <div className="tienda-bar-actions">
+            {rev.plan_id >= 2 && (
+              <>
+                <button className={`btn-sm ${editando ? 'btn-sm-active' : ''}`} onClick={() => setEditando(!editando)}>
+                  {editando ? 'Listo' : 'Editar precios'}
                 </button>
-              )}
-            </div>
-          )
-        })}
+                <button className={`btn-sm ${soloMios ? 'btn-sm-active' : ''}`} onClick={() => setSoloMios(!soloMios)}>
+                  {soloMios ? 'Todo el catálogo' : 'Solo mi tienda'}
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+        {rev.plan_id >= 2 && (
+          <div className="tienda-link-bar">
+            <span className="link-label">Link:</span>
+            <input type="text" readOnly value={linkTienda} onClick={e => (e.target as HTMLInputElement).select()} />
+            <button className="btn-sm" onClick={() => { navigator.clipboard.writeText(linkTienda); setMsg('Link copiado!'); setTimeout(() => setMsg(''), 2000) }}>Copiar</button>
+          </div>
+        )}
       </div>
 
-      {rev.plan_id >= 2 && (
-        <div className="tienda-link">
-          <span>Link de tu tienda:</span>
-          <input type="text" readOnly value={linkTienda} onClick={e => (e.target as HTMLInputElement).select()} />
-          <button className="btn-small" onClick={() => { navigator.clipboard.writeText(linkTienda); setMsg('Link copiado!'); setTimeout(() => setMsg(''), 2000) }}>Copiar</button>
-        </div>
-      )}
-
-      {rev.plan_id >= 2 && (
-        <div className="tienda-actions">
-          <button className="tienda-btn" onClick={() => setEditando(editando === 'precios' ? null : 'precios')}>
-            {editando === 'precios' ? 'Cerrar precios' : 'Fijar mis precios'}
+      <section className="rubros-nav">
+        {rubros.map((r) => (
+          <button key={r.id} onClick={() => navegarRubro(r.id)} className={`rubro-btn ${rubroActivo === r.id ? 'active' : ''}`}>
+            {r.nombre}
           </button>
-          <button className="tienda-btn" onClick={() => setEditando(editando === 'personalizar' ? null : 'personalizar')}>
-            {editando === 'personalizar' ? 'Cerrar' : rev.plan_id >= 3 ? 'Personalizar colores y datos' : 'Editar nombre y WhatsApp'}
-          </button>
-        </div>
-      )}
+        ))}
+      </section>
 
-      {editando === 'precios' && rev.plan_id >= 2 && (
-        <div className="precios-editor">
-          <h3>Precios por producto</h3>
-          {productos.map(p => (
-            <div key={p.id} className="precio-row">
-              <span className="precio-nombre">{p.nombre}</span>
-              <span className="precio-base">Base: ${p.precio_base}</span>
-              <input
-                type="number" className="precio-input"
-                value={precios[p.id] ?? p.precio_base}
-                onChange={e => setPrecios({ ...precios, [p.id]: parseFloat(e.target.value) || 0 })}
-              />
-            </div>
+      {ruta.length > 1 && (
+        <section className="breadcrumb">
+          {ruta.map((n, i) => (
+            <span key={i}>
+              {i > 0 && <span className="breadcrumb-sep"> &gt; </span>}
+              <button className="breadcrumb-link" onClick={() => seleccionar(n.id, n.nombre)}>{n.nombre}</button>
+            </span>
           ))}
-          <button className="btn-primary" onClick={guardarPrecios} disabled={guardando}>
-            {guardando ? 'Guardando...' : 'Guardar precios'}
-          </button>
-        </div>
+        </section>
       )}
 
-      {editando === 'personalizar' && (
-        <div className="personalizar-editor">
-          <h3>Personalizar tienda</h3>
-          <label>Nombre del negocio</label>
-          <input type="text" value={nombreNeg} onChange={e => setNombreNeg(e.target.value)} />
-          <label>WhatsApp</label>
-          <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} />
-          {rev.plan_id >= 3 && (
-            <>
-              <label>Color primario (acento)</label>
-              <input type="color" value={typeof rev.colores?.primario === 'string' ? rev.colores.primario : '#d4a843'} onChange={e => actualizarColor('primario', e.target.value)} />
-              <label>Color de fondo</label>
-              <input type="color" value={typeof rev.colores?.fondo === 'string' ? rev.colores.fondo : '#0a0a0a'} onChange={e => actualizarColor('fondo', e.target.value)} />
-              <label>Color de texto</label>
-              <input type="color" value={typeof rev.colores?.texto === 'string' ? rev.colores.texto : '#ffffff'} onChange={e => actualizarColor('texto', e.target.value)} />
-            </>
+      {opciones.length > 0 && (
+        <section className="subfiltros-nav">
+          {ruta.length > 1 && (
+            <button onClick={() => seleccionar(ruta[ruta.length - 2].id, ruta[ruta.length - 2].nombre)} className="subfiltro-btn">← Volver</button>
           )}
-          <button className="btn-primary" onClick={guardarPersonalizar} disabled={guardando}>
-            {guardando ? 'Guardando...' : 'Guardar'}
-          </button>
-        </div>
+          {opciones.map((sf) => (
+            <button key={sf.id} onClick={() => seleccionar(sf.id, sf.nombre)}
+              className={`subfiltro-btn ${ruta[ruta.length - 1]?.id === sf.id ? 'active' : ''}`}>
+              {sf.nombre}
+            </button>
+          ))}
+        </section>
       )}
+
+      <main className="catalogo">
+        <div className="productos-grid">
+          {productosFiltrados.map(p => {
+            const enMiTienda = misProds[p.id]
+            return (
+              <div key={p.id} className={`producto-card ${enMiTienda ? 'producto-en-tienda' : ''}`}>
+                <div className="producto-img">
+                  {p.fotos?.[0] ? <img src={p.fotos[0]} alt={p.nombre} /> : <div className="producto-placeholder">📦</div>}
+                </div>
+                <div className="producto-info">
+                  <h3 className="producto-nombre">{p.nombre}</h3>
+                  <p className="producto-precio">Mayorista: ${Number(p.precio_base).toLocaleString('es-AR')}</p>
+                  {editando && (
+                    <div className="precios-edit">
+                      {enMiTienda ? (
+                        <>
+                          <label>Precio unitario <input type="number" className="precio-input-sm"
+                            value={enMiTienda.precio_unitario} onChange={e => actualizarPrecio(p.id, 'precio_unitario', parseFloat(e.target.value) || 0)} /></label>
+                          <label>Pack x6 <input type="number" className="precio-input-sm"
+                            value={enMiTienda.precio_pack_6 ?? ''} placeholder="-"
+                            onChange={e => actualizarPrecio(p.id, 'precio_pack_6', e.target.value ? parseFloat(e.target.value) || 0 : null as any)} /></label>
+                          <button className="btn-remove-prod" onClick={() => quitarProducto(p.id)}>Quitar</button>
+                        </>
+                      ) : (
+                        <button className="btn-add-prod" onClick={() => agregarProducto(p)}>Agregar a mi tienda</button>
+                      )}
+                    </div>
+                  )}
+                  {!editando && enMiTienda && (
+                    <p className="producto-tu-precio">Tu precio: ${Number(enMiTienda.precio_unitario).toLocaleString('es-AR')}</p>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+          {productosFiltrados.length === 0 && <p className="empty">No hay productos</p>}
+        </div>
+      </main>
     </div>
   )
 }
