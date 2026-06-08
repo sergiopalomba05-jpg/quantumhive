@@ -40,16 +40,20 @@ ALTER TABLE revendedores ENABLE ROW LEVEL SECURITY;
 ALTER TABLE precios_revendedor ENABLE ROW LEVEL SECURITY;
 
 -- Admin puede todo
-CREATE POLICY "admin_all_revendedores" ON revendedores FOR ALL USING (auth.role() = 'authenticated');
-CREATE POLICY "admin_all_precios_rev" ON precios_revendedor FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "admin_all_revendedores" ON revendedores
+  FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "admin_all_precios_rev" ON precios_revendedor
+  FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
 
 -- Revendedor ve/edita su propio registro
 CREATE POLICY "revendedor_self" ON revendedores
-  FOR ALL USING (auth.uid() = user_id);
+  FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 
 -- Revendedor ve/edita sus propios precios
 CREATE POLICY "revendedor_self_precios" ON precios_revendedor
   FOR ALL USING (
+    EXISTS (SELECT 1 FROM revendedores WHERE id = precios_revendedor.revendedor_id AND user_id = auth.uid())
+  ) WITH CHECK (
     EXISTS (SELECT 1 FROM revendedores WHERE id = precios_revendedor.revendedor_id AND user_id = auth.uid())
   );
 
