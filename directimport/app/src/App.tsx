@@ -42,6 +42,7 @@ function App() {
   const [notas, setNotas] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [exito, setExito] = useState(false)
+  const [exitoRef, setExitoRef] = useState('')
   const [showInstall, setShowInstall] = useState(false)
   const installPromptRef = useRef<any>(null)
   const [session, setSession] = useState<any>(null)
@@ -123,13 +124,9 @@ function App() {
     if (session?.user) {
       supabase.from('revendedores').select('*').eq('user_id', session.user.id).single().then(({ data: r }) => {
         setRevendedor(r)
-        if (r && r.plan_id >= 2) {
-          supabase.from('pedidos').select('*').eq('revendedor_id', r.id).order('created_at', { ascending: false }).then(({ data }) => setMisPedidos(data ?? []))
-        }
       })
     } else {
       setRevendedor(null)
-      setMisPedidos([])
     }
   }, [session])
 
@@ -225,6 +222,7 @@ function App() {
     setEnviando(false)
     if (!error) {
       setExito(true)
+      setExitoRef('#' + Date.now().toString(36).slice(-4).toUpperCase())
       setCart([])
     }
   }
@@ -236,6 +234,12 @@ function App() {
   if (vista === 'mitienda' && session?.user) {
     return <MiTienda userId={session.user.id} onBack={() => setVista('catalogo')} />
   }
+
+  useEffect(() => {
+    if (vista === 'pedidos' && revendedor && revendedor.plan_id >= 2) {
+      supabase.from('pedidos').select('*').eq('revendedor_id', revendedor.id).order('created_at', { ascending: false }).then(({ data }) => setMisPedidos(data ?? []))
+    }
+  }, [vista, revendedor])
 
   if (vista === 'pedidos') {
     const tieneTienda = revendedor && revendedor.plan_id >= 2
@@ -305,8 +309,8 @@ function App() {
         <div className="exito-screen">
           <div className="exito-icon">✓</div>
           <h2>Pedido enviado</h2>
-          <p>Te vamos a contactar pronto por WhatsApp para coordinar el pago y la entrega.</p>
-          <button className="btn-primary" onClick={() => { setExito(false); setVista('catalogo'); setNombre(''); setWhatsapp(''); setDireccion(''); setNotas('') }}>
+          <p>Pedido {exitoRef} registrado. Te vamos a contactar por WhatsApp para coordinar el pago y la entrega.</p>
+          <button className="btn-primary" onClick={() => { setExito(false); setExitoRef(''); setVista('catalogo'); setNombre(''); setWhatsapp(''); setDireccion(''); setNotas('') }}>
             Seguir comprando
           </button>
         </div>
