@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 type ProductoRow = {
-  id: number; nombre: string; precio_base: number; estado_stock: boolean
+  id: number; nombre: string; descripcion: string; precio_base: number; estado_stock: boolean
   metricas: { nombre: string; valor: number }[]
   rubro: { nombre: string }[] | null
   proveedor: { nombre: string }[] | null
@@ -18,7 +18,7 @@ export default function ProductosPage() {
   const cargar = async () => {
     const { data } = await supabase
       .from('productos')
-      .select('id, nombre, precio_base, estado_stock, metricas, rubro:rubros(nombre), proveedor:proveedores(nombre)')
+      .select('id, nombre, descripcion, precio_base, estado_stock, metricas, rubro:rubros(nombre), proveedor:proveedores(nombre)')
       .order('created_at', { ascending: false })
     setProductos(data ?? [])
   }
@@ -48,6 +48,7 @@ export default function ProductosPage() {
           <thead>
             <tr className="border-b border-[#2a2d33]">
               <th className="text-left px-4 py-3 text-[#a0a0a8] text-sm font-medium">Nombre</th>
+              <th className="text-left px-4 py-3 text-[#a0a0a8] text-sm font-medium">Descripción</th>
               <th className="text-left px-4 py-3 text-[#a0a0a8] text-sm font-medium">Rubro</th>
               <th className="text-left px-4 py-3 text-[#a0a0a8] text-sm font-medium">Precio base</th>
               <th className="text-left px-4 py-3 text-[#a0a0a8] text-sm font-medium">Métricas</th>
@@ -59,6 +60,7 @@ export default function ProductosPage() {
             {productos.map((p) => (
               <tr key={p.id} className="border-b border-[#2a2d33] hover:bg-[#2a2d33]/50">
                 <td className="px-4 py-3 text-white">{p.nombre}</td>
+                <td className="px-4 py-3 text-[#a0a0a8] text-sm max-w-[200px] truncate">{p.descripcion || '-'}</td>
                 <td className="px-4 py-3 text-[#a0a0a8]">{p.rubro?.[0]?.nombre}</td>
                 <td className="px-4 py-3 text-[#d4a843] font-mono">${Number(p.precio_base).toFixed(2)}</td>
                 <td className="px-4 py-3">
@@ -93,7 +95,7 @@ export default function ProductosPage() {
             ))}
             {productos.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-[#a0a0a8]">
+                <td colSpan={7} className="px-4 py-8 text-center text-[#a0a0a8]">
                   No hay productos todavía. ¡Creá el primero!
                 </td>
               </tr>

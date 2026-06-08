@@ -62,9 +62,9 @@ export default function ProductoForm({ modo, productoId }: Props) {
             setOpcionesNivel(opcionesRuta)
           }
         }
-        setCargando(false)
-      })
+      }).catch((e) => console.error('Error al cargar producto:', e))
     }
+    setCargando(false)
   }, [])
 
   const handleRubroChange = (rubroId: string) => {
