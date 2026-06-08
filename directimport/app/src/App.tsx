@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { supabase } from './lib/supabase'
+import Auth from './Auth'
+import MiTienda from './MiTienda'
 import './App.css'
 
 type Rubro = { id: number; nombre: string }
@@ -9,6 +11,10 @@ type Producto = {
   metricas: { nombre: string; valor: number }[]
   estado_stock: boolean; fotos: string[]; descripcion: string
   rubro_id: number; sub_filtro_id: number | null
+}
+type Revendedor = {
+  id: number; user_id: string; codigo_unico: string; nombre_negocio: string
+  plan_id: number; logo_url: string | null; colores: any; whatsapp: string | null
 }
 type CartItem = { producto: Producto; cantidad: number }
 
@@ -28,7 +34,8 @@ function App() {
   const [rubroActivo, setRubroActivo] = useState<number | null>(null)
   const [ruta, setRuta] = useState<{ id: number | null; nombre: string }[]>([])
   const [cart, setCart] = useState<CartItem[]>(cargarCarrito)
-  const [vista, setVista] = useState<'catalogo' | 'carrito' | 'checkout'>('catalogo')
+  type Vista = 'catalogo' | 'carrito' | 'checkout' | 'auth' | 'mitienda' | 'pedidos' | 'perfil'
+  const [vista, setVista] = useState<Vista>('catalogo')
   const [nombre, setNombre] = useState('')
   const [whatsapp, setWhatsapp] = useState('')
   const [direccion, setDireccion] = useState('')
@@ -37,6 +44,10 @@ function App() {
   const [exito, setExito] = useState(false)
   const [showInstall, setShowInstall] = useState(false)
   const installPromptRef = useRef<any>(null)
+  const [session, setSession] = useState<any>(null)
+  const [revendedor, setRevendedor] = useState<Revendedor | null>(null)
+  const [linkRev, setLinkRev] = useState<Revendedor | null>(null)
+  const [preciosLink, setPreciosLink] = useState<Record<number, number>>({})
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -62,6 +73,36 @@ function App() {
   useEffect(() => { localStorage.setItem(CART_KEY, JSON.stringify(cart)) }, [cart])
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const codigo = params.get('r')
+
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      setSession(s)
+    })
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, s) => {
+      setSession(s)
+    })
+
+    if (codigo) {
+      supabase.from('revendedores').select('*').eq('codigo_unico', codigo.toUpperCase()).single().then(({ data: r }) => {
+        if (r) {
+          setLinkRev(r)
+          supabase.from('precios_revendedor').select('*').eq('revendedor_id', r.id).then(({ data: pre }) => {
+            const pm: Record<number, number> = {}
+            ;(pre ?? []).forEach((p: any) => { pm[p.producto_id] = p.precio })
+            setPreciosLink(pm)
+          })
+          if (r.colores) {
+            const c = typeof r.colores === 'string' ? JSON.parse(r.colores) : r.colores
+            if (c.primario) document.documentElement.style.setProperty('--color-accent', c.primario)
+            if (c.fondo) document.documentElement.style.setProperty('--color-bg', c.fondo)
+            if (c.texto) document.documentElement.style.setProperty('--color-text', c.texto)
+          }
+        }
+      })
+    }
+
     Promise.all([
       supabase.from('rubros').select('*').eq('activo', true).order('orden'),
       supabase.from('productos').select('*').eq('activo', true).eq('estado_stock', true),
@@ -73,7 +114,24 @@ function App() {
         setRuta([{ id: r[0].id, nombre: r[0].nombre }])
       }
     })
+
+    return () => listener?.subscription.unsubscribe()
   }, [])
+
+  useEffect(() => {
+    if (session?.user) {
+      supabase.from('revendedores').select('*').eq('user_id', session.user.id).single().then(({ data: r }) => {
+        setRevendedor(r)
+      })
+    } else {
+      setRevendedor(null)
+    }
+  }, [session])
+
+  const precioProducto = (p: Producto) => {
+    if (preciosLink[p.id]) return preciosLink[p.id]
+    return p.precio_base
+  }
 
   useEffect(() => {
     if (!rubroActivo) return
@@ -119,7 +177,7 @@ function App() {
     : []
 
   const totalItems = cart.reduce((sum, i) => sum + i.cantidad, 0)
-  const totalPrecio = cart.reduce((sum, i) => sum + i.cantidad * Number(i.producto.precio_base), 0)
+  const totalPrecio = cart.reduce((sum, i) => sum + i.cantidad * Number(precioProducto(i.producto)), 0)
 
   const agregarAlCarrito = (producto: Producto) => {
     setCart((prev) => {
@@ -157,7 +215,7 @@ function App() {
         id: i.producto.id,
         nombre: i.producto.nombre,
         cantidad: i.cantidad,
-        precio: i.producto.precio_base,
+        precio: precioProducto(i.producto),
       })),
       total: totalPrecio,
     })
@@ -166,6 +224,57 @@ function App() {
       setExito(true)
       setCart([])
     }
+  }
+
+  if (vista === 'auth') {
+    return <Auth onLogin={() => setVista('catalogo')} />
+  }
+
+  if (vista === 'mitienda' && session?.user) {
+    return <MiTienda userId={session.user.id} onBack={() => setVista('catalogo')} />
+  }
+
+  if (vista === 'pedidos') {
+    return (
+      <div className="app">
+        <div className="header-between">
+          <button className="btn-back" onClick={() => setVista('catalogo')}>← Volver</button>
+          <h1 className="logo">Mis Pedidos</h1>
+          <div />
+        </div>
+        <div style={{ padding: 40, textAlign: 'center', color: '#888' }}>
+          <p>Proximamente vas a poder ver tus pedidos aca.</p>
+          <p style={{ marginTop: 8, fontSize: 13 }}>Mientras tanto, consulta tu estado por WhatsApp.</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (vista === 'perfil' && session?.user) {
+    return (
+      <div className="app">
+        <div className="header-between">
+          <button className="btn-back" onClick={() => setVista('catalogo')}>← Volver</button>
+          <h1 className="logo">Perfil</h1>
+          <div />
+        </div>
+        <div className="perfil-screen">
+          {revendedor && (
+            <>
+              <p><strong>Negocio:</strong> {revendedor.nombre_negocio}</p>
+              <p><strong>Codigo:</strong> {revendedor.codigo_unico}</p>
+              <p><strong>Plan:</strong> {['Basico', 'Pro', 'Pro Plus', 'Ultra'][(revendedor.plan_id || 1) - 1]}</p>
+              <p><strong>Email:</strong> {session.user.email}</p>
+              {revendedor.whatsapp && <p><strong>WhatsApp:</strong> {revendedor.whatsapp}</p>}
+            </>
+          )}
+          {!revendedor && <p>Email: {session.user.email}</p>}
+          <button className="btn-primary btn-full" style={{ marginTop: 20 }} onClick={async () => { await supabase.auth.signOut(); setRevendedor(null); setVista('catalogo') }}>
+            Cerrar sesion
+          </button>
+        </div>
+      </div>
+    )
   }
 
   if (exito) {
@@ -217,7 +326,7 @@ function App() {
                 </div>
                 <div className="cart-item-info">
                   <h4>{item.producto.nombre}</h4>
-                  <p className="cart-item-precio">${Number(item.producto.precio_base).toLocaleString('es-AR')}</p>
+                  <p className="cart-item-precio">${Number(precioProducto(item.producto)).toLocaleString('es-AR')}</p>
                 </div>
                 <div className="cart-item-cantidad">
                   <button onClick={() => cambiarCantidad(item.producto.id, -1)}>-</button>
@@ -299,11 +408,20 @@ function App() {
         </div>
       )}
       <div className="header-between">
-        <h1 className="logo">Directimport</h1>
-        <button className="cart-icon" onClick={() => setVista('carrito')}>
-          🛒
-          {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
-        </button>
+        <h1 className="logo">{linkRev?.nombre_negocio || 'Directimport'}</h1>
+        <div className="header-right">
+          {session ? (
+            <button className="btn-user" onClick={() => setVista('perfil')}>
+              {revendedor?.nombre_negocio?.substring(0, 2).toUpperCase() || '👤'}
+            </button>
+          ) : linkRev ? null : (
+            <button className="btn-user" onClick={() => setVista('auth')}>Ingresar</button>
+          )}
+          <button className="cart-icon" onClick={() => setVista('carrito')}>
+            🛒
+            {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
+          </button>
+        </div>
       </div>
 
       <section className="rubros-nav">
@@ -366,7 +484,7 @@ function App() {
               </div>
               <div className="producto-info">
                 <h3 className="producto-nombre">{p.nombre}</h3>
-                <p className="producto-precio">${Number(p.precio_base).toLocaleString('es-AR')}</p>
+                <p className="producto-precio">${Number(precioProducto(p)).toLocaleString('es-AR')}</p>
                 {p.descripcion && <p className="producto-desc">{p.descripcion}</p>}
                 {p.metricas && p.metricas.length > 0 && (
                   <div className="producto-metricas">
@@ -393,12 +511,18 @@ function App() {
       </main>
 
       <nav className="bottom-nav">
-        <button className="nav-item active">Catálogo</button>
-        <button className="nav-item">Ofertas</button>
-        <button className="nav-item">Mis pedidos</button>
-        <button className="nav-item" onClick={() => setVista('carrito')}>
-          Carrito ({totalItems})
-        </button>
+        <button className="nav-item active" onClick={() => setVista('catalogo')}>Catalogo</button>
+        {session && revendedor && (
+          <button className="nav-item" onClick={() => setVista('mitienda')}>
+            Mi Tienda
+          </button>
+        )}
+        <button className="nav-item" onClick={() => setVista('pedidos')}>Mis pedidos</button>
+        {session ? (
+          <button className="nav-item" onClick={async () => { await supabase.auth.signOut(); setRevendedor(null); }}>Salir</button>
+        ) : linkRev ? null : (
+          <button className="nav-item" onClick={() => setVista('auth')}>Ingresar</button>
+        )}
       </nav>
     </div>
   )
