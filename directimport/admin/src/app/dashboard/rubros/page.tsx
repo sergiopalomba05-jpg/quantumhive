@@ -3,33 +3,53 @@
 import { createClient } from '@/lib/supabase/client'
 import { useEffect, useState } from 'react'
 
+type SubFiltro = {
+  id: number; rubro_id: number; nombre: string; parent_id: number | null
+  children: SubFiltro[]
+}
+
 export default function RubrosPage() {
   const supabase = createClient()
   const [rubros, setRubros] = useState<any[]>([])
   const [nombre, setNombre] = useState('')
-  const [metrica, setMetrica] = useState('Calidad')
-  const [subFiltroNombre, setSubFiltroNombre] = useState('')
-  const [rubroActivo, setRubroActivo] = useState<number | null>(null)
 
   const cargarRubros = async () => {
-    const { data } = await supabase.from('rubros').select('*, sub_filtros(*)').order('orden')
-    setRubros(data ?? [])
+    const { data: rubrosData } = await supabase.from('rubros').select('*').order('orden')
+    const { data: subFiltrosData } = await supabase.from('sub_filtros').select('*').order('orden')
+
+    const map = new Map<number, SubFiltro>()
+    const todos = (subFiltrosData ?? []).map((sf) => ({ ...sf, children: [] as SubFiltro[] }))
+    todos.forEach((sf) => map.set(sf.id, sf))
+
+    const raices: SubFiltro[] = []
+    todos.forEach((sf) => {
+      if (sf.parent_id && map.has(sf.parent_id)) {
+        map.get(sf.parent_id)!.children.push(sf)
+      } else {
+        raices.push(sf)
+      }
+    })
+
+    const arbol = (rubrosData ?? []).map((r) => ({
+      ...r,
+      children: raices.filter((sf) => sf.parent_id == null && sf.rubro_id === r.id),
+    }))
+
+    setRubros(arbol)
   }
 
   useEffect(() => { cargarRubros() }, [])
 
   const agregarRubro = async () => {
     if (!nombre.trim()) return
-    await supabase.from('rubros').insert({ nombre: nombre.trim(), metrica_configurable: metrica })
+    await supabase.from('rubros').insert({ nombre: nombre.trim() })
     setNombre('')
-    setMetrica('Calidad')
     cargarRubros()
   }
 
-  const agregarSubFiltro = async (rubroId: number) => {
-    if (!subFiltroNombre.trim()) return
-    await supabase.from('sub_filtros').insert({ rubro_id: rubroId, nombre: subFiltroNombre.trim() })
-    setSubFiltroNombre('')
+  const borrarRubro = async (id: number, nombre: string) => {
+    if (!confirm(`¿Eliminar rubro "${nombre}"? Se borrarán todos sus sub-filtros.`)) return
+    await supabase.from('rubros').delete().eq('id', id)
     cargarRubros()
   }
 
@@ -41,52 +61,96 @@ export default function RubrosPage() {
         <h3 className="text-white font-semibold mb-3">Nuevo rubro</h3>
         <div className="flex gap-2">
           <input value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Nombre del rubro" className="flex-1 bg-[#0a0a0a] border border-[#2a2d33] rounded px-3 py-2 text-white focus:border-[#d4a843] focus:outline-none" />
-          <select value={metrica} onChange={(e) => setMetrica(e.target.value)} className="bg-[#0a0a0a] border border-[#2a2d33] rounded px-3 py-2 text-white focus:border-[#d4a843] focus:outline-none">
-            <option>Calidad</option>
-            <option>Comodidad</option>
-            <option>Rendimiento</option>
-            <option>Potencia</option>
-            <option>Durabilidad</option>
-          </select>
           <button onClick={agregarRubro} className="bg-[#d4a843] text-black px-4 py-2 rounded font-semibold hover:brightness-110">Agregar</button>
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {rubros.map((r) => (
-          <div key={r.id} className="bg-[#1a1d23] border border-[#2a2d33] rounded-lg">
-            <button
-              onClick={() => setRubroActivo(rubroActivo === r.id ? null : r.id)}
-              className="w-full flex items-center justify-between px-4 py-3 text-white hover:bg-[#2a2d33]/50 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <span className="font-medium">{r.nombre}</span>
-                <span className="text-xs text-[#a0a0a8] bg-[#0a0a0a] px-2 py-0.5 rounded">Métrica: {r.metrica_configurable}</span>
-              </div>
-              <span className="text-[#a0a0a8]">{rubroActivo === r.id ? '▲' : '▼'}</span>
-            </button>
-
-            {rubroActivo === r.id && (
-              <div className="px-4 pb-3 border-t border-[#2a2d33] pt-3">
-                <div className="flex gap-2 mb-3">
-                  <input value={subFiltroNombre} onChange={(e) => setSubFiltroNombre(e.target.value)} placeholder="Nuevo sub-filtro" className="flex-1 bg-[#0a0a0a] border border-[#2a2d33] rounded px-3 py-2 text-white focus:border-[#d4a843] focus:outline-none text-sm" />
-                  <button onClick={() => agregarSubFiltro(r.id)} className="bg-[#2a2d33] text-white px-3 py-2 rounded text-sm hover:bg-[#3a3d43]">Agregar</button>
-                </div>
-
-                {r.sub_filtros?.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {r.sub_filtros.map((sf: any) => (
-                      <span key={sf.id} className="bg-[#0a0a0a] text-[#a0a0a8] px-2 py-1 rounded text-sm border border-[#2a2d33]">
-                        {sf.nombre}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+          <NodoRubro key={r.id} rubro={r} nivel={0} onRefresh={cargarRubros} />
         ))}
       </div>
+    </div>
+  )
+}
+
+function NodoRubro({ rubro, nivel, onRefresh }: { rubro: any; nivel: number; onRefresh: () => void }) {
+  const supabase = createClient()
+  const [expanded, setExpanded] = useState(false)
+  const [nuevoNombre, setNuevoNombre] = useState('')
+
+  const agregarHijo = async () => {
+    if (!nuevoNombre.trim()) return
+    await supabase.from('sub_filtros').insert({
+      rubro_id: rubro.rubro_id ?? rubro.id,
+      nombre: nuevoNombre.trim(),
+      parent_id: nivel === 0 ? null : rubro.id,
+    })
+    setNuevoNombre('')
+    onRefresh()
+  }
+
+  const borrarNodo = async (id: number, nombre: string) => {
+    if (!confirm(`¿Eliminar "${nombre}"?`)) return
+    await supabase.from('sub_filtros').delete().eq('id', id)
+    onRefresh()
+  }
+
+  const esRubro = nivel === 0
+  const hijos = rubro.children ?? []
+
+  return (
+    <div className="bg-[#1a1d23] border border-[#2a2d33] rounded-lg overflow-hidden">
+      <div
+        className="flex items-center justify-between px-4 py-3 hover:bg-[#2a2d33]/50 transition-colors cursor-pointer"
+        onClick={() => setExpanded(!expanded)}
+        style={{ paddingLeft: `${16 + nivel * 24}px` }}
+      >
+        <div className="flex items-center gap-2">
+          {hijos.length > 0 && (
+            <span className="text-[#a0a0a8] text-xs">{expanded ? '▼' : '▶'}</span>
+          )}
+          <span className={`font-medium ${esRubro ? 'text-white' : 'text-[#a0a0a8]'}`}>{rubro.nombre}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          {!esRubro && (
+            <span className="text-xs text-[#4a4a50]">ID: {rubro.id}</span>
+          )}
+          <button
+            onClick={(e) => { e.stopPropagation(); borrarNodo(rubro.id, rubro.nombre) }}
+            className="text-red-400 text-sm hover:text-red-300"
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+
+      {expanded && (
+        <div className="border-t border-[#2a2d33] px-4 py-3">
+          <div className="flex gap-2 mb-3">
+            <input
+              value={nuevoNombre}
+              onChange={(e) => setNuevoNombre(e.target.value)}
+              placeholder={`Sub-filtro dentro de "${rubro.nombre}"`}
+              className="flex-1 bg-[#0a0a0a] border border-[#2a2d33] rounded px-2 py-1.5 text-white text-sm focus:border-[#d4a843] focus:outline-none"
+            />
+            <button
+              onClick={agregarHijo}
+              className="bg-[#2a2d33] text-white px-3 py-1.5 rounded text-sm hover:bg-[#3a3d43]"
+            >
+              Agregar
+            </button>
+          </div>
+
+          {hijos.length > 0 && (
+            <div className="space-y-1">
+              {hijos.map((hijo: any) => (
+                <NodoRubro key={hijo.id} rubro={hijo} nivel={nivel + 1} onRefresh={onRefresh} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

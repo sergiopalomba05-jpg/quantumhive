@@ -2,38 +2,78 @@ import { useEffect, useState } from 'react'
 import { supabase } from './lib/supabase'
 import './App.css'
 
-type Rubro = { id: number; nombre: string; metrica_configurable: string }
+type Rubro = { id: number; nombre: string }
+type SubFiltro = { id: number; rubro_id: number; parent_id: number | null; nombre: string }
 type Producto = {
-  id: number; nombre: string; precio_base: number; metrica_valor: number
+  id: number; nombre: string; precio_base: number
+  metricas: { nombre: string; valor: number }[]
   estado_stock: boolean; fotos: string[]; descripcion: string
   rubro_id: number; sub_filtro_id: number | null
 }
 
 function App() {
   const [rubros, setRubros] = useState<Rubro[]>([])
+  const [todosSf, setTodosSf] = useState<SubFiltro[]>([])
   const [productos, setProductos] = useState<Producto[]>([])
   const [rubroActivo, setRubroActivo] = useState<number | null>(null)
-  const [subFiltroActivo, setSubFiltroActivo] = useState<string>('todo')
-  const [subFiltros, setSubFiltros] = useState<any[]>([])
+  const [ruta, setRuta] = useState<{ id: number | null; nombre: string }[]>([])
 
   useEffect(() => {
-    supabase.from('rubros').select('*').eq('activo', true).order('orden').then(({ data }) => {
-      setRubros(data ?? [])
-      if (data && data.length > 0) setRubroActivo(data[0].id)
+    Promise.all([
+      supabase.from('rubros').select('*').eq('activo', true).order('orden'),
+      supabase.from('productos').select('*').eq('activo', true).eq('estado_stock', true),
+    ]).then(([{ data: r }, { data: p }]) => {
+      setRubros(r ?? [])
+      setProductos(p ?? [])
+      if (r && r.length > 0) {
+        setRubroActivo(r[0].id)
+        setRuta([{ id: r[0].id, nombre: r[0].nombre }])
+      }
     })
   }, [])
 
   useEffect(() => {
     if (!rubroActivo) return
-    supabase.from('productos').select('*').eq('rubro_id', rubroActivo).eq('activo', true).eq('estado_stock', true).then(({ data }) => setProductos(data ?? []))
-    supabase.from('sub_filtros').select('*').eq('rubro_id', rubroActivo).eq('activo', true).order('orden').then(({ data }) => setSubFiltros(data ?? []))
-    setSubFiltroActivo('todo')
+    supabase.from('sub_filtros').select('*').eq('rubro_id', rubroActivo).eq('activo', true).order('orden').then(({ data }) => {
+      setTodosSf(data ?? [])
+    })
   }, [rubroActivo])
 
-  const rubroActual = rubros.find((r) => r.id === rubroActivo)
-  const productosFiltrados = subFiltroActivo === 'todo'
-    ? productos
-    : productos.filter((p) => p.sub_filtro_id === parseInt(subFiltroActivo))
+  const hijosDe = (parentId: number | null) =>
+    todosSf.filter((sf) => sf.parent_id == parentId)
+
+  const ultimoNivel = ruta.length > 0 ? ruta[ruta.length - 1] : null
+  const esNodoRaiz = ruta.length === 1
+  const opciones = esNodoRaiz
+    ? hijosDe(null)
+    : ultimoNivel ? hijosDe(ultimoNivel.id) : []
+
+  const obtenerIdsHijos = (id: number): number[] => {
+    const hijos = todosSf.filter((sf) => sf.parent_id === id)
+    return [id, ...hijos.flatMap((h) => obtenerIdsHijos(h.id))]
+  }
+
+  const seleccionar = (id: number | null, nombre: string) => {
+    const nuevoIdx = ruta.findIndex((r) => r.id === id)
+    if (nuevoIdx >= 0) {
+      setRuta(ruta.slice(0, nuevoIdx + 1))
+    } else {
+      setRuta([...ruta, { id, nombre }])
+    }
+  }
+
+  const navegarRubro = (id: number) => {
+    setRubroActivo(id)
+    setRuta([{ id, nombre: rubros.find((r) => r.id === id)?.nombre ?? '' }])
+  }
+
+  const subFiltroFiltro = ruta.length > 1 ? ruta[ruta.length - 1].id : null
+
+  const idsFiltro = subFiltroFiltro ? obtenerIdsHijos(subFiltroFiltro) : null
+  const productosFiltrados = rubroActivo
+    ? productos.filter((p) => p.rubro_id === rubroActivo)
+        .filter((p) => !idsFiltro || (p.sub_filtro_id && idsFiltro.includes(p.sub_filtro_id)))
+    : []
 
   return (
     <div className="app">
@@ -45,7 +85,7 @@ function App() {
         {rubros.map((r) => (
           <button
             key={r.id}
-            onClick={() => setRubroActivo(r.id)}
+            onClick={() => navegarRubro(r.id)}
             className={`rubro-btn ${rubroActivo === r.id ? 'active' : ''}`}
           >
             {r.nombre}
@@ -53,19 +93,34 @@ function App() {
         ))}
       </section>
 
-      {subFiltros.length > 0 && (
+      {ruta.length > 1 && (
+        <section className="breadcrumb">
+          {ruta.map((n, i) => (
+            <span key={i}>
+              {i > 0 && <span className="breadcrumb-sep"> &gt; </span>}
+              <button className="breadcrumb-link" onClick={() => seleccionar(n.id, n.nombre)}>
+                {n.nombre}
+              </button>
+            </span>
+          ))}
+        </section>
+      )}
+
+      {opciones.length > 0 && (
         <section className="subfiltros-nav">
-          <button
-            onClick={() => setSubFiltroActivo('todo')}
-            className={`subfiltro-btn ${subFiltroActivo === 'todo' ? 'active' : ''}`}
-          >
-            Todo
-          </button>
-          {subFiltros.map((sf) => (
+          {ruta.length > 1 && (
+            <button
+              onClick={() => seleccionar(ruta[ruta.length - 2].id, ruta[ruta.length - 2].nombre)}
+              className="subfiltro-btn"
+            >
+              ← Volver
+            </button>
+          )}
+          {opciones.map((sf) => (
             <button
               key={sf.id}
-              onClick={() => setSubFiltroActivo(String(sf.id))}
-              className={`subfiltro-btn ${subFiltroActivo === String(sf.id) ? 'active' : ''}`}
+              onClick={() => seleccionar(sf.id, sf.nombre)}
+              className={`subfiltro-btn ${ruta[ruta.length - 1]?.id === sf.id ? 'active' : ''}`}
             >
               {sf.nombre}
             </button>
@@ -74,15 +129,6 @@ function App() {
       )}
 
       <main className="catalogo">
-        {rubroActual && (
-          <div className="metrica-header">
-            <span className="metrica-label">{rubroActual.metrica_configurable}</span>
-            <div className="metrica-bar-bg">
-              <div className="metrica-bar" style={{ width: '70%' }} />
-            </div>
-          </div>
-        )}
-
         <div className="productos-grid">
           {productosFiltrados.map((p) => (
             <div key={p.id} className="producto-card">
@@ -96,11 +142,18 @@ function App() {
               <div className="producto-info">
                 <h3 className="producto-nombre">{p.nombre}</h3>
                 <p className="producto-precio">${Number(p.precio_base).toLocaleString('es-AR')}</p>
-                <div className="producto-metrica">
-                  <div className="metrica-bar-bg small">
-                    <div className="metrica-bar" style={{ width: `${p.metrica_valor}%` }} />
+                {p.metricas && p.metricas.length > 0 && (
+                  <div className="producto-metricas">
+                    {p.metricas.map((m, i) => (
+                      <div key={i} className="metrica-row">
+                        <span className="metrica-label">{m.nombre}</span>
+                        <div className="metrica-bar-bg small">
+                          <div className="metrica-bar" style={{ width: `${m.valor}%` }} />
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
+                )}
               </div>
             </div>
           ))}

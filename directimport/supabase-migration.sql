@@ -5,7 +5,6 @@
 CREATE TABLE rubros (
   id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   nombre text NOT NULL,
-  metrica_configurable text DEFAULT 'Calidad',
   orden integer DEFAULT 0,
   activo boolean DEFAULT true,
   created_at timestamptz DEFAULT now()
@@ -15,6 +14,7 @@ CREATE TABLE rubros (
 CREATE TABLE sub_filtros (
   id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   rubro_id bigint NOT NULL REFERENCES rubros(id) ON DELETE CASCADE,
+  parent_id bigint REFERENCES sub_filtros(id) ON DELETE CASCADE,
   nombre text NOT NULL,
   orden integer DEFAULT 0,
   activo boolean DEFAULT true,
@@ -46,11 +46,13 @@ CREATE TABLE plantillas_atributos (
 CREATE TABLE productos (
   id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   rubro_id bigint NOT NULL REFERENCES rubros(id),
+  sub_filtro_id bigint REFERENCES sub_filtros(id) ON DELETE SET NULL,
   proveedor_id bigint REFERENCES proveedores(id),
   nombre text NOT NULL,
   descripcion text,
   precio_base numeric(12,2) NOT NULL,
   metrica_valor integer DEFAULT 50 CHECK (metrica_valor BETWEEN 0 AND 100),
+  metricas jsonb DEFAULT '[]',
   estado_stock boolean DEFAULT true,
   fotos jsonb DEFAULT '[]',
   video text,
@@ -109,6 +111,8 @@ CREATE INDEX idx_productos_rubro ON productos(rubro_id);
 CREATE INDEX idx_productos_proveedor ON productos(proveedor_id);
 CREATE INDEX idx_productos_stock ON productos(estado_stock) WHERE estado_stock = true;
 CREATE INDEX idx_sub_filtros_rubro ON sub_filtros(rubro_id);
+CREATE INDEX idx_sub_filtros_parent ON sub_filtros(parent_id);
+CREATE INDEX idx_productos_sub_filtro ON productos(sub_filtro_id);
 CREATE INDEX idx_atributos_producto ON atributos_producto(producto_id);
 
 -- RLS - Habilitar row level security
@@ -122,15 +126,15 @@ ALTER TABLE tiras ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tiras_productos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE planes ENABLE ROW LEVEL SECURITY;
 
--- RLS - Admin puede todo
-CREATE POLICY "admin_all_rubros" ON rubros FOR ALL USING (auth.role() = 'service_role');
-CREATE POLICY "admin_all_sub_filtros" ON sub_filtros FOR ALL USING (auth.role() = 'service_role');
-CREATE POLICY "admin_all_proveedores" ON proveedores FOR ALL USING (auth.role() = 'service_role');
-CREATE POLICY "admin_all_productos" ON productos FOR ALL USING (auth.role() = 'service_role');
-CREATE POLICY "admin_all_atributos_producto" ON atributos_producto FOR ALL USING (auth.role() = 'service_role');
-CREATE POLICY "admin_all_plantillas" ON plantillas_atributos FOR ALL USING (auth.role() = 'service_role');
-CREATE POLICY "admin_all_tiras" ON tiras FOR ALL USING (auth.role() = 'service_role');
-CREATE POLICY "admin_all_tiras_productos" ON tiras_productos FOR ALL USING (auth.role() = 'service_role');
+-- RLS - Admin autenticado puede todo
+CREATE POLICY "admin_all_rubros" ON rubros FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "admin_all_sub_filtros" ON sub_filtros FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "admin_all_proveedores" ON proveedores FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "admin_all_productos" ON productos FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "admin_all_atributos_producto" ON atributos_producto FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "admin_all_plantillas" ON plantillas_atributos FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "admin_all_tiras" ON tiras FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "admin_all_tiras_productos" ON tiras_productos FOR ALL USING (auth.role() = 'authenticated');
 
 -- RLS - Público solo lectura para catálogo activo
 CREATE POLICY "public_read_rubros" ON rubros FOR SELECT USING (activo = true);
