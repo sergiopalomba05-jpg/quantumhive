@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instalar Directimport</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, sans-serif; background: #0a0a0a; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+h1 { font-size: 24px; margin-bottom: 30px; color: #d4a843; }
+.app { background: #1a1d23; border: 1px solid #2a2d33; border-radius: 12px; padding: 30px; margin-bottom: 20px; text-align: center; width: 100%; max-width: 360px; }
+.app h2 { font-size: 18px; margin-bottom: 5px; }
+.app p { font-size: 14px; color: #a0a0a8; margin-bottom: 20px; }
+.qr { display: inline-block; background: #fff; padding: 15px; border-radius: 8px; }
+.qr img { display: block; margin: 0 auto; }
+.app a { display: inline-block; margin-top: 15px; color: #d4a843; text-decoration: none; font-size: 14px; word-break: break-all; }
+.instructions { max-width: 360px; font-size: 13px; color: #a0a0a8; line-height: 1.6; }
+.instructions strong { color: #fff; }
+</style>
+</head>
+<body>
+<h1>Directimport</h1>
+<div class="app">
+  <h2>Catálogo B2B</h2>
+  <p>Para revendedores — ver productos, carrito, pedidos</p>
+  <div class="qr" id="qrcode-app"></div>
+  <br>
+  <small>Escaneá con la cámara de tu celular</small>
+  <a href="https://directimport-app.onrender.com">https://directimport-app.onrender.com</a>
+</div>
+<div class="app">
+  <h2>Panel Admin</h2>
+  <p>Para gestionar pedidos y productos</p>
+  <div class="qr" id="qrcode-admin"></div>
+  <br>
+  <small>Escaneá con la cámara de tu celular</small>
+  <a href="https://quantumhive-sergiopalomba05-jpgs-projects.vercel.app">admin.vercel.app</a>
+</div>
+<div class="instructions">
+  <p><strong>Android:</strong> Escaneá el QR → abrí en Chrome → tocá "Instalar" o menú ⋮ → Add to Home Screen</p>
+  <p><strong>iPhone:</strong> Escaneá el QR → abrí en Safari → tocá Compartir → Add to Home Screen</p>
+</div>
+<script>
+new QRCode(document.getElementById("qrcode-app"), { text: "https://directimport-app.onrender.com", width: 180, height: 180 });
+new QRCode(document.getElementById("qrcode-admin"), { text: "https://quantumhive-sergiopalomba05-jpgs-projects.vercel.app", width: 180, height: 180 });
+</script>
+</body>
+</html>
