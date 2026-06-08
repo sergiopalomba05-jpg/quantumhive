@@ -128,10 +128,7 @@ function App() {
     }
   }, [session])
 
-  const precioProducto = (p: Producto) => {
-    if (preciosLink[p.id]) return preciosLink[p.id]
-    return p.precio_base
-  }
+  const precioProducto = (p: Producto) => preciosLink[p.id] !== undefined ? preciosLink[p.id] : p.precio_base
 
   useEffect(() => {
     if (!rubroActivo) return
@@ -518,13 +515,11 @@ function App() {
       <nav className="bottom-nav">
         <button className="nav-item active" onClick={() => setVista('catalogo')}>Catalogo</button>
         {session && revendedor && (
-          <button className="nav-item" onClick={() => setVista('mitienda')}>
-            {revendedor.plan_id >= 2 ? 'Mi Tienda' : 'Mi Tienda'}
-          </button>
+          <button className="nav-item" onClick={() => setVista('mitienda')}>Mi Tienda</button>
         )}
         <button className="nav-item" onClick={() => setVista('pedidos')}>Mis pedidos</button>
         {session ? (
-          <button className="nav-item" onClick={async () => { await supabase.auth.signOut(); setRevendedor(null); }}>Salir</button>
+          <button className="nav-item" onClick={async () => { await supabase.auth.signOut(); setRevendedor(null); setVista('catalogo') }}>Salir</button>
         ) : linkRev ? null : (
           <button className="nav-item" onClick={() => setVista('auth')}>Ingresar</button>
         )}

@@ -116,7 +116,7 @@ export default function MiTienda({ userId, onBack }: { userId: string; onBack: (
               </div>
               <p className="plan-desc">{p.desc}</p>
               <ul className="plan-features">
-                <li>{p.id >= 1 ? 'Catalogo mayorista' : ''}</li>
+                <li>Catalogo mayorista</li>
                 {p.id >= 2 && <li>Link de tienda propio</li>}
                 {p.id >= 2 && <li>Precios personalizados</li>}
                 {p.id >= 3 && <li>Colores y personalizacion</li>}
