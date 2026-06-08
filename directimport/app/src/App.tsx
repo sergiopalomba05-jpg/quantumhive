@@ -238,11 +238,17 @@ function App() {
     return <MiTienda userId={session.user.id} onBack={() => setVista('catalogo')} />
   }
 
+  const [pedidoExpandido, setPedidoExpandido] = useState<number | null>(null)
+
   useEffect(() => {
     if (vista === 'pedidos' && revendedor && revendedor.plan_id >= 2) {
       supabase.from('pedidos').select('*').eq('revendedor_id', revendedor.id).order('created_at', { ascending: false }).then(({ data }) => setMisPedidos(data ?? []))
     }
   }, [vista, revendedor])
+
+  const coloresEstado: Record<string, string> = {
+    pendiente: '#d4a843', confirmado: '#4a9eff', enviado: '#a855f7', entregado: '#4caf50', cancelado: '#ef4444',
+  }
 
   if (vista === 'pedidos') {
     const tieneTienda = revendedor && revendedor.plan_id >= 2
@@ -251,18 +257,47 @@ function App() {
         <div className="header-between">
           <button className="btn-back" onClick={() => setVista('catalogo')}>← Volver</button>
           <h1 className="logo">Mis Pedidos</h1>
-          <div />
+          <button className="btn-sm" onClick={() => {
+            if (revendedor) supabase.from('pedidos').select('*').eq('revendedor_id', revendedor.id).order('created_at', { ascending: false }).then(({ data }) => setMisPedidos(data ?? []))
+          }}>↻</button>
         </div>
         {tieneTienda && misPedidos.length > 0 ? (
           <div style={{ padding: 16 }}>
-            {misPedidos.map(p => (
-              <div key={p.id} style={{ background: '#1a1d23', border: '1px solid #2a2d33', borderRadius: 10, padding: 14, marginBottom: 10 }}>
-                <p style={{ fontSize: 12, color: '#888' }}>{new Date(p.created_at).toLocaleDateString('es-AR')}</p>
-                <p><strong>{p.nombre}</strong> - <a href={`https://wa.me/${p.whatsapp}`} style={{ color: '#d4a843' }}>{p.whatsapp}</a></p>
-                <p style={{ fontSize: 13, color: '#aaa' }}>{p.items?.length || 0} items - ${Number(p.total).toLocaleString('es-AR')}</p>
-                <p style={{ fontSize: 12, color: p.estado === 'completado' ? '#4caf50' : '#d4a843', marginTop: 4 }}>Estado: {p.estado || 'pendiente'}</p>
-              </div>
-            ))}
+            {misPedidos.map(p => {
+              const expandido = pedidoExpandido === p.id
+              return (
+                <div key={p.id} className="pedido-card" onClick={() => setPedidoExpandido(expandido ? null : p.id)}>
+                  <div className="pedido-card-header">
+                    <div className="pedido-card-left">
+                      <span className="pedido-fecha">{new Date(p.created_at).toLocaleDateString('es-AR')}</span>
+                      <span className="pedido-cliente">{p.nombre}</span>
+                    </div>
+                    <span className="pedido-estado" style={{ background: coloresEstado[p.estado] || '#888', color: '#000' }}>{p.estado}</span>
+                  </div>
+                  <div className="pedido-card-body">
+                    <span>{p.items?.length || 0} items</span>
+                    <span className="pedido-total">${Number(p.total).toLocaleString('es-AR')}</span>
+                  </div>
+                  {expandido && (
+                    <div className="pedido-card-detalle">
+                      <div className="pedido-detalle-row"><span>WhatsApp:</span><a href={`https://wa.me/${p.whatsapp}`} className="link">{p.whatsapp}</a></div>
+                      {p.direccion && <div className="pedido-detalle-row"><span>Direccion:</span><span>{p.direccion}</span></div>}
+                      {p.notas && <div className="pedido-detalle-row"><span>Notas:</span><span>{p.notas}</span></div>}
+                      <div className="pedido-items-list">
+                        {(p.items || []).map((item: any, i: number) => (
+                          <div key={i} className="pedido-item-row">
+                            <span className="pedido-item-nombre">{item.nombre}</span>
+                            <span className="pedido-item-cant">x{item.cantidad}</span>
+                            <span className="pedido-item-precio">${Number(item.precio * item.cantidad).toLocaleString('es-AR')}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div className="pedido-card-expand">{expandido ? '▲ menos' : '▼ ver detalle'}</div>
+                </div>
+              )
+            })}
           </div>
         ) : (
           <div style={{ padding: 40, textAlign: 'center', color: '#888' }}>
