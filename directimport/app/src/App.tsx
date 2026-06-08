@@ -48,6 +48,7 @@ function App() {
   const [revendedor, setRevendedor] = useState<Revendedor | null>(null)
   const [linkRev, setLinkRev] = useState<Revendedor | null>(null)
   const [preciosLink, setPreciosLink] = useState<Record<number, number>>({})
+  const [misPedidos, setMisPedidos] = useState<any[]>([])
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -122,9 +123,13 @@ function App() {
     if (session?.user) {
       supabase.from('revendedores').select('*').eq('user_id', session.user.id).single().then(({ data: r }) => {
         setRevendedor(r)
+        if (r && r.plan_id >= 2) {
+          supabase.from('pedidos').select('*').eq('revendedor_id', r.id).order('created_at', { ascending: false }).then(({ data }) => setMisPedidos(data ?? []))
+        }
       })
     } else {
       setRevendedor(null)
+      setMisPedidos([])
     }
   }, [session])
 
@@ -215,6 +220,7 @@ function App() {
         precio: precioProducto(i.producto),
       })),
       total: totalPrecio,
+      ...(linkRev ? { revendedor_id: linkRev.id } : {}),
     })
     setEnviando(false)
     if (!error) {
@@ -232,6 +238,7 @@ function App() {
   }
 
   if (vista === 'pedidos') {
+    const tieneTienda = revendedor && revendedor.plan_id >= 2
     return (
       <div className="app">
         <div className="header-between">
@@ -239,10 +246,23 @@ function App() {
           <h1 className="logo">Mis Pedidos</h1>
           <div />
         </div>
-        <div style={{ padding: 40, textAlign: 'center', color: '#888' }}>
-          <p>Proximamente vas a poder ver tus pedidos aca.</p>
-          <p style={{ marginTop: 8, fontSize: 13 }}>Mientras tanto, consulta tu estado por WhatsApp.</p>
-        </div>
+        {tieneTienda && misPedidos.length > 0 ? (
+          <div style={{ padding: 16 }}>
+            {misPedidos.map(p => (
+              <div key={p.id} style={{ background: '#1a1d23', border: '1px solid #2a2d33', borderRadius: 10, padding: 14, marginBottom: 10 }}>
+                <p style={{ fontSize: 12, color: '#888' }}>{new Date(p.created_at).toLocaleDateString('es-AR')}</p>
+                <p><strong>{p.nombre}</strong> - <a href={`https://wa.me/${p.whatsapp}`} style={{ color: '#d4a843' }}>{p.whatsapp}</a></p>
+                <p style={{ fontSize: 13, color: '#aaa' }}>{p.items?.length || 0} items - ${Number(p.total).toLocaleString('es-AR')}</p>
+                <p style={{ fontSize: 12, color: p.estado === 'completado' ? '#4caf50' : '#d4a843', marginTop: 4 }}>Estado: {p.estado || 'pendiente'}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div style={{ padding: 40, textAlign: 'center', color: '#888' }}>
+            <p>{tieneTienda ? 'Todavia no recibiste pedidos.' : 'Proximamente vas a poder ver tus pedidos aca.'}</p>
+            <p style={{ marginTop: 8, fontSize: 13 }}>Comparti tu link con tus clientes para empezar a vender.</p>
+          </div>
+        )}
       </div>
     )
   }
