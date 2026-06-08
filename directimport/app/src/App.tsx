@@ -11,6 +11,7 @@ type Producto = {
   metricas: { nombre: string; valor: number }[]
   estado_stock: boolean; fotos: string[]; descripcion: string
   rubro_id: number; sub_filtro_id: number | null
+  video: string | null; descripcion_detallada: string | null
 }
 type Revendedor = {
   id: number; user_id: string; codigo_unico: string; nombre_negocio: string
@@ -50,6 +51,9 @@ function App() {
   const [linkRev, setLinkRev] = useState<Revendedor | null>(null)
   const [preciosLink, setPreciosLink] = useState<Record<number, { precio_unitario: number; precio_pack_6: number | null }>>({})
   const [misPedidos, setMisPedidos] = useState<any[]>([])
+  const [productoDetalle, setProductoDetalle] = useState<Producto | null>(null)
+  const [fotoActual, setFotoActual] = useState(0)
+  const [touchStartX, setTouchStartX] = useState(0)
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -563,9 +567,14 @@ function App() {
                   </div>
                 )}
               </div>
-              <button className="btn-add-cart" onClick={() => agregarAlCarrito(p)}>
-                Agregar
-              </button>
+              <div className="producto-actions">
+                <button className="btn-detail" onClick={() => { setProductoDetalle(p); setFotoActual(0) }}>
+                  Ver detalle
+                </button>
+                <button className="btn-add-cart" onClick={() => agregarAlCarrito(p)}>
+                  Agregar
+                </button>
+              </div>
             </div>
           ))}
           {productosFiltrados.length === 0 && (
@@ -573,6 +582,75 @@ function App() {
           )}
         </div>
       </main>
+
+      {productoDetalle && (
+        <div className="detalle-overlay" onClick={() => setProductoDetalle(null)}>
+          <div className="detalle-modal" onClick={e => e.stopPropagation()}>
+            <button className="detalle-close" onClick={() => setProductoDetalle(null)}>✕</button>
+
+            <div className="detalle-carrusel"
+              onTouchStart={e => setTouchStartX(e.touches[0].clientX)}
+              onTouchEnd={e => {
+                const diff = touchStartX - e.changedTouches[0].clientX
+                const fotos = productoDetalle.fotos || []
+                if (Math.abs(diff) > 50) {
+                  if (diff > 0 && fotoActual < fotos.length - 1) setFotoActual(fotoActual + 1)
+                  else if (diff < 0 && fotoActual > 0) setFotoActual(fotoActual - 1)
+                }
+              }}>
+              {(productoDetalle.fotos || []).length > 0 ? (
+                <>
+                  <img src={productoDetalle.fotos[fotoActual]} alt={productoDetalle.nombre} className="detalle-img" />
+                  {(productoDetalle.fotos || []).length > 1 && (
+                    <>
+                      {fotoActual > 0 && <button className="carrusel-arrow left" onClick={() => setFotoActual(fotoActual - 1)}>◀</button>}
+                      {fotoActual < (productoDetalle.fotos || []).length - 1 && <button className="carrusel-arrow right" onClick={() => setFotoActual(fotoActual + 1)}>▶</button>}
+                      <div className="carrusel-dots">
+                        {productoDetalle.fotos.map((_, i) => (
+                          <span key={i} className={`dot ${i === fotoActual ? 'active' : ''}`} onClick={() => setFotoActual(i)} />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </>
+              ) : (
+                <div className="producto-placeholder" style={{ fontSize: 80, padding: 60, textAlign: 'center' }}>📦</div>
+              )}
+            </div>
+
+            {productoDetalle.video && (
+              <div className="detalle-video">
+                <video src={productoDetalle.video} controls className="detalle-video-player" />
+              </div>
+            )}
+
+            <div className="detalle-body">
+              <h2 className="detalle-nombre">{productoDetalle.nombre}</h2>
+              <p className="detalle-precio">${Number(precioProducto(productoDetalle)).toLocaleString('es-AR')}</p>
+
+              {productoDetalle.descripcion && <p className="detalle-desc">{productoDetalle.descripcion}</p>}
+              {productoDetalle.descripcion_detallada && <p className="detalle-desc-detallada">{productoDetalle.descripcion_detallada}</p>}
+
+              {productoDetalle.metricas && productoDetalle.metricas.length > 0 && (
+                <div className="detalle-metricas">
+                  {productoDetalle.metricas.map((m, i) => (
+                    <div key={i} className="metrica-row">
+                      <span className="metrica-label">{m.nombre}</span>
+                      <div className="metrica-bar-bg">
+                        <div className="metrica-bar" style={{ width: `${m.valor}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <button className="btn-primary btn-full" onClick={() => { agregarAlCarrito(productoDetalle); setProductoDetalle(null) }}>
+                Agregar al carrito
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <nav className="bottom-nav">
         <button className="nav-item active" onClick={() => setVista('catalogo')}>Catalogo</button>

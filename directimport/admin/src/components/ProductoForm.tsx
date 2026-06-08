@@ -2,15 +2,13 @@
 
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 type Metrica = { nombre: string; valor: number }
 type NodoNivel = { id: number | null; nombre: string; nivel: number }
+type FotoItem = { id: string; url: string; file?: File }
 
-type Props = {
-  modo: 'crear' | 'editar'
-  productoId?: string
-}
+type Props = { modo: 'crear' | 'editar'; productoId?: string }
 
 export default function ProductoForm({ modo, productoId }: Props) {
   const router = useRouter()
@@ -18,13 +16,20 @@ export default function ProductoForm({ modo, productoId }: Props) {
   const [rubros, setRubros] = useState<any[]>([])
   const [proveedores, setProveedores] = useState<any[]>([])
   const [cargando, setCargando] = useState(modo === 'editar')
+  const [subiendo, setSubiendo] = useState(false)
   const [formData, setFormData] = useState({
-    nombre: '', descripcion: '', precio_base: '',
+    nombre: '', descripcion: '', descripcion_detallada: '', precio_base: '',
     rubro_id: '', proveedor_id: '', sub_filtro_id: '', estado_stock: true,
   })
   const [metricas, setMetricas] = useState<Metrica[]>([])
   const [niveles, setNiveles] = useState<NodoNivel[]>([{ id: null, nombre: '', nivel: 0 }])
   const [opcionesNivel, setOpcionesNivel] = useState<any[][]>([])
+  const [fotos, setFotos] = useState<FotoItem[]>([])
+  const [videoUrl, setVideoUrl] = useState('')
+  const [videoFile, setVideoFile] = useState<File | null>(null)
+  const fotoInputRef = useRef<HTMLInputElement>(null)
+  const videoInputRef = useRef<HTMLInputElement>(null)
+  let fotoIdCounter = 0
 
   useEffect(() => {
     supabase.from('rubros').select('*').order('nombre').then(({ data }) => setRubros(data ?? []))
@@ -37,12 +42,15 @@ export default function ProductoForm({ modo, productoId }: Props) {
         if (prod) {
           setFormData({
             nombre: prod.nombre, descripcion: prod.descripcion ?? '',
+            descripcion_detallada: prod.descripcion_detallada ?? '',
             precio_base: String(prod.precio_base), rubro_id: String(prod.rubro_id),
             proveedor_id: prod.proveedor_id ? String(prod.proveedor_id) : '',
             sub_filtro_id: prod.sub_filtro_id ? String(prod.sub_filtro_id) : '',
             estado_stock: prod.estado_stock,
           })
           setMetricas(prod.metricas ?? [])
+          setFotos((prod.fotos || []).map((url: string) => ({ id: `ex-${fotoIdCounter++}`, url })))
+          setVideoUrl(prod.video ?? '')
 
           if (prod.sub_filtro_id && todosSf) {
             const sfMap = new Map(todosSf.map((sf: any) => [sf.id, sf]))
@@ -102,22 +110,91 @@ export default function ProductoForm({ modo, productoId }: Props) {
     setOpcionesNivel([])
   }
 
+  const handleFotosSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    setFotos(prev => [...prev, ...files.map(f => ({ id: `new-${fotoIdCounter++}`, url: URL.createObjectURL(f), file: f }))])
+    if (e.target) e.target.value = ''
+  }
+
+  const quitarFoto = (id: string) => {
+    const f = fotos.find(f => f.id === id)
+    if (f?.url.startsWith('blob:')) URL.revokeObjectURL(f.url)
+    setFotos(prev => prev.filter(f => f.id !== id))
+  }
+
+  const agregarUrlFoto = () => {
+    const url = prompt('Pegá la URL de la foto:')
+    if (url && url.trim()) setFotos(prev => [...prev, { id: `url-${fotoIdCounter++}`, url: url.trim() }])
+  }
+
+  const reordenarFoto = (idx: number, dir: -1 | 1) => {
+    const nuevo = [...fotos]
+    const target = idx + dir
+    if (target < 0 || target >= nuevo.length) return
+    ;[nuevo[idx], nuevo[target]] = [nuevo[target], nuevo[idx]]
+    setFotos(nuevo)
+  }
+
+  const uploadFile = async (bucketPath: string, file: File) => {
+    const { error } = await supabase.storage.from('productos').upload(bucketPath, file, { upsert: true })
+    if (error) throw error
+    const { data: { publicUrl } } = supabase.storage.from('productos').getPublicUrl(bucketPath)
+    return publicUrl
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const payload = {
-      nombre: formData.nombre, descripcion: formData.descripcion,
-      precio_base: parseFloat(formData.precio_base), rubro_id: parseInt(formData.rubro_id),
-      sub_filtro_id: formData.sub_filtro_id ? parseInt(formData.sub_filtro_id) : null,
-      proveedor_id: formData.proveedor_id ? parseInt(formData.proveedor_id) : null,
-      metricas: metricas.filter((m) => m.nombre.trim()), estado_stock: formData.estado_stock,
-    }
-    const { error } = modo === 'editar' && productoId
-      ? await supabase.from('productos').update(payload).eq('id', productoId)
-      : await supabase.from('productos').insert(payload)
+    setSubiendo(true)
+    try {
+      const payload: any = {
+        nombre: formData.nombre, descripcion: formData.descripcion,
+        descripcion_detallada: formData.descripcion_detallada,
+        precio_base: parseFloat(formData.precio_base), rubro_id: parseInt(formData.rubro_id),
+        sub_filtro_id: formData.sub_filtro_id ? parseInt(formData.sub_filtro_id) : null,
+        proveedor_id: formData.proveedor_id ? parseInt(formData.proveedor_id) : null,
+        metricas: metricas.filter((m) => m.nombre.trim()), estado_stock: formData.estado_stock,
+      }
 
-    if (error) { alert('Error: ' + error.message); return }
-    router.push('/dashboard/productos')
-    router.refresh()
+      let id: number
+      if (modo === 'editar' && productoId) {
+        id = parseInt(productoId)
+        const { error } = await supabase.from('productos').update(payload).eq('id', id)
+        if (error) throw error
+      } else {
+        const { data, error } = await supabase.from('productos').insert(payload).select('id').single()
+        if (error) throw error
+        id = data!.id
+      }
+
+      const fotosUrls: string[] = []
+
+      for (const f of fotos) {
+        if (f.file) {
+          const ext = f.file.name.split('.').pop() || 'jpg'
+          const path = `${id}/${Date.now()}-${Math.random().toString(36).slice(2, 6)}.${ext}`
+          const url = await uploadFile(path, f.file)
+          fotosUrls.push(url)
+        } else {
+          fotosUrls.push(f.url)
+        }
+      }
+
+      let videoFinal = videoUrl
+      if (videoFile) {
+        const ext = videoFile.name.split('.').pop() || 'mp4'
+        const path = `${id}/video.${ext}`
+        videoFinal = await uploadFile(path, videoFile)
+      }
+
+      const { error: updateError } = await supabase.from('productos').update({ fotos: fotosUrls, video: videoFinal || null }).eq('id', id)
+      if (updateError) throw updateError
+
+      router.push('/dashboard/productos')
+      router.refresh()
+    } catch (err: any) {
+      alert('Error: ' + err.message)
+    }
+    setSubiendo(false)
   }
 
   const agregarMetrica = () => setMetricas([...metricas, { nombre: '', valor: 50 }])
@@ -137,9 +214,71 @@ export default function ProductoForm({ modo, productoId }: Props) {
       </div>
 
       <div>
-        <label className="block text-sm text-[#a0a0a8] mb-1">Descripción</label>
+        <label className="block text-sm text-[#a0a0a8] mb-1">Descripción corta</label>
         <textarea value={formData.descripcion} onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
-          className="w-full bg-[#0a0a0a] border border-[#2a2d33] rounded px-3 py-2 text-white focus:border-[#d4a843] focus:outline-none rows-3" />
+          className="w-full bg-[#0a0a0a] border border-[#2a2d33] rounded px-3 py-2 text-white focus:border-[#d4a843] focus:outline-none rows-2" />
+      </div>
+
+      <div>
+        <label className="block text-sm text-[#a0a0a8] mb-1">Descripción detallada</label>
+        <textarea value={formData.descripcion_detallada} onChange={(e) => setFormData({ ...formData, descripcion_detallada: e.target.value })}
+          className="w-full bg-[#0a0a0a] border border-[#2a2d33] rounded px-3 py-2 text-white focus:border-[#d4a843] focus:outline-none rows-4"
+          placeholder="Descripción larga que se muestra en el detalle del producto..." />
+      </div>
+
+      <div className="bg-[#1a1d23] border border-[#2a2d33] rounded-lg p-4">
+        <div className="flex items-center justify-between mb-3">
+          <label className="text-sm text-[#a0a0a8] font-medium">Fotos del producto</label>
+          <div className="flex gap-2">
+            <button type="button" onClick={() => fotoInputRef.current?.click()}
+              className="text-xs bg-[#d4a843] text-black px-3 py-1 rounded font-semibold hover:brightness-110">+ Subir fotos</button>
+            <button type="button" onClick={agregarUrlFoto}
+              className="text-xs border border-[#2a2d33] text-[#a0a0a8] px-3 py-1 rounded hover:text-white">+ URL</button>
+          </div>
+        </div>
+        <input ref={fotoInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFotosSelected} />
+        {fotos.length === 0 ? (
+          <p className="text-[#a0a0a8] text-sm">Sin fotos.</p>
+        ) : (
+          <div className="grid grid-cols-3 gap-2">
+            {fotos.map((f, i) => (
+              <div key={f.id} className="relative group aspect-square bg-[#0a0a0a] rounded overflow-hidden">
+                <img src={f.url} className="w-full h-full object-cover" alt="" />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100">
+                  {i > 0 && <button type="button" onClick={() => reordenarFoto(i, -1)} className="text-white text-lg bg-black/50 w-6 h-6 rounded flex items-center justify-center">◀</button>}
+                  {i < fotos.length - 1 && <button type="button" onClick={() => reordenarFoto(i, 1)} className="text-white text-lg bg-black/50 w-6 h-6 rounded flex items-center justify-center">▶</button>}
+                  <button type="button" onClick={() => quitarFoto(f.id)} className="text-red-400 text-lg bg-black/50 w-6 h-6 rounded flex items-center justify-center">✕</button>
+                </div>
+                {f.file && <span className="absolute bottom-0 left-0 text-[9px] bg-[#d4a843] text-black px-1 rounded-tr">nuevo</span>}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="bg-[#1a1d23] border border-[#2a2d33] rounded-lg p-4">
+        <div className="flex items-center justify-between mb-3">
+          <label className="text-sm text-[#a0a0a8] font-medium">Video del producto</label>
+          <div className="flex gap-2">
+            <button type="button" onClick={() => videoInputRef.current?.click()}
+              className="text-xs bg-[#d4a843] text-black px-3 py-1 rounded font-semibold hover:brightness-110">+ Subir video</button>
+          </div>
+        </div>
+        <input ref={videoInputRef} type="file" accept="video/*" className="hidden" onChange={(e) => {
+          const f = e.target.files?.[0]
+          if (f) { setVideoFile(f); setVideoUrl(URL.createObjectURL(f)) }
+          if (e.target) e.target.value = ''
+        }} />
+        <input value={videoUrl} onChange={(e) => { setVideoUrl(e.target.value); setVideoFile(null) }}
+          placeholder="O pegá una URL de video..."
+          className="w-full bg-[#0a0a0a] border border-[#2a2d33] rounded px-3 py-2 text-white text-sm focus:border-[#d4a843] focus:outline-none" />
+        {videoUrl && (
+          <div className="mt-2 relative">
+            <video src={videoUrl} controls className="w-full max-h-48 rounded" />
+            <button type="button" onClick={() => { setVideoUrl(''); setVideoFile(null) }} className="absolute top-1 right-1 text-red-400 bg-black/60 w-6 h-6 rounded text-sm">✕</button>
+          </div>
+        )}
+        {videoFile && <p className="text-xs text-[#d4a843] mt-1">Archivo: {videoFile.name}</p>}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -222,9 +361,9 @@ export default function ProductoForm({ modo, productoId }: Props) {
         Producto disponible (en stock)
       </label>
 
-      <button type="submit"
-        className="bg-[#d4a843] text-black px-6 py-2 rounded font-semibold hover:brightness-110 transition-all">
-        {modo === 'editar' ? 'Guardar cambios' : 'Guardar producto'}
+      <button type="submit" disabled={subiendo}
+        className="bg-[#d4a843] text-black px-6 py-2 rounded font-semibold hover:brightness-110 transition-all disabled:opacity-50">
+        {subiendo ? 'Guardando...' : modo === 'editar' ? 'Guardar cambios' : 'Guardar producto'}
       </button>
     </form>
   )
