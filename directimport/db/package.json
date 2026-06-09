@@ -1,0 +1,11 @@
+{
+  "name": "directimport-db-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test --env-file=.env tests/"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.107.0"
+  }
+}

@@ -44,3 +44,7 @@ capacitor.config.json
 
 # OpenCode
 .opencode/plugin/
+
+# Harness de tests (staging keys + captura de esquema vivo)
+directimport/db/.env
+directimport/db/_pedidos_vivo.txt
