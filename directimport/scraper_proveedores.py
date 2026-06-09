@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Buscador de precios y proveedores mayoristas en Argentina"""
+"""Buscador de precios y proveedores mayoristas en Argentina + redes sociales"""
 
 import sys
 import re
+import json
 from duckduckgo_search import DDGS
 from bs4 import BeautifulSoup
 import requests
@@ -49,6 +50,158 @@ def buscar_ml(query: str):
         print(f"  [ML] Error: {e}")
     return []
 
+def buscar_redes_sociales(query: str):
+    """Busca en redes sociales usando DuckDuckGo con site operators"""
+    print(f"\n>>> Buscando en redes sociales: {query[:50]}...")
+    resultados = []
+    sites = [
+        ("Instagram", "site:instagram.com"),
+        ("Facebook", "site:facebook.com"),
+        ("TikTok", "site:tiktok.com"),
+        ("WhatsApp", "site:whatsapp.com OR site:chat.whatsapp.com"),
+        ("Telegram", "site:t.me OR site:telegram.me"),
+        ("YouTube", "site:youtube.com"),
+        ("Pinterest", "site:pinterest.com"),
+        ("Twitter/X", "site:twitter.com OR site:x.com"),
+    ]
+    for red, site_op in sites:
+        q = f"{query} ({site_op}) Argentina"
+        try:
+            with DDGS() as ddgs:
+                for r in ddgs.text(q, region="ar-es", max_results=5):
+                    resultados.append({
+                        "red": red,
+                        "titulo": r.get("title", ""),
+                        "url": r.get("href", ""),
+                        "snippet": r.get("body", ""),
+                    })
+        except:
+            pass
+    return resultados
+
+def buscar_facebook_marketplace(query: str):
+    """Intenta buscar en Facebook Marketplace"""
+    print(f"\n>>> Buscando en Facebook Marketplace: {query[:50]}...")
+    url = f"https://www.facebook.com/marketplace/search/?q={requests.utils.quote(query)}"
+    resultados = []
+    try:
+        r = requests.get(url, headers=HEADERS, timeout=10)
+        if r.status_code == 200:
+            soup = BeautifulSoup(r.text, "lxml")
+            items = soup.select('[data-testid="marketplace_search_result"], .x1n2onr6, [role="article"]')
+            for item in items[:10]:
+                tit = item.get_text(strip=True)[:100]
+                link = item.find("a")
+                if tit and len(tit) > 5:
+                    resultados.append({
+                        "titulo": tit,
+                        "url": f"https://facebook.com{link.get('href','')}" if link else url,
+                        "fuente": "Facebook Marketplace",
+                    })
+        if not resultados:
+            print("  [FB] No se pudieron extraer resultados (requiere login)")
+    except Exception as e:
+        print(f"  [FB] Error: {e}")
+    return resultados
+
+def buscar_instagram(query: str):
+    """Busca perfiles y posts públicos de Instagram"""
+    print(f"\n>>> Buscando en Instagram: {query[:50]}...")
+    url = f"https://www.instagram.com/explore/search/keyword/?q={requests.utils.quote(query)}"
+    resultados = []
+    try:
+        r = requests.get(url, headers=HEADERS, timeout=10)
+        if r.status_code == 200:
+            soup = BeautifulSoup(r.text, "lxml")
+            scripts = soup.find_all("script", type="text/javascript")
+            for script in scripts:
+                if "window.__INITIAL_STATE__" in script.text:
+                    data = script.text.split("window.__INITIAL_STATE__ = ")[1].split(";</script>")[0]
+                    parsed = json.loads(data)
+                    edges = parsed.get("explore", {}).get("edge_explore", {}).get("edges", [])
+                    for edge in edges[:10]:
+                        node = edge.get("node", {})
+                        caption = node.get("edge_media_to_caption", {}).get("edges", [{}])[0].get("node", {}).get("text", "")
+                        if caption:
+                            resultados.append({
+                                "titulo": caption[:100],
+                                "url": f"https://instagram.com/p/{node.get('shortcode','')}",
+                                "fuente": "Instagram",
+                            })
+        if not resultados:
+            print("  [IG] No se pudieron extraer resultados (requiere login)")
+    except Exception as e:
+        print(f"  [IG] Error: {e}")
+    return resultados
+
+def buscar_tiktok(query: str):
+    """Busca en TikTok"""
+    print(f"\n>>> Buscando en TikTok: {query[:50]}...")
+    url = f"https://www.tiktok.com/search?q={requests.utils.quote(query)}"
+    resultados = []
+    try:
+        r = requests.get(url, headers=HEADERS, timeout=10)
+        soup = BeautifulSoup(r.text, "lxml")
+        items = soup.select('[data-e2e="search-result-item"], .search-result-item')
+        for item in items[:10]:
+            tit = item.get_text(strip=True)[:100]
+            link = item.find("a")
+            if tit and len(tit) > 5:
+                resultados.append({
+                    "titulo": tit,
+                    "url": f"https://tiktok.com{link.get('href','')}" if link else url,
+                    "fuente": "TikTok",
+                })
+        if not resultados:
+            print("  [TT] No se pudieron extraer resultados")
+    except Exception as e:
+        print(f"  [TT] Error: {e}")
+    return resultados
+
+def buscar_grupos_whatsapp(query: str):
+    """Busca grupos de WhatsApp públicos"""
+    print(f"\n>>> Buscando grupos de WhatsApp: {query[:50]}...")
+    resultados = []
+    sitios = [
+        f"whatsapp.com (group OR canal OR chat) {query}",
+        f"chat.whatsapp.com {query}",
+        f"site:chat.whatsapp.com {query}",
+    ]
+    for q in sitios:
+        try:
+            with DDGS() as ddgs:
+                for r in ddgs.text(q, region="ar-es", max_results=5):
+                    url = r.get("href", "")
+                    if "chat.whatsapp.com" in url or "whatsapp.com" in url:
+                        resultados.append({
+                            "titulo": r.get("title", ""),
+                            "url": url,
+                            "snippet": r.get("body", ""),
+                            "fuente": "WhatsApp",
+                        })
+        except:
+            pass
+    return resultados
+
+def buscar_telegram(query: str):
+    """Busca canales y grupos de Telegram"""
+    print(f"\n>>> Buscando en Telegram: {query[:50]}...")
+    resultados = []
+    try:
+        with DDGS() as ddgs:
+            for r in ddgs.text(f"site:t.me OR site:telegram.me {query} Argentina", region="ar-es", max_results=10):
+                url = r.get("href", "")
+                if "t.me" in url or "telegram.me" in url:
+                    resultados.append({
+                        "titulo": r.get("title", ""),
+                        "url": url,
+                        "snippet": r.get("body", ""),
+                        "fuente": "Telegram",
+                    })
+    except:
+        pass
+    return resultados
+
 def buscar_proveedor_directo(query: str):
     """Busca datos de contacto del proveedor"""
     print(f"\n>>> Buscando datos de contacto para: {query[:60]}...")
@@ -56,11 +209,8 @@ def buscar_proveedor_directo(query: str):
         r = requests.get(query, headers=HEADERS, timeout=10)
         if r.status_code == 200:
             text = r.text
-            # Buscar telefonos
             tels = re.findall(r'(?:\+?54)?\s*?\(?\d{2,4}\)?\s*?\d{2,4}[\s-]?\d{4}', text)
-            # Buscar emails
             emails = re.findall(r'[\w.+-]+@[\w-]+\.[\w.-]+', text)
-            # Buscar direcciones (calle + numero)
             dirs = re.findall(r'[A-Z][a-záéíóúñ]+ \d{1,5}\s*(?:,\s*[A-Z][a-záéíóúñ]+)*', text)
             if tels or emails or dirs:
                 return {"telefonos": list(set(tels))[:3], "emails": list(set(emails))[:3], "direcciones": list(set(dirs))[:3]}
@@ -68,42 +218,7 @@ def buscar_proveedor_directo(query: str):
         pass
     return None
 
-def buscar_producto(producto: str, max_usd=330):
-    sep = "=" * 70
-    print(sep)
-    print(f"BUSQUEDA: {producto}")
-    print(f"FILTRO PRECIO: < ${max_usd} USD")
-    print(sep)
-    print()
-
-    # Estrategias de busqueda
-    estrategias = [
-        f'"{producto}" proveedor mayorista Argentina',
-        f'"{producto}" precio Argentina',
-        f'distribuidor "{producto}" Argentina telefono direccion',
-        f'"{producto}" wholesale Argentina supplier',
-        f'comprar "{producto}" Argentina envio',
-    ]
-
-    todos = []
-    for q in estrategias:
-        print(f"> Buscando: {q}")
-        todos.extend(buscar_dd(q))
-        print(f"  -> {len(todos)} resultados acumulados")
-
-    # Tambien ML
-    print(f"\n> Buscando en MercadoLibre: {producto}")
-    todos.extend(buscar_ml(producto))
-
-    print(f"\n{sep}")
-    print(f"RESULTADOS ({len(todos)} total, mostrando unicos)")
-    print(sep)
-    print()
-
-    if not todos:
-        print("No se encontraron resultados.")
-        return
-
+def mostrar_resultados(todos, fuente_label):
     vistos = set()
     for i, r in enumerate(todos, 1):
         url = r.get("url", "")
@@ -111,20 +226,19 @@ def buscar_producto(producto: str, max_usd=330):
         if url in vistos:
             continue
         vistos.add(url)
-
         precio = r.get("precio", "")
         snippet = r.get("snippet", "")[:150]
-        fuente = r.get("fuente", "Web")
-
+        red = r.get("red", "")
+        src = r.get("fuente", "Web")
         print(f"--- Resultado {i} ---")
+        if red:
+            print(f"  Red: {red}")
         print(f"  Titulo: {tit}")
         if precio:
             print(f"  Precio: {precio}")
         if snippet:
             print(f"  Info: {snippet}")
         print(f"  URL: {url}")
-
-        # Intentar extraer contacto de la pagina
         if url.startswith("http") and "google" not in url and "facebook" not in url:
             contacto = buscar_proveedor_directo(url)
             if contacto:
@@ -135,6 +249,81 @@ def buscar_producto(producto: str, max_usd=330):
                 if contacto.get("direcciones"):
                     print(f"  Direccion(es): {', '.join(contacto['direcciones'])}")
         print()
+
+def buscar_producto(producto: str, max_usd=330):
+    sep = "=" * 70
+    print(sep)
+    print(f"BUSQUEDA: {producto}")
+    print(f"FILTRO PRECIO: < ${max_usd} USD")
+    print(sep)
+    print()
+
+    # --- WEB (DuckDuckGo) ---
+    estrategias = [
+        f'"{producto}" proveedor mayorista Argentina',
+        f'"{producto}" precio Argentina',
+        f'distribuidor "{producto}" Argentina telefono direccion',
+        f'"{producto}" wholesale Argentina supplier',
+        f'comprar "{producto}" Argentina envio',
+    ]
+    todos_web = []
+    for q in estrategias:
+        print(f"> Buscando en web: {q}")
+        todos_web.extend(buscar_dd(q))
+        print(f"  -> {len(todos_web)} resultados")
+
+    # --- MercadoLibre ---
+    print(f"\n> Buscando en MercadoLibre: {producto}")
+    todos_ml = buscar_ml(producto)
+    print(f"  -> {len(todos_ml)} resultados")
+
+    # --- Redes Sociales ---
+    todos_redes = buscar_redes_sociales(producto)
+    print(f"  -> {len(todos_redes)} resultados en redes")
+
+    # --- Facebook Marketplace ---
+    todos_fb = buscar_facebook_marketplace(producto)
+    if todos_fb:
+        todos_redes.extend(todos_fb)
+
+    # --- Instagram ---
+    todos_ig = buscar_instagram(producto)
+    if todos_ig:
+        todos_redes.extend(todos_ig)
+
+    # --- TikTok ---
+    todos_tt = buscar_tiktok(producto)
+    if todos_tt:
+        todos_redes.extend(todos_tt)
+
+    # --- WhatsApp ---
+    todos_wa = buscar_grupos_whatsapp(producto)
+    if todos_wa:
+        todos_redes.extend(todos_wa)
+
+    # --- Telegram ---
+    todos_tg = buscar_telegram(producto)
+    if todos_tg:
+        todos_redes.extend(todos_tg)
+
+    # --- Mostrar resultados ---
+    print(f"\n{sep}")
+    print(f"RESULTADOS WEB ({len(todos_web)} total)")
+    print(sep)
+    mostrar_resultados(todos_web, "Web")
+
+    print(f"\n{sep}")
+    print(f"MERCADOLIBRE ({len(todos_ml)} resultados)")
+    print(sep)
+    mostrar_resultados(todos_ml, "ML")
+
+    print(f"\n{sep}")
+    print(f"REDES SOCIALES ({len(todos_redes)} resultados)")
+    print(sep)
+    mostrar_resultados(todos_redes, "Redes")
+
+    if not todos_web and not todos_ml and not todos_redes:
+        print("No se encontraron resultados.")
 
 def main():
     if len(sys.argv) < 2:
