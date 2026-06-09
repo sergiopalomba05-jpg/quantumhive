@@ -4,9 +4,21 @@
 import sys
 import re
 import json
+import os
 from duckduckgo_search import DDGS
 from bs4 import BeautifulSoup
 import requests
+
+# Meta API (Facebook + Instagram) - opcional
+try:
+    from meta_api import (
+        buscar_producto_en_redes as buscar_meta_redes,
+        test_conexion as test_meta_conexion,
+        esta_configurado as meta_configurado,
+    )
+    META_DISPONIBLE = True
+except ImportError:
+    META_DISPONIBLE = False
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
@@ -281,6 +293,15 @@ def buscar_producto(producto: str, max_usd=330):
     todos_redes = buscar_redes_sociales(producto)
     print(f"  -> {len(todos_redes)} resultados en redes")
 
+    # --- Meta API (Facebook + Instagram oficial) ---
+    if META_DISPONIBLE and meta_configurado():
+        print(f"\n> Buscando via Meta API (Facebook/Instagram): {producto[:60]}")
+        meta_results = buscar_meta_redes(producto)
+        todos_redes.extend(meta_results)
+        print(f"  -> {len(meta_results)} resultados via Meta API")
+    elif META_DISPONIBLE:
+        print(f"\n> Meta API no configurada - crear .env con META_ACCESS_TOKEN")
+
     # --- Facebook Marketplace ---
     todos_fb = buscar_facebook_marketplace(producto)
     if todos_fb:
@@ -330,7 +351,40 @@ def main():
         print("Uso: python scraper_proveedores.py <producto>")
         print("Ej: python scraper_proveedores.py rayban meta wayfarer gen 1")
         print("Ej: python scraper_proveedores.py airpods pro 2 mayorista")
+        print()
+        print("Opciones:")
+        print("  --test-meta    Probar conexion con Meta API (Facebook/Instagram)")
+        print("  --configure    Mostrar instrucciones para configurar Meta API")
         sys.exit(1)
+
+    if sys.argv[1] == "--test-meta":
+        if not META_DISPONIBLE:
+            print("ERROR: meta_api.py no encontrado")
+            sys.exit(1)
+        ok, msg = test_meta_conexion()
+        print(f"Conexion Meta API: {'OK' if ok else 'FALLO'}")
+        print(msg)
+        sys.exit(0)
+
+    if sys.argv[1] == "--configure":
+        print("=" * 60)
+        print("CONFIGURAR META API (Facebook + Instagram)")
+        print("=" * 60)
+        print()
+        print("1. Anda a https://developers.facebook.com")
+        print("2. Crea una cuenta de desarrollador (si no tenes)")
+        print("3. Crea una nueva app -> Tipo: Negocio")
+        print("4. Agrega el producto 'Facebook Login'")
+        print("5. Copia el App ID y App Secret")
+        print("6. Genera un User Access Token (Settings > Advanced)")
+        print("7. Si queres Instagram: agrega 'Instagram Basic Display'")
+        print()
+        print("Luego copiá .env.meta.example a .env y completa los datos:")
+        print("  cp .env.meta.example .env")
+        print("  (y edita .env con tus credenciales)")
+        print()
+        print("Despues proba con: python scraper_proveedores.py --test-meta")
+        sys.exit(0)
 
     query = " ".join(sys.argv[1:])
     buscar_producto(query)
