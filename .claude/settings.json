@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(supabase projects list*)",
+      "Bash(supabase projects api-keys*)",
+      "Bash(git check-ignore*)"
+    ]
+  }
+}
