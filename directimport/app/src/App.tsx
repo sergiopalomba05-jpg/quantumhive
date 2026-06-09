@@ -54,6 +54,7 @@ function App() {
   const [productoDetalle, setProductoDetalle] = useState<Producto | null>(null)
   const [fotoActual, setFotoActual] = useState(0)
   const [touchStartX, setTouchStartX] = useState(0)
+  const [pedidoExpandido, setPedidoExpandido] = useState<number | null>(null)
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -142,6 +143,12 @@ function App() {
       setTodosSf(data ?? [])
     })
   }, [rubroActivo])
+
+  useEffect(() => {
+    if (vista === 'pedidos' && revendedor && revendedor.plan_id >= 2) {
+      supabase.from('pedidos').select('*').eq('revendedor_id', revendedor.id).order('created_at', { ascending: false }).then(({ data }) => setMisPedidos(data ?? []))
+    }
+  }, [vista, revendedor])
 
   const hijosDe = (parentId: number | null) =>
     todosSf.filter((sf) => sf.parent_id == parentId)
@@ -242,14 +249,6 @@ function App() {
     return <MiTienda userId={session.user.id} onBack={() => setVista('catalogo')} />
   }
 
-  const [pedidoExpandido, setPedidoExpandido] = useState<number | null>(null)
-
-  useEffect(() => {
-    if (vista === 'pedidos' && revendedor && revendedor.plan_id >= 2) {
-      supabase.from('pedidos').select('*').eq('revendedor_id', revendedor.id).order('created_at', { ascending: false }).then(({ data }) => setMisPedidos(data ?? []))
-    }
-  }, [vista, revendedor])
-
   const coloresEstado: Record<string, string> = {
     pendiente: '#d4a843', confirmado: '#4a9eff', enviado: '#a855f7', entregado: '#4caf50', cancelado: '#ef4444',
   }
@@ -326,7 +325,7 @@ function App() {
             <>
               <p><strong>Negocio:</strong> {revendedor.nombre_negocio}</p>
               <p><strong>Codigo:</strong> {revendedor.codigo_unico}</p>
-              <p><strong>Plan:</strong> {['Basico', 'Pro', 'Premium', 'Ultra'][(revendedor.plan_id || 1) - 1]}</p>
+              <p><strong>Plan:</strong> {['Básico', 'Pro', 'Pro Plus', 'Ultra'][(revendedor.plan_id || 1) - 1]}</p>
               <p style={{ fontSize: 12, color: '#888', marginTop: -4 }}>
                 {revendedor.plan_id === 1 && 'Compra mayorista sin tienda propia'}
                 {revendedor.plan_id === 2 && 'Fija tus precios + link de tienda'}

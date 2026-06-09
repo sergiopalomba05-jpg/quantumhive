@@ -34,7 +34,7 @@ export default function Auth({ onLogin }: Props) {
           whatsapp,
         })
         if (revErr) { setError('Error: ' + revErr.message); return }
-        setError('Cuenta creada. Revisa tu email para confirmar.')
+        setError('Solicitud enviada. Confirmá tu email; tu cuenta queda pendiente de aprobación y te avisamos cuando puedas empezar a vender.')
         setModo('login')
       } else {
         const { error: authErr } = await supabase.auth.signInWithPassword({ email, password })
