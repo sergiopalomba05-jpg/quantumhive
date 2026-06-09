@@ -48,3 +48,9 @@ capacitor.config.json
 # Harness de tests (staging keys + captura de esquema vivo)
 directimport/db/.env
 directimport/db/_pedidos_vivo.txt
+
+# Backups locales de prod (contienen PII de compradores) — JAMÁS al repo
+directimport/db/_backup_prod_*/
+directimport/db/.ultimo_backup.txt
+# Temporales con secretos (tokens, passwords) — JAMÁS al repo
+directimport/db/*.tmp
