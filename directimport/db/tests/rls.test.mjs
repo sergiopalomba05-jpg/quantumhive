@@ -100,16 +100,21 @@ test('un revendedor NO puede crear productos madre (revendedor_id NULL)', async 
 
 test('un comprador anónimo puede crear un pedido con sus líneas', async () => {
   const buyer = anonClient()
-  const { data: pedido, error } = await buyer.from('pedidos')
-    .insert({ nombre: 'Comprador', whatsapp: '+5491100000001', total: 500 })
-    .select().single()
+  // No se usa .select() tras el insert: por diseño anon NO puede LEER pedidos
+  // (aislamiento de PII de otros compradores). El INSERT ... RETURNING que dispara
+  // .select() exigiría una SELECT policy pública, que rompería ese aislamiento.
+  // El id se resuelve fuera de banda; en el app real es F3.2 (RPC/backend).
+  const marca = 'anon-' + Date.now()
+  const { error } = await buyer.from('pedidos')
+    .insert({ nombre: marca, whatsapp: '+5491100000001', total: 500 })
   assert.equal(error, null, 'el público debe poder crear pedido')
+  const { data: ped } = await admin.from('pedidos').select('id').eq('nombre', marca).single()
   const { error: e2 } = await buyer.from('pedido_items').insert({
-    pedido_id: pedido.id, producto_id: null, proveedor_id: null,
+    pedido_id: ped.id, producto_id: null, proveedor_id: null,
     nombre_snapshot: 'Item', precio_snapshot: 250, cantidad: 2, subtotal: 500,
   })
   assert.equal(e2, null, 'el público debe poder agregar líneas')
-  await admin.from('pedidos').delete().eq('id', pedido.id)
+  await admin.from('pedidos').delete().eq('id', ped.id)
 })
 
 test('un revendedor NO ve pedidos de otra tienda', async () => {
