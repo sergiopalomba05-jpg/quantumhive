@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { supabase } from './lib/supabase'
 import Auth from './Auth'
 import MiTienda from './MiTienda'
+import Planes from './Planes'
 import './App.css'
 
 type Rubro = { id: number; nombre: string }
@@ -36,7 +37,7 @@ function App() {
   const [rubroActivo, setRubroActivo] = useState<number | null>(null)
   const [ruta, setRuta] = useState<{ id: number | null; nombre: string }[]>([])
   const [cart, setCart] = useState<CartItem[]>(cargarCarrito)
-  type Vista = 'catalogo' | 'carrito' | 'checkout' | 'auth' | 'mitienda' | 'pedidos' | 'perfil'
+  type Vista = 'catalogo' | 'carrito' | 'checkout' | 'auth' | 'mitienda' | 'pedidos' | 'perfil' | 'planes'
   const [vista, setVista] = useState<Vista>('catalogo')
   const [nombre, setNombre] = useState('')
   const [whatsapp, setWhatsapp] = useState('')
@@ -269,6 +270,10 @@ function App() {
     return <MiTienda userId={session.user.id} onBack={() => setVista('catalogo')} />
   }
 
+  if (vista === 'planes' && session?.user) {
+    return <Planes revendedorId={revendedor?.id ?? null} email={session.user.email ?? ''} planActual={revendedor?.plan_id ?? null} onBack={() => setVista('perfil')} />
+  }
+
   const coloresEstado: Record<string, string> = {
     pendiente: '#d4a843', confirmado: '#4a9eff', enviado: '#a855f7', entregado: '#4caf50', cancelado: '#ef4444',
   }
@@ -365,7 +370,12 @@ function App() {
             </>
           )}
           {!revendedor && <p>Email: {session.user.email}</p>}
-          <button className="btn-primary btn-full" style={{ marginTop: 20 }} onClick={async () => { await supabase.auth.signOut(); setRevendedor(null); setVista('catalogo') }}>
+          {revendedor && (
+            <button className="btn-primary btn-full" style={{ marginTop: 20 }} onClick={() => setVista('planes')}>
+              Ver planes y suscripción
+            </button>
+          )}
+          <button className="btn-primary btn-full" style={{ marginTop: 12 }} onClick={async () => { await supabase.auth.signOut(); setRevendedor(null); setVista('catalogo') }}>
             Cerrar sesion
           </button>
         </div>
