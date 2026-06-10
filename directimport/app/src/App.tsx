@@ -519,7 +519,12 @@ function App() {
         </div>
       )}
       <div className="header-between">
-        <h1 className="logo">{linkRev?.nombre_negocio || 'Directimport'}</h1>
+        <div className="logo-area">
+          {linkRev?.logo_url && (
+            <img src={linkRev.logo_url} alt={linkRev.nombre_negocio} className="header-logo" />
+          )}
+          <h1 className="logo">{linkRev?.nombre_negocio || 'Directimport'}</h1>
+        </div>
         <div className="header-right">
           {session ? (
             <button className="btn-user" onClick={() => setVista('perfil')}>
@@ -707,6 +712,9 @@ function App() {
           <button className="nav-item" onClick={() => setVista('auth')}>Ingresar</button>
         )}
       </nav>
+      {linkRev && linkRev.plan_id < 3 && (
+        <div className="powered-by">Powered by Directimport</div>
+      )}
     </div>
   )
 }

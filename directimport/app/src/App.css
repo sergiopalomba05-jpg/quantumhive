@@ -1,3 +1,9 @@
+:root {
+  --color-accent: #d4a843;
+  --color-bg: #0a0a0a;
+  --color-text: #ffffff;
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
@@ -24,7 +30,7 @@ body {
 .logo {
   font-size: 20px;
   font-weight: 700;
-  color: #d4a843;
+  color: var(--color-accent);
 }
 
 .cart-icon {
@@ -40,7 +46,7 @@ body {
   position: absolute;
   top: -4px;
   right: -8px;
-  background: #d4a843;
+  background: var(--color-accent);
   color: #000;
   font-size: 11px;
   font-weight: 700;
@@ -55,7 +61,7 @@ body {
 .btn-back {
   background: none;
   border: none;
-  color: #d4a843;
+  color: var(--color-accent);
   font-size: 14px;
   cursor: pointer;
   padding: 0;
@@ -81,9 +87,9 @@ body {
 }
 
 .rubro-btn.active {
-  background: #d4a843;
+  background: var(--color-accent);
   color: #000;
-  border-color: #d4a843;
+  border-color: var(--color-accent);
   font-weight: 600;
 }
 
@@ -100,7 +106,7 @@ body {
 .breadcrumb-link {
   background: none;
   border: none;
-  color: #d4a843;
+  color: var(--color-accent);
   font-size: 12px;
   cursor: pointer;
   padding: 0;
@@ -129,7 +135,7 @@ body {
 
 .subfiltro-btn.active {
   background: #d4a84320;
-  color: #d4a843;
+  color: var(--color-accent);
   font-weight: 600;
 }
 
@@ -149,7 +155,7 @@ body {
 
 .metrica-bar {
   height: 100%;
-  background: linear-gradient(90deg, #d4a843, #f0d080);
+  background: linear-gradient(90deg, var(--color-accent), #f0d080);
   border-radius: 3px;
   transition: width 0.5s ease;
 }
@@ -210,7 +216,7 @@ body {
 .producto-precio {
   font-size: 16px;
   font-weight: 700;
-  color: #d4a843;
+  color: var(--color-accent);
 }
 
 .producto-desc {
@@ -245,9 +251,9 @@ body {
   margin: 0 10px 10px;
   padding: 8px;
   border-radius: 8px;
-  border: 1px solid #d4a843;
+  border: 1px solid var(--color-accent);
   background: transparent;
-  color: #d4a843;
+  color: var(--color-accent);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -255,7 +261,7 @@ body {
 }
 
 .btn-add-cart:hover {
-  background: #d4a843;
+  background: var(--color-accent);
   color: #000;
 }
 
@@ -323,7 +329,7 @@ body {
 .cart-item-precio {
   font-size: 14px;
   font-weight: 600;
-  color: #d4a843;
+  color: var(--color-accent);
   margin-top: 2px;
 }
 
@@ -373,7 +379,7 @@ body {
 }
 
 .cart-total-price {
-  color: #d4a843;
+  color: var(--color-accent);
 }
 
 /* Buttons */
@@ -381,7 +387,7 @@ body {
   padding: 14px 24px;
   border-radius: 10px;
   border: none;
-  background: #d4a843;
+  background: var(--color-accent);
   color: #000;
   font-size: 16px;
   font-weight: 700;
@@ -429,7 +435,7 @@ body {
 
 .checkout-form input:focus,
 .checkout-form textarea:focus {
-  border-color: #d4a843;
+  border-color: var(--color-accent);
 }
 
 .checkout-form input::placeholder,
@@ -450,7 +456,7 @@ body {
 .checkout-total {
   font-size: 20px;
   font-weight: 700;
-  color: #d4a843;
+  color: var(--color-accent);
 }
 
 /* Exito screen */
@@ -467,7 +473,7 @@ body {
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: #d4a843;
+  background: var(--color-accent);
   color: #000;
   font-size: 32px;
   font-weight: 700;
@@ -511,7 +517,7 @@ body {
 }
 
 .nav-item.active {
-  color: #d4a843;
+  color: var(--color-accent);
   font-weight: 600;
 }
 
@@ -519,7 +525,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #d4a843;
+  background: var(--color-accent);
   color: #000;
   padding: 10px 16px;
   font-size: 13px;
@@ -528,7 +534,7 @@ body {
 .install-banner span { flex: 1; }
 .install-btn {
   background: #000;
-  color: #d4a843;
+  color: var(--color-accent);
   border: none;
   border-radius: 6px;
   padding: 6px 14px;
@@ -580,7 +586,7 @@ body {
   outline: none;
 }
 .auth-form input:focus {
-  border-color: #d4a843;
+  border-color: var(--color-accent);
 }
 .auth-btn {
   width: 100%;
@@ -601,7 +607,7 @@ body {
 .auth-toggle button {
   background: none;
   border: none;
-  color: #d4a843;
+  color: var(--color-accent);
   cursor: pointer;
   font-size: 13px;
   text-decoration: underline;
@@ -627,7 +633,7 @@ body {
 .tienda-nombre {
   font-size: 20px;
   font-weight: 700;
-  color: #d4a843;
+  color: var(--color-accent);
   margin-bottom: 10px;
 }
 .tienda-link {
@@ -666,10 +672,10 @@ body {
   transition: all .2s;
 }
 .tienda-btn:hover {
-  border-color: #d4a843;
+  border-color: var(--color-accent);
 }
 .btn-small {
-  background: #d4a843;
+  background: var(--color-accent);
   border: none;
   border-radius: 6px;
   padding: 6px 12px;
@@ -679,7 +685,7 @@ body {
   cursor: pointer;
 }
 .toast {
-  background: #d4a843;
+  background: var(--color-accent);
   color: #000;
   text-align: center;
   padding: 8px;
@@ -692,7 +698,7 @@ body {
 .precios-editor h3, .personalizar-editor h3 {
   font-size: 16px;
   margin-bottom: 12px;
-  color: #d4a843;
+  color: var(--color-accent);
 }
 .precio-row {
   display: flex;
@@ -759,7 +765,7 @@ body {
   padding: 16px;
 }
 .plan-card.plan-activo {
-  border-color: #d4a843;
+  border-color: var(--color-accent);
 }
 .plan-header {
   display: flex;
@@ -773,7 +779,7 @@ body {
 }
 .plan-precio {
   font-size: 13px;
-  color: #d4a843;
+  color: var(--color-accent);
   font-weight: 600;
 }
 .plan-desc {
@@ -815,7 +821,7 @@ body {
 .tienda-nombre-sm {
   font-size: 14px;
   font-weight: 600;
-  color: #d4a843;
+  color: var(--color-accent);
 }
 .tienda-bar-actions {
   display: flex;
@@ -832,9 +838,9 @@ body {
   white-space: nowrap;
 }
 .btn-sm-active {
-  background: #d4a843;
+  background: var(--color-accent);
   color: #000;
-  border-color: #d4a843;
+  border-color: var(--color-accent);
   font-weight: 600;
 }
 .tienda-link-bar {
@@ -864,7 +870,7 @@ body {
 .producto-tu-precio {
   font-size: 13px;
   font-weight: 600;
-  color: #d4a843;
+  color: var(--color-accent);
   margin-top: 4px;
 }
 .precios-edit {
@@ -893,16 +899,16 @@ body {
 .btn-add-prod {
   padding: 6px 10px;
   border-radius: 6px;
-  border: 1px solid #d4a843;
+  border: 1px solid var(--color-accent);
   background: transparent;
-  color: #d4a843;
+  color: var(--color-accent);
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
 }
 .btn-add-prod:hover {
-  background: #d4a843;
+  background: var(--color-accent);
   color: #000;
 }
 .btn-remove-prod {
@@ -964,7 +970,7 @@ body {
   color: #a0a0a8;
 }
 .pedido-total {
-  color: #d4a843;
+  color: var(--color-accent);
   font-weight: 600;
 }
 .pedido-card-expand {
@@ -988,7 +994,7 @@ body {
   color: #a0a0a8;
 }
 .pedido-detalle-row .link {
-  color: #d4a843;
+  color: var(--color-accent);
   text-decoration: none;
 }
 .pedido-items-list {
@@ -1015,7 +1021,7 @@ body {
   text-align: center;
 }
 .pedido-item-precio {
-  color: #d4a843;
+  color: var(--color-accent);
   font-weight: 600;
   min-width: 60px;
   text-align: right;
@@ -1044,7 +1050,7 @@ body {
   transition: all 0.2s;
 }
 .btn-detail:hover {
-  border-color: #d4a843;
+  border-color: var(--color-accent);
   color: #fff;
 }
 
@@ -1141,7 +1147,7 @@ body {
   transition: background 0.2s;
 }
 .dot.active {
-  background: #d4a843;
+  background: var(--color-accent);
   width: 20px;
   border-radius: 4px;
 }
@@ -1165,7 +1171,7 @@ body {
 .detalle-precio {
   font-size: 22px;
   font-weight: 700;
-  color: #d4a843;
+  color: var(--color-accent);
   margin-bottom: 12px;
 }
 .detalle-desc {
@@ -1186,4 +1192,30 @@ body {
   flex-direction: column;
   gap: 8px;
   margin-bottom: 16px;
+}
+
+/* White-label badge */
+.powered-by {
+  position: fixed;
+  bottom: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: #444;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Logo del revendedor en header */
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.header-logo {
+  height: 26px;
+  width: auto;
+  object-fit: contain;
+  border-radius: 4px;
 }
