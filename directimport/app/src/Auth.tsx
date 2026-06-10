@@ -10,6 +10,7 @@ export default function Auth({ onLogin }: Props) {
   const [password, setPassword] = useState('')
   const [nombre, setNombre] = useState('')
   const [whatsapp, setWhatsapp] = useState('')
+  const [referido, setReferido] = useState('')
   const [modo, setModo] = useState<'login' | 'registro'>('login')
   const [error, setError] = useState('')
   const [cargando, setCargando] = useState(false)
@@ -32,6 +33,7 @@ export default function Auth({ onLogin }: Props) {
           plan_id: 1,
           nombre_negocio: nombre || 'Mi negocio',
           whatsapp,
+          referido_por: referido.trim() || null,
         })
         if (revErr) { setError('Error: ' + revErr.message); return }
         setError('Solicitud enviada. Confirmá tu email; tu cuenta queda pendiente de aprobación y te avisamos cuando puedas empezar a vender.')
@@ -70,6 +72,10 @@ export default function Auth({ onLogin }: Props) {
               <input
                 type="tel" placeholder="WhatsApp" value={whatsapp}
                 onChange={e => setWhatsapp(e.target.value)}
+              />
+              <input
+                type="text" placeholder="Código de referido (opcional)" value={referido}
+                onChange={e => setReferido(e.target.value.toUpperCase())}
               />
             </>
           )}
