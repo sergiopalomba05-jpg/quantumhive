@@ -56,6 +56,9 @@ function App() {
   const [fotoActual, setFotoActual] = useState(0)
   const [touchStartX, setTouchStartX] = useState(0)
   const [pedidoExpandido, setPedidoExpandido] = useState<number | null>(null)
+  const [pedidoExitoId, setPedidoExitoId] = useState<number | null>(null)
+  const [itemsExito, setItemsExito] = useState<{ nombre: string; cantidad: number; precio: number }[]>([])
+  const [pagando, setPagando] = useState(false)
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -240,8 +243,22 @@ function App() {
     if (!error) {
       setExito(true)
       setExitoRef('#' + (data ? String(data) : Date.now().toString(36).slice(-4).toUpperCase()))
+      setPedidoExitoId(data ?? null)
+      setItemsExito(cart.map((i) => ({ nombre: i.producto.nombre, cantidad: i.cantidad, precio: Number(precioProducto(i.producto)) })))
       setCart([])
     }
+  }
+
+  const pagarConMP = async () => {
+    if (!pedidoExitoId) return
+    setPagando(true)
+    const { data } = await supabase.functions.invoke('crear-preferencia-pedido', {
+      body: { pedido_id: pedidoExitoId, items: itemsExito, nombre },
+    })
+    setPagando(false)
+    const url = (data as any)?.init_point || (data as any)?.sandbox_init_point
+    if (url) window.location.href = url
+    else alert('No se pudo iniciar el pago online. Coordinamos por WhatsApp y te ayudamos.')
   }
 
   if (vista === 'auth') {
@@ -362,8 +379,13 @@ function App() {
         <div className="exito-screen">
           <div className="exito-icon">✓</div>
           <h2>Pedido enviado</h2>
-          <p>Pedido {exitoRef} registrado. Te vamos a contactar por WhatsApp para coordinar el pago y la entrega.</p>
-          <button className="btn-primary" onClick={() => { setExito(false); setExitoRef(''); setVista('catalogo'); setNombre(''); setWhatsapp(''); setDireccion(''); setNotas('') }}>
+          <p>Pedido {exitoRef} registrado. Pagá ahora online o coordinamos por WhatsApp el pago y la entrega.</p>
+          {pedidoExitoId && (
+            <button className="btn-primary btn-full" disabled={pagando} onClick={pagarConMP} style={{ marginBottom: 10 }}>
+              {pagando ? 'Abriendo pago...' : '💳 Pagar con Mercado Pago'}
+            </button>
+          )}
+          <button className="btn-primary" onClick={() => { setExito(false); setExitoRef(''); setPedidoExitoId(null); setVista('catalogo'); setNombre(''); setWhatsapp(''); setDireccion(''); setNotas('') }}>
             Seguir comprando
           </button>
         </div>
