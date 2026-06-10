@@ -31,6 +31,11 @@ export default function ProductosPage() {
     cargar()
   }
 
+  const toggleStock = async (id: number, actual: boolean) => {
+    await supabase.from('productos').update({ estado_stock: !actual }).eq('id', id)
+    setProductos(prev => prev.map(p => p.id === id ? { ...p, estado_stock: !actual } : p))
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -77,9 +82,13 @@ export default function ProductosPage() {
                   )}
                 </td>
                 <td className="px-4 py-3">
-                  <span className={`px-2 py-0.5 rounded text-xs ${p.estado_stock ? 'bg-green-900/50 text-green-400' : 'bg-red-900/50 text-red-400'}`}>
-                    {p.estado_stock ? 'Disponible' : 'Sin stock'}
-                  </span>
+                  <button
+                    onClick={() => toggleStock(p.id, p.estado_stock)}
+                    title="Clic para cambiar"
+                    className={`px-2 py-0.5 rounded text-xs cursor-pointer hover:brightness-125 transition-all ${p.estado_stock ? 'bg-green-900/50 text-green-400' : 'bg-red-900/50 text-red-400'}`}
+                  >
+                    {p.estado_stock ? '✓ Disponible' : '✕ Sin stock'}
+                  </button>
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
