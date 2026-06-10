@@ -16,6 +16,7 @@ type Producto = {
 type Revendedor = {
   id: number; user_id: string; codigo_unico: string; nombre_negocio: string
   plan_id: number; logo_url: string | null; colores: any; whatsapp: string | null
+  estado: string
 }
 type CartItem = { producto: Producto; cantidad: number }
 
@@ -325,6 +326,15 @@ function App() {
         <div className="perfil-screen">
           {revendedor && (
             <>
+              {revendedor.estado !== 'activo' && (
+                <p style={{ background: '#2a2410', border: '1px solid #d4a843', borderRadius: 8, padding: 10, color: '#d4a843', fontSize: 13 }}>
+                  {revendedor.estado === 'pendiente_aprobacion' && '⏳ Tu cuenta está pendiente de aprobación. Te avisamos cuando puedas empezar a vender.'}
+                  {revendedor.estado === 'pago_pendiente' && '💳 Tu cuenta fue aprobada. Falta confirmar el pago para activarla.'}
+                  {revendedor.estado === 'rechazado' && '❌ Tu solicitud fue rechazada. Escribinos para más información.'}
+                  {revendedor.estado === 'suspendido' && '⏸️ Tu cuenta está suspendida. Reactivá tu suscripción para recuperar tu tienda.'}
+                  {revendedor.estado === 'aprobado' && '✅ Tu cuenta fue aprobada. En breve se activa tu tienda.'}
+                </p>
+              )}
               <p><strong>Negocio:</strong> {revendedor.nombre_negocio}</p>
               <p><strong>Codigo:</strong> {revendedor.codigo_unico}</p>
               <p><strong>Plan:</strong> {['Básico', 'Pro', 'Pro Plus', 'Ultra'][(revendedor.plan_id || 1) - 1]}</p>
@@ -655,7 +665,7 @@ function App() {
 
       <nav className="bottom-nav">
         <button className="nav-item active" onClick={() => setVista('catalogo')}>Catalogo</button>
-        {session && revendedor && (
+        {session && revendedor && revendedor.estado === 'activo' && (
           <button className="nav-item" onClick={() => setVista('mitienda')}>Mi Tienda</button>
         )}
         <button className="nav-item" onClick={() => setVista('pedidos')}>Mis pedidos</button>
