@@ -125,3 +125,26 @@ test('un revendedor NO ve pedidos de otra tienda', async () => {
   assert.equal((visibles || []).length, 0, 'no debe ver pedidos de otra tienda')
   await admin.from('pedidos').delete().eq('id', ped.id)
 })
+
+test('un comprador anónimo crea pedido + líneas vía RPC crear_pedido (con proveedor_id)', async () => {
+  const buyer = anonClient()
+  const { data: prov } = await admin.from('proveedores').insert({ nombre: 'ProvRPC' }).select().single()
+  const { data: prod } = await admin.from('productos')
+    .insert({ rubro_id: 1, nombre: 'ProdRPC', precio_base: 100, proveedor_id: prov.id }).select().single()
+
+  const { data: pedidoId, error } = await buyer.rpc('crear_pedido', {
+    p_nombre: 'Comprador RPC', p_whatsapp: '+5491100000002', p_total: 200,
+    p_items: [{ id: prod.id, nombre: 'ProdRPC', precio: 100, cantidad: 2 }],
+  })
+  assert.equal(error, null, 'el anónimo debe poder llamar crear_pedido')
+  assert.ok(pedidoId, 'crear_pedido devuelve el id del pedido')
+
+  const { data: items } = await admin.from('pedido_items').select('*').eq('pedido_id', pedidoId)
+  assert.equal((items || []).length, 1, 'debe crear 1 línea')
+  assert.equal(Number(items[0].proveedor_id), Number(prov.id), 'la línea arrastra el proveedor_id del producto')
+  assert.equal(Number(items[0].cantidad), 2)
+
+  await admin.from('pedidos').delete().eq('id', pedidoId)
+  await admin.from('productos').delete().eq('id', prod.id)
+  await admin.from('proveedores').delete().eq('id', prov.id)
+})

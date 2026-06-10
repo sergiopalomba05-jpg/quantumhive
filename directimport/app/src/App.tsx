@@ -219,24 +219,26 @@ function App() {
   const enviarPedido = async () => {
     if (!nombre.trim() || !whatsapp.trim()) return
     setEnviando(true)
-    const { error } = await supabase.from('pedidos').insert({
-      nombre: nombre.trim(),
-      whatsapp: whatsapp.trim(),
-      direccion: direccion.trim() || null,
-      notas: notas.trim() || null,
-      items: cart.map((i) => ({
+    // RPC crear_pedido: crea el pedido + sus líneas (pedido_items con proveedor_id)
+    // de forma atómica y devuelve el id, sin exponer la lectura de pedidos al anónimo.
+    const { data, error } = await supabase.rpc('crear_pedido', {
+      p_nombre: nombre.trim(),
+      p_whatsapp: whatsapp.trim(),
+      p_total: totalPrecio,
+      p_items: cart.map((i) => ({
         id: i.producto.id,
         nombre: i.producto.nombre,
         cantidad: i.cantidad,
         precio: precioProducto(i.producto),
       })),
-      total: totalPrecio,
-      ...(linkRev ? { revendedor_id: linkRev.id } : {}),
+      p_revendedor_id: linkRev ? linkRev.id : null,
+      p_direccion: direccion.trim() || null,
+      p_notas: notas.trim() || null,
     })
     setEnviando(false)
     if (!error) {
       setExito(true)
-      setExitoRef('#' + Date.now().toString(36).slice(-4).toUpperCase())
+      setExitoRef('#' + (data ? String(data) : Date.now().toString(36).slice(-4).toUpperCase()))
       setCart([])
     }
   }
