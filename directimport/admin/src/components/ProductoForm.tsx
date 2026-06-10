@@ -22,6 +22,7 @@ export default function ProductoForm({ modo, productoId }: Props) {
     rubro_id: '', proveedor_id: '', sub_filtro_id: '', estado_stock: true,
   })
   const [metricas, setMetricas] = useState<Metrica[]>([])
+  const [rubroMetrica, setRubroMetrica] = useState<string | null>(null)
   const [niveles, setNiveles] = useState<NodoNivel[]>([{ id: null, nombre: '', nivel: 0 }])
   const [opcionesNivel, setOpcionesNivel] = useState<any[][]>([])
   const [fotos, setFotos] = useState<FotoItem[]>([])
@@ -83,6 +84,13 @@ export default function ProductoForm({ modo, productoId }: Props) {
       supabase.from('sub_filtros').select('*').eq('rubro_id', rubroId).is('parent_id', null).order('orden').then(({ data }) => {
         setOpcionesNivel([data ?? []])
       })
+    }
+    if (rubroId) {
+      supabase.from('rubros').select('metrica_nombre').eq('id', rubroId).single().then(({ data }) => {
+        setRubroMetrica(data?.metrica_nombre ?? null)
+      })
+    } else {
+      setRubroMetrica(null)
     }
   }
 
@@ -342,6 +350,11 @@ export default function ProductoForm({ modo, productoId }: Props) {
           <button type="button" onClick={agregarMetrica}
             className="text-xs bg-[#d4a843] text-black px-3 py-1 rounded font-semibold hover:brightness-110">+ Agregar métrica</button>
         </div>
+        {rubroMetrica && metricas.length === 0 && (
+          <p className="text-xs text-[#d4a843] mb-2">
+            Métrica sugerida para este rubro: <strong>{rubroMetrica}</strong>
+          </p>
+        )}
         {metricas.length === 0 && <p className="text-[#a0a0a8] text-sm">Sin métricas.</p>}
         {metricas.map((m, i) => (
           <div key={i} className="flex items-center gap-3 mb-2 last:mb-0">

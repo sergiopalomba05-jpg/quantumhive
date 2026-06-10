@@ -78,6 +78,12 @@ function NodoRubro({ rubro, nivel, onRefresh }: { rubro: any; nivel: number; onR
   const supabase = createClient()
   const [expanded, setExpanded] = useState(false)
   const [nuevoNombre, setNuevoNombre] = useState('')
+  const [metricaNombre, setMetricaNombre] = useState<string>(rubro.metrica_nombre ?? '')
+
+  const guardarMetrica = async () => {
+    await supabase.from('rubros').update({ metrica_nombre: metricaNombre.trim() || null }).eq('id', rubro.id)
+    onRefresh()
+  }
 
   const agregarHijo = async () => {
     if (!nuevoNombre.trim()) return
@@ -127,6 +133,30 @@ function NodoRubro({ rubro, nivel, onRefresh }: { rubro: any; nivel: number; onR
 
       {expanded && (
         <div className="border-t border-[#2a2d33] px-4 py-3">
+          {esRubro && (
+            <div className="mb-4 pb-4 border-b border-[#2a2d33]">
+              <label className="block text-xs text-[#a0a0a8] mb-1">
+                Métrica del rubro (ej: Comodidad, Potencia, Durabilidad)
+              </label>
+              <div className="flex gap-2">
+                <input
+                  value={metricaNombre}
+                  onChange={(e) => setMetricaNombre(e.target.value)}
+                  placeholder="Nombre de la métrica..."
+                  className="flex-1 bg-[#0a0a0a] border border-[#2a2d33] rounded px-2 py-1.5 text-white text-sm focus:border-[#d4a843] focus:outline-none"
+                />
+                <button
+                  onClick={guardarMetrica}
+                  className="bg-[#d4a843] text-black px-3 py-1.5 rounded text-sm font-semibold hover:brightness-110"
+                >
+                  Guardar
+                </button>
+              </div>
+              {rubro.metrica_nombre && (
+                <p className="text-xs text-[#d4a843] mt-1">Actual: {rubro.metrica_nombre}</p>
+              )}
+            </div>
+          )}
           <div className="flex gap-2 mb-3">
             <input
               value={nuevoNombre}
