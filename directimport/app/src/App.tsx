@@ -43,6 +43,7 @@ function App() {
   const [whatsapp, setWhatsapp] = useState('')
   const [direccion, setDireccion] = useState('')
   const [notas, setNotas] = useState('')
+  const [metodoPago, setMetodoPago] = useState<'efectivo' | 'mp'>('efectivo')
   const [enviando, setEnviando] = useState(false)
   const [exito, setExito] = useState(false)
   const [exitoRef, setExitoRef] = useState('')
@@ -389,13 +390,17 @@ function App() {
         <div className="exito-screen">
           <div className="exito-icon">✓</div>
           <h2>Pedido enviado</h2>
-          <p>Pedido {exitoRef} registrado. Pagá ahora online o coordinamos por WhatsApp el pago y la entrega.</p>
-          {pedidoExitoId && (
+          {metodoPago === 'mp' ? (
+            <p>Pedido {exitoRef} registrado. Pagá ahora con Mercado Pago o coordinamos por WhatsApp el pago y la entrega.</p>
+          ) : (
+            <p>Pedido {exitoRef} registrado. 💵 Vas a pagar en <strong>efectivo</strong>: coordinamos por WhatsApp el pago y la entrega.</p>
+          )}
+          {pedidoExitoId && metodoPago === 'mp' && (
             <button className="btn-primary btn-full" disabled={pagando} onClick={pagarConMP} style={{ marginBottom: 10 }}>
               {pagando ? 'Abriendo pago...' : '💳 Pagar con Mercado Pago'}
             </button>
           )}
-          <button className="btn-primary" onClick={() => { setExito(false); setExitoRef(''); setPedidoExitoId(null); setVista('catalogo'); setNombre(''); setWhatsapp(''); setDireccion(''); setNotas('') }}>
+          <button className="btn-primary" onClick={() => { setExito(false); setExitoRef(''); setPedidoExitoId(null); setVista('catalogo'); setNombre(''); setWhatsapp(''); setDireccion(''); setNotas(''); setMetodoPago('efectivo') }}>
             Seguir comprando
           </button>
         </div>
@@ -499,6 +504,28 @@ function App() {
           <div className="checkout-resumen">
             <p>Items: {totalItems}</p>
             <p className="checkout-total">Total: ${totalPrecio.toLocaleString('es-AR')}</p>
+          </div>
+
+          <div style={{ marginBottom: 14 }}>
+            <span style={{ display: 'block', marginBottom: 6, fontSize: 13, color: '#a0a0a8' }}>Cómo querés pagar</span>
+            <div style={{ display: 'flex', gap: 8 }}>
+              {([['efectivo', '💵 Efectivo'], ['mp', '💳 Mercado Pago']] as const).map(([val, txt]) => (
+                <button
+                  type="button"
+                  key={val}
+                  onClick={() => setMetodoPago(val)}
+                  style={{
+                    flex: 1, padding: '10px', borderRadius: 8, cursor: 'pointer', fontSize: 14,
+                    border: metodoPago === val ? '2px solid var(--color-accent)' : '1px solid #2a2a2a',
+                    background: metodoPago === val ? 'var(--color-accent)' : '#1a1a1a',
+                    color: metodoPago === val ? '#000' : '#fff',
+                    fontWeight: metodoPago === val ? 700 : 400,
+                  }}
+                >
+                  {txt}
+                </button>
+              ))}
+            </div>
           </div>
 
           <button className="btn-primary btn-full" disabled={enviando}>
