@@ -385,6 +385,18 @@ deno_version = 2
 # [edge_runtime.secrets]
 # secret_key = "env(SECRET_VALUE)"
 
+# ===== Edge Functions de pago (Etapa 4 — Mercado Pago) =====
+# webhook-mp lo invoca Mercado Pago (sin JWT de Supabase) y crear-preferencia-pedido
+# la invoca el comprador anónimo, así que ambas van con verify_jwt = false.
+[functions.crear-preferencia-pedido]
+verify_jwt = false
+
+[functions.webhook-mp]
+verify_jwt = false
+
+[functions.crear-suscripcion]
+verify_jwt = true
+
 [analytics]
 enabled = true
 port = 54327
