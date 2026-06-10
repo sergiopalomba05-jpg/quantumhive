@@ -19,6 +19,11 @@ export default function MiTienda({ userId, onBack }: { userId: string; onBack: (
   const [editando, setEditando] = useState(false)
   const [soloMios, setSoloMios] = useState(false)
   const [msg, setMsg] = useState('')
+  const [personalizando, setPersonalizando] = useState(false)
+  const [pNombre, setPNombre] = useState('')
+  const [pColores, setPColores] = useState({ primario: '#d4a843', fondo: '#0a0a0a', texto: '#ffffff' })
+  const [pLogo, setPLogo] = useState('')
+  const [guardandoP, setGuardandoP] = useState(false)
 
   useEffect(() => {
     Promise.all([
@@ -27,6 +32,14 @@ export default function MiTienda({ userId, onBack }: { userId: string; onBack: (
       supabase.from('productos').select('*').eq('activo', true).eq('estado_stock', true),
     ]).then(([{ data: r }, { data: rub }, { data: prods }]) => {
       setRev(r)
+      if (r) {
+        setPNombre(r.nombre_negocio ?? '')
+        const c = r.colores
+          ? (typeof r.colores === 'string' ? JSON.parse(r.colores) : r.colores)
+          : { primario: '#d4a843', fondo: '#0a0a0a', texto: '#ffffff' }
+        setPColores(c)
+        setPLogo(r.logo_url ?? '')
+      }
       setRubros(rub ?? [])
       setProductos(prods ?? [])
       if (r) {
@@ -78,6 +91,27 @@ export default function MiTienda({ userId, onBack }: { userId: string; onBack: (
       ...prev,
       [prodId]: { ...prev[prodId], [campo]: valor }
     }))
+  }
+
+  const aplicarColores = (c: { primario: string; fondo: string; texto: string }) => {
+    document.documentElement.style.setProperty('--color-accent', c.primario)
+    document.documentElement.style.setProperty('--color-bg', c.fondo)
+    document.documentElement.style.setProperty('--color-text', c.texto)
+  }
+
+  const guardarPersonalizacion = async () => {
+    if (!rev) return
+    setGuardandoP(true)
+    await supabase.from('revendedores').update({
+      nombre_negocio: pNombre.trim() || rev.nombre_negocio,
+      colores: pColores,
+      logo_url: pLogo.trim() || null,
+    }).eq('id', rev.id)
+    setGuardandoP(false)
+    setRev({ ...rev, nombre_negocio: pNombre.trim() || rev.nombre_negocio, colores: pColores, logo_url: pLogo.trim() || null })
+    setPersonalizando(false)
+    setMsg('Tienda actualizada ✓')
+    setTimeout(() => setMsg(''), 2500)
   }
 
   if (!rev) return <div className="loading">Cargando...</div>
@@ -139,6 +173,12 @@ export default function MiTienda({ userId, onBack }: { userId: string; onBack: (
                 <button className={`btn-sm ${soloMios ? 'btn-sm-active' : ''}`} onClick={() => setSoloMios(!soloMios)}>
                   {soloMios ? 'Todo el catálogo' : 'Solo mi tienda'}
                 </button>
+                <button
+                  className={`btn-sm ${personalizando ? 'btn-sm-active' : ''}`}
+                  onClick={() => setPersonalizando(!personalizando)}
+                >
+                  {personalizando ? 'Cerrar' : 'Personalizar'}
+                </button>
               </>
             )}
           </div>
@@ -151,6 +191,82 @@ export default function MiTienda({ userId, onBack }: { userId: string; onBack: (
           </div>
         )}
       </div>
+
+      {personalizando && rev?.plan_id >= 2 && (
+        <div style={{ background: '#141414', border: '1px solid #2a2a2a', borderRadius: 12, padding: 16, margin: '0 0 4px' }}>
+          <h3 style={{ color: 'var(--color-accent)', marginTop: 0, marginBottom: 14, fontSize: 15 }}>
+            Personalizar tienda
+          </h3>
+
+          <label style={{ display: 'block', fontSize: 12, color: '#a0a0a8', marginBottom: 4 }}>
+            Nombre del negocio
+          </label>
+          <input
+            value={pNombre}
+            onChange={(e) => setPNombre(e.target.value)}
+            style={{ width: '100%', background: '#0a0a0a', border: '1px solid #2a2a2a', borderRadius: 8, padding: '8px 10px', color: '#fff', fontSize: 14, marginBottom: 12 }}
+          />
+
+          <label style={{ display: 'block', fontSize: 12, color: '#a0a0a8', marginBottom: 4 }}>
+            Logo (URL de imagen)
+          </label>
+          <input
+            value={pLogo}
+            onChange={(e) => setPLogo(e.target.value)}
+            placeholder="https://..."
+            style={{ width: '100%', background: '#0a0a0a', border: '1px solid #2a2a2a', borderRadius: 8, padding: '8px 10px', color: '#fff', fontSize: 14, marginBottom: 12 }}
+          />
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 16 }}>
+            {([
+              { label: 'Acento', campo: 'primario' as const },
+              { label: 'Fondo', campo: 'fondo' as const },
+              { label: 'Texto', campo: 'texto' as const },
+            ]).map(({ label, campo }) => (
+              <div key={campo} style={{ textAlign: 'center' }}>
+                <label style={{ display: 'block', fontSize: 11, color: '#a0a0a8', marginBottom: 4 }}>{label}</label>
+                <input
+                  type="color"
+                  value={pColores[campo]}
+                  onChange={(e) => {
+                    const c = { ...pColores, [campo]: e.target.value }
+                    setPColores(c)
+                    aplicarColores(c)
+                  }}
+                  style={{ width: '100%', height: 36, borderRadius: 6, border: '1px solid #2a2a2a', cursor: 'pointer', padding: 2, background: 'none' }}
+                />
+                <span style={{ fontSize: 10, color: '#666' }}>{pColores[campo]}</span>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button
+              className="btn-primary btn-full"
+              disabled={guardandoP}
+              onClick={guardarPersonalizacion}
+            >
+              {guardandoP ? 'Guardando...' : 'Guardar cambios'}
+            </button>
+            <button
+              className="btn-sm"
+              style={{ padding: '0 16px' }}
+              onClick={() => {
+                const c = rev.colores
+                  ? (typeof rev.colores === 'string' ? JSON.parse(rev.colores) : rev.colores)
+                  : { primario: '#d4a843', fondo: '#0a0a0a', texto: '#ffffff' }
+                setPColores(c)
+                aplicarColores(c)
+                setPNombre(rev.nombre_negocio ?? '')
+                setPLogo(rev.logo_url ?? '')
+                setPersonalizando(false)
+              }}
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
 
       <section className="rubros-nav">
         {rubros.map((r) => (
