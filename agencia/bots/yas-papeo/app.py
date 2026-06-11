@@ -10,6 +10,7 @@ Modos:
 import asyncio
 import logging
 import os
+import re
 import signal
 import subprocess
 import sys
@@ -73,6 +74,11 @@ MAX_HISTORY = 20  # keep last N Content objects (user + model alternating)
 IN_CHARACTER_ERROR = (
     "Perdón, hermosa 🌸 se me trabó la conexión un segundito. ¿Me lo repetís?"
 )
+
+# Los URLs leídos por TTS suenan horribles ("h-t-t-p-s dos puntos barra barra...").
+# En audio los reemplazamos por una frase natural y mandamos el link como mensaje aparte.
+URL_RE = re.compile(r"https?://\S+")
+URL_AUDIO_PLACEHOLDER = "te paso el linkcito en un mensajito"
 
 
 def _get_history(chat_id: int) -> list:
@@ -246,9 +252,13 @@ async def handle_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         await update.message.reply_text(IN_CHARACTER_ERROR)
         return
 
+    # Saco los URLs antes del TTS y los reservo para mandar como mensaje de texto aparte
+    urls = URL_RE.findall(reply_text)
+    audio_text = URL_RE.sub(URL_AUDIO_PLACEHOLDER, reply_text).strip()
+
     # Step 2: TTS → OGG/Opus → sendVoice. If TTS/ffmpeg fails, fall back to text.
     try:
-        audio_data, mime_type = await tts_generate(reply_text)
+        audio_data, mime_type = await tts_generate(audio_text)
         ogg_bytes = to_ogg_opus(audio_data, mime_type)
         await update.message.reply_voice(voice=ogg_bytes)
     except Exception:
@@ -256,6 +266,12 @@ async def handle_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
             "TTS/ffmpeg failed for chat_id=%d — falling back to text reply", chat_id
         )
         await update.message.reply_text(reply_text)
+        return
+
+    # Si la respuesta tenía links (ej. WhatsApp), los mandamos como mensaje de texto
+    # SEPARADO del audio — así la clienta los puede tocar/copiar y nadie los escucha leídos.
+    if urls:
+        await update.message.reply_text("\n".join(urls))
 
 
 # ── aiohttp webhook server ────────────────────────────────────────────────────
