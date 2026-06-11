@@ -10,6 +10,7 @@ Modos:
 import asyncio
 import logging
 import os
+import random
 import re
 import signal
 import subprocess
@@ -79,6 +80,16 @@ IN_CHARACTER_ERROR = (
 # En audio los reemplazamos por una frase natural y mandamos el link como mensaje aparte.
 URL_RE = re.compile(r"https?://\S+")
 URL_AUDIO_PLACEHOLDER = "te paso el linkcito en un mensajito"
+
+# Generar audio con TTS toma ~10s. Sin acuse, la clienta queda mirando "no me respondió".
+# Mandamos un mensajito de texto inmediato (1s) para que sepa que el audio le llegó y
+# la estamos por escuchar. Rotamos para no sonar robóticos si manda varios audios seguidos.
+AUDIO_ACK_LINES = (
+    "Ya te escucho, hermosa, dame un segundito 💕",
+    "Te escucho un toque, bella 🌸",
+    "Dejame escucharte, ya te respondo ✨",
+    "Te leo el audio, hermosa, dame un toquecito 💕",
+)
 
 
 def _get_history(chat_id: int) -> list:
@@ -237,6 +248,13 @@ async def handle_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     voice = update.message.voice or update.message.audio
     if not voice:
         return
+
+    # Acuse inmediato (1s): la clienta sabe que su audio llegó y la estamos por escuchar.
+    # No bloqueamos si falla — el flujo principal sigue igual.
+    try:
+        await update.message.reply_text(random.choice(AUDIO_ACK_LINES))
+    except Exception:
+        logger.exception("ack message failed for chat_id=%d", chat_id)
 
     await context.bot.send_chat_action(chat_id=chat_id, action="record_voice")
 
