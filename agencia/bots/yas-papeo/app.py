@@ -28,6 +28,7 @@ from telegram.ext import (
     MessageHandler,
     filters,
 )
+from telegram.request import HTTPXRequest
 
 # La consola de Windows (dev) suele ser cp1252 y rompe al loguear acentos/emojis.
 # Forzamos UTF-8 con errors="replace": los logs nunca más tiran UnicodeEncodeError.
@@ -318,8 +319,20 @@ async def _post_init(_application: Application) -> None:
 
 
 # ── Entrypoints ───────────────────────────────────────────────────────────────
+def _resilient_request() -> HTTPXRequest:
+    # Redes lentas (HF Spaces, Railway al boot) tumban el get_me() inicial con el
+    # timeout default de 5s. 30s da margen y la app evita el "TimedOut" al arrancar.
+    return HTTPXRequest(connect_timeout=30.0, read_timeout=30.0, write_timeout=30.0)
+
+
 async def run_webhook() -> None:
-    ptb_app = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
+    ptb_app = (
+        Application.builder()
+        .token(TELEGRAM_BOT_TOKEN)
+        .request(_resilient_request())
+        .get_updates_request(_resilient_request())
+        .build()
+    )
     _register_handlers(ptb_app)
     await ptb_app.initialize()
     await ptb_app.start()
@@ -368,6 +381,8 @@ def main() -> None:
         ptb_app = (
             Application.builder()
             .token(TELEGRAM_BOT_TOKEN)
+            .request(_resilient_request())
+            .get_updates_request(_resilient_request())
             .post_init(_post_init)
             .build()
         )
