@@ -1,7 +1,7 @@
 # Yas Papeo — Bot de atención Telegram
 
 Bot de atención al cliente 24/7 para el salón de belleza Yas Papeo (Olivos).
-Gemini chat + TTS · python-telegram-bot 22 · Google Cloud Run.
+Gemini chat + TTS · python-telegram-bot 22 · Railway.
 
 ---
 
@@ -36,76 +36,30 @@ python app.py
 ```
 
 > **Polling es solo para desarrollo / demo.** En producción siempre usá webhook (`TELEGRAM_USE_POLLING=false`).
-> En modo polling NO hace falta WEBHOOK_URL ni Cloud Run: abrís el bot en Telegram y ya responde.
+> En modo polling NO hace falta WEBHOOK_URL: abrís el bot en Telegram y ya responde.
 
 ---
 
-## Deploy a Google Cloud Run
+## Deploy a Railway (producción 24/7)
 
-### Requisitos previos (hace Sergio, no el bot)
-1. Proyecto GCP creado con facturación activa.
-2. `gcloud` instalado y autenticado: `gcloud auth login`
-3. Proyecto configurado: `gcloud config set project <PROJECT_ID>`
-
-### 1. Habilitá las APIs necesarias
+Desde la carpeta del bot:
 
 ```bash
-gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com
+cd agencia/bots/yas-papeo
+railway login              # una sola vez, abre el navegador
+railway init               # crea el proyecto
+railway up                 # sube y buildea
+railway domain             # genera dominio público
+# Tomá la URL y agregala como WEBHOOK_URL en variables, redeploya
 ```
 
-### 2. Generá el webhook secret
-
-```bash
-openssl rand -hex 32
-# Guardá este valor como TELEGRAM_WEBHOOK_SECRET
-```
-
-### 3. Primer deploy (sin WEBHOOK_URL todavía — la URL la da el deploy)
-
-```bash
-# Desde la raíz del repo
-gcloud run deploy yas-papeo-bot \
-  --source . \
-  --region southamerica-east1 \
-  --min-instances 1 \
-  --allow-unauthenticated \
-  --set-env-vars "GEMINI_API_KEY=TU_KEY,TELEGRAM_BOT_TOKEN=TU_TOKEN,TELEGRAM_WEBHOOK_SECRET=TU_SECRET,GEMINI_MODEL=gemini-3.1-flash-lite,GEMINI_TTS_MODEL=gemini-3.1-flash-tts-preview,TTS_VOICE=Kore,TELEGRAM_USE_POLLING=false"
-```
-
-> Mejor: pasá el token como Secret Manager en vez de env var plano:
-> `--set-secrets "TELEGRAM_BOT_TOKEN=telegram-bot-token:latest"`
-
-### 4. Tomá la URL del servicio
-
-El deploy imprime algo como:
-```
-Service URL: https://yas-papeo-bot-xxxxxxxxxx-rj.a.run.app
-```
-
-### 5. Segundo deploy — agregá WEBHOOK_URL
-
-```bash
-gcloud run services update yas-papeo-bot \
-  --region southamerica-east1 \
-  --update-env-vars "WEBHOOK_URL=https://yas-papeo-bot-xxxxxxxxxx-rj.a.run.app"
-```
-
-Al arrancar, `app.py` llama automáticamente a `set_webhook()` con esa URL.
-
-### 6. Verificá el webhook
-
-```bash
-curl "https://api.telegram.org/bot<TOKEN>/getWebhookInfo"
-```
-
-Debe mostrar `"url": "https://yas-papeo-bot-xxx.run.app/telegram"` y `"pending_update_count": 0`.
-
-### 7. Health check
-
-```bash
-curl https://yas-papeo-bot-xxxxxxxxxx-rj.a.run.app/health
-# → ok
-```
+Variables que hay que setear en Railway (Variables tab o `railway variables --set`):
+- `TELEGRAM_BOT_TOKEN`
+- `GEMINI_API_KEY`
+- `WEBHOOK_URL` (la del dominio Railway, sin slash final)
+- `GEMINI_MODEL` (opcional, default `gemini-3.1-flash-lite`)
+- `GEMINI_TTS_MODEL` (opcional, default `gemini-3.1-flash-tts-preview`)
+- `TTS_VOICE` (opcional, default `Kore`)
 
 ---
 
@@ -129,8 +83,8 @@ curl https://yas-papeo-bot-xxxxxxxxxx-rj.a.run.app/health
 | `TELEGRAM_BOT_TOKEN` | ✅ | — | Token de @BotFather |
 | `GEMINI_API_KEY` | ✅ | — | Key de Google AI Studio |
 | `TELEGRAM_WEBHOOK_SECRET` | Recomendada | `""` | Valida que updates vienen de Telegram |
-| `WEBHOOK_URL` | En producción | `""` | URL pública del servicio Cloud Run |
-| `PORT` | No | `8080` | Puerto del servidor (Cloud Run lo inyecta) |
+| `WEBHOOK_URL` | En producción | `""` | URL pública del servicio Railway |
+| `PORT` | No | `8080` | Puerto del servidor (Railway lo inyecta) |
 | `GEMINI_MODEL` | No | `gemini-3.1-flash-lite` | Modelo de chat |
 | `GEMINI_TTS_MODEL` | No | `gemini-3.1-flash-tts-preview` | Modelo de TTS |
 | `TTS_VOICE` | No | `Kore` | Voz de Gemini TTS |
