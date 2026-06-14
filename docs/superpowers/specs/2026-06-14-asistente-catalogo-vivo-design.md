@@ -28,11 +28,22 @@ copiar a Claude → armar el `.md` a mano) por un agente que:
    mejor (nunca borra solo).
 5. Cuando Sergio pregunta ("¿qué herramientas tengo para una página 3D / una app /
    agentes autónomos?"), responde usando el **catálogo + el contexto de QuantumHive**.
+   Si el catálogo **no tiene** herramientas para esa tarea, **busca en la web** y propone
+   candidatas (que después se pueden sumar al catálogo).
 6. **Aprende y recuerda** entre sesiones (memoria propia de Hermes).
+7. *(Más adelante — el "fin")* Recibe un video de un **producto/resultado deseado**
+   (ej: una carta QR con platos 3D girando que muestran calorías) y responde **cómo
+   construir algo igual con las herramientas del catálogo** (+ web para lo que falte).
 
 **Criterio de éxito (v1):** Sergio manda un reel desde el celu, el agente lo cataloga
 en Supabase en su sección y se lo confirma; y al preguntarle por una tarea, lista las
-herramientas correctas del catálogo.
+herramientas correctas del catálogo (o busca en la web si no tiene).
+
+**Contexto de negocio (por qué importa):** el catálogo alimenta las ofertas de la
+agencia (Frente 2). De un video de referencia (ej: la carta QR de otro creador, pensada
+para *desarrolladores*) Sergio puede derivar un producto propio dirigido al **cliente
+final** (dueños de restaurantes) y, más adelante, una **academia/curso de IA**. El
+asistente es lo que convierte "vi algo genial" en "así lo armo con lo que tengo".
 
 ---
 
@@ -42,8 +53,11 @@ herramientas correctas del catálogo.
   (esto elimina la parte frágil del flujo viejo).
 - **No** procesa videos largos. Para eso está la skill `claude-video` (uso aparte,
   con Claude Code). Este sistema come **reels cortos**.
-- **No** tiene PWA ni interfaz visual en v1. Todo por Telegram. (La base en Supabase
-  deja la puerta abierta a una PWA futura sin rehacer nada.)
+- **No** tiene interfaz visual en v1. Todo por Telegram. La **vista visual** (un dashboard
+  HTML que lee Supabase — ej: el artifact de Cowork) es una **fase 2.5**: se suma cuando el
+  catálogo ya funciona. Debe ser **solo-lectura** con key anónima de Supabase (nunca una
+  key de escritura — repo/artifact público), y Supabase sigue siendo la **única fuente de
+  verdad** (el dashboard no guarda datos propios).
 - **No** corre en la nube en v1. Corre local en la PC de Sergio (gratis). El upgrade
   a VPS 24/7 es trivial y está documentado abajo.
 - **No** usa Graphify como cerebro del catálogo. Graphify es una pista **separada**,
@@ -129,6 +143,8 @@ Sergio manda el video al bot de Telegram
   → el skill filtra Supabase por tags/categoria/full-text
     → carga el contexto de QuantumHive (CLAUDE.md + bóveda) ya en la memoria de Hermes
       → Gemini arma la respuesta: lista las herramientas relevantes con su estado y para qué
+      → si NO hay herramientas para la tarea: busca en la web y propone candidatas
+        (con opción de sumarlas al catálogo)
 ```
 
 ### 5.4 Importación inicial (one-time)
@@ -136,6 +152,25 @@ Sergio manda el video al bot de Telegram
 Parsear las tablas markdown de `04 - Catalogo Completo de Recursos.md` (~113 recursos)
 y cargarlas como filas en Supabase, mapeando los estados (✅/🔵/⚠️/❌/🔁) a la columna
 `estado`. Paso único, idempotente (no duplica si se re-corre).
+
+### 5.5 Consulta por video-objetivo — "¿cómo construyo esto?" *(fase posterior, el "fin")*
+
+Distinto de la ingesta: acá el video **no es una herramienta a catalogar**, es un
+**resultado deseado**.
+
+```
+Sergio manda un video de un producto que quiere lograr (ej: carta QR con platos 3D)
+  → Gemini lo desarma: detecta las capacidades/piezas necesarias
+     (render 3D de producto, plataforma de carta QR, overlay de calorías, etc.)
+    → el skill mapea cada pieza a herramientas del catálogo
+      → lo que falta, lo busca en la web
+        → responde un plan: "para armar esto usás A (lo tenés), B (lo tenés),
+           y para C te falta — candidatas de la web: X, Y"
+```
+
+Es el "fin" del sistema: convierte un video de referencia en un **plan de construcción**
+con tus propias herramientas. Se construye **después** de que la ingesta + consulta básica
+funcionen.
 
 ---
 
@@ -215,8 +250,12 @@ Cero rehacer de lógica. La decisión local-vs-nube es solo de despliegue, no de
 1. **Fundación:** Hermes nativo en la PC + Telegram (responde solo a Sergio por `chat_id`)
    + Gemini de cerebro + memoria + contexto QuantumHive cargado.
 2. **El catálogo:** schema en Supabase + importación de los ~113 actuales + skill
-   catalogador (ingesta de reel → dedup/propuesta → guardar) + consultas.
-3. **Graphify** (paralelo): capa de contexto de Claude Code.
+   catalogador (ingesta de reel → dedup/propuesta → guardar) + consultas con **fallback a
+   búsqueda web** cuando no hay herramienta para la tarea.
+3. **Consulta por video-objetivo** ("¿cómo construyo esto?") — el "fin" (§5.5).
+4. **Dashboard visual** (fase 2.5, en paralelo cuando haya datos): HTML solo-lectura sobre
+   Supabase (ej: artifact de Cowork).
+5. **Graphify** (paralelo): capa de contexto de Claude Code.
 
 > Las keys (`GEMINI_API_KEY`, `TELEGRAM_TOKEN`, `SUPABASE_*`) van solo en `.env` local
 > (en `.gitignore`). Al repo solo sube `.env.ejemplo`. (Regla #4 de CLAUDE.md.)
