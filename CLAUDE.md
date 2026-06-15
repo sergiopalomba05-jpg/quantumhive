@@ -89,17 +89,18 @@ SERGIO (decisión final, trading manual)
 
 ```
 quantumhive/
-├── CLAUDE.md              ← este archivo, SIEMPRE primero
-├── .env.ejemplo           ← plantilla de variables (claves vacías)
-├── .gitignore             ← .env y secretos JAMÁS al repo
-├── directimport/          ← FRENTE 1 — FOCO ACTUAL (F1)
-│   ├── n8n/               ← flujos Render
-│   ├── contenido/         ← imágenes, copies, catálogo
-│   └── agentes/           ← captación y ventas B2B
-├── agencia/               ← FRENTE 2 (F2-F3): servicios IA, carta QR, apps, contenido/IG
-├── agi/                   ← AGI Telegram (Jarvis) — se construye LIMPIO en F3 (no se rescata del viejo)
-├── nucleo/                ← solo código nuevo y verificado
-└── trading/               ← FRENTE 3 (F4): soporte al trading manual. Sin bots.
+├── CLAUDE.md              ← este archivo, SIEMPRE primero (constitución)
+├── AGENTS.md · README.md · .env.ejemplo · .gitignore   ← config en la raíz
+├── agencia/               ← el MOTOR (la agencia de IA es el todo)
+│   ├── core/              ← compartido: investigador, hermes (AGI), legal, memoria
+│   ├── productos/         ← carta-viva, agente-telefonico, bot-whatsapp
+│   └── clientes/          ← yas-papeo, bazar, logistica (config + perfil + .env)
+├── directimport/          ← FRENTE 1 (B2B mayorista) — derivado de la agencia
+│   └── catalogador/       ← agente de fábricas/proveedores
+├── trading/               ← FRENTE 4: soporte al trading manual. Sin bots.
+├── supabase/              ← backend (edge functions + migrations) de directimport
+├── docs/superpowers/      ← specs y planes
+└── vault/                 ← notas Obsidian (Mapa Maestro, Catálogo, Reglas, Plan, Stack…)
 ```
 
 **Regla:** si un archivo existe en este repo, **corre**. Nada muerto, nada rescatado del repo viejo.
