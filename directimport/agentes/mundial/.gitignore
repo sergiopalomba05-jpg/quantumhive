@@ -1,0 +1,10 @@
+# Secretos
+.env
+
+# Datos de leads (no van al repo publico)
+data/
+
+# Python
+*.pyc
+__pycache__/
+.pytest_cache/

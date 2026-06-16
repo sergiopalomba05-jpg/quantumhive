@@ -1,0 +1,8 @@
+# Pipeline de prospeccion B2B para la campana Mundial
+# Python 3.10+
+
+apify-client>=1.7.0
+google-genai>=1.0.0
+gspread>=6.0.0
+python-dotenv>=1.0.0
+pytest>=8.0.0
