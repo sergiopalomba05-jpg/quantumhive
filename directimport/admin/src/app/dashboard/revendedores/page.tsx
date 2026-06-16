@@ -77,6 +77,11 @@ export default function RevendedoresPage() {
     cargar()
   }
 
+  const cambiarPlan = async (r: Revendedor, plan_id: number) => {
+    await supabase.from('revendedores').update({ plan_id }).eq('id', r.id)
+    cargar()
+  }
+
   const formatearFecha = (iso: string) =>
     new Date(iso).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
 
@@ -115,7 +120,19 @@ export default function RevendedoresPage() {
             <div className="text-sm text-[#a0a0a8] space-y-1 mb-3">
               <p>Código: <span className="text-white font-mono">{r.codigo_unico}</span></p>
               {r.whatsapp && <p>WhatsApp: {r.whatsapp}</p>}
-              <p>Plan: {planes[r.plan_id ?? 0] ?? '—'}</p>
+              <div className="flex items-center gap-2">
+                <span>Plan:</span>
+                <select
+                  value={r.plan_id ?? ''}
+                  onChange={(e) => cambiarPlan(r, Number(e.target.value))}
+                  className="bg-[#0a0a0a] border border-[#2a2d33] rounded px-2 py-1 text-white text-xs focus:border-[#d4a843] focus:outline-none"
+                >
+                  <option value="" disabled>Elegir...</option>
+                  {[1, 2, 3, 4].map((id) => (
+                    <option key={id} value={id}>{planes[id]}</option>
+                  ))}
+                </select>
+              </div>
               {r.referido_por && <p>Referido por: {r.referido_por}</p>}
               <p>Alta: {formatearFecha(r.created_at)}</p>
               {r.motivo_rechazo && <p className="text-red-400">Rechazo: {r.motivo_rechazo}</p>}
