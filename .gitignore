@@ -3,6 +3,8 @@
 .env.local
 .env.*.local
 *.pem
+agencia/agentes/**/.env
+agencia/bots/**/.env
 
 # Node
 node_modules/
