@@ -1,0 +1,3186 @@
+"""
+Carta Viva — Proxy backend
+Endpoints:
+  GET  /              → sirve index.html (frontend)
+  GET  /menu.json     → menu del restaurante
+  GET  /health        → verifica que las keys estén configuradas
+  POST /chat          → Gemini chat (no streaming, devuelve respuesta completa)
+  POST /chat/stream   → Gemini chat con streaming SSE (texto a medida que se genera)
+  POST /tts           → ElevenLabs TTS, devuelve audio MP3
+  POST /stt           → Gemini transcribe audio del cliente
+"""
+import os
+import json
+import base64
+from pathlib import Path
+from typing import Optional, List, Dict, Any
+
+import httpx
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse, Response, StreamingResponse, JSONResponse, HTMLResponse
+from pydantic import BaseModel
+
+# ============================================================================
+# Configuración — todo desde env vars (las setea el Space)
+# ============================================================================
+GEMINI_API_KEY     = os.environ.get("GEMINI_API_KEY", "").strip()
+ELEVENLABS_API_KEY = os.environ.get("ELEVENLABS_API_KEY", "").strip()
+ELEVENLABS_VOICE_ID = os.environ.get("ELEVENLABS_VOICE_ID", "4wDRKlxcHNOFO5kBvE81").strip()
+ELEVENLABS_MODEL    = os.environ.get("ELEVENLABS_MODEL", "eleven_multilingual_v2").strip()
+GEMINI_MODEL        = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash").strip()
+
+GEMINI_GENERATE = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+GEMINI_STREAM   = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:streamGenerateContent"
+ELEVEN_TTS      = f"https://api.elevenlabs.io/v1/text-to-speech/{ELEVENLABS_VOICE_ID}/stream?optimize_streaming_latency=3"
+
+BASE_DIR = Path(__file__).parent
+STATIC_DIR = BASE_DIR / "static"  # legacy, no usado en versión mono
+
+# ============================================================================
+# Contenido embebido — HTML del frontend y menu.json del restaurante
+# (Se mantienen en el archivo para tener un solo file de deploy)
+# ============================================================================
+EMBEDDED_MENU_JSON = r"""{
+  "_meta": {
+    "version": "1.1.0",
+    "product": "Carta Viva",
+    "restaurant_id": "la-escaloneta",
+    "instance": "demo",
+    "created": "2026-06-10",
+    "description": "Carta Kansas — versión podada para demo Carta Viva v1. Sin happy hour (riesgo de doble precio), sin marcas registradas (mejora TTS), greeting neutro."
+  },
+  "restaurant": {
+    "name": "La Escaloneta",
+    "tagline": "Cocina casera con alma",
+    "currency": "ARS",
+    "currency_symbol": "$"
+  },
+  "assistant": {
+    "name": "",
+    "voice_gender": "female",
+    "language": "español rioplatense",
+    "personality": "Sos la mesera virtual de La Escaloneta. No tenés nombre — simplemente sos 'tu mesera virtual'.\nNUNCA digas que sos una IA, un bot, o que no sos real. Sos la mesera del lugar, punto.\nTu personalidad: cálida, cercana y canchera. Como la moza de confianza que ya te conoce.\nUsás voseo rioplatense natural: vos, tenés, querés, podés, te cuento.\nHablás con entusiasmo genuino de la comida. Describís con apetito, no con lista de ingredientes.\nCuando te preguntan por un plato, lo vendés: contás qué lo hace especial, qué lo acompaña, por qué vale la pena.\nSi alguien duda entre opciones, ayudás a decidir (¿tenés hambre de algo liviano o algo contundente?).\nSugerís maridajes de vino o bebidas cuando corresponde, con naturalidad.\nRespondés con calidez y extensión adecuada: no sos telegráfica pero tampoco interminable.\nNUNCA inventás precios. Si no está cargado, decís 'ese te lo confirma el mozo con la carta en mano'.\nNunca usás emojis.",
+    "greeting": "¡Hola! Soy tu mesera virtual. Estoy acá para ayudarte con la carta, sugerirte algo rico o resolver cualquier duda. ¿Por dónde empezamos?"
+  },
+  "rules": {
+    "sharing_surcharge": {
+      "amount": 11500,
+      "note": "Los platos que se compartan tienen un adicional de $11.500",
+      "applies_to": [
+        "ensaladas",
+        "pastas",
+        "carnes_y_cerdos",
+        "pescados",
+        "aves"
+      ],
+      "bar_exception": "En la barra NO se cobra adicional por plato compartido"
+    },
+    "bread": "El pan no viene automáticamente — debe solicitarse al mozo",
+    "side_salad_addon": {
+      "price": 11500,
+      "options": [
+        "Traditional",
+        "Mixed",
+        "Caesar"
+      ],
+      "note": "Se puede sumar una ensalada a los platos principales por $11.500"
+    },
+    "single_dish_surcharge": {
+      "amount": 11500,
+      "note": "Si se pide un plato para consumo individual (no compartido) en una mesa de más personas, hay un adicional de $11.500"
+    },
+    "extras": {
+      "panceta_cheeseburger": {
+        "amount": 2500,
+        "note": "Adicional para agregar panceta a la Cheeseburger"
+      },
+      "salsa_extra_hot_fudge": {
+        "amount": 2500,
+        "note": "Adicional por salsa de chocolate o dulce de leche en Hot Fudge Sundae"
+      }
+    },
+    "kids_menu": {
+      "age_limit": 10,
+      "note": "Menú Kids exclusivamente para menores de 10 años"
+    },
+    "wine_copa_volume": {
+      "vinos": "250 cm3",
+      "champagne_y_espumantes": "150 cm3"
+    },
+    "food_safety_note": "Consumir carne, mariscos o huevos crudos puede aumentar el riesgo de enfermedades alimenticias. Nuestras hamburguesas son caseras y se preparan diariamente.",
+    "happy_hour": {
+      "note": "Hay happy hour con precios especiales en la barra. Si te preguntan por horario o precios de happy hour, derivá al mozo con gracia: el horario no está cargado."
+    }
+  },
+  "menu": [
+    {
+      "id": "entradas",
+      "name": "Entradas",
+      "sharing_surcharge": false,
+      "items": [
+        {
+          "id": "spinach_dip",
+          "name": "Chicago Style Spinach Dip",
+          "description": "Dip de espinaca con salsa blanca y queso, acompañado con tortilla chips, salsa picante y queso crema",
+          "price": 27300
+        },
+        {
+          "id": "chicken_tenders_entrada",
+          "name": "Kansas Chicken Tenders",
+          "description": "Lonchas de pollo aderezadas, acompañadas con salsa Honey Mustard",
+          "price": 29000
+        },
+        {
+          "id": "kansas_rolls",
+          "name": "Kansas Rolls",
+          "description": "Arrolladitos crocantes de pollo y verduras, condimentados con especias de la casa, servidos con salsa picante y queso",
+          "price": 27800
+        },
+        {
+          "id": "mini_nachos",
+          "name": "Mini Nachos",
+          "description": "Nachos cubiertos con chilli casero, queso gratinado, tomates picados y cebolla de verdeo",
+          "price": 27000
+        },
+        {
+          "id": "smoked_salmon_entrada",
+          "name": "Smoked Salmon with Homemade Dressing",
+          "description": "Salmón ahumado, acompañado con tostaditas y aderezo del chef",
+          "price": 29000
+        }
+      ]
+    },
+    {
+      "id": "flatbreads",
+      "name": "Flatbreads",
+      "sharing_surcharge": false,
+      "items": [
+        {
+          "id": "bbq_chicken_flatbread",
+          "name": "Barbecue Chicken Flatbread",
+          "description": "Pan plano con pollo, quesos mixtos, queso de cabra, cebollas y cilantro, aderezado con barbacoa",
+          "price": 32000
+        },
+        {
+          "id": "steak_mushroom_flatbread",
+          "name": "Steak & Mushrooms Flatbread",
+          "description": "Pan plano con lomo, queso azul, champignones y espinacas",
+          "price": 31300
+        },
+        {
+          "id": "shrimp_flatbread",
+          "name": "Shrimp Goat Cheese & Dates Flatbread",
+          "description": "Pan plano con langostinos asados, dátiles, morrones y queso de cabra",
+          "price": null,
+          "_verify": true,
+          "_note": "VERIFICAR PRECIO — no extraíble del PDF con certeza"
+        }
+      ]
+    },
+    {
+      "id": "ensaladas",
+      "name": "Ensaladas",
+      "sharing_surcharge": true,
+      "items": [
+        {
+          "id": "grilled_chicken_salad",
+          "name": "Grilled Chicken Salad",
+          "description": "Lechugas frescas de estación, repollo, fetas de pollo grilladas y tiritas de tortilla, con Honey Lime Vinaigrette y Peanut Sauce",
+          "price": 18000,
+          "options": [
+            "Con langostinos a la leña — consultar precio al mozo"
+          ]
+        },
+        {
+          "id": "mediterranean_salad",
+          "name": "Mediterranean Salad",
+          "description": "Lechugas frescas, queso feta, aceitunas negras, pollo grillado y tiritas de tortilla, con Classic Vinaigrette",
+          "price": 18000
+        },
+        {
+          "id": "caesar_salad",
+          "name": "Chicken Caesar Salad",
+          "description": "Lechuga fresca, croutones, pollo rebozado o grillado y queso reggianito con aderezo Caesar",
+          "price": 18900,
+          "options": [
+            "Con langostinos a la leña — consultar precio al mozo",
+            "Con smoked salmon — consultar precio al mozo"
+          ]
+        },
+        {
+          "id": "bistro_salad",
+          "name": "Bistro Salad",
+          "description": "Mix de lechugas frescas con pollo, queso de cabra, dátiles, palta, almendras tostadas, tomates cherry, croutons de maíz y aderezo cítrico",
+          "price": 19300
+        }
+      ]
+    },
+    {
+      "id": "hamburguesas",
+      "name": "Hamburguesas y Sandwiches",
+      "sharing_surcharge": false,
+      "items": [
+        {
+          "id": "cheeseburger",
+          "name": "Cheeseburger",
+          "description": "Hamburguesa casera con queso cheddar, lechuga, tomate, pepino y cebolla, acompañada con papas fritas",
+          "price": 26800,
+          "extras": [
+            {
+              "name": "Panceta",
+              "price": 2500
+            }
+          ]
+        },
+        {
+          "id": "club_sandwich",
+          "name": "Club Sandwich",
+          "description": "Sandwich frío de jamón, queso y pollo fileteado con panceta, tomate y lechuga, en pan de trigo con papas fritas",
+          "price": 28500
+        }
+      ]
+    },
+    {
+      "id": "acompanamentos",
+      "name": "Acompañamientos",
+      "sharing_surcharge": false,
+      "items": [
+        {
+          "id": "white_rice",
+          "name": "White Rice",
+          "description": "Arroz blanco",
+          "price": 11500
+        },
+        {
+          "id": "french_fries",
+          "name": "French Fries",
+          "description": "Papas fritas",
+          "price": 11500
+        },
+        {
+          "id": "fresh_vegetables",
+          "name": "Fresh Vegetables",
+          "description": "Vegetales rostizados, brócolis o zucchinis asados a la leña",
+          "price": 11500
+        },
+        {
+          "id": "cole_slaw",
+          "name": "Cole Slaw",
+          "description": "Ensalada de repollo blanco y colorado con aderezo cole slaw",
+          "price": 11500
+        },
+        {
+          "id": "mashed_potato",
+          "name": "Mashed Potato",
+          "description": "Puré de papas",
+          "price": 12500
+        },
+        {
+          "id": "quinoa_medley",
+          "name": "Quinoa Medley",
+          "description": "Quinoa tricolor con almendras, granos de maíz y pasas de uva, aderezo de yogur",
+          "price": 12500
+        },
+        {
+          "id": "cream_spinach",
+          "name": "Cream Spinach",
+          "description": "Espinacas a la crema",
+          "price": 12500
+        },
+        {
+          "id": "loaded_baked_potato",
+          "name": "Loaded Baked Potato",
+          "description": "Papa rellena con manteca, queso crema, queso cheddar, panceta y cebollines",
+          "price": 12500
+        }
+      ]
+    },
+    {
+      "id": "carnes",
+      "name": "Carnes y Cerdos",
+      "sharing_surcharge": true,
+      "side_salad_available": true,
+      "items": [
+        {
+          "id": "bbq_ribs",
+          "name": "Houston's Barbecue Ribs 500gr",
+          "description": "Costillar de cerdo asado a fuego lento con salsa barbacoa, acompañado con papas fritas y Cole Slaw",
+          "price": 42000
+        },
+        {
+          "id": "ny_strip",
+          "name": "New York Strip 400gr",
+          "description": "Bife de chorizo grillado a la leña, acompañado con papa rellena",
+          "price": 53500
+        },
+        {
+          "id": "rib_eye",
+          "name": "Rib Eye Steak 400gr",
+          "description": "Ojo de bife grillado a la leña, acompañado con papas fritas",
+          "price": 56700
+        },
+        {
+          "id": "montreal_steak",
+          "name": "Montreal Steak 400gr",
+          "description": "Bife de chorizo grillado a la leña con pimientas variadas, acompañado con papas fritas",
+          "price": 56700
+        },
+        {
+          "id": "filet_mignon",
+          "name": "Filet Mignon",
+          "description": "Bife de lomo grillado a la leña, acompañado con papa rellena",
+          "price": 58900
+        },
+        {
+          "id": "hawaiian_steak",
+          "name": "Hawaiian Steak 400gr",
+          "description": "Ojo de bife marinado en salsa de soja, ananá y jengibre, grillado a la leña, acompañado con puré de papas",
+          "price": 58900
+        }
+      ]
+    },
+    {
+      "id": "pescados",
+      "name": "Pescados",
+      "sharing_surcharge": true,
+      "side_salad_available": true,
+      "items": [
+        {
+          "id": "cilantro_shrimp",
+          "name": "Cilantro Shrimp",
+          "description": "Brochette de langostinos grillados a la leña sobre arroz con aceite de cilantro, morrones y cebollines, acompañado con espinaca a la crema",
+          "price": 36500
+        },
+        {
+          "id": "grilled_salmon",
+          "name": "Fresh Grilled Salmon 300gr",
+          "description": "Filet de salmón grillado a la leña, acompañado con papas fritas",
+          "price": 42000
+        },
+        {
+          "id": "cedar_salmon",
+          "name": "Cedar Plank Salmon 300gr",
+          "description": "Salmón cocido en horno de barro sobre tabla de cedro, pintado con glacé de mostaza, acompañado con papa rellena",
+          "price": 44000
+        }
+      ]
+    },
+    {
+      "id": "aves",
+      "name": "Aves",
+      "sharing_surcharge": true,
+      "side_salad_available": true,
+      "items": [
+        {
+          "id": "grilled_chicken_breast",
+          "name": "Grilled Chicken Breast",
+          "description": "Pechuga de pollo deshuesada grillada a la leña con brócoli al vapor",
+          "price": 25800
+        },
+        {
+          "id": "bbq_chicken_main",
+          "name": "Barbecue Chicken",
+          "description": "Pechuga de pollo grillada a la leña con salsa barbacoa, acompañada con papas fritas",
+          "price": 26000
+        },
+        {
+          "id": "kansas_chicken_main",
+          "name": "Kansas Chicken",
+          "description": "Pechuga de pollo grillada a la leña con queso mixto, tomate picado y cebolla de verdeo, acompañada con papas fritas",
+          "price": 30000
+        },
+        {
+          "id": "tennessee_chicken",
+          "name": "Tennessee Chicken and Friends",
+          "description": "Pechuga de pollo grillada a la leña con salsa barbacoa, jamón ahumado y queso, acompañada con papas fritas",
+          "price": 31000,
+          "_verify": true,
+          "_note": "VERIFICAR PRECIO — estimado desde valor sin-IVA del PDF"
+        }
+      ]
+    },
+    {
+      "id": "pastas",
+      "name": "Pastas",
+      "sharing_surcharge": true,
+      "items": [
+        {
+          "id": "vegetarian_platter",
+          "name": "Vegetarian Platter",
+          "description": "Zucchinis asados a la leña, quinoa medley, arroz y brócoli",
+          "price": 25800
+        },
+        {
+          "id": "thai_pasta",
+          "name": "Chicken Thai Pasta",
+          "description": "Pasta penne salteada con vegetales, pollo y castañas de cajú en salsa Thai con soja y jengibre",
+          "price": 25800,
+          "options": [
+            "Con lomo — consultar precio al mozo",
+            "Con langostinos a la leña — consultar precio al mozo"
+          ]
+        },
+        {
+          "id": "arizona_pasta",
+          "name": "Arizona Pasta",
+          "description": "Pasta Penne al dente con salsa Alfredo, pollo, morrones y especias de Arizona",
+          "price": 28500
+        },
+        {
+          "id": "smoked_salmon_pasta",
+          "name": "Smoked Salmon Pasta",
+          "description": "Pasta Linguini al dente con salsa de crema, salmón ahumado, vino blanco, morrones y eneldo fresco",
+          "price": 28500
+        }
+      ]
+    },
+    {
+      "id": "kids",
+      "name": "Kids",
+      "note": "Menú exclusivo para menores de 10 años",
+      "sharing_surcharge": false,
+      "items": [
+        {
+          "id": "kid_pasta",
+          "name": "Kid Pasta",
+          "description": "Pasta Fusilli con salsa crema, marinara o rosada",
+          "price": 15000
+        },
+        {
+          "id": "kid_cheeseburger",
+          "name": "Kid Cheeseburger",
+          "description": "Hamburguesa casera con queso, servida con papas fritas",
+          "price": 17000
+        },
+        {
+          "id": "kid_chicken",
+          "name": "Kid Chicken Tender",
+          "description": "Trozos de pollo rebozado, servido con papas fritas",
+          "price": 17000
+        },
+        {
+          "id": "kid_ribs",
+          "name": "Kid Barbecue Ribs",
+          "description": "Costilla de cerdo estilo Kansas, servida con papas fritas",
+          "price": 18000
+        }
+      ]
+    },
+    {
+      "id": "postres",
+      "name": "Desserts",
+      "sharing_surcharge": false,
+      "items": [
+        {
+          "id": "carrot_cake",
+          "name": "Carrot Cake",
+          "description": "Torta de coco, nueces y canela con cobertura de crema",
+          "price": 12400
+        },
+        {
+          "id": "key_lime_pie",
+          "name": "Key Lime Pie",
+          "description": "Deliciosa tarta de lima servida con crema batida",
+          "price": 12400
+        },
+        {
+          "id": "going_bananas",
+          "name": "Going Bananas",
+          "description": "Torta tibia de bananas con cobertura de crema de avellanas, salsa de dulce de leche y helado de vainilla",
+          "price": 14900
+        },
+        {
+          "id": "kansas_cheesecake",
+          "name": "Kansas Cheesecake",
+          "description": "Cheesecake clásico estilo New York con crema, escamas de chocolate blanco y salsa de frambuesa",
+          "price": 17000
+        },
+        {
+          "id": "argentinean_cheesecake",
+          "name": "Argentinean Style Cheesecake",
+          "description": "Cheesecake de dulce de leche con crema y salsa de dulce de leche",
+          "price": 17000
+        },
+        {
+          "id": "hot_fudge_sundae",
+          "name": "Hot Fudge Sundae",
+          "description": "Helado de vainilla bañado con salsa de chocolate, crema y pecans acarameladas",
+          "price": 17500,
+          "extras": [
+            {
+              "name": "Salsa extra (chocolate o dulce de leche)",
+              "price": 2500
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tes",
+      "name": "Tés e Infusiones",
+      "sharing_surcharge": false,
+      "items": [
+        {
+          "id": "kansas_blend",
+          "name": "Kansas' Blend",
+          "description": "Manzanas asadas, canela, nueces, miel, limón y jengibre",
+          "price": 5500
+        },
+        {
+          "id": "kansas_calm",
+          "name": "Kansas Calm",
+          "description": "Cedrón, clementina, manzanas y rosa mosqueta",
+          "price": 5500
+        },
+        {
+          "id": "very_berries",
+          "name": "Very Berries",
+          "description": "Moras, arándanos, grosellas y frambuesas",
+          "price": 5500
+        },
+        {
+          "id": "thai_wind",
+          "name": "Thai Wind",
+          "description": "Té verde con ananá, maracuyá y coco",
+          "price": 5500
+        },
+        {
+          "id": "english_breakfast",
+          "name": "English Breakfast",
+          "description": "Hebras de Sri Lanka, India y China",
+          "price": 5500
+        }
+      ]
+    }
+  ],
+  "drinks": [
+    {
+      "id": "bebidas",
+      "name": "Bebidas",
+      "items": [
+        {
+          "id": "coca_cola",
+          "name": "Gaseosa Línea Coca Cola",
+          "price": 5000
+        },
+        {
+          "id": "villa_sin",
+          "name": "Villavicencio Sin Gas",
+          "price": 4500
+        },
+        {
+          "id": "villa_con",
+          "name": "Villavicencio Con Gas",
+          "price": 4500
+        },
+        {
+          "id": "agua_saborizada",
+          "name": "Aguas Saborizadas",
+          "price": 4500
+        },
+        {
+          "id": "sanpellegrino",
+          "name": "Agua Sanpellegrino (con gas)",
+          "price": 13700
+        },
+        {
+          "id": "acqua_panna",
+          "name": "Acqua Panna (sin gas)",
+          "price": 13700
+        },
+        {
+          "id": "iced_tea",
+          "name": "Iced Tea",
+          "price": 5000
+        },
+        {
+          "id": "arnold_palmer",
+          "name": "Arnold Palmer",
+          "price": 5600
+        },
+        {
+          "id": "jugos",
+          "name": "Jugos (Naranja o Pomelo)",
+          "price": 6900
+        },
+        {
+          "id": "limonada",
+          "name": "Limonada",
+          "price": 7500
+        },
+        {
+          "id": "limonada_menta",
+          "name": "Limonada con Menta y Jengibre",
+          "price": 8000
+        },
+        {
+          "id": "cafe",
+          "name": "Café",
+          "price": 6300
+        },
+        {
+          "id": "cappuccino",
+          "name": "Cappuccino",
+          "price": 6800
+        }
+      ]
+    },
+    {
+      "id": "cervezas",
+      "name": "Cervezas",
+      "items": [
+        {
+          "id": "imperial_chopp",
+          "name": "Imperial",
+          "format": "chopp",
+          "price": 7700,
+          "happy_hour_price": 4600
+        },
+        {
+          "id": "miller",
+          "name": "Miller",
+          "format": "lata 473cc",
+          "price": 7700,
+          "happy_hour_price": 4600
+        },
+        {
+          "id": "imperial_ipa",
+          "name": "Imperial IPA",
+          "format": "lata 473cc",
+          "price": 7700,
+          "happy_hour_price": 4600
+        },
+        {
+          "id": "imperial_apa",
+          "name": "Imperial APA",
+          "format": "lata 473cc",
+          "price": 7700,
+          "happy_hour_price": 4600
+        },
+        {
+          "id": "warsteiner",
+          "name": "Warsteiner",
+          "format": "chopp",
+          "price": 8300,
+          "happy_hour_price": 5000
+        },
+        {
+          "id": "heineken",
+          "name": "Heineken",
+          "format": "chopp / lata",
+          "price": 8300,
+          "happy_hour_price": 5000
+        },
+        {
+          "id": "heineken_na",
+          "name": "Heineken Sin Alcohol",
+          "format": "lata 355cc",
+          "price": 8300
+        },
+        {
+          "id": "blue_moon",
+          "name": "Blue Moon",
+          "format": "porrón 355cc",
+          "price": 11000,
+          "happy_hour_price": 6600
+        }
+      ]
+    },
+    {
+      "id": "cocktails",
+      "name": "Cocktails",
+      "note": "Selección curada para demo. La carta completa tiene más opciones.",
+      "items": [
+        {
+          "id": "gin_tonic",
+          "name": "Gin Tonic",
+          "price": 10000,
+          "happy_hour_price": 6000
+        },
+        {
+          "id": "mojito",
+          "name": "Mojito",
+          "price": 10000
+        },
+        {
+          "id": "fernet_cola",
+          "name": "Fernet Branca Cola",
+          "price": 10000
+        },
+        {
+          "id": "aperol_spritz",
+          "name": "Aperol Spritz",
+          "price": 11500
+        },
+        {
+          "id": "pisco_sour",
+          "name": "Pisco Sour",
+          "price": 11500,
+          "happy_hour_price": 6900
+        },
+        {
+          "id": "caipirinha",
+          "name": "Caipirinha",
+          "price": 11500,
+          "happy_hour_price": 6900
+        },
+        {
+          "id": "daiquiri",
+          "name": "Daiquiri",
+          "price": 11500,
+          "happy_hour_price": 6900
+        },
+        {
+          "id": "pina_colada",
+          "name": "Piña Colada",
+          "price": 11500,
+          "happy_hour_price": 6900
+        },
+        {
+          "id": "negroni",
+          "name": "Negroni",
+          "price": 13000
+        },
+        {
+          "id": "old_fashioned",
+          "name": "Old Fashioned",
+          "price": 13000
+        },
+        {
+          "id": "manhattan",
+          "name": "Manhattan",
+          "price": 13000
+        },
+        {
+          "id": "long_island",
+          "name": "Long Island Ice Tea",
+          "price": 13000
+        }
+      ]
+    },
+    {
+      "id": "mocktails",
+      "name": "Mocktails",
+      "note": "Sin alcohol",
+      "items": [
+        {
+          "id": "spring_dream_na",
+          "name": "Spring Dream",
+          "price": 9500
+        },
+        {
+          "id": "rubi_red",
+          "name": "Rubi Red",
+          "price": 9500
+        },
+        {
+          "id": "pisco_sour_na",
+          "name": "Pisco Sour",
+          "price": 9500
+        },
+        {
+          "id": "maracurovska_na",
+          "name": "Maracurovska",
+          "price": 9500
+        }
+      ]
+    },
+    {
+      "id": "champagne",
+      "name": "Champagne & Espumantes",
+      "note": "Copa = 150 cm3",
+      "items": [
+        {
+          "id": "zaffiro",
+          "name": "Zaffiro Extra Brut",
+          "bodega": "Bodega Zaffiro",
+          "price_copa": 6000,
+          "price_botella": 24200
+        },
+        {
+          "id": "salentein_brut",
+          "name": "Salentein Brut Nature",
+          "bodega": "Bodega Salentein",
+          "price_copa": 7000,
+          "price_botella": 24800
+        },
+        {
+          "id": "chandon_aperitif",
+          "name": "Chandon Apéritif",
+          "bodega": "Bodega Chandon",
+          "price_copa": 9500,
+          "price_botella": 27100
+        },
+        {
+          "id": "chandon_brut",
+          "name": "Chandon Extra Brut",
+          "bodega": "Bodega Chandon",
+          "price_copa": 8000,
+          "price_botella": 31200
+        },
+        {
+          "id": "baron_b",
+          "name": "Baron B Cuvée Spéciale",
+          "bodega": "Bodega Baron B",
+          "price_copa": 8200,
+          "price_botella": 58800
+        }
+      ]
+    },
+    {
+      "id": "vinos_tintos",
+      "name": "Vinos Tintos",
+      "note": "Copa = 250 cm3",
+      "subcategories": [
+        {
+          "id": "malbec",
+          "name": "Malbec",
+          "items": [
+            {
+              "id": "alaris",
+              "name": "Alaris",
+              "bodega": "Bodega Salentein",
+              "price_copa": 8000,
+              "price_botella": 23100
+            },
+            {
+              "id": "nieto_malbec",
+              "name": "Nieto Senetiner",
+              "bodega": "Bodega Nieto Senetiner",
+              "price_copa": 8200,
+              "price_botella": 23600
+            },
+            {
+              "id": "saint_felicien",
+              "name": "Saint Felicien",
+              "bodega": "Bodega Trapiche",
+              "price_copa": 8200,
+              "price_botella": 28000
+            },
+            {
+              "id": "terrazas_reserva",
+              "name": "Terrazas de los Andes Res.",
+              "bodega": "Bodega Terrazas de los Andes",
+              "price_copa": 9500,
+              "price_botella": 26300
+            }
+          ]
+        },
+        {
+          "id": "cabernet",
+          "name": "Cabernet Sauvignon",
+          "items": [
+            {
+              "id": "santa_julia_cab",
+              "name": "Santa Julia",
+              "bodega": "Bodega Santa Julia",
+              "price_copa": 8000,
+              "price_botella": 22100
+            },
+            {
+              "id": "trumpeter_res",
+              "name": "Trumpeter Res.",
+              "bodega": "Bodega Trapiche",
+              "price_copa": 8200,
+              "price_botella": 24700
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vinos_blancos",
+      "name": "Vinos Blancos",
+      "note": "Copa = 250 cm3",
+      "items": [
+        {
+          "id": "santa_julia_sauv",
+          "name": "Santa Julia Sauvignon Blanc",
+          "bodega": "Bodega Santa Julia",
+          "price_copa": 8000,
+          "price_botella": 23100
+        },
+        {
+          "id": "nieto_chardonnay",
+          "name": "Nieto Senetiner Chardonnay",
+          "bodega": "Bodega Nieto Senetiner",
+          "price_copa": 8000,
+          "price_botella": 23100
+        },
+        {
+          "id": "pioneer_blanc",
+          "name": "Pioneer",
+          "bodega": "Bodega La Celia",
+          "price_copa": 8200,
+          "price_botella": 24700
+        }
+      ]
+    }
+  ]
+}"""
+
+EMBEDDED_INDEX_HTML = r"""<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#0E0A07">
+<title>La Escaloneta — Carta viva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,200..900,0..100,0..1&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Carta Viva — Kansas
+   La CARTA es protagonista. Sol asiste desde el chip arriba.
+   ============================================================ */
+:root {
+  --ink:        #0E0A07;
+  --ink-card:   #181210;
+  --paper:      #F4ECD8;
+  --paper-warm: #EAE0C7;
+  --paper-edge: #DFD2B6;
+  --accent:     #8B1C2B;
+  --accent-dk:  #6E1422;
+  --gold:       #C9A86A;
+  --gold-dk:    #A88A4E;
+  --cocoa:      #5C4639;
+  --cocoa-soft: #8B7461;
+  --bone:       #D9CDB4;
+  --bone-soft:  #9A8E78;
+  --ember-core: #FF8C3F;
+  --ember-mid:  #D9421A;
+  --ember-out:  #5A1010;
+  --shadow:     0 30px 80px -30px rgba(0,0,0,0.6);
+  --paper-grain: radial-gradient(circle at 30% 20%, rgba(139,28,43,0.03), transparent 50%),
+                 radial-gradient(circle at 70% 80%, rgba(201,168,106,0.05), transparent 50%);
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; padding: 0; height: 100dvh; overflow: hidden; }
+body {
+  background: #0E0A07;  /* NEGRO — si ves esto el archivo es el nuevo */
+  color: #F4ECD8;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "tnum" 1;
+}
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
+button:disabled { cursor: not-allowed; opacity: 0.5; }
+input, textarea { font: inherit; color: inherit; background: none; border: 0; outline: 0; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+/* ============================================================
+   SPLASH — sigue siendo épica
+   ============================================================ */
+#splash {
+  position: fixed; top: 0; left: 0; right: 0; height: 100dvh; z-index: 90;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 24px;
+  background: var(--ink);
+  transition: opacity 700ms ease, transform 700ms ease;
+}
+#splash::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(255,140,63,0.06), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 50% 90%, rgba(139,28,43,0.10), transparent 60%);
+  pointer-events: none;
+}
+#splash.gone { opacity: 0; transform: scale(1.03); pointer-events: none; }
+.splash-mark {
+  position: relative; z-index: 2;
+  font-family: 'Fraunces', serif;
+  font-weight: 300;
+  font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1;
+  font-size: clamp(72px, 18vw, 140px);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--paper);
+  text-shadow: 0 0 50px rgba(201,168,106,0.15);
+  margin: 0;
+}
+.splash-rules {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; gap: 14px;
+  margin: 16px 0 6px;
+}
+.splash-rules .line { width: 32px; height: 1px; background: var(--gold); opacity: 0.5; }
+.splash-eyebrow {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 500; font-size: 11px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 56px;
+}
+.splash-orb { width: 88px; height: 88px; margin-bottom: 36px; position: relative; z-index: 2; }
+.splash-cta {
+  position: relative; z-index: 2;
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 28px;
+  border: 1px solid rgba(201,168,106,0.45);
+  border-radius: 999px;
+  color: var(--paper);
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+  background: rgba(20,15,12,0.5);
+  backdrop-filter: blur(8px);
+  transition: all 250ms ease;
+}
+.splash-cta:hover { border-color: var(--gold); background: rgba(40,28,22,0.6); }
+.splash-cta::after {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ember-core);
+  box-shadow: 0 0 12px var(--ember-core);
+  animation: emberPulse 2.4s ease-in-out infinite;
+}
+@keyframes emberPulse {
+  0%,100% { opacity: 0.7; transform: scale(1); }
+  50%     { opacity: 1;   transform: scale(1.2); }
+}
+.splash-foot {
+  position: absolute; bottom: 28px; left: 0; right: 0; z-index: 2;
+  font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase;
+  color: var(--bone-soft); opacity: 0.5;
+}
+
+/* ============================================================
+   APP — la carta es el rey
+   ============================================================ */
+#app {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 100dvh;   /* dynamic viewport height: se ajusta cuando aparece el teclado */
+  z-index: 10;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  background: #0E0A07;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 700ms ease 200ms;
+}
+#app.ready { opacity: 1; }
+
+/* Topbar — marca + Sol chip */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 22px 10px;
+  border-bottom: 1px solid rgba(139,28,43,0.10);
+  background: linear-gradient(180deg, #181210, #0E0A07);
+  position: relative; z-index: 3;
+}
+.brand {
+  font-family: 'Fraunces', serif;
+  font-weight: 300;
+  font-variation-settings: "opsz" 48, "SOFT" 30;
+  font-size: 26px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--paper);
+}
+.brand small {
+  display: block;
+  font-family: 'Manrope', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 4px;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+/* Sol chip — orbe mini + texto, clickeable, indica estado */
+.sol-chip {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 7px 14px 7px 7px;
+  border: 1px solid rgba(139,28,43,0.18);
+  border-radius: 999px;
+  background: rgba(24,18,16,0.85);
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+  transition: all 220ms ease;
+  cursor: pointer;
+}
+.sol-chip:hover {
+  background: rgba(36,26,22,0.95);
+  border-color: rgba(201,168,106,0.45);
+  transform: translateY(-1px);
+}
+.sol-chip .mini-orb-wrap {
+  position: relative;
+  width: 26px; height: 26px;
+  flex-shrink: 0;
+}
+.sol-chip .mini-orb {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 45%, var(--ember-core) 0%, var(--ember-mid) 30%, var(--ember-out) 65%, transparent 82%);
+  animation: breatheSmall 4.6s ease-in-out infinite;
+}
+.sol-chip .mini-orb::before {
+  content: '';
+  position: absolute; inset: 22%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 45% 40%, #FFE3BE 0%, #FFB36B 25%, #FF7028 60%, transparent 82%);
+  mix-blend-mode: screen;
+}
+.sol-chip .mini-ring {
+  position: absolute; inset: -3px;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  pointer-events: none;
+}
+.sol-chip[data-state="listening"] .mini-ring {
+  border-color: var(--gold);
+  animation: ringPulse 1.2s ease-out infinite;
+}
+.sol-chip[data-state="thinking"] .mini-ring {
+  border-color: var(--accent);
+  border-style: dashed;
+  animation: ringSpin 2s linear infinite;
+}
+.sol-chip[data-state="speaking"] .mini-ring {
+  border-color: var(--ember-core);
+  animation: ringPulse 0.9s ease-out infinite;
+}
+@keyframes breatheSmall {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(1.07); }
+}
+@keyframes ringPulse {
+  0%   { transform: scale(1); opacity: 0.9; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+@keyframes ringSpin { to { transform: rotate(360deg); } }
+
+.sol-chip .state-label {
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  display: block;
+  color: var(--cocoa);
+  margin-top: 1px;
+  opacity: 0.7;
+  font-weight: 500;
+  min-height: 10px;
+}
+
+
+/* TICKER superior: la respuesta de la mesera en vivo. Tap = historial completo */
+.top-ticker {
+  flex: 1;
+  min-width: 0;
+  margin-left: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  text-align: right;
+  cursor: pointer;
+  padding: 4px 0;
+}
+.ticker-text {
+  max-width: 100%;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--gold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-style: italic;
+  font-family: 'Fraunces', serif;
+}
+.ticker-text:empty::before {
+  content: 'Tu mesera virtual';
+  opacity: 0.45;
+}
+.ticker-state {
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--bone-soft);
+  font-weight: 600;
+  min-height: 11px;
+}
+
+
+/* Botón "Escribile a tu mesera" — abre la ventana de chat */
+.chat-trigger {
+  flex: 1;
+  min-width: 0;
+  margin-left: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 9px;
+  padding: 10px 16px;
+  background: rgba(24,18,16,0.85);
+  border: 1px solid rgba(201,168,106,0.30);
+  border-radius: 999px;
+  color: var(--bone-soft);
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all 200ms ease;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.chat-trigger:hover { border-color: var(--gold); color: var(--bone); }
+.chat-trigger svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--gold); }
+.chat-trigger span { overflow: hidden; text-overflow: ellipsis; }
+
+/* Tabs — secciones de la carta */
+.carta-tabs {
+  display: flex; gap: 4px;
+  padding: 8px 16px 10px;
+  overflow-x: auto;
+  border-bottom: 1px solid rgba(201,168,106,0.15);
+  background: #0E0A07;
+  position: relative; z-index: 2;
+  scrollbar-width: none;
+}
+.carta-tabs::-webkit-scrollbar { height: 0; display: none; }
+.tab {
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 7px 13px;
+  border-radius: 999px;
+  color: var(--bone-soft);
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-weight: 600;
+  transition: all 180ms ease;
+}
+.tab.active {
+  background: var(--accent);
+  color: var(--paper);
+  box-shadow: 0 4px 10px -3px rgba(139,28,43,0.4);
+}
+.tab:hover:not(.active) {
+  background: rgba(139,28,43,0.25);
+  color: var(--paper);
+}
+
+/* CARTA — el contenido principal */
+
+/* Contenedor central: carta + chat superpuesto */
+.center-stage {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.center-stage .carta-body { flex: 1; }
+
+.carta-body {
+  background: #0E0A07;
+  overflow-y: auto;
+  padding: 18px 22px 24px;
+  -webkit-overflow-scrolling: touch;
+  scroll-padding-top: 8px;
+}
+.carta-body::-webkit-scrollbar { width: 6px; }
+.carta-body::-webkit-scrollbar-track { background: transparent; }
+.carta-body::-webkit-scrollbar-thumb { background: rgba(139,28,43,0.25); border-radius: 6px; }
+
+.carta-section { margin-bottom: 32px; }
+.carta-section:last-child { margin-bottom: 150px; }
+.carta-section h2 {
+  font-family: 'Fraunces', serif;
+  font-weight: 400;
+  font-variation-settings: "opsz" 36;
+  font-size: 26px;
+  letter-spacing: -0.01em;
+  color: var(--gold);
+  margin: 0 0 4px;
+}
+.carta-section .sep {
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold) 0%, transparent 75%);
+  margin: 6px 0 18px;
+  opacity: 0.7;
+}
+.carta-section .note {
+  font-size: 11.5px;
+  font-style: italic;
+  color: var(--bone-soft);
+  border-left: 2px solid var(--gold);
+  padding: 4px 0 4px 12px;
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+.dish {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px dashed rgba(111,90,75,0.20);
+}
+.dish:last-child { border-bottom: 0; }
+.dish .name {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-variation-settings: "opsz" 18;
+  font-size: 17px;
+  color: var(--paper);
+  line-height: 1.25;
+  letter-spacing: -0.005em;
+}
+.dish .desc {
+  font-size: 12.5px;
+  color: var(--bone-soft);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+.dish .meta {
+  font-size: 11px;
+  color: var(--bone-soft);
+  margin-top: 4px;
+  font-style: italic;
+}
+.dish .price {
+  font-family: 'Manrope', sans-serif;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--accent);
+  white-space: nowrap;
+  font-feature-settings: "tnum" 1;
+  text-align: right;
+  align-self: start;
+  padding-top: 2px;
+  line-height: 1.3;
+}
+.dish .price small {
+  display: block;
+  font-size: 8.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cocoa-soft);
+  font-weight: 500;
+  margin-top: 1px;
+}
+.dish .price-tba {
+  font-style: italic;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--cocoa); opacity: 0.7;
+}
+
+/* Reglas de la casa al final */
+.house-rules {
+  margin-top: 16px;
+  padding: 16px 18px;
+  background: rgba(139,28,43,0.15);
+  border-radius: 12px;
+  border: 1px solid rgba(139,28,43,0.35);
+}
+.house-rules h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 10px;
+}
+.house-rules ul { list-style: none; padding: 0; margin: 0; }
+.house-rules li {
+  font-size: 11.5px;
+  color: var(--bone);
+  padding: 4px 0;
+  line-height: 1.5;
+}
+.house-rules li::before { content: '· '; color: var(--gold); font-weight: bold; }
+
+/* ============================================================
+   BANNER de SOL — cuando hay actividad (texto o voz)
+   Aparece DEBAJO del topbar, sobre la carta, no la tapa
+   ============================================================ */
+.sol-banner {
+  position: fixed; left: 14px; right: 14px;
+  top: 80px;
+  z-index: 8;
+  padding: 14px 18px 14px 22px;
+  background: linear-gradient(180deg, rgba(40,28,22,0.97), rgba(28,20,16,0.97));
+  color: var(--paper);
+  border-radius: 14px;
+  border: 1px solid rgba(201,168,106,0.20);
+  box-shadow: 0 20px 50px -20px rgba(0,0,0,0.5);
+  font-size: 14.5px;
+  line-height: 1.45;
+  opacity: 0; transform: translateY(-12px);
+  transition: opacity 350ms ease, transform 350ms ease;
+  pointer-events: none;
+}
+.sol-banner.show {
+  opacity: 1; transform: translateY(0);
+  pointer-events: auto;
+}
+.sol-banner .who {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 4px;
+  opacity: 0.95;
+}
+.sol-banner .who-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ember-core);
+  box-shadow: 0 0 8px var(--ember-core);
+  animation: emberPulse 2s ease-in-out infinite;
+}
+.sol-banner .body { color: var(--paper); }
+.sol-banner .close {
+  position: absolute; top: 8px; right: 10px;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--bone);
+  opacity: 0.7;
+  transition: all 180ms ease;
+}
+.sol-banner .close:hover { opacity: 1; background: rgba(255,255,255,0.08); }
+
+/* ============================================================
+   DOCK — input siempre visible abajo
+   ============================================================ */
+.dock {
+  transition: transform 200ms ease;
+  padding: 10px 14px max(14px, env(safe-area-inset-bottom)) 14px;
+  background: linear-gradient(180deg, transparent, #0E0A07 35%);
+  position: relative; z-index: 4;
+}
+.dock-row {
+  display: flex; align-items: center; gap: 8px;
+  background: #181210;
+  border: 1px solid rgba(201,168,106,0.25);
+  border-radius: 999px;
+  padding: 5px 5px 5px 18px;
+  box-shadow: 0 12px 36px -16px rgba(139,28,43,0.25);
+}
+.dock-row:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 12px 36px -14px rgba(139,28,43,0.4);
+}
+.dock-row textarea {
+  flex: 1;
+  resize: none;
+  height: 22px; max-height: 80px;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--paper);
+  line-height: 22px;
+  padding: 7px 0;
+}
+.dock-row textarea::placeholder { color: var(--cocoa-soft); opacity: 0.8; }
+
+.icon-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 220ms ease;
+}
+.icon-btn svg { width: 18px; height: 18px; }
+
+.mic-btn {
+  background: linear-gradient(180deg, var(--accent), var(--accent-dk));
+  color: var(--paper);
+  box-shadow: 0 6px 16px -6px rgba(139,28,43,0.45), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.mic-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 9px 20px -6px rgba(139,28,43,0.55);
+}
+.mic-btn.recording {
+  background: linear-gradient(180deg, #BB2334, var(--accent));
+  animation: micRecord 1.4s ease-out infinite;
+}
+@keyframes micRecord {
+  0%   { box-shadow: 0 0 0 0 rgba(139,28,43,0.65), 0 6px 16px -6px rgba(139,28,43,0.45); }
+  100% { box-shadow: 0 0 0 16px rgba(139,28,43,0), 0 6px 16px -6px rgba(139,28,43,0.45); }
+}
+
+.send-btn {
+  background: var(--gold);
+  color: var(--ink);
+}
+.send-btn:hover { background: #D8B879; }
+.send-btn:disabled { background: rgba(201,168,106,0.30); color: var(--cocoa-soft); }
+
+/* ============================================================
+   HISTORIAL OVERLAY (se abre desde el chip Sol)
+   ============================================================ */
+.history-overlay {
+  position: fixed; inset: 0; z-index: 60;
+  background: rgba(20,15,12,0.7);
+  backdrop-filter: blur(4px);
+  opacity: 0; pointer-events: none;
+  transition: opacity 300ms ease;
+}
+.history-overlay.open { opacity: 1; pointer-events: auto; }
+
+.history-panel {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 52dvh;          /* termina a mitad de pantalla: el teclado nunca lo tapa */
+  max-height: 52dvh;
+  z-index: 70;
+  background: var(--paper);
+  border-bottom-left-radius: 22px;
+  border-bottom-right-radius: 22px;
+  transform: translateY(-100%);
+  transition: transform 380ms cubic-bezier(.2,.7,.2,1);
+  display: flex; flex-direction: column;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+}
+.history-panel.open { transform: translateY(0); }
+.history-handle {
+  order: 99;              /* el handle va abajo del panel ahora */
+  width: 40px; height: 4px;
+  background: rgba(139,28,43,0.25);
+  border-radius: 2px;
+  margin: 8px auto 10px;
+  flex-shrink: 0;
+}
+.history-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: max(12px, env(safe-area-inset-top)) 20px 6px;
+  flex-shrink: 0;
+}
+.history-head h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: -0.01em;
+  color: var(--accent);
+  margin: 0;
+}
+.history-close {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--accent);
+  border: 1px solid rgba(139,28,43,0.2);
+}
+.history-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 18px 10px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.msg {
+  max-width: 86%;
+  padding: 10px 15px 11px;
+  border-radius: 16px;
+  font-size: 14.5px;
+  line-height: 1.45;
+}
+.msg.user {
+  align-self: flex-end;
+  background: linear-gradient(180deg, var(--accent), var(--accent-dk));
+  color: var(--paper);
+  border-bottom-right-radius: 5px;
+}
+.msg.bot {
+  align-self: flex-start;
+  background: #FFFCF5;
+  color: #2A1F18;
+  border: 1px solid rgba(139,28,43,0.15);
+  border-bottom-left-radius: 5px;
+}
+.msg.bot .who {
+  display: block;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: 2px;
+  text-transform: uppercase;
+}
+.history-empty {
+  text-align: center;
+  color: var(--cocoa-soft);
+  font-style: italic;
+  font-size: 13px;
+  padding: 40px 20px;
+}
+
+
+.panel-dock {
+  flex-shrink: 0;
+  padding: 6px 14px 8px 14px;
+  background: var(--paper);
+  border-top: 1px solid rgba(139,28,43,0.12);
+}
+.panel-dock .dock-row {
+  background: #FFFCF5;
+  border: 1px solid rgba(139,28,43,0.20);
+}
+.panel-dock textarea { color: #2A1F18; }
+.panel-dock textarea::placeholder { color: var(--cocoa-soft); }
+
+/* Toast (errores) */
+/* ============================================================
+   ORBE FLOTANTE — micrófono central sobre la carta
+   ============================================================ */
+.orb-float {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  width: 96px; height: 96px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 220ms cubic-bezier(.2,.7,.2,1);
+}
+.orb-float:hover { transform: translateX(-50%) scale(1.06); }
+.orb-float:active { transform: translateX(-50%) scale(0.95); }
+
+.orb-float-inner {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 45%, var(--ember-core) 0%, var(--ember-mid) 30%, var(--ember-out) 65%, transparent 82%);
+  animation: floatBreathe 4.8s ease-in-out infinite;
+  box-shadow:
+    0 0 0 1px rgba(201,168,106,0.25),
+    0 8px 24px -8px rgba(139,28,43,0.6),
+    0 0 40px -16px rgba(255,140,63,0.4);
+}
+.orb-float-inner::before {
+  content: '';
+  position: absolute; inset: 18%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 45% 40%, #FFE3BE 0%, #FFB36B 22%, #FF7028 58%, transparent 82%);
+  mix-blend-mode: screen;
+  animation: coreFlickerF 2.8s ease-in-out infinite;
+}
+.orb-float-inner::after {
+  /* ícono mic centrado */
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,240,220,0.9)' stroke-width='1.6' stroke-linecap='round'%3E%3Crect x='9' y='3' width='6' height='11' rx='3'/%3E%3Cpath d='M5 11a7 7 0 0014 0M12 18v3'/%3E%3C/svg%3E") center/36% no-repeat;
+}
+.orb-float-halo {
+  position: absolute; inset: -20%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,124,40,0.18), rgba(139,28,43,0.10) 40%, transparent 65%);
+  filter: blur(10px);
+  pointer-events: none;
+  animation: haloF 7s ease-in-out infinite;
+}
+.orb-float-ring {
+  position: absolute; inset: -6px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(201,168,106,0.30);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 300ms ease, border-color 300ms ease;
+}
+
+/* Tooltip arriba del orbe */
+.orb-float-label {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%; transform: translateX(-50%);
+  font-family: 'Manrope', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+  white-space: nowrap;
+  opacity: 0.95;
+  pointer-events: none;
+  font-weight: 600;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+  transition: opacity 300ms ease;
+}
+
+/* Estados */
+.orb-float[data-state="idle"] .orb-float-ring { opacity: 0.45; }
+.orb-float[data-state="listening"] .orb-float-inner {
+  animation: floatBreathe 2.2s ease-in-out infinite;
+  box-shadow:
+    0 0 0 2px rgba(201,168,106,0.5),
+    0 8px 28px -8px rgba(139,28,43,0.7),
+    0 0 50px -10px rgba(255,140,63,0.6);
+}
+.orb-float[data-state="listening"] .orb-float-ring {
+  opacity: 1;
+  border-color: var(--gold);
+  animation: ringPulseF 1.1s ease-out infinite;
+}
+.orb-float[data-state="thinking"] .orb-float-inner {
+  animation: floatBreathe 1.3s ease-in-out infinite;
+  filter: brightness(0.88);
+}
+.orb-float[data-state="thinking"] .orb-float-ring {
+  opacity: 0.8;
+  border-style: dashed;
+  border-color: var(--gold);
+  animation: ringSpin 2.2s linear infinite;
+}
+.orb-float[data-state="speaking"] .orb-float-inner {
+  animation: floatBreathe 0.9s ease-in-out infinite;
+  filter: brightness(1.12);
+  box-shadow:
+    0 0 0 2px rgba(255,140,63,0.5),
+    0 8px 28px -8px rgba(139,28,43,0.7),
+    0 0 55px -8px rgba(255,140,63,0.7);
+}
+.orb-float[data-state="speaking"] .orb-float-ring {
+  opacity: 1;
+  border-color: var(--ember-core);
+  animation: ringPulseF 0.85s ease-out infinite;
+}
+
+@keyframes floatBreathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+@keyframes coreFlickerF {
+  0%,100% { opacity: 0.85; transform: scale(1); }
+  40%     { opacity: 1;    transform: scale(1.05); }
+  70%     { opacity: 0.75; transform: scale(0.97); }
+}
+@keyframes haloF { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1) translate(-1%,2%); } }
+@keyframes ringPulseF { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+
+/* Ajuste dock: hacer sitio para el orbe flotante */
+.dock { padding-top: 2px; }
+.dock-row textarea::placeholder { color: var(--bone-soft); opacity: 0.55; }
+
+/* el mic btn del dock lo ocultamos — ahora está el orbe */
+.mic-btn { display: none !important; }
+
+/* ============================================================
+   CHAT VISIBLE — burbujas sobre la carta
+   ============================================================ */
+.chat-feed {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  max-height: 65%;
+  z-index: 6;
+  padding: 12px 108px 14px 14px;
+  display: flex; flex-direction: column; gap: 9px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, transparent 0, #000 28px);
+}
+.chat-feed.has-msgs { pointer-events: auto; }
+.chat-feed::-webkit-scrollbar { width: 0; }
+
+.bubble {
+  max-width: 84%;
+  padding: 10px 14px 11px;
+  border-radius: 16px;
+  font-size: 14.5px;
+  line-height: 1.45;
+  box-shadow: 0 8px 24px -10px rgba(0,0,0,0.5);
+  animation: bubbleIn 320ms cubic-bezier(.2,.7,.2,1);
+  word-wrap: break-word;
+}
+@keyframes bubbleIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.bubble.user {
+  align-self: flex-end;
+  background: linear-gradient(180deg, var(--accent), var(--accent-dk));
+  color: var(--paper);
+  border-bottom-right-radius: 5px;
+}
+.bubble.bot {
+  align-self: flex-start;
+  background: linear-gradient(180deg, #20171280, #181210E6);
+  backdrop-filter: blur(12px);
+  color: var(--paper);
+  border: 1px solid rgba(201,168,106,0.25);
+  border-bottom-left-radius: 5px;
+}
+.bubble.bot .who {
+  display: block;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  margin-bottom: 3px;
+  text-transform: uppercase;
+}
+.bubble.typing { color: var(--bone-soft); font-style: italic; }
+
+/* Cartel ESCUCHANDO grande cuando se mantiene apretado el orbe */
+.listening-overlay {
+  position: fixed;
+  bottom: 150px;
+  left: 50%; transform: translateX(-50%);
+  z-index: 55;
+  padding: 10px 22px;
+  background: rgba(139,28,43,0.95);
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  color: var(--paper);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+  box-shadow: 0 8px 30px -8px rgba(139,28,43,0.7);
+}
+.listening-overlay.show { opacity: 1; }
+
+/* Cuando el orbe está apretado: titila FUERTE */
+.orb-float.holding .orb-float-inner {
+  animation: orbHoldPulse 0.6s ease-in-out infinite !important;
+  filter: brightness(1.3) saturate(1.2) !important;
+  box-shadow:
+    0 0 0 3px var(--gold),
+    0 0 60px -4px rgba(255,140,63,0.9) !important;
+}
+.orb-float.holding .orb-float-ring {
+  opacity: 1 !important;
+  border-color: var(--gold) !important;
+  border-width: 2px !important;
+  animation: orbHoldRing 0.6s ease-out infinite !important;
+}
+@keyframes orbHoldPulse {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(1.15); }
+}
+@keyframes orbHoldRing {
+  0%   { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+.toast {
+  position: fixed; bottom: 96px; left: 50%; transform: translateX(-50%);
+  background: rgba(139,28,43,0.96); color: var(--paper);
+  padding: 10px 18px; border-radius: 999px;
+  font-size: 13px; z-index: 100;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.3);
+  opacity: 0; pointer-events: none;
+  transition: opacity 300ms ease;
+}
+.toast.show { opacity: 1; }
+
+/* Responsive */
+@media (max-width: 480px) {
+  .brand { font-size: 22px; }
+  .topbar { padding: 12px 14px 8px; }
+  .sol-chip { padding: 6px 12px 6px 6px; font-size: 11px; }
+  .carta-section h2 { font-size: 22px; }
+  .dish .name { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 100ms !important; }
+}
+
+/* SPLASH ORB (reused from earlier) */
+.orb-wrap {
+  position: relative; width: 100%; height: 100%;
+}
+.orb {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 45%, var(--ember-core) 0%, var(--ember-mid) 28%, var(--ember-out) 60%, transparent 78%);
+  animation: breatheBig 5.2s ease-in-out infinite;
+}
+.orb::before {
+  content: ''; position: absolute; inset: 22%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 45% 40%, #FFE3BE 0%, #FFB36B 20%, #FF7028 55%, transparent 80%);
+  mix-blend-mode: screen;
+  animation: coreFlicker 2.8s ease-in-out infinite;
+}
+.orb-halo {
+  position: absolute; inset: -18%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,124,40,0.20), rgba(139,28,43,0.10) 35%, transparent 60%);
+  filter: blur(16px);
+  animation: haloDrift 8s ease-in-out infinite;
+}
+@keyframes breatheBig { 0%,100% { transform: scale(1); } 50% { transform: scale(1.045); } }
+@keyframes coreFlicker {
+  0%,100% { opacity: 0.85; transform: scale(1); }
+  40%     { opacity: 1;    transform: scale(1.04); }
+  70%     { opacity: 0.78; transform: scale(0.97); }
+}
+@keyframes haloDrift {
+  0%,100% { transform: translate(0,0) scale(1); }
+  50%     { transform: translate(-2%, 3%) scale(1.06); }
+}
+
+/* ============================================================
+   Cuando el teclado está abierto: ajustar layout
+   ============================================================ */
+body.keyboard-open .orb-float { opacity: 0; pointer-events: none; }
+body.keyboard-open .sol-banner { display: none; }
+body.keyboard-open .topbar { padding: 8px 14px; }
+body.keyboard-open .carta-tabs { padding: 4px 16px 6px; }
+body.keyboard-open .carta-section:last-child { margin-bottom: 20px; }
+</style>
+</head>
+<body>
+
+<!-- ==================== SPLASH ==================== -->
+<div id="splash">
+  <h1 class="splash-mark">La Escaloneta</h1>
+  <div class="splash-rules">
+    <span class="line"></span>
+    <p class="splash-eyebrow">Carta viva</p>
+    <span class="line"></span>
+  </div>
+  <div class="splash-orb">
+    <div class="orb-wrap">
+      <div class="orb-halo"></div>
+      <div class="orb"></div>
+    </div>
+  </div>
+  <button class="splash-cta" id="splashCta">Tocá para empezar</button>
+  <div class="splash-foot">Un mozo virtual te recibe</div>
+</div>
+
+<!-- ==================== APP ==================== -->
+<div id="app">
+
+  <header class="topbar">
+    <div class="brand">
+      La Escaloneta
+      <small>Carta viva</small>
+    </div>
+    <button class="chat-trigger" id="solChip" data-state="idle" aria-label="Escribile a tu mesera">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 11.5a8.38 8.38 0 01-9 8.4 8.5 8.5 0 01-3.4-.7L3 21l1.8-5.6a8.38 8.38 0 01-.7-3.4 8.5 8.5 0 018.4-9 8.38 8.38 0 019 8.5z"/></svg>
+      <span>Escribile a tu mesera…</span>
+      <small id="solState" hidden></small>
+    </button>
+  </header>
+
+  <nav class="carta-tabs" id="cartaTabs" aria-label="Secciones de la carta"></nav>
+
+  <main class="carta-body" id="cartaBody"></main>
+</div>
+
+<!-- ==================== SOL BANNER (último mensaje activo) ==================== -->
+<div class="sol-banner" id="solBanner">
+  <div class="who"><span class="who-dot"></span>Mesera virtual</div>
+  <div class="body" id="solBannerBody"></div>
+  <button class="close" id="solBannerClose" aria-label="Cerrar">
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6l-12 12"/></svg>
+  </button>
+</div>
+
+<!-- ==================== HISTORIAL OVERLAY (se abre del chip) ==================== -->
+<div class="history-overlay" id="historyOverlay"></div>
+<aside class="history-panel" id="historyPanel" aria-hidden="true">
+  <div class="history-handle"></div>
+  <div class="history-head">
+    <h3>Tu charla con la mesera</h3>
+    <button class="history-close" id="historyClose" aria-label="Cerrar">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6l-12 12"/></svg>
+    </button>
+  </div>
+  <div class="history-list" id="historyList"></div>
+  <div class="dock panel-dock">
+    <div class="dock-row">
+      <textarea id="input" rows="1" placeholder="Escribí tu mensaje…" autocomplete="off"></textarea>
+      <button class="icon-btn mic-btn" id="micBtn" aria-label="Hablar" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="9" y="3" width="6" height="11" rx="3"/>
+          <path d="M5 11a7 7 0 0014 0M12 18v3"/>
+        </svg>
+      </button>
+      <button class="icon-btn send-btn" id="sendBtn" aria-label="Enviar" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12l14-7-5 14-3-6-6-1z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- ORBE FLOTANTE — micrófono central -->
+<div class="orb-float" id="orbFloat" data-state="idle" role="button" aria-label="Hablar con la mesera">
+  <div class="orb-float-halo"></div>
+  <div class="orb-float-ring"></div>
+  <div class="orb-float-inner"></div>
+  <span class="orb-float-label" id="orbLabel">Mantené apretado</span>
+</div>
+
+<div class="listening-overlay" id="listenOverlay">Escuchando…</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// State
+// ============================================================
+const state = {
+  history: [],            // [{role, text}]
+  menu: null,
+  isStreaming: false,
+  currentAudio: null,
+  recorder: null, recChunks: [], recStream: null,
+  micStream: null,  // stream persistente: se pide 1 vez y se reusa
+  audioCtx: null,
+  cancelToken: 0,         // se incrementa cada vez que arranca una conversación nueva
+};
+
+const $ = sel => document.querySelector(sel);
+
+// ============================================================
+// UI helpers
+// ============================================================
+function setSolState(s) {
+  $('#solChip').dataset.state = s;
+  const orb = $('#orbFloat');
+  if (orb) orb.dataset.state = s;
+  const labels = {
+    idle: 'Mantené apretado',
+    listening: 'Escuchando…',
+    thinking: 'Pensando…',
+    speaking: 'Hablando',
+  };
+  const chipLabels = { idle: '', listening: 'Escuchando', thinking: 'Pensando', speaking: 'Hablando' };
+  $('#solState').textContent = chipLabels[s] || '';
+  // mini-orb del chip ya no existe — el data-state queda en el ticker por compat
+  const lbl = $('#orbLabel');
+  if (lbl) lbl.textContent = labels[s] || 'Tocá para hablar';
+}
+
+// Mensajes: viven en la lista de la ventana de chat (#historyList)
+let _currentBotBubble = null;
+
+function _list() { return $('#historyList'); }
+function _clearEmpty() {
+  const e = _list().querySelector('.history-empty');
+  if (e) e.remove();
+}
+function addUserBubble(text) {
+  _clearEmpty();
+  const el = document.createElement('div');
+  el.className = 'msg user';
+  el.textContent = text;
+  _list().appendChild(el);
+  _list().scrollTop = _list().scrollHeight;
+}
+function startBotBubble() {
+  _clearEmpty();
+  const el = document.createElement('div');
+  el.className = 'msg bot';
+  const who = document.createElement('span');
+  who.className = 'who';
+  who.textContent = 'Mesera';
+  const body = document.createElement('span');
+  body.className = 'bbody';
+  el.appendChild(who); el.appendChild(body);
+  _list().appendChild(el);
+  _list().scrollTop = _list().scrollHeight;
+  _currentBotBubble = body;
+  return body;
+}
+function updateBotBubble(text) {
+  if (!_currentBotBubble) startBotBubble();
+  _currentBotBubble.textContent = text;
+  _list().scrollTop = _list().scrollHeight;
+}
+function endBotBubble() { _currentBotBubble = null; }
+
+// Compat
+function showBanner(text) { startBotBubble(); updateBotBubble(text); endBotBubble(); }
+function updateBanner(text) { updateBotBubble(text); }
+function hideBanner(delay) { endBotBubble(); }
+
+function showToast(text, ms = 3000) {
+  const t = $('#toast');
+  t.textContent = text;
+  t.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => t.classList.remove('show'), ms);
+}
+
+function fmtPrice(n) {
+  if (n === null || n === undefined) return '';
+  return '$' + n.toLocaleString('es-AR');
+}
+
+// ============================================================
+// Splash → App
+// ============================================================
+$('#splashCta').addEventListener('click', async () => {
+  // Unlock audio en iOS
+  try {
+    state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (state.audioCtx.state === 'suspended') await state.audioCtx.resume();
+    const o = state.audioCtx.createOscillator();
+    const g = state.audioCtx.createGain(); g.gain.value = 0;
+    o.connect(g).connect(state.audioCtx.destination);
+    o.start(); o.stop(state.audioCtx.currentTime + 0.01);
+  } catch (e) {}
+
+  // Pedir permiso de micrófono UNA sola vez acá (con el gesto del usuario).
+  // Guardamos el stream y lo reusamos, así el navegador no vuelve a preguntar.
+  try {
+    state.micStream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true }
+    });
+  } catch (e) {
+    console.warn('Permiso de micrófono no concedido todavía:', e);
+    state.micStream = null;
+  }
+
+  $('#splash').classList.add('gone');
+  $('#app').classList.add('ready');
+
+  // Cargar menú + render
+  await loadMenu();
+
+  // Saludo de Sol con voz
+  setTimeout(async () => {
+    const greeting = state.menu?.assistant?.greeting || '¡Bienvenidos a Kansas!';
+    state.history.push({ role: 'model', text: greeting });
+    showBanner(greeting);
+    setSolState('speaking');
+    await playAudioForText(greeting, ++state.cancelToken);
+    setSolState('idle');
+    hideBanner(3500);
+  }, 700);
+});
+
+// ============================================================
+// Carga + render de la carta
+// ============================================================
+async function loadMenu() {
+  try {
+    const r = await fetch('/menu.json');
+    state.menu = await r.json();
+    renderCarta();
+  } catch (e) {
+    console.error('No se pudo cargar menu.json', e);
+    showToast('No pude cargar la carta');
+  }
+}
+
+function renderCarta() {
+  if (!state.menu) return;
+  const tabs = $('#cartaTabs');
+  const body = $('#cartaBody');
+  tabs.innerHTML = '';
+  body.innerHTML = '';
+
+  const sections = [];
+
+  // Comida
+  for (const s of (state.menu.menu || [])) {
+    sections.push({ id: 'sec-' + s.id, title: s.name, items: s.items, note: null });
+  }
+  // Bebidas
+  for (const s of (state.menu.drinks || [])) {
+    if (s.items) {
+      sections.push({ id: 'sec-' + s.id, title: s.name, items: s.items, note: s.note });
+    }
+    if (s.subcategories) {
+      for (const sub of s.subcategories) {
+        sections.push({
+          id: 'sec-' + s.id + '-' + sub.id,
+          title: sub.name + ' (' + s.name.replace('Vinos ', '') + ')',
+          items: sub.items,
+          note: null,
+        });
+      }
+    }
+  }
+
+  sections.forEach((sec, idx) => {
+    // tab
+    const tab = document.createElement('button');
+    tab.className = 'tab' + (idx === 0 ? ' active' : '');
+    tab.textContent = sec.title;
+    tab.dataset.target = sec.id;
+    tab.onclick = () => {
+      tabs.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const target = document.getElementById(sec.id);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    tabs.appendChild(tab);
+
+    // sección
+    const sectionEl = document.createElement('div');
+    sectionEl.className = 'carta-section';
+    sectionEl.id = sec.id;
+    sectionEl.innerHTML = `<h2>${sec.title}</h2><div class="sep"></div>`;
+
+    if (sec.note) {
+      const n = document.createElement('div');
+      n.className = 'note';
+      n.textContent = sec.note;
+      sectionEl.appendChild(n);
+    }
+
+    for (const it of sec.items) {
+      const dish = document.createElement('div');
+      dish.className = 'dish';
+      const left = document.createElement('div');
+      const name = document.createElement('div');
+      name.className = 'name';
+      name.textContent = it.name;
+      left.appendChild(name);
+      if (it.description) {
+        const d = document.createElement('div');
+        d.className = 'desc';
+        d.textContent = it.description;
+        left.appendChild(d);
+      }
+      if (it.bodega) {
+        const m = document.createElement('div');
+        m.className = 'meta';
+        m.textContent = it.bodega;
+        left.appendChild(m);
+      }
+      dish.appendChild(left);
+
+      const right = document.createElement('div');
+      right.className = 'price';
+      if (it.price !== undefined && it.price !== null) {
+        right.textContent = fmtPrice(it.price);
+      } else if (it.price_copa !== undefined || it.price_botella !== undefined) {
+        const parts = [];
+        if (it.price_copa !== undefined && it.price_copa !== null) {
+          parts.push(`${fmtPrice(it.price_copa)}<small>Copa</small>`);
+        }
+        if (it.price_botella !== undefined && it.price_botella !== null) {
+          parts.push(`${fmtPrice(it.price_botella)}<small>Botella</small>`);
+        }
+        right.innerHTML = parts.join('<br>');
+      } else {
+        right.innerHTML = '<span class="price-tba">a confirmar</span>';
+      }
+      dish.appendChild(right);
+      sectionEl.appendChild(dish);
+    }
+
+    body.appendChild(sectionEl);
+  });
+
+  // Reglas de la casa al final
+  const rules = state.menu.rules || {};
+  const houseEl = document.createElement('div');
+  houseEl.className = 'house-rules';
+  let rulesHtml = '<h3>La casa</h3><ul>';
+  if (rules.sharing_surcharge?.note) rulesHtml += `<li>${rules.sharing_surcharge.note}</li>`;
+  if (rules.bread) rulesHtml += `<li>${rules.bread}</li>`;
+  if (rules.side_salad_addon?.note) rulesHtml += `<li>${rules.side_salad_addon.note}</li>`;
+  if (rules.kids_menu?.note) rulesHtml += `<li>${rules.kids_menu.note}</li>`;
+  if (rules.happy_hour?.note) rulesHtml += `<li>${rules.happy_hour.note}</li>`;
+  if (rules.food_safety_note) rulesHtml += `<li>${rules.food_safety_note}</li>`;
+  rulesHtml += '</ul>';
+  houseEl.innerHTML = rulesHtml;
+  body.appendChild(houseEl);
+
+  // Detectar sección visible al scrollear (highlight tab)
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        tabs.querySelectorAll('.tab').forEach(t => {
+          t.classList.toggle('active', t.dataset.target === id);
+        });
+      }
+    });
+  }, { root: body, rootMargin: '-10% 0px -75% 0px' });
+  body.querySelectorAll('.carta-section').forEach(s => observer.observe(s));
+}
+
+// ============================================================
+// Chip Sol → abre historial
+// ============================================================
+$('#solChip').addEventListener('click', () => {
+  openHistory(true);  // abre la ventana de chat y enfoca el input
+});
+
+function openHistory(focusInput) {
+  renderHistory();
+  $('#historyOverlay').classList.add('open');
+  $('#historyPanel').classList.add('open');
+  $('#historyPanel').setAttribute('aria-hidden', 'false');
+  if (focusInput) setTimeout(() => { try { input.focus(); } catch(e){} }, 420);
+}
+function closeHistory() {
+  $('#historyOverlay').classList.remove('open');
+  $('#historyPanel').classList.remove('open');
+  $('#historyPanel').setAttribute('aria-hidden', 'true');
+}
+$('#historyClose').onclick = closeHistory;
+$('#historyOverlay').onclick = closeHistory;
+
+function renderHistory() {
+  _currentBotBubble = null;
+  const list = $('#historyList');
+  list.innerHTML = '';
+  if (!state.history.length) {
+    const empty = document.createElement('div');
+    empty.className = 'history-empty';
+    empty.textContent = 'Todavía no chateaste con tu mesera virtual. Preguntale lo que quieras: sugerencias, maridajes, postres...';
+    list.appendChild(empty);
+    return;
+  }
+  for (const turn of state.history) {
+    const el = document.createElement('div');
+    el.className = 'msg ' + (turn.role === 'user' ? 'user' : 'bot');
+    if (turn.role !== 'user') {
+      const who = document.createElement('span');
+      who.className = 'who';
+      who.textContent = 'Mesera';
+      el.appendChild(who);
+    }
+    const body = document.createElement('span');
+    body.textContent = turn.text;
+    el.appendChild(body);
+    list.appendChild(el);
+  }
+  // scroll al final
+  setTimeout(() => list.scrollTop = list.scrollHeight, 50);
+}
+
+// Cerrar banner manualmente
+$('#solBannerClose').onclick = () => $('#solBanner').classList.remove('show');
+
+// ============================================================
+// Input + send
+// ============================================================
+const input = $('#input');
+const sendBtn = $('#sendBtn');
+const micBtn = $('#micBtn');
+
+input.addEventListener('input', () => {
+  input.style.height = '22px';
+  input.style.height = Math.min(input.scrollHeight, 80) + 'px';
+  sendBtn.disabled = !input.value.trim();
+});
+input.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+sendBtn.onclick = sendMessage;
+
+async function sendMessage() {
+  const text = input.value.trim();
+  if (!text || state.isStreaming) return;
+  input.value = '';
+  input.style.height = '22px';
+  sendBtn.disabled = true;
+  await converse(text, /*withVoice=*/false);
+}
+
+// ============================================================
+// CONVERSACIÓN
+//   withVoice=true  → respuesta por TTS además de texto
+//   withVoice=false → solo texto (banner + historial)
+// ============================================================
+async function converse(userText, withVoice) {
+  if (!userText) return;
+  state.isStreaming = true;
+
+  // cancelar cualquier audio que esté reproduciéndose
+  const myToken = ++state.cancelToken;
+  stopCurrentAudio();
+
+  // registrar turn del usuario + mostrar su burbuja
+  state.history.push({ role: 'user', text: userText });
+  addUserBubble(userText);
+
+  setSolState('thinking');
+  startBotBubble();
+  updateBotBubble('…');
+
+  let fullReply = '';
+  let sentenceBuffer = '';
+  const ttsQueue = [];
+  let producerDone = false;
+
+  // Consumer de audio (solo si withVoice)
+  const playerPromise = withVoice ? (async () => {
+    let i = 0;
+    while (true) {
+      if (myToken !== state.cancelToken) break; // cancelado por nuevo turn
+      if (i >= ttsQueue.length) {
+        if (producerDone) break;
+        await sleep(60); continue;
+      }
+      const item = ttsQueue[i++];
+      try {
+        const url = await item;
+        if (myToken !== state.cancelToken || !url) {
+          if (url) URL.revokeObjectURL(url);
+          continue;
+        }
+        await playAudioUrl(url, myToken);
+      } catch (e) { /* sigue */ }
+    }
+  })() : Promise.resolve();
+
+  function flushSentences(force) {
+    let m;
+    while ((m = sentenceBuffer.match(/^[\s\S]*?[.!?…]+(\s|$)/))) {
+      const s = m[0].trim();
+      if (s && withVoice) ttsQueue.push(synthesize(s));
+      sentenceBuffer = sentenceBuffer.slice(m[0].length);
+    }
+    if (force && sentenceBuffer.trim()) {
+      if (withVoice) ttsQueue.push(synthesize(sentenceBuffer.trim()));
+      sentenceBuffer = '';
+    }
+  }
+
+  try {
+    const resp = await fetch('/chat/stream', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: userText,
+        history: state.history.slice(0, -1),
+      })
+    });
+    if (!resp.ok) throw new Error('Server ' + resp.status);
+
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '';
+    let firstChunk = true;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (myToken !== state.cancelToken) { try { reader.cancel(); } catch(e){} break; }
+      buf += decoder.decode(value, { stream: true });
+
+      let evtIdx;
+      while ((evtIdx = buf.indexOf('\n\n')) >= 0) {
+        const block = buf.slice(0, evtIdx);
+        buf = buf.slice(evtIdx + 2);
+        let event = 'message', data = '';
+        for (const line of block.split('\n')) {
+          if (line.startsWith('event:')) event = line.slice(6).trim();
+          else if (line.startsWith('data:')) data += line.slice(5).trim();
+        }
+        if (!data) continue;
+
+        if (event === 'chunk') {
+          try {
+            const obj = JSON.parse(data);
+            const piece = obj.text || '';
+            if (piece) {
+              fullReply += piece;
+              sentenceBuffer += piece;
+              if (firstChunk) {
+                firstChunk = false;
+                setSolState(withVoice ? 'speaking' : 'idle');
+              }
+              updateBanner(fullReply);
+              flushSentences(false);
+            }
+          } catch(e) {}
+        } else if (event === 'error') {
+          showToast('Sol no pudo contestar — revisá /health');
+        }
+      }
+    }
+    flushSentences(true);
+  } catch (e) {
+    console.error(e);
+    showToast('No pude conectar. ¿Las claves del Space están bien?');
+  }
+
+  producerDone = true;
+
+  if (fullReply.trim()) {
+    state.history.push({ role: 'model', text: fullReply.trim() });
+    if (state.history.length > 20) state.history = state.history.slice(-20);
+  }
+
+  if (withVoice) {
+    await playerPromise;
+  }
+
+  state.isStreaming = false;
+  setSolState('idle');
+  endBotBubble();
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ============================================================
+// TTS
+// ============================================================
+async function synthesize(text) {
+  try {
+    const r = await fetch('/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    if (!r.ok) {
+      console.warn('TTS', r.status);
+      return null;
+    }
+    const blob = await r.blob();
+    return URL.createObjectURL(blob);
+  } catch (e) {
+    console.warn('TTS err', e);
+    return null;
+  }
+}
+
+async function playAudioUrl(url, myToken) {
+  return new Promise((resolve) => {
+    if (myToken !== state.cancelToken) { URL.revokeObjectURL(url); resolve(); return; }
+    const a = new Audio(url);
+    state.currentAudio = a;
+    a.onended = () => { URL.revokeObjectURL(url); if (state.currentAudio === a) state.currentAudio = null; resolve(); };
+    a.onerror = () => { URL.revokeObjectURL(url); if (state.currentAudio === a) state.currentAudio = null; resolve(); };
+    a.play().catch(() => resolve());
+  });
+}
+
+async function playAudioForText(text, myToken) {
+  const url = await synthesize(text);
+  if (url && myToken === state.cancelToken) await playAudioUrl(url, myToken);
+}
+
+function stopCurrentAudio() {
+  if (state.currentAudio) {
+    try { state.currentAudio.pause(); } catch(e) {}
+    state.currentAudio = null;
+  }
+}
+
+// ============================================================
+// MIC — el botón mic Y el chip Sol disparan grabación
+//   - tap en mic: graba (toggle)
+//   - tap en chip Sol: si está grabando, para; si no, abre historial
+// ============================================================
+// Orbe flotante → MANTENER APRETADO para grabar, SOLTAR para enviar
+const orbFloat = $('#orbFloat');
+if (orbFloat) {
+  let holding = false;
+
+  const beginHold = async (e) => {
+    e.preventDefault();
+    if (holding || state.isStreaming) return;
+    holding = true;
+    orbFloat.classList.add('holding');
+    await startRecording();
+  };
+  const endHold = (e) => {
+    if (!holding) return;
+    e.preventDefault();
+    holding = false;
+    orbFloat.classList.remove('holding');
+    stopRecording();  // al soltar, se envía el audio
+  };
+
+  // Touch (celular)
+  orbFloat.addEventListener('touchstart', beginHold, { passive: false });
+  orbFloat.addEventListener('touchend', endHold);
+  orbFloat.addEventListener('touchcancel', endHold);
+  // Mouse (escritorio)
+  orbFloat.addEventListener('mousedown', beginHold);
+  orbFloat.addEventListener('mouseup', endHold);
+  orbFloat.addEventListener('mouseleave', endHold);
+}
+
+micBtn.addEventListener('click', async () => {
+  if (state.recorder) {
+    stopRecording();
+  } else {
+    await startRecording();
+  }
+});
+
+async function startRecording() {
+  // Si Sol está hablando, interrumpila
+  stopCurrentAudio();
+  state.cancelToken++;
+
+  try {
+    // Reusar el stream que ya pedimos al inicio (no vuelve a preguntar permiso)
+    let stream = state.micStream;
+    if (!stream || !stream.active) {
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true }
+      });
+      state.micStream = stream;
+    }
+    state.recStream = stream;
+
+    let mime = 'audio/webm;codecs=opus';
+    if (!MediaRecorder.isTypeSupported(mime)) {
+      mime = 'audio/webm';
+      if (!MediaRecorder.isTypeSupported(mime)) {
+        mime = 'audio/mp4';
+      }
+    }
+    state.recorder = new MediaRecorder(stream, { mimeType: mime });
+    state.recChunks = [];
+
+    state.recorder.ondataavailable = e => { if (e.data && e.data.size) state.recChunks.push(e.data); };
+    state.recorder.onstop = onRecorderStop;
+
+    state.recorder.start();
+    micBtn.classList.add('recording');
+    setSolState('listening');
+    $('#listenOverlay').classList.add('show');
+
+    setupVAD(stream);
+    state._maxRecordTimer = setTimeout(stopRecording, 12000);
+  } catch (e) {
+    console.error('No mic', e);
+    showToast('No pude acceder al micrófono');
+    setSolState('idle');
+    hideBanner(200);
+  }
+}
+
+function setupVAD(stream) {
+  try {
+    if (!state.audioCtx) state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const src = state.audioCtx.createMediaStreamSource(stream);
+    const analyser = state.audioCtx.createAnalyser();
+    analyser.fftSize = 512;
+    src.connect(analyser);
+    const buf = new Uint8Array(analyser.frequencyBinCount);
+
+    let silenceStart = null;
+    const SILENCE_DB = 0.012;
+    const SILENCE_MS = 1400;
+    let voiceDetected = false;
+
+    function tick() {
+      if (!state.recorder || state.recorder.state !== 'recording') return;
+      analyser.getByteFrequencyData(buf);
+      let sum = 0;
+      for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
+      const rms = Math.sqrt(sum / buf.length) / 255;
+      if (rms > SILENCE_DB) {
+        voiceDetected = true;
+        silenceStart = null;
+      } else if (voiceDetected) {
+        if (silenceStart === null) silenceStart = performance.now();
+        else if (performance.now() - silenceStart > SILENCE_MS) {
+          stopRecording();
+          return;
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  } catch (e) { console.warn('VAD', e); }
+}
+
+function stopRecording() {
+  if (!state.recorder) return;
+  clearTimeout(state._maxRecordTimer);
+  $('#listenOverlay').classList.remove('show');
+  micBtn.classList.remove('recording');
+  try { state.recorder.stop(); } catch(e) {}
+  // NO frenamos los tracks: mantenemos el micStream vivo para no re-pedir permiso.
+  // (el stream queda abierto pero el MediaRecorder ya está detenido)
+}
+
+async function onRecorderStop() {
+  const chunks = state.recChunks;
+  const mime = state.recorder?.mimeType || 'audio/webm';
+  state.recorder = null;
+  state.recStream = null;
+
+  if (!chunks.length) { setSolState('idle'); hideBanner(200); return; }
+  const blob = new Blob(chunks, { type: mime });
+
+  setSolState('thinking');
+  showBanner('Transcribiendo…');
+
+  const b64 = await blobToBase64(blob);
+
+  try {
+    const r = await fetch('/stt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ audio_base64: b64, mime_type: mime })
+    });
+    if (!r.ok) {
+      showToast('No entendí el audio');
+      setSolState('idle');
+      hideBanner(200);
+      return;
+    }
+    const data = await r.json();
+    const text = (data.text || '').trim();
+    if (!text) {
+      setSolState('idle');
+      hideBanner(200);
+      return;
+    }
+    // Voz disparada → respuesta con voz
+    await converse(text, /*withVoice=*/true);
+  } catch (e) {
+    console.error(e);
+    showToast('Falló la transcripción');
+    setSolState('idle');
+    hideBanner(200);
+  }
+}
+
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => {
+      const s = r.result.toString();
+      const comma = s.indexOf(',');
+      resolve(comma >= 0 ? s.slice(comma + 1) : s);
+    };
+    r.onerror = reject;
+    r.readAsDataURL(blob);
+  });
+}
+
+// ============================================================
+// Manejo del teclado virtual en mobile
+// Cuando el teclado aparece, scrolleamos el input a la vista
+// y achicamos el orbe flotante para que no estorbe
+// ============================================================
+(function setupKeyboard() {
+  const appEl = document.getElementById('app');
+  const splashEl = document.getElementById('splash');
+  let lastH = 0;
+
+  function visibleHeight() {
+    return Math.round(window.visualViewport ? window.visualViewport.height : window.innerHeight);
+  }
+
+  function refreshH() {
+    const h = visibleHeight();
+    const offTop = window.visualViewport ? window.visualViewport.offsetTop : 0;
+    const kb = Math.max(0, window.innerHeight - h - offTop);  // alto del teclado
+    if (h && h !== lastH) {
+      lastH = h;
+      appEl.style.height = h + 'px';
+      document.documentElement.style.height = h + 'px';
+      document.body.style.height = h + 'px';
+      if (splashEl) splashEl.style.height = h + 'px';
+    }
+    const list = document.getElementById('historyList');
+    if (list) list.scrollTop = list.scrollHeight;
+  }
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', refreshH);
+    window.visualViewport.addEventListener('scroll', refreshH);
+  }
+  window.addEventListener('resize', refreshH);
+  window.addEventListener('orientationchange', () => setTimeout(refreshH, 300));
+
+  // POLLING mientras el teclado está abierto — cubre navegadores que no
+  // disparan resize (MIUI, Samsung Internet, etc.)
+  let kbPoll = null;
+  input.addEventListener('focus', () => {
+    document.body.classList.add('keyboard-open');
+    clearInterval(kbPoll);
+    kbPoll = setInterval(refreshH, 150);
+    setTimeout(refreshH, 100);
+  });
+  input.addEventListener('blur', () => {
+    document.body.classList.remove('keyboard-open');
+    clearInterval(kbPoll);
+    setTimeout(refreshH, 250);
+    setTimeout(refreshH, 600);
+  });
+
+  refreshH();
+})();
+
+</script>
+</body>
+</html>
+"""
+
+
+# ============================================================================
+# System prompt builder — convierte menu.json en instrucciones para Sol
+# ============================================================================
+def _format_price(p: Optional[int], symbol: str = "$") -> str:
+    """Formatea precio en palabras para que ElevenLabs lo lea bien.
+    Evita que diga 'dólar veintisiete punto cero cero' — dice '27 mil pesos'.
+    """
+    if p is None:
+        return "(precio a confirmar con el mozo)"
+    if p == 0:
+        return "incluido"
+    if p >= 1_000_000:
+        m = p / 1_000_000
+        return f"{m:g} millón de pesos" if m == 1 else f"{m:g} millones de pesos"
+    if p >= 1_000:
+        miles = p // 1_000
+        resto = p % 1_000
+        if resto == 0:
+            return f"{miles} mil pesos"
+        return f"{miles} mil {resto} pesos"
+    return f"{p} pesos"
+
+
+def build_system_prompt() -> str:
+    """Carga menu.json y arma el system prompt completo para Sol."""
+    data = json.loads(EMBEDDED_MENU_JSON)
+    restaurant = data.get("restaurant", {})
+    assistant = data.get("assistant", {})
+    rules = data.get("rules", {})
+    symbol = restaurant.get("currency_symbol", "$")
+
+    lines: List[str] = []
+
+    # Identidad y personalidad — la mesera
+    lines.append(f"""Sos la mesera de {restaurant.get('name', 'el restaurante')}. Trabajás acá hace años, conocés la carta de memoria y sabés leer a cada cliente.
+
+CÓMO RESPONDÉS — REGLA DE ORO:
+Directa, concreta y vendedora. Recomendás con seguridad y guiás la venta hacia adelante: plato → bebida → postre. Prohibido arrancar con "mmm", "a ver" o repetir la pregunta del cliente.
+
+SOBRE LOS PRECIOS — LEÉS AL CLIENTE:
+No cantás precios de entrada: recomendás por el plato, no por el número. Después de recomendar, si el cliente parece indeciso o está comparando opciones, le ofrecés con naturalidad: "¿te paso los precios o preferís elegir primero?". Si el cliente pregunta precios directamente, se los das al toque y se los seguís dando en el resto de la charla (ese cliente mira el bolsillo). Si nunca pregunta, no los mencionás (ese cliente elige por gusto). Te adaptás al perfil.
+Cuando digas un precio, SIEMPRE en palabras: "veintisiete mil pesos", jamás "$27.000".
+
+Ejemplos exactos de tu estilo:
+
+Cliente: "recomendame algo rápido y rico"
+Vos: "Los Kansas Chicken Tenders: pollo crocante con salsa honey mustard, salen rápido y no fallan nunca. Para acompañar, una limonada con menta y jengibre va perfecta. Y si después queda lugar, el cheesecake de dulce de leche es el broche de oro."
+
+Cliente: "¿y cuánto está eso?"
+Vos: "Los tenders están dieciocho mil pesos, la limonada seis mil ochocientos y el cheesecake diecisiete mil. Buen plan completo. ¿Te lo armo así?"
+
+Cliente: "estoy entre el lomo y el salmón, no me decido"
+Vos: "Los dos son de lo mejor de la casa. El Filet Mignon viene a la leña con papa rellena, bien contundente; el Fresh Grilled Salmon es más liviano, con papas fritas. Si venís con hambre de verdad, lomo sin dudar. ¿Te paso los precios o elegís primero y después vemos?"
+
+Cliente: "¿qué vino va con el lomo?"
+Vos: "Un Malbec, de una. El Saint Felicien por botella es el clásico que nunca falla, y por copa el Trapiche Reserva anda bárbaro. Y guardate lugar para el Hot Fudge Sundae de postre, que cierra la noche de diez."
+
+Fijate el patrón: recomendación segura con dos o tres opciones máximo, empuje amable al siguiente paso de la comanda (bebida, postre), y los precios solo cuando el cliente los pide o cuando dudás que esté decidido — ahí los ofrecés, no los imponés.
+
+REGLAS DURAS:
+- Nunca decís que sos una IA o un bot. Sos la mesera.
+- Nunca inventás precios. Si no está en la carta: "ese te lo confirma el mozo".
+- Precios siempre en palabras cuando los digas.
+- Nunca emojis.
+- Hablás de vos (tenés, querés, podés), porteña natural y amable.
+- Si piden TODA la carta: "la tenés completa en pantalla — decime de qué tenés ganas y te tiro la posta".
+
+Tu carta completa con todos los precios está abajo (para cuando te los pidan).""")
+    lines.append("")
+
+    # Reglas finas
+    lines.append("--- REGLAS DE LA CASA ---")
+    if "sharing_surcharge" in rules:
+        ss = rules["sharing_surcharge"]
+        lines.append(f"• Plato compartido: adicional de {_format_price(ss.get('amount'), symbol)}. "
+                     f"En la barra NO se cobra adicional por compartir.")
+    if "bread" in rules:
+        lines.append(f"• {rules['bread']}")
+    if "side_salad_addon" in rules:
+        sa = rules["side_salad_addon"]
+        opts = ", ".join(sa.get("options", []))
+        lines.append(f"• Ensalada de acompañamiento ({opts}): {_format_price(sa.get('price'), symbol)}.")
+    if "single_dish_surcharge" in rules:
+        sd = rules["single_dish_surcharge"]
+        lines.append(f"• Plato individual en mesa de varias personas: +{_format_price(sd.get('amount'), symbol)}.")
+    if "extras" in rules:
+        for k, v in rules["extras"].items():
+            lines.append(f"• {v.get('note', k)}: +{_format_price(v.get('amount'), symbol)}.")
+    if "kids_menu" in rules:
+        km = rules["kids_menu"]
+        lines.append(f"• Menú Kids: exclusivo para menores de {km.get('age_limit', 10)} años.")
+    if "wine_copa_volume" in rules:
+        wv = rules["wine_copa_volume"]
+        lines.append(f"• Copa de vinos: {wv.get('vinos', '?')}. Copa de espumantes: {wv.get('champagne_y_espumantes', '?')}.")
+    if "happy_hour" in rules:
+        lines.append(f"• Happy hour: {rules['happy_hour'].get('note', 'consultar al mozo')}.")
+    if "food_safety_note" in rules:
+        lines.append(f"• {rules['food_safety_note']}")
+    lines.append("")
+
+    # Menú completo
+    lines.append("--- CARTA ---")
+    for section in data.get("menu", []):
+        lines.append(f"\n[{section.get('name', section.get('id', ''))}]")
+        for it in section.get("items", []):
+            name = it.get("name", "")
+            desc = it.get("description", "")
+            price = _format_price(it.get("price"), symbol)
+            line = f"  · {name} — {price}"
+            if desc:
+                line += f"  ({desc})"
+            lines.append(line)
+
+    # Bebidas
+    lines.append("\n--- BEBIDAS ---")
+    for section in data.get("drinks", []):
+        lines.append(f"\n[{section.get('name', section.get('id', ''))}]")
+        if "items" in section:
+            for it in section["items"]:
+                parts = [it.get("name", "")]
+                if it.get("bodega"):
+                    parts.append(it["bodega"])
+                price_bits = []
+                if it.get("price_copa") is not None:
+                    price_bits.append(f"copa {_format_price(it['price_copa'], symbol)}")
+                if it.get("price_botella") is not None:
+                    price_bits.append(f"botella {_format_price(it['price_botella'], symbol)}")
+                if it.get("price") is not None:
+                    price_bits.append(_format_price(it["price"], symbol))
+                if price_bits:
+                    parts.append(" / ".join(price_bits))
+                lines.append(f"  · {' — '.join(parts)}")
+        if "subcategories" in section:
+            for sub in section["subcategories"]:
+                lines.append(f"  [{sub.get('name', sub.get('id', ''))}]")
+                for it in sub.get("items", []):
+                    parts = [it.get("name", "")]
+                    if it.get("bodega"):
+                        parts.append(it["bodega"])
+                    price_bits = []
+                    if it.get("price_copa") is not None:
+                        price_bits.append(f"copa {_format_price(it['price_copa'], symbol)}")
+                    if it.get("price_botella") is not None:
+                        price_bits.append(f"botella {_format_price(it['price_botella'], symbol)}")
+                    if it.get("price") is not None:
+                        price_bits.append(_format_price(it["price"], symbol))
+                    if price_bits:
+                        parts.append(" / ".join(price_bits))
+                    lines.append(f"    · {' — '.join(parts)}")
+
+    # Cierre
+    lines.append("")
+    lines.append("--- RECORDATORIOS FINALES ---")
+    lines.append("• Acordate: sos la mesera. Conversás como tal. Si la pregunta es chiquita, respondés corto; si te piden recomendación, te jugás y describís con apetito.")
+
+    return "\n".join(lines)
+
+
+SYSTEM_PROMPT = build_system_prompt()
+
+# ============================================================================
+# FastAPI app
+# ============================================================================
+app = FastAPI(title="Carta Viva — Kansas")
+
+# (sin static mount — todo embebido en este archivo)
+
+
+class ChatTurn(BaseModel):
+    role: str = "user"   # "user" o "model"
+    text: str
+
+
+class ChatRequest(BaseModel):
+    message: str
+    history: List[ChatTurn] = []
+
+
+class TTSRequest(BaseModel):
+    text: str
+
+
+class STTRequest(BaseModel):
+    audio_base64: str
+    mime_type: str = "audio/webm"
+
+
+# ----------------------------------------------------------------------------
+@app.get("/")
+async def root():
+    return HTMLResponse(EMBEDDED_INDEX_HTML)
+
+
+@app.get("/menu.json")
+async def menu():
+    return Response(content=EMBEDDED_MENU_JSON, media_type="application/json")
+
+
+@app.get("/health")
+async def health():
+    return {
+        "ok": True,
+        "gemini_key_set": bool(GEMINI_API_KEY),
+        "eleven_key_set": bool(ELEVENLABS_API_KEY),
+        "voice_id": ELEVENLABS_VOICE_ID,
+        "gemini_model": GEMINI_MODEL,
+        "eleven_model": ELEVENLABS_MODEL,
+        "system_prompt_chars": len(SYSTEM_PROMPT),
+    }
+
+
+# ----------------------------------------------------------------------------
+def _gemini_body(message: str, history: List[ChatTurn]) -> Dict[str, Any]:
+    contents = []
+    for t in history:
+        contents.append({"role": t.role, "parts": [{"text": t.text}]})
+    contents.append({"role": "user", "parts": [{"text": message}]})
+    return {
+        "system_instruction": {"parts": [{"text": SYSTEM_PROMPT}]},
+        "contents": contents,
+        "generationConfig": {
+            "temperature": 0.8,
+            "maxOutputTokens": 2048,
+            "thinkingConfig": {"thinkingBudget": 0}
+        }
+    }
+
+
+@app.post("/chat")
+async def chat(req: ChatRequest):
+    if not GEMINI_API_KEY:
+        raise HTTPException(500, "GEMINI_API_KEY no está configurada en el Space")
+    body = _gemini_body(req.message, req.history)
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        r = await client.post(
+            f"{GEMINI_GENERATE}?key={GEMINI_API_KEY}",
+            json=body,
+            headers={"Content-Type": "application/json"},
+        )
+        if r.status_code != 200:
+            raise HTTPException(r.status_code, f"Gemini error: {r.text[:500]}")
+        data = r.json()
+        try:
+            reply = data["candidates"][0]["content"]["parts"][0]["text"]
+        except (KeyError, IndexError):
+            raise HTTPException(500, f"Respuesta inesperada de Gemini: {json.dumps(data)[:500]}")
+        return {"reply": reply}
+
+
+@app.post("/chat/stream")
+async def chat_stream(req: ChatRequest):
+    """Stream SSE: cada chunk de texto que va llegando."""
+    if not GEMINI_API_KEY:
+        raise HTTPException(500, "GEMINI_API_KEY no está configurada en el Space")
+    body = _gemini_body(req.message, req.history)
+
+    async def event_gen():
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            async with client.stream(
+                "POST",
+                f"{GEMINI_STREAM}?alt=sse&key={GEMINI_API_KEY}",
+                json=body,
+                headers={"Content-Type": "application/json"},
+            ) as r:
+                if r.status_code != 200:
+                    body_err = await r.aread()
+                    yield f"event: error\ndata: {json.dumps({'status': r.status_code, 'body': body_err.decode('utf-8', 'ignore')[:500]})}\n\n"
+                    return
+                async for line in r.aiter_lines():
+                    if not line:
+                        continue
+                    if line.startswith("data:"):
+                        payload = line[5:].strip()
+                        if not payload:
+                            continue
+                        try:
+                            obj = json.loads(payload)
+                            piece = obj["candidates"][0]["content"]["parts"][0].get("text", "")
+                            if piece:
+                                yield f"event: chunk\ndata: {json.dumps({'text': piece})}\n\n"
+                        except Exception:
+                            # chunks parciales / sin texto — ignorar
+                            continue
+                yield "event: done\ndata: {}\n\n"
+
+    return StreamingResponse(event_gen(), media_type="text/event-stream", headers={
+        "Cache-Control": "no-cache",
+        "X-Accel-Buffering": "no",  # no buffereo en proxies
+    })
+
+
+# ----------------------------------------------------------------------------
+@app.post("/tts")
+async def tts(req: TTSRequest):
+    if not ELEVENLABS_API_KEY:
+        raise HTTPException(500, "ELEVENLABS_API_KEY no está configurada en el Space")
+    text = (req.text or "").strip()
+    if not text:
+        raise HTTPException(400, "Texto vacío")
+
+    async with httpx.AsyncClient(timeout=60.0) as client:
+        r = await client.post(
+            ELEVEN_TTS,
+            headers={
+                "xi-api-key": ELEVENLABS_API_KEY,
+                "Content-Type": "application/json",
+                "Accept": "audio/mpeg",
+            },
+            json={
+                "text": text,
+                "model_id": ELEVENLABS_MODEL,
+                "voice_settings": {
+                    "stability": 0.45,
+                    "similarity_boost": 0.85,
+                    "style": 0.30,
+                    "use_speaker_boost": True,
+                },
+            },
+        )
+        if r.status_code != 200:
+            # devolvemos detalle para diagnosticar desde el frontend
+            raise HTTPException(r.status_code, f"ElevenLabs error: {r.text[:500]}")
+        return Response(content=r.content, media_type="audio/mpeg")
+
+
+# ----------------------------------------------------------------------------
+@app.post("/stt")
+async def stt(req: STTRequest):
+    """Transcribe audio con Gemini. Más confiable que Web Speech API en iOS."""
+    if not GEMINI_API_KEY:
+        raise HTTPException(500, "GEMINI_API_KEY no está configurada en el Space")
+    if not req.audio_base64:
+        raise HTTPException(400, "Audio vacío")
+
+    body = {
+        "contents": [{
+            "parts": [
+                {"text": "Transcribí literalmente lo que se dice en este audio en español rioplatense. "
+                         "Devolvé SOLO el texto transcripto, sin comillas, sin comentarios, sin nada más. "
+                         "Si el audio está en silencio o no se entiende, devolvé una cadena vacía."},
+                {"inline_data": {"mime_type": req.mime_type, "data": req.audio_base64}}
+            ]
+        }],
+        "generationConfig": {"temperature": 0.0, "maxOutputTokens": 256}
+    }
+
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        r = await client.post(
+            f"{GEMINI_GENERATE}?key={GEMINI_API_KEY}",
+            json=body,
+            headers={"Content-Type": "application/json"},
+        )
+        if r.status_code != 200:
+            raise HTTPException(r.status_code, f"Gemini STT error: {r.text[:500]}")
+        data = r.json()
+        try:
+            text = data["candidates"][0]["content"]["parts"][0]["text"].strip()
+        except (KeyError, IndexError):
+            text = ""
+        return {"text": text}
