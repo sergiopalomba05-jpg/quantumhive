@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuantumHive — Mapa de Servicios · Agencia IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --negro:#0A0A0F;
+  --panel:#10131C;
+  --panel2:#0D1626;
+  --dorado:#C9A84C;
+  --dorado-suave:rgba(201,168,76,.18);
+  --profit:#00FF88;
+  --loss:#FF4444;
+  --texto:#E8E4D8;
+  --texto-suave:#9B96A4;
+  --borde:rgba(201,168,76,.25);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--negro);
+  color:var(--texto);
+  font-family:'Inter',sans-serif;
+  line-height:1.55;
+  overflow-x:hidden;
+}
+/* fondo panal sutil */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg width='56' height='100' viewBox='0 0 56 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%23C9A84C' stroke-width='1'/%3E%3Cpath d='M28 0L28 -34' stroke='%23C9A84C' stroke-width='1'/%3E%3C/svg%3E");
+  background-size:56px 100px;
+}
+.wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 20px 80px}
+
+/* ===== HEADER ===== */
+header{padding:48px 0 8px;text-align:center}
+.eyebrow{
+  font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:.35em;
+  font-size:12px;color:var(--dorado);text-transform:uppercase;
+}
+h1{
+  font-family:'Orbitron',sans-serif;font-weight:900;
+  font-size:clamp(28px,6vw,52px);
+  margin:10px 0 4px;letter-spacing:.02em;
+  background:linear-gradient(180deg,#F2E3B3 0%,var(--dorado) 55%,#8A6E2A 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.sub{
+  font-family:'Rajdhani',sans-serif;font-weight:500;
+  color:var(--texto-suave);font-size:clamp(14px,2.5vw,18px);
+  max-width:640px;margin:0 auto;
+}
+.legend{
+  display:flex;gap:18px;justify-content:center;flex-wrap:wrap;
+  margin:26px 0 8px;font-family:'Rajdhani',sans-serif;font-weight:600;
+  font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--texto-suave);
+}
+.legend span{display:flex;align-items:center;gap:7px}
+.dot{width:9px;height:9px;border-radius:50%}
+.dot.activo{background:var(--profit);box-shadow:0 0 8px var(--profit)}
+.dot.listo{background:var(--dorado);box-shadow:0 0 8px var(--dorado)}
+.dot.premium{background:#7B5CFF;box-shadow:0 0 8px #7B5CFF}
+
+/* ===== PANAL (mapa hex) ===== */
+.hive{
+  display:flex;flex-direction:column;align-items:center;
+  margin:28px 0 10px;gap:0;
+}
+.hive-row{display:flex;gap:10px}
+.hive-row + .hive-row{margin-top:-26px}
+.hex{
+  --hw:148px;
+  width:var(--hw);height:calc(var(--hw)*1.12);
+  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  background:linear-gradient(160deg,var(--panel2) 0%,var(--panel) 100%);
+  position:relative;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:16px 12px;
+  transition:transform .25s ease,filter .25s ease;
+  border:none;
+}
+.hex::before{
+  content:"";position:absolute;inset:2px;
+  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  background:linear-gradient(160deg,#141826 0%,#0C0F18 100%);
+  z-index:0;
+}
+.hex>*{position:relative;z-index:1}
+.hex:hover,.hex:focus-visible{transform:translateY(-5px);filter:drop-shadow(0 8px 22px rgba(201,168,76,.35))}
+.hex:focus-visible{outline:2px solid var(--dorado);outline-offset:3px}
+.hex .ico{font-size:26px;margin-bottom:6px;filter:drop-shadow(0 0 6px rgba(201,168,76,.5))}
+.hex .nom{
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;
+  letter-spacing:.04em;text-transform:uppercase;color:var(--texto);line-height:1.2;
+}
+.hex .est{margin-top:7px;width:8px;height:8px;border-radius:50%}
+.hex.activo{background:linear-gradient(160deg,var(--dorado) 0%,#7A6228 100%)}
+.hex.activo .est{background:var(--profit);box-shadow:0 0 8px var(--profit)}
+.hex.listo .est{background:var(--dorado);box-shadow:0 0 8px var(--dorado)}
+.hex.premium .est{background:#7B5CFF;box-shadow:0 0 8px #7B5CFF}
+.hint{
+  text-align:center;font-family:'Rajdhani',sans-serif;color:var(--texto-suave);
+  font-size:13px;letter-spacing:.15em;text-transform:uppercase;margin:18px 0 40px;
+}
+
+/* ===== FLUJO MOTOR ===== */
+.motor{
+  border:1px solid var(--borde);border-radius:14px;
+  background:linear-gradient(160deg,rgba(201,168,76,.06),rgba(13,22,38,.6));
+  padding:22px 24px;margin:0 0 56px;
+}
+.motor h2{
+  font-family:'Orbitron',sans-serif;font-size:15px;letter-spacing:.12em;
+  color:var(--dorado);text-transform:uppercase;margin-bottom:14px;
+}
+.flow{
+  display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+  font-family:'Rajdhani',sans-serif;font-weight:600;font-size:14px;
+}
+.flow .step{
+  border:1px solid var(--borde);border-radius:8px;padding:7px 12px;
+  background:rgba(10,10,15,.6);white-space:nowrap;
+}
+.flow .arrow{color:var(--dorado);font-weight:700}
+.motor p{color:var(--texto-suave);font-size:13.5px;margin-top:12px}
+.motor strong{color:var(--texto)}
+
+/* ===== TARJETAS DE SERVICIO ===== */
+.card{
+  border:1px solid var(--borde);border-radius:16px;overflow:hidden;
+  background:linear-gradient(170deg,var(--panel) 0%,var(--negro) 100%);
+  margin-bottom:34px;scroll-margin-top:24px;
+}
+.card-head{
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:20px 24px 14px;border-bottom:1px solid rgba(201,168,76,.15);
+  background:linear-gradient(90deg,rgba(201,168,76,.10),transparent 60%);
+}
+.card-head .ico{font-size:28px}
+.card-head h3{
+  font-family:'Orbitron',sans-serif;font-weight:700;
+  font-size:clamp(16px,3.4vw,20px);letter-spacing:.03em;flex:1;min-width:200px;
+}
+.badge{
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11.5px;
+  letter-spacing:.12em;text-transform:uppercase;
+  border-radius:6px;padding:4px 10px;
+}
+.badge.activo{color:var(--profit);border:1px solid var(--profit);background:rgba(0,255,136,.08)}
+.badge.listo{color:var(--dorado);border:1px solid var(--dorado);background:var(--dorado-suave)}
+.badge.premium{color:#A78BFF;border:1px solid #7B5CFF;background:rgba(123,92,255,.1)}
+.card-body{padding:20px 24px 24px}
+.card-body .desc{color:var(--texto);font-size:15px;margin-bottom:18px}
+.card-body .desc em{color:var(--dorado);font-style:normal;font-weight:600}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:720px){.grid2{grid-template-columns:1fr}}
+
+.bloque h4{
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--dorado);
+  margin-bottom:9px;display:flex;align-items:center;gap:8px;
+}
+.bloque h4::before{content:"⬡";font-size:11px}
+.bloque ul{list-style:none}
+.bloque li{
+  padding:5px 0 5px 16px;position:relative;font-size:14px;color:var(--texto);
+}
+.bloque li::before{
+  content:"";position:absolute;left:0;top:12px;width:6px;height:6px;
+  background:var(--dorado);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+}
+.bloque li small{color:var(--texto-suave);display:block;font-size:12.5px}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.chip{
+  font-family:'Rajdhani',sans-serif;font-weight:600;font-size:13px;
+  border:1px solid var(--borde);border-radius:20px;padding:5px 13px;
+  background:rgba(13,22,38,.7);color:var(--texto);
+}
+.chip b{color:var(--dorado);font-weight:700}
+
+.cobro{
+  margin-top:20px;border:1px dashed var(--borde);border-radius:10px;
+  padding:13px 16px;background:rgba(201,168,76,.05);
+  font-size:14px;color:var(--texto);
+}
+.cobro b{color:var(--dorado);font-family:'Rajdhani',sans-serif;letter-spacing:.1em;text-transform:uppercase;font-size:12.5px;display:block;margin-bottom:4px}
+
+footer{
+  text-align:center;margin-top:50px;color:var(--texto-suave);
+  font-family:'Rajdhani',sans-serif;font-size:13px;letter-spacing:.2em;text-transform:uppercase;
+}
+footer .gold{color:var(--dorado)}
+
+@media(max-width:560px){
+  .hex{--hw:104px;padding:10px 8px}
+  .hex .ico{font-size:19px;margin-bottom:3px}
+  .hex .nom{font-size:10.5px}
+  .hive-row{gap:7px}
+  .hive-row + .hive-row{margin-top:-18px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">QuantumHive · Agencia IA</div>
+  <h1>MAPA DE SERVICIOS</h1>
+  <p class="sub">Un solo motor multiagéntico. Cada servicio es una pieza del mismo panal — se prende por cliente, no por fase.</p>
+  <div class="legend">
+    <span><i class="dot activo"></i> Activo (en venta hoy)</span>
+    <span><i class="dot listo"></i> Listo para vender</span>
+    <span><i class="dot premium"></i> Premium / add-on</span>
+  </div>
+</header>
+
+<!-- ===== PANAL ===== -->
+<nav class="hive" aria-label="Mapa de servicios">
+  <div class="hive-row">
+    <button class="hex listo" onclick="ir('s2')"><span class="ico">🔍</span><span class="nom">Investigación de Marca</span><span class="est"></span></button>
+    <button class="hex activo" onclick="ir('s1')"><span class="ico">💬</span><span class="nom">Chatbot Humanizado</span><span class="est"></span></button>
+    <button class="hex listo" onclick="ir('s3')"><span class="ico">⚙️</span><span class="nom">Automatizaciones n8n</span><span class="est"></span></button>
+  </div>
+  <div class="hive-row">
+    <button class="hex listo" onclick="ir('s4')"><span class="ico">🌐</span><span class="nom">Webs &amp; Landings</span><span class="est"></span></button>
+    <button class="hex listo" onclick="ir('s5')"><span class="ico">📱</span><span class="nom">Apps Móviles</span><span class="est"></span></button>
+    <button class="hex listo" onclick="ir('s6')"><span class="ico">🍽️</span><span class="nom">Carta QR PyME</span><span class="est"></span></button>
+    <button class="hex listo" onclick="ir('s7')"><span class="ico">🤖</span><span class="nom">Asistente In-App</span><span class="est"></span></button>
+  </div>
+  <div class="hive-row">
+    <button class="hex listo" onclick="ir('s8')"><span class="ico">⚖️</span><span class="nom">Agente Legal</span><span class="est"></span></button>
+    <button class="hex premium" onclick="ir('s9')"><span class="ico">🎙️</span><span class="nom">Voz Clonada</span><span class="est"></span></button>
+    <button class="hex listo" onclick="ir('s10')"><span class="ico">📸</span><span class="nom">Contenido IA</span><span class="est"></span></button>
+  </div>
+</nav>
+<p class="hint">⬡ Tocá un hexágono para ver el detalle ⬡</p>
+
+<!-- ===== MOTOR ===== -->
+<section class="motor">
+  <h2>El flujo de onboarding — igual para todo cliente</h2>
+  <div class="flow">
+    <span class="step">Handle de IG</span><span class="arrow">→</span>
+    <span class="step">Agente Investigador (perfil.md)</span><span class="arrow">→</span>
+    <span class="step">System prompt con esencia de marca</span><span class="arrow">→</span>
+    <span class="step">Demo (Telegram/web)</span><span class="arrow">→</span>
+    <span class="step">Firma + data real</span><span class="arrow">→</span>
+    <span class="step">Producción (WhatsApp/app)</span><span class="arrow">→</span>
+    <span class="step">Mensual</span>
+  </div>
+  <p><strong>Por qué importa:</strong> el Investigador convierte cada onboarding en un proceso repetible. El demo se arma antes de que el cliente firme — vendés mostrando, no prometiendo. La data sensible (precios, horarios, FAQ técnica) la entrega el cliente al firmar, nunca se inventa.</p>
+</section>
+
+<!-- ===== S1 CHATBOT ===== -->
+<article class="card" id="s1">
+  <div class="card-head"><span class="ico">💬</span><h3>CHATBOT HUMANIZADO</h3><span class="badge activo">Activo — Yas Papeo</span></div>
+  <div class="card-body">
+    <p class="desc">Bot de atención y cierre que <em>habla como la marca</em> (voseo, vocabulario propio, frases textuales del cliente). Atiende 24/7, asesora, filtra consultas y deriva el cierre al canal oficial. El servicio estrella y la puerta de entrada de todo cliente.</p>
+    <div class="grid2">
+      <div class="bloque">
+        <h4>Qué incluye</h4>
+        <ul>
+          <li>Personalidad entrenada con la esencia real de la marca<small>Sale del perfil.md del Investigador, no de una plantilla</small></li>
+          <li>Reglas duras configurables<small>No da precios, no agenda solo, no inventa data técnica, deriva a humano</small></li>
+          <li>Demo funcional en Telegram o web antes de firmar</li>
+          <li>Producción en WhatsApp Business<small>Requiere aprobación de Meta — va con el plan pago, no con el demo</small></li>
+          <li>Memoria de conversación por cliente final</li>
+          <li>Embudo IG → link en bio → bot<small>Reemplaza el walink genérico por el link al bot</small></li>
+        </ul>
+      </div>
+      <div class="bloque">
+        <h4>Herramientas</h4>
+        <div class="chips">
+          <span class="chip"><b>Claude API</b> · cerebro del bot</span>
+          <span class="chip"><b>Telegram Bot API</b> · demo</span>
+          <span class="chip"><b>WhatsApp Business API</b> · producción</span>
+          <span class="chip"><b>n8n</b> · ruteo de mensajes</span>
+          <span class="chip"><b>Supabase</b> · memoria e historial</span>
+          <span class="chip"><b>Groq</b> · fallback económico</span>
+        </div>
+        <h4 style="margin-top:18px">Especificaciones clave</h4>
+        <ul>
+          <li>Mensajes cortos estilo chat real, nada corporativo</li>
+          <li>Tono auditado contra frases textuales del cliente</li>
+          <li>Escalado a humano definido por contrato</li>
+        </ul>
+      </div>
+    </div>
+    <div class="cobro"><b>Modelo de cobro</b>Setup inicial (armado + entrenamiento + conexión al canal) + cuota mensual (mantenimiento, ajustes, soporte). El perfil tipo Yas Papeo va directo a premium.</div>
+  </div>
+</article>
+
+<!-- ===== S2 INVESTIGADOR ===== -->
+<article class="card" id="s2">
+  <div class="card-head"><span class="ico">🔍</span><h3>INVESTIGACIÓN DE MARCA</h3><span class="badge listo">Motor de onboarding</span></div>
+  <div class="card-body">
+    <p class="desc">El Agente Investigador toma un handle de Instagram y produce un <em>perfil.md</em> completo: datos del negocio, tono de voz, vocabulario, valores, estética, FAQ de la audiencia. Es producto interno (alimenta cada bot) y también vendible como auditoría de marca standalone.</p>
+    <div class="grid2">
+      <div class="bloque">
+        <h4>Qué incluye</h4>
+        <ul>
+          <li>Scraping respetuoso del perfil público<small>Bio, posts, captions, comentarios, highlights — con rate limits, nunca agresivo</small></li>
+          <li>Transcripción de los reels con más alcance</li>
+          <li>Análisis de identidad: tono, frases propias, diferencial, público</li>
+          <li>Documento perfil.md entregable + notas para system prompt</li>
+        </ul>
+      </div>
+      <div class="bloque">
+        <h4>Herramientas</h4>
+        <div class="chips">
+          <span class="chip"><b>Apify</b> · IG scraper</span>
+          <span class="chip"><b>Gemini 1.5 Pro</b> · análisis masivo</span>
+          <span class="chip"><b>yt-dlp</b> · descarga de reels</span>
+          <span class="chip"><b>Whisper</b> · transcripción</span>
+          <span class="chip"><b>Python</b> · orquestación</span>
+        </div>
+        <h4 style="margin-top:18px">Reglas del servicio</h4>
+        <ul>
+          <li>Nunca usar posteos como fuente de precios/horarios</li>
+          <li>Output = insumo, no verdad absoluta</li>
+          <li>Cuenta privada → se pide acceso o data manual</li>
+        </ul>
+      </div>
+    </div>
+    <div class="cobro"><b>Modelo de cobro</b>Incluido en el setup de cualquier bot/servicio. Standalone: auditoría de marca + informe de esencia como producto de entrada de bajo ticket.</div>
+  </div>
+</article>
+
+<!-- ===== S3 AUTOMATIZACIONES ===== -->
+<article class="card" id="s3">
+  <div class="card-head"><span class="ico">⚙️</span><h3>AUTOMATIZACIONES &amp; WORKFLOWS</h3><span class="badge listo">Listo para vender</span></div>
+  <div class="card-body">
+    <p class="desc">Flujos que sacan trabajo manual de encima: publicación automática de contenido, captación de leads, respuestas iniciales, reportes, sincronización entre canales. Lo que ya corre para Directimport, empaquetado para PyMEs.</p>
+    <div class="grid2">
+      <div class="bloque">
+        <h4>Qué incluye (ejemplos vendibles)</h4>
+        <ul>
+          <li>Embudo IG/Facebook → WhatsApp con respuesta automática</li>
+          <li>Publicación programada con aprobación previa<small>Orden por Telegram → post generado → aprobás → se publica</small></li>
+          <li>Captación: formulario → CRM → seguimiento automático</li>
+          <li>Alertas y reportes al WhatsApp/Telegram del dueño</li>
+          <li>Integración entre herramientas que el cliente ya usa</li>
+        </ul>
+      </div>
+      <div class="bloque">
+        <h4>Herramientas</h4>
+        <div class="chips">
+          <span class="chip"><b>n8n</b> · orquestador (self-hosted en Railway)</span>
+          <span class="chip"><b>Railway</b> · infraestructura</span>
+          <span class="chip"><b>Telegram/WhatsApp APIs</b> · canales</span>
+          <span class="chip"><b>Supabase</b> · datos</span>
+          <span class="chip"><b>Claude API</b> · pasos con razonamiento</span>
+          <span class="chip"><b>DeepSeek vía NVIDIA</b> · tareas mecánicas a costo $0</span>
+        </div>
+        <h4 style="margin-top:18px">Especificaciones clave</h4>
+        <ul>
+          <li>Self-hosted: sin costo por operación de plataformas tipo Zapier</li>
+          <li>Todo flujo destructivo con paso de aprobación humana</li>
+        </ul>
+      </div>
+    </div>
+    <div class="cobro"><b>Modelo de cobro</b>Setup por flujo (según complejidad) + mensual por mantenimiento e infraestructura. Escalable: cada flujo nuevo suma ticket.</div>
+  </div>
+</article>
+
+<!-- ===== S4 WEBS ===== -->
+<article class="card" id="s4">
+  <div class="card-head"><span class="ico">🌐</span><h3>WEBS &amp; LANDINGS PREMIUM</h3><span class="badge listo">Listo para vender</span></div>
+  <div class="card-body">
+    <p class="desc">Sitios y landings con <em>impacto visual real</em> — el diferencial de QuantumHive. Elementos 3D, paleta premium, sensación pro. No plantillas de Wix: la misma capa visual que diferencia a Directimport, al servicio de cada cliente.</p>
+    <div class="grid2">
+      <div class="bloque">
+        <h4>Qué incluye</h4>
+        <ul>
+          <li>Landing o sitio completo con identidad del cliente</li>
+          <li>Elementos 3D en el hero<small>Con lazy-load — impacto sin sacrificar velocidad</small></li>
+          <li>Carta de servicios "con vida" (animada, interactiva)</li>
+          <li>Integración con el bot del cliente (chat embebido)</li>
+          <li>Formularios conectados a las automatizaciones</li>
+          <li>Fotos de producto procesadas a calidad estudio</li>
+        </ul>
+      </div>
+      <div class="bloque">
+        <h4>Herramientas</h4>
+        <div class="chips">
+          <span class="chip"><b>Next.js</b> · framework</span>
+          <span class="chip"><b>Vercel</b> · hosting</span>
+          <span class="chip"><b>R3F + Drei</b> · 3D</span>
+          <span class="chip"><b>Zustand</b> · estado</span>
+          <span class="chip"><b>Supabase</b> · backend/forms</span>
+          <span class="chip"><b>Photoroom API</b> · fotos de estudio</span>
+          <span class="chip"><b>Firecrawl</b> · análisis de competencia</span>
+        </div>
+        <h4 style="margin-top:18px">Especificaciones clave</h4>
+        <ul>
+          <li>Responsive y rápida en móvil (el público está en IG)</li>
+          <li>Tier simple: landing sin 3D · Tier premium: 3D + animaciones</li>
+        </ul>
+      </div>
+    </div>
+    <div class="cobro"><b>Modelo de cobro</b>Por proyecto según alcance (landing simple / sitio completo / premium 3D) + mensual opcional por hosting, cambios y mantenimiento.</div>
+  </div>
+</article>
+
+<!-- ===== S5 APPS ===== -->
+<article class="card" id="s5">
+  <div class="card-head"><span class="ico">📱</span><h3>APPS MÓVILES</h3><span class="badge listo">Pipeline probado en Directimport</span></div>
+  <div class="card-body">
+    <p class="desc">Apps reales en Play Store y App Store con <em>un solo código</em>. La secuencia probada: web-first → PWA para validar gratis → tiendas sin reescribir. Turnos, catálogos, pedidos, fidelización — la app del negocio del cliente.</p>
+    <div class="grid2">
+      <div class="bloque">
+        <h4>Qué incluye</h4>
+        <ul>
+          <li>App web-first publicable como PWA inmediata<small>Validación con usuarios reales sin trámites de tiendas</small></li>
+          <li>Publicación en Play Store y App Store<small>iOS compilado en la nube — sin depender de hardware Mac</small></li>
+          <li>Login, perfiles, notificaciones, panel admin web</li>
+          <li>Pagos integrados con Mercado Pago<small>Checkout Pro o API/Bricks; suscripciones con cobro recurrente</small></li>
+          <li>Caso de uso tipo: app de turnos para salón (tier premium del bot)</li>
+        </ul>
+      </div>
+      <div class="bloque">
+        <h4>Herramientas</h4>
+        <div class="chips">
+          <span class="chip"><b>Capacitor</b> · una base, dos tiendas</span>
+          <span class="chip"><b>Codemagic</b> · build iOS en la nube</span>
+          <span class="chip"><b>Supabase</b> · backend, auth, RLS multi-tenant</span>
+          <span class="chip"><b>Mercado Pago</b> · pagos y suscripciones</span>
+          <span class="chip"><b>Next.js + Vercel</b> · panel admin</span>
+        </div>
+        <h4 style="margin-top:18px">Especificaciones clave</h4>
+        <ul>
+          <li>RLS desde el día uno: datos de cada cliente aislados</li>
+          <li>El núcleo (login, pagos, panel, marca) es reusable entre clientes</li>
+        </ul>
+      </div>
+    </div>
+    <div class="cobro"><b>Modelo de cobro</b>Proyecto high-ticket: setup grande + mensual de mantenimiento. Costos de tiendas (Play USD 25 única vez, App Store USD 99/año) a cargo del cliente.</div>
+  </div>
+</article>
+
+<!-- ===== S6 CARTA QR ===== -->
+<article class="card" id="s6">
+  <div class="card-head"><span class="ico">🍽️</span><h3>CARTA QR PARA PYMES</h3><span class="badge listo">Producto de entrada</span></div>
+  <div class="card-body">
+    <p class="desc">Menú/catálogo digital con QR para gastronomía y comercios. El producto de <em>ticket bajo y venta rápida</em>: barato de armar, fácil de demostrar en persona, y abre la puerta para vender el bot y las automatizaciones después.</p>
+    <div class="grid2">
+      <div class="bloque">
+        <h4>Qué incluye</h4>
+        <ul>
+          <li>Carta digital con la identidad del local<small>Fotos procesadas a calidad estudio, no fotos de celular crudas</small></li>
+          <li>QR para mesas/mostrador listo para imprimir</li>
+          <li>Edición de precios/platos sin tocar código<small>El dueño actualiza desde un panel simple</small></li>
+          <li>Upsell directo: botón de pedidos por WhatsApp → conecta con el bot</li>
+        </ul>
+      </div>
+      <div class="bloque">
+        <h4>Herramientas</h4>
+        <div class="chips">
+          <span class="chip"><b>Next.js + Vercel</b> · carta web</span>
+          <span class="chip"><b>Supabase</b> · catálogo editable</span>
+          <span class="chip"><b>Photoroom API</b> · fotos de platos</span>
+          <span class="chip"><b>Generador QR</b> · acceso físico</span>
+        </div>
+        <h4 style="margin-top:18px">Especificaciones clave</h4>
+        <ul>
+          <li>Carga en segundos con datos móviles (clientes en la mesa)</li>
+          <li>Plantilla reusable: el segundo cliente cuesta una fracción del primero</li>
+        </ul>
+      </div>
+    </div>
+    <div class="cobro"><b>Modelo de cobro</b>Setup bajo + mensual chico por hosting y cambios. La rentabilidad está en el volumen y en escalar al cliente hacia bot/automatizaciones.</div>
+  </div>
+</article>
+
+<!-- ===== S7 ASISTENTE IN-APP ===== -->
+<article class="card" id="s7">
+  <div class="card-head"><span class="ico">🤖</span><h3>ASISTENTE IN-APP (TIPO TIMÓN)</h3><span class="badge listo">Componente reusable</span></div>
+  <div class="card-body">
+    <p class="desc">El asistente que vive <em>adentro</em> de la app o web del cliente: responde por texto, audio y foto, recuerda a cada usuario, y guía la experiencia. La versión productizada de Timón, el agente de Directimport.</p>
+    <div class="grid2">
+      <div class="bloque">
+        <h4>Qué incluye</h4>
+        <ul>
+          <li>Chat multimodal: texto, notas de voz transcriptas, fotos<small>Ej.: el usuario manda una foto y el asistente encuentra el producto en el catálogo</small></li>
+          <li>Respuestas opcionales en audio</li>
+          <li>Memoria por usuario<small>Cada usuario tiene su historial y preferencias, aisladas por ID</small></li>
+          <li>Captura de demanda: lo que el usuario pidió y no había, queda registrado</li>
+          <li>Animación de orbe estilo Jarvis para el estado de audio</li>
+        </ul>
+      </div>
+      <div class="bloque">
+        <h4>Herramientas</h4>
+        <div class="chips">
+          <span class="chip"><b>Claude API</b> · razonamiento y visión</span>
+          <span class="chip"><b>Whisper / Groq</b> · transcripción de voz</span>
+          <span class="chip"><b>Supabase</b> · memoria por user ID</span>
+          <span class="chip"><b>R3F</b> · orbe animado</span>
+        </div>
+        <h4 style="margin-top:18px">Especificaciones clave</h4>
+        <ul>
+          <li>Se vende como módulo dentro de apps/webs, no suelto</li>
+          <li>Mismo motor para cualquier vertical: catálogo, turnos, soporte</li>
+        </ul>
+      </div>
+    </div>
+    <div class="cobro"><b>Modelo de cobro</b>Add-on sobre el proyecto de app/web: suma al setup + sube el mensual (consume API por uso).</div>
+  </div>
+</article>
+
+<!-- ===== S8 LEGAL ===== -->
+<article class="card" id="s8">
+  <div class="card-head"><span class="ico">⚖️</span><h3>AGENTE LEGAL</h3><span class="badge listo">Componente reusable</span></div>
+  <div class="card-body">
+    <p class="desc">Genera los documentos legales de cara al usuario para cualquier app o web: términos y condiciones, política de privacidad, acuerdo de suscripción, política de devoluciones — fundados en <em>ley argentina</em> (defensa del consumidor, protección de datos), con la jurisdicción como parámetro.</p>
+    <div class="grid2">
+      <div class="bloque">
+        <h4>Qué incluye</h4>
+        <ul>
+          <li>Set completo de documentos por producto<small>T&amp;C, privacidad, suscripción, devoluciones</small></li>
+          <li>Clickwrap antes de pagar<small>El usuario acepta antes de cualquier cobro — protege al cliente</small></li>
+          <li>Asistente nativo que responde dudas legales dentro de la app<small>Con los T&amp;C como conocimiento; deriva lo que no está escrito</small></li>
+        </ul>
+      </div>
+      <div class="bloque">
+        <h4>Herramientas</h4>
+        <div class="chips">
+          <span class="chip"><b>Claude API</b> · generación y consulta</span>
+          <span class="chip"><b>Supabase</b> · versiones y aceptaciones</span>
+        </div>
+        <h4 style="margin-top:18px">Límites declarados (esto vende confianza)</h4>
+        <ul>
+          <li>Cubre lo de cara al usuario, no contratos societarios</li>
+          <li>Lo estructural lo valida un abogado real — se dice de frente</li>
+        </ul>
+      </div>
+    </div>
+    <div class="cobro"><b>Modelo de cobro</b>Incluido en proyectos de app/web (diferencial frente a competencia que entrega apps sin legales). Standalone: paquete de documentos para apps existentes.</div>
+  </div>
+</article>
+
+<!-- ===== S9 VOZ ===== -->
+<article class="card" id="s9">
+  <div class="card-head"><span class="ico">🎙️</span><h3>VOZ CLONADA</h3><span class="badge premium">Premium · solo con consentimiento</span></div>
+  <div class="card-body">
+    <p class="desc">El bot responde con <em>la voz del dueño</em> de la marca. El nivel máximo de humanización — reservado para el tier premium y siempre con consentimiento escrito firmado. Nunca en prototipos.</p>
+    <div class="grid2">
+      <div class="bloque">
+        <h4>Qué incluye</h4>
+        <ul>
+          <li>Clonado de voz a partir de muestras del cliente</li>
+          <li>Respuestas en nota de voz en WhatsApp con esa voz</li>
+          <li>Contrato de consentimiento y uso firmado<small>Regla dura: sin firma no hay clonado, sin excepción</small></li>
+        </ul>
+      </div>
+      <div class="bloque">
+        <h4>Herramientas</h4>
+        <div class="chips">
+          <span class="chip"><b>API de clonado de voz</b> · a elegir al aplicar (tener ≠ usar)</span>
+          <span class="chip"><b>n8n</b> · pipeline texto → audio → envío</span>
+          <span class="chip"><b>Agente Legal</b> · contrato de consentimiento</span>
+        </div>
+        <h4 style="margin-top:18px">Especificaciones clave</h4>
+        <ul>
+          <li>Solo tier premium — nunca incluido en básico ni demo</li>
+          <li>Cláusula de revocación: el cliente puede dar de baja su voz</li>
+        </ul>
+      </div>
+    </div>
+    <div class="cobro"><b>Modelo de cobro</b>Add-on premium sobre el bot: setup adicional + recargo mensual (costo de API de voz por uso).</div>
+  </div>
+</article>
+
+<!-- ===== S10 CONTENIDO ===== -->
+<article class="card" id="s10">
+  <div class="card-head"><span class="ico">📸</span><h3>CONTENIDO IA &amp; MARKETING</h3><span class="badge listo">Listo para vender</span></div>
+  <div class="card-body">
+    <p class="desc">Máquina de contenido para el IG del cliente: posts con copy en su tono, fotos de producto calidad estudio, video corto. El mismo pipeline que corre para Directimport — y el propio canal de la agencia mostrando builds reales es la vidriera.</p>
+    <div class="grid2">
+      <div class="bloque">
+        <h4>Qué incluye</h4>
+        <ul>
+          <li>Posts con copy en el tono de la marca<small>Calibrado con el perfil.md — no copy genérico de IA</small></li>
+          <li>Fotos de producto con fondo de estudio y sombra pro</li>
+          <li>Video corto para Reels generado por IA</li>
+          <li>Flujo de aprobación: nada se publica sin el OK del cliente</li>
+          <li>Calendario de publicación automatizado</li>
+        </ul>
+      </div>
+      <div class="bloque">
+        <h4>Herramientas</h4>
+        <div class="chips">
+          <span class="chip"><b>Claude API</b> · copy en tono de marca</span>
+          <span class="chip"><b>Photoroom API</b> · fotos de estudio</span>
+          <span class="chip"><b>Hunyuan Video</b> · video para Reels</span>
+          <span class="chip"><b>n8n</b> · calendario y publicación</span>
+          <span class="chip"><b>Gemini</b> · análisis de qué funciona en el nicho</span>
+        </div>
+        <h4 style="margin-top:18px">Especificaciones clave</h4>
+        <ul>
+          <li>Aprobación humana siempre antes de publicar</li>
+          <li>Se vende junto con el bot: el contenido trae el tráfico que el bot cierra</li>
+        </ul>
+      </div>
+    </div>
+    <div class="cobro"><b>Modelo de cobro</b>Mensual por paquete (X posts + Y reels al mes). Recurrencia pura — el servicio que estabiliza la caja de la agencia.</div>
+  </div>
+</article>
+
+<footer>
+  ⬡ <span class="gold">QuantumHive</span> · Un motor, todos los verticales · The Future of Algorithmic Finance ⬡
+</footer>
+
+</div>
+<script>
+function ir(id){
+  const el=document.getElementById(id);
+  if(el){el.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});}
+}
+</script>
+</body>
+</html>

@@ -118,6 +118,7 @@ em{color:var(--gold-bright);font-style:normal;font-weight:600}
   clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
   background:linear-gradient(155deg,var(--gold-lt),var(--gold) 45%,var(--gold-deep));
   border:none;cursor:pointer;position:relative;padding:0;
+  text-decoration:none;color:var(--text);
   display:flex;align-items:center;justify-content:center;
   transition:transform .25s ease,filter .25s ease;
   filter:drop-shadow(0 6px 16px rgba(0,0,0,.5))
@@ -466,20 +467,20 @@ td strong{color:var(--text)}
     <div class="nav-title">⬡ Recorré la propuesta ⬡</div>
     <div class="hive">
       <div class="hive-row">
-        <button class="hex" onclick="ir('s-problema')"><span class="in"><span class="ico">⚠️</span><span class="nom">El problema</span></span></button>
-        <button class="hex" onclick="ir('s-solucion')"><span class="in"><span class="ico">⚙️</span><span class="nom">Cómo funciona</span></span></button>
-        <button class="hex core" onclick="ir('s-memoria')"><span class="in"><span class="ico">🧠</span><span class="nom">Memoria real</span></span></button>
+        <a class="hex" href="#s-problema"><span class="in"><span class="ico">⚠️</span><span class="nom">El problema</span></span></a>
+        <a class="hex" href="#s-solucion"><span class="in"><span class="ico">⚙️</span><span class="nom">Cómo funciona</span></span></a>
+        <a class="hex core" href="#s-memoria"><span class="in"><span class="ico">🧠</span><span class="nom">Memoria real</span></span></a>
       </div>
       <div class="hive-row">
-        <button class="hex" onclick="ir('s-carta')"><span class="in"><span class="ico">🍽️</span><span class="nom">Tu carta</span></span></button>
-        <button class="hex" onclick="ir('s-cocina')"><span class="in"><span class="ico">🔥</span><span class="nom">A la cocina</span></span></button>
-        <button class="hex" onclick="ir('s-planes')"><span class="in"><span class="ico">💎</span><span class="nom">Planes</span></span></button>
-        <button class="hex" onclick="ir('s-promo')"><span class="in"><span class="ico">⚡</span><span class="nom">Pioneros</span></span></button>
+        <a class="hex" href="#s-carta"><span class="in"><span class="ico">🍽️</span><span class="nom">Tu carta</span></span></a>
+        <a class="hex" href="#s-cocina"><span class="in"><span class="ico">🔥</span><span class="nom">A la cocina</span></span></a>
+        <a class="hex" href="#s-planes"><span class="in"><span class="ico">💎</span><span class="nom">Planes</span></span></a>
+        <a class="hex" href="#s-promo"><span class="in"><span class="ico">⚡</span><span class="nom">Pioneros</span></span></a>
       </div>
       <div class="hive-row">
-        <button class="hex" onclick="ir('s-pasos')"><span class="in"><span class="ico">🚀</span><span class="nom">En 5 días</span></span></button>
-        <button class="hex" onclick="ir('s-faq')"><span class="in"><span class="ico">❓</span><span class="nom">Dudas</span></span></button>
-        <button class="hex" onclick="ir('s-contacto')"><span class="in"><span class="ico">💬</span><span class="nom">Contacto</span></span></button>
+        <a class="hex" href="#s-pasos"><span class="in"><span class="ico">🚀</span><span class="nom">En 5 días</span></span></a>
+        <a class="hex" href="#s-faq"><span class="in"><span class="ico">❓</span><span class="nom">Dudas</span></span></a>
+        <a class="hex" href="#s-contacto"><span class="in"><span class="ico">💬</span><span class="nom">Contacto</span></span></a>
       </div>
     </div>
   </nav>
@@ -738,11 +739,119 @@ td strong{color:var(--text)}
 
 </div>
 
+<!-- ===== AGENTE COLMENA · chat IA (voz + texto) ===== -->
+<button id="qa-launch" class="qa-launch" aria-label="Abrir asistente">
+  <span class="qa-launch-ic">💬</span><span class="qa-launch-tx">¿Dudas? Preguntame</span>
+</button>
+
+<div id="qa-panel" class="qa-panel" role="dialog" aria-label="Asistente Colmena" aria-hidden="true">
+  <div class="qa-head">
+    <div class="qa-head-id">
+      <span class="qa-dot"></span>
+      <div>
+        <div class="qa-name">Colmena · Asistente IA</div>
+        <div class="qa-sub">Te explico Carta QR Viva en 1 minuto</div>
+      </div>
+    </div>
+    <div class="qa-head-act">
+      <button id="qa-speaker" class="qa-iconbtn" title="Voz" aria-label="Activar o desactivar voz">🔊</button>
+      <button id="qa-close" class="qa-iconbtn" title="Cerrar" aria-label="Cerrar">✕</button>
+    </div>
+  </div>
+  <div id="qa-msgs" class="qa-msgs"></div>
+  <div id="qa-chips" class="qa-chips">
+    <button class="qa-chip">¿Qué es?</button>
+    <button class="qa-chip">¿Cuánto sale?</button>
+    <button class="qa-chip">¿Reemplaza a mis mozos?</button>
+    <button class="qa-chip">Quiero una demo</button>
+  </div>
+  <form id="qa-form" class="qa-form">
+    <button type="button" id="qa-mic" class="qa-iconbtn qa-mic" title="Hablar" aria-label="Hablar">🎤</button>
+    <input id="qa-input" class="qa-input" type="text" autocomplete="off" placeholder="Escribí tu pregunta…" maxlength="500">
+    <button type="submit" id="qa-send" class="qa-send" aria-label="Enviar">➤</button>
+  </form>
+  <div class="qa-foot">Asistente de demostración · IA de QuantumHive</div>
+</div>
+
+<style>
+.qa-launch{position:fixed;left:14px;bottom:14px;z-index:70;display:inline-flex;align-items:center;gap:9px;border:1px solid var(--gold);background:linear-gradient(150deg,#15171f,#0b0d14);color:var(--gold-bright);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.9rem;padding:11px 15px;border-radius:999px;cursor:pointer;box-shadow:0 10px 28px rgba(0,0,0,.5),0 0 0 1px rgba(201,168,76,.15)}
+.qa-launch-ic{font-size:18px;filter:drop-shadow(0 0 6px rgba(201,168,76,.6))}
+.qa-launch:hover{filter:brightness(1.08)}
+@media(max-width:480px){.qa-launch-tx{display:none}.qa-launch{padding:13px}}
+.qa-panel{position:fixed;left:14px;bottom:14px;z-index:71;width:min(92vw,380px);height:min(74vh,560px);display:none;flex-direction:column;overflow:hidden;border-radius:18px;border:1px solid var(--edge);background:linear-gradient(170deg,#11131a,#0a0b10);box-shadow:0 24px 70px rgba(0,0,0,.7),0 0 0 1px rgba(201,168,76,.12)}
+.qa-panel.open{display:flex}
+.qa-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 14px;border-bottom:1px solid var(--edge-soft);background:linear-gradient(90deg,rgba(201,168,76,.12),transparent)}
+.qa-head-id{display:flex;align-items:center;gap:10px}
+.qa-dot{width:9px;height:9px;border-radius:50%;background:#2BE675;box-shadow:0 0 8px #2BE675;flex-shrink:0}
+.qa-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.95rem;color:#fff}
+.qa-sub{font-size:.72rem;color:var(--text-dim)}
+.qa-head-act{display:flex;gap:6px}
+.qa-iconbtn{border:1px solid var(--edge-soft);background:rgba(255,255,255,.03);color:var(--text-soft);width:32px;height:32px;border-radius:9px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.qa-iconbtn:hover{color:var(--gold-bright);border-color:var(--edge)}
+.qa-iconbtn.off{opacity:.4}
+.qa-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.qa-msg{max-width:86%;padding:10px 13px;border-radius:14px;font-size:.92rem;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
+.qa-msg.bot{align-self:flex-start;background:linear-gradient(160deg,#191c24,#101218);border:1px solid var(--edge-soft);color:var(--text);border-bottom-left-radius:4px}
+.qa-msg.me{align-self:flex-end;background:linear-gradient(150deg,var(--gold),var(--gold-deep));color:#1a1407;font-weight:500;border-bottom-right-radius:4px}
+.qa-msg.typing{color:var(--text-dim);font-style:italic}
+.qa-chips{display:flex;flex-wrap:wrap;gap:7px;padding:0 14px 10px}
+.qa-chip{border:1px solid var(--edge);background:rgba(201,168,76,.06);color:var(--gold-bright);font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.8rem;padding:6px 11px;border-radius:999px;cursor:pointer}
+.qa-chip:hover{background:rgba(201,168,76,.14)}
+.qa-form{display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid var(--edge-soft)}
+.qa-input{flex:1;min-width:0;background:#0b0d14;border:1px solid var(--edge-soft);border-radius:999px;padding:11px 15px;color:var(--text);font-family:'Inter',sans-serif;font-size:.92rem;outline:none}
+.qa-input:focus{border-color:var(--edge)}
+.qa-mic.rec{color:#fff;background:linear-gradient(150deg,var(--red),var(--red-dk));border-color:var(--red);animation:qa-pulse 1.2s infinite}
+@keyframes qa-pulse{0%,100%{box-shadow:0 0 0 0 rgba(192,32,47,.5)}50%{box-shadow:0 0 0 7px rgba(192,32,47,0)}}
+.qa-send{flex-shrink:0;width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(150deg,var(--gold-bright),var(--gold-deep));color:#1a1407;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.qa-send:disabled{opacity:.5}
+.qa-foot{text-align:center;font-size:.66rem;color:var(--text-dim);padding:0 0 9px}
+@media print{.qa-launch,.qa-panel{display:none!important}}
+</style>
 <script>
-function ir(id){
-  var el=document.getElementById(id);
-  if(el){el.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});}
-}
+(function(){
+  // Backend seguro (Supabase Edge Function). La key de IA vive solo del lado del server.
+  var AGENT_URL="/.netlify/functions/carta-agente";
+  var launch=document.getElementById('qa-launch'),panel=document.getElementById('qa-panel'),
+      msgs=document.getElementById('qa-msgs'),form=document.getElementById('qa-form'),
+      input=document.getElementById('qa-input'),sendBtn=document.getElementById('qa-send'),
+      closeBtn=document.getElementById('qa-close'),micBtn=document.getElementById('qa-mic'),
+      spkBtn=document.getElementById('qa-speaker'),chips=document.getElementById('qa-chips');
+  var history=[],busy=false,voiceOn=true,greeted=false;
+  function el(cls,txt){var d=document.createElement('div');d.className='qa-msg '+cls;d.textContent=txt;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;}
+  function addMe(t){el('me',t);}
+  function addBot(t){el('bot',t);if(voiceOn)speak(t);}
+  function open(){panel.classList.add('open');panel.setAttribute('aria-hidden','false');launch.style.display='none';if(!greeted){greeted=true;addBot('¡Hola! 👋 Soy Colmena. Te ayudo con Carta QR Viva: preguntame lo que quieras o tocá una opción de abajo.');}input.focus();}
+  function close(){panel.classList.remove('open');panel.setAttribute('aria-hidden','true');launch.style.display='';stopSpeak();}
+  launch.addEventListener('click',open);closeBtn.addEventListener('click',close);
+  function send(text){
+    text=(text||'').trim();if(!text||busy)return;
+    addMe(text);history.push({role:'user',content:text});
+    input.value='';busy=true;sendBtn.disabled=true;
+    var typing=el('bot typing','escribiendo…');
+    fetch(AGENT_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history})})
+      .then(function(r){return r.json();})
+      .then(function(d){typing.remove();var reply=(d&&d.reply)?d.reply:'Uy, no pude responder ahora. Escribinos al WhatsApp 11 2407-0819 🙂';addBot(reply);history.push({role:'assistant',content:reply});})
+      .catch(function(){typing.remove();addBot('Se me cortó la conexión. Probá de nuevo o escribinos al WhatsApp 11 2407-0819.');})
+      .finally(function(){busy=false;sendBtn.disabled=false;input.focus();});
+  }
+  form.addEventListener('submit',function(e){e.preventDefault();send(input.value);});
+  chips.addEventListener('click',function(e){var b=e.target.closest('.qa-chip');if(b)send(b.textContent);});
+  // Voz: TTS neuronal de Gemini (varón "Charon"). Fallback al navegador si falla.
+  var TTS_URL="/.netlify/functions/carta-voz";var curAudio=null;
+  function pcmToWav(b64,rate){var bin=atob(b64),len=bin.length,buf=new ArrayBuffer(44+len),v=new DataView(buf);function ws(o,s){for(var i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i));}ws(0,'RIFF');v.setUint32(4,36+len,true);ws(8,'WAVE');ws(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,rate,true);v.setUint32(28,rate*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);ws(36,'data');v.setUint32(40,len,true);for(var i=0;i<len;i++)v.setUint8(44+i,bin.charCodeAt(i));return new Blob([buf],{type:'audio/wav'});}
+  function browserSpeak(t){try{if(!('speechSynthesis'in window))return;speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='es-AR';u.rate=1.05;speechSynthesis.speak(u);}catch(e){}}
+  function speak(t){stopSpeak();fetch(TTS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:t})}).then(function(r){return r.json();}).then(function(d){if(d&&d.audio){curAudio=new Audio(URL.createObjectURL(pcmToWav(d.audio,d.rate||24000)));curAudio.play().catch(function(){browserSpeak(t);});}else{browserSpeak(t);}}).catch(function(){browserSpeak(t);});}
+  function stopSpeak(){try{if(curAudio){curAudio.pause();curAudio=null;}if('speechSynthesis'in window)speechSynthesis.cancel();}catch(e){}}
+  spkBtn.addEventListener('click',function(){voiceOn=!voiceOn;spkBtn.textContent=voiceOn?'🔊':'🔇';spkBtn.classList.toggle('off',!voiceOn);if(!voiceOn)stopSpeak();});
+  // Voz de entrada (Web Speech API)
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition,rec=null;
+  if(SR){rec=new SR();rec.lang='es-AR';rec.interimResults=false;rec.maxAlternatives=1;
+    rec.onresult=function(e){var t=e.results[0][0].transcript;input.value=t;send(t);};
+    rec.onend=function(){micBtn.classList.remove('rec');};
+    rec.onerror=function(){micBtn.classList.remove('rec');};
+    micBtn.addEventListener('click',function(){try{if(micBtn.classList.contains('rec')){rec.stop();}else{stopSpeak();micBtn.classList.add('rec');rec.start();}}catch(e){micBtn.classList.remove('rec');}});
+  }else{micBtn.style.display='none';}
+})();
 </script>
 </body>
 </html>

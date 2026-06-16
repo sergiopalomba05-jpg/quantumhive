@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carta Viva — Propuesta Comercial</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    font-size: 10.5pt;
+    color: #1a1a1a;
+    background: #f0f0f0;
+    line-height: 1.6;
+  }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 20px auto;
+    background: white;
+    padding: 22mm 20mm 20mm 20mm;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  }
+
+  @media print {
+    body { background: white; }
+    .page { margin: 0; box-shadow: none; padding: 15mm 18mm; }
+    .no-break { page-break-inside: avoid; }
+  }
+
+  /* PORTADA */
+  .cover {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 260mm;
+    padding-bottom: 20mm;
+    border-bottom: 3px solid #8B1C2B;
+    margin-bottom: 14mm;
+  }
+
+  .cover-tag {
+    font-size: 8pt;
+    font-weight: 600;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: #8B1C2B;
+    margin-bottom: 12px;
+  }
+
+  .cover-title {
+    font-family: 'Fraunces', serif;
+    font-size: 52pt;
+    font-weight: 300;
+    line-height: 1.0;
+    color: #0E0A07;
+    margin-bottom: 6px;
+  }
+
+  .cover-subtitle {
+    font-family: 'Fraunces', serif;
+    font-size: 16pt;
+    font-weight: 300;
+    font-style: italic;
+    color: #5C4639;
+    margin-bottom: 40px;
+  }
+
+  .cover-desc {
+    font-size: 13pt;
+    color: #333;
+    max-width: 400px;
+    line-height: 1.7;
+    margin-bottom: 48px;
+  }
+
+  .cover-pill {
+    display: inline-block;
+    background: #8B1C2B;
+    color: white;
+    font-size: 8.5pt;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+    margin-right: 8px;
+  }
+
+  .cover-footer {
+    position: absolute;
+    bottom: 20mm;
+    left: 20mm;
+    right: 20mm;
+    font-size: 8pt;
+    color: #999;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* SECCIONES */
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 22pt;
+    font-weight: 600;
+    color: #0E0A07;
+    margin-top: 10mm;
+    margin-bottom: 4mm;
+    padding-bottom: 3mm;
+    border-bottom: 2px solid #8B1C2B;
+  }
+
+  h2 {
+    font-size: 13pt;
+    font-weight: 700;
+    color: #8B1C2B;
+    margin-top: 8mm;
+    margin-bottom: 3mm;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 10pt;
+  }
+
+  h3 {
+    font-size: 11pt;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-top: 5mm;
+    margin-bottom: 2mm;
+  }
+
+  p {
+    margin-bottom: 3mm;
+    color: #333;
+  }
+
+  /* HIGHLIGHT BOX */
+  .highlight {
+    background: #FFF8F0;
+    border-left: 4px solid #8B1C2B;
+    padding: 10px 14px;
+    margin: 5mm 0;
+    border-radius: 0 6px 6px 0;
+  }
+
+  .highlight strong {
+    color: #8B1C2B;
+  }
+
+  /* CARDS EN FILA */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 5mm 0;
+  }
+
+  .card {
+    border: 1.5px solid #E8E0D0;
+    border-radius: 8px;
+    padding: 12px;
+    background: #FAFAF8;
+  }
+
+  .card-icon {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+
+  .card-title {
+    font-weight: 700;
+    font-size: 9.5pt;
+    color: #0E0A07;
+    margin-bottom: 4px;
+  }
+
+  .card-desc {
+    font-size: 8.5pt;
+    color: #666;
+    line-height: 1.5;
+  }
+
+  /* TABLA */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 5mm 0;
+    font-size: 9.5pt;
+  }
+
+  th {
+    background: #8B1C2B;
+    color: white;
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  td {
+    padding: 7px 10px;
+    border-bottom: 1px solid #EEE;
+    vertical-align: top;
+  }
+
+  tr:nth-child(even) td { background: #FAFAFA; }
+
+  /* STEPS */
+  .steps {
+    counter-reset: step;
+    margin: 5mm 0;
+  }
+
+  .step {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 6mm;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    background: #8B1C2B;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 11pt;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-content h3 { margin-top: 0; }
+
+  /* PRECIO */
+  .pricing {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 5mm 0;
+  }
+
+  .plan {
+    border: 2px solid #E8E0D0;
+    border-radius: 10px;
+    padding: 16px;
+    position: relative;
+  }
+
+  .plan.featured {
+    border-color: #8B1C2B;
+    background: #FFF8F0;
+  }
+
+  .plan-badge {
+    position: absolute;
+    top: -10px;
+    right: 12px;
+    background: #8B1C2B;
+    color: white;
+    font-size: 7.5pt;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+
+  .plan-name {
+    font-weight: 700;
+    font-size: 11pt;
+    margin-bottom: 4px;
+    color: #0E0A07;
+  }
+
+  .plan-price {
+    font-family: 'Fraunces', serif;
+    font-size: 22pt;
+    font-weight: 600;
+    color: #8B1C2B;
+    line-height: 1;
+    margin: 8px 0 4px;
+  }
+
+  .plan-price span {
+    font-size: 10pt;
+    color: #666;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+  }
+
+  .plan-features {
+    list-style: none;
+    margin-top: 10px;
+    font-size: 8.5pt;
+    color: #444;
+  }
+
+  .plan-features li::before {
+    content: "✓ ";
+    color: #8B1C2B;
+    font-weight: 700;
+  }
+
+  .plan-features li {
+    margin-bottom: 4px;
+  }
+
+  /* FAQ */
+  .faq-item {
+    margin-bottom: 5mm;
+    padding-bottom: 5mm;
+    border-bottom: 1px solid #EEE;
+  }
+
+  .faq-q {
+    font-weight: 700;
+    color: #0E0A07;
+    margin-bottom: 2mm;
+    font-size: 10pt;
+  }
+
+  .faq-a {
+    color: #444;
+    font-size: 9.5pt;
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, #8B1C2B, transparent);
+    margin: 8mm 0;
+    opacity: 0.3;
+  }
+
+  /* PRINT BUTTON */
+  .print-bar {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn-print {
+    background: #8B1C2B;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(139,28,43,0.3);
+  }
+
+  @media print {
+    .print-bar { display: none; }
+  }
+
+  ul, ol {
+    padding-left: 20px;
+    margin-bottom: 3mm;
+    color: #333;
+  }
+
+  li { margin-bottom: 2px; }
+
+  .tag {
+    display: inline-block;
+    background: #F0ECE4;
+    color: #5C4639;
+    font-size: 7.5pt;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-right: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .accent { color: #8B1C2B; font-weight: 700; }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 5mm 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="print-bar">
+  <button class="btn-print" onclick="window.print()">🖨 Imprimir / Guardar PDF</button>
+</div>
+
+<div class="page">
+
+  <!-- PORTADA -->
+  <div class="cover">
+    <div class="cover-tag">QuantumHive · Agencia de Automatización IA</div>
+    <div class="cover-title">Carta<br>Viva</div>
+    <div class="cover-subtitle">Tu mesera virtual — disponible 24 horas</div>
+    <p class="cover-desc">
+      Un código QR en la mesa. El cliente lo escanea, aparece tu carta digital con una mesera de inteligencia artificial que atiende, recomienda y responde con voz — sin app, sin descargas, sin esperas.
+    </p>
+    <div>
+      <span class="cover-pill">Voz IA</span>
+      <span class="cover-pill">Sin app</span>
+      <span class="cover-pill">100% personalizable</span>
+    </div>
+  </div>
+
+  <!-- 1. EL PROBLEMA -->
+  <h1>El problema que resolvemos</h1>
+
+  <p>En todo restaurante pasan las mismas tres cosas:</p>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">🙋</div>
+      <div class="card-title">El mozo no llega</div>
+      <div class="card-desc">Los clientes esperan para preguntar ingredientes, opciones vegetarianas o precios. Se van frustrados.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📋</div>
+      <div class="card-title">La carta no explica</div>
+      <div class="card-desc">Un papel o una foto en Instagram no recomienda, no responde dudas ni sugiere maridajes.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">💸</div>
+      <div class="card-title">Se pierde la venta</div>
+      <div class="card-desc">Un cliente que no entiende el menú o no recibe atención no pide el segundo plato ni el postre.</div>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <strong>Carta Viva resuelve los tres:</strong> una mesera virtual con voz natural que conoce la carta de memoria, recomienda con entusiasmo y responde cualquier pregunta — sin reemplazar al equipo, sino liberándolo para lo que importa.
+  </div>
+
+  <!-- 2. CÓMO FUNCIONA -->
+  <h1>Cómo funciona</h1>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h3>QR en la mesa</h3>
+        <p>El restaurante imprime un código QR y lo coloca en cada mesa. No hay app que descargar.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h3>El cliente escanea</h3>
+        <p>Se abre una página web en el celular con la carta completa y la mesera virtual activa.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h3>La mesera atiende</h3>
+        <p>El cliente puede <strong>escribir o hablar</strong> (mantiene apretado el micrófono). La IA responde por texto y voz, recomienda platos, explica ingredientes, sugiere maridajes.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h3>El mozo cierra la venta</h3>
+        <p>El cliente llega ya decidido. El mozo toma el pedido y lo lleva. Sin fricciones.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. QUÉ INCLUYE -->
+  <h1>Qué incluye el servicio</h1>
+
+  <table>
+    <tr>
+      <th>Funcionalidad</th>
+      <th>Detalle</th>
+    </tr>
+    <tr>
+      <td><strong>Carta digital interactiva</strong></td>
+      <td>Menú organizado por secciones con tabs. Precios siempre actualizados.</td>
+    </tr>
+    <tr>
+      <td><strong>Mesera virtual con voz</strong></td>
+      <td>IA con personalidad propia, nombre, estilo del local y voz ElevenLabs personalizada.</td>
+    </tr>
+    <tr>
+      <td><strong>Chat de texto</strong></td>
+      <td>El cliente escribe su pregunta y recibe respuesta en segundos.</td>
+    </tr>
+    <tr>
+      <td><strong>Dictado por voz</strong></td>
+      <td>Mantiene apretado el orbe, habla y la IA transcribe y responde con voz. Ideal para mayores.</td>
+    </tr>
+    <tr>
+      <td><strong>Recomendaciones inteligentes</strong></td>
+      <td>La IA sugiere platos, bebidas y postres según el perfil del cliente.</td>
+    </tr>
+    <tr>
+      <td><strong>Sin app, sin cuenta</strong></td>
+      <td>Funciona en cualquier celular desde el navegador. Sin descargas.</td>
+    </tr>
+    <tr>
+      <td><strong>Diseño adaptado al local</strong></td>
+      <td>Colores, tipografía, nombre y personalidad de la mesera según la identidad del restaurante.</td>
+    </tr>
+    <tr>
+      <td><strong>Actualización de menú</strong></td>
+      <td>Cambios de precio, platos del día o disponibilidad aplicados en menos de 24 horas.</td>
+    </tr>
+  </table>
+
+  <!-- 4. GESTIÓN DE CAMBIOS -->
+  <h1>Gestión de cambios del menú</h1>
+
+  <p>Uno de los principales beneficios del servicio es que el restaurante <strong>no tiene que hacer nada técnico</strong> cuando cambia algo en el menú.</p>
+
+  <div class="two-col">
+    <div>
+      <h2>¿Qué puede cambiar?</h2>
+      <ul>
+        <li>Precio de un plato</li>
+        <li>Plato no disponible hoy</li>
+        <li>Ingrediente agotado (la IA dice "hoy no tenemos")</li>
+        <li>Plato nuevo o especial del día</li>
+        <li>Cambio estacional del menú</li>
+        <li>Modificación de reglas (adicionales, etc.)</li>
+      </ul>
+    </div>
+    <div>
+      <h2>¿Cómo lo solicita el dueño?</h2>
+      <ul>
+        <li>Mensaje de WhatsApp al servicio</li>
+        <li>Email con los cambios</li>
+        <li>Tiempo de respuesta: &lt; 24 hs hábiles</li>
+        <li>Plan Pro: panel de admin propio (ver precios)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <strong>Ejemplo real:</strong> "Hoy no hay Rib Eye y el New York Strip subió a $58.000." → Se actualiza el archivo del menú y se redesplega. El cliente que escanea el QR esa tarde ya ve los precios correctos y la mesera sabe que no hay Rib Eye.
+  </div>
+
+  <!-- 5. PRECIOS -->
+  <h1>Planes y precios</h1>
+
+  <p style="margin-bottom: 5mm; font-size: 9pt; color: #666;">* Precios de referencia en USD. Equivalente en ARS según cotización del momento.</p>
+
+  <div class="pricing">
+    <div class="plan">
+      <div class="plan-name">Plan Starter</div>
+      <div class="plan-price">USD 80 <span>/ mes</span></div>
+      <ul class="plan-features">
+        <li>Carta digital con IA de texto</li>
+        <li>Voz estándar (selección de catálogo)</li>
+        <li>Hasta 2 cambios de menú por mes</li>
+        <li>Diseño adaptado al local</li>
+        <li>Soporte por WhatsApp</li>
+        <li>Setup inicial: USD 150 único pago</li>
+      </ul>
+    </div>
+    <div class="plan featured">
+      <div class="plan-badge">Recomendado</div>
+      <div class="plan-name">Plan Pro</div>
+      <div class="plan-price">USD 150 <span>/ mes</span></div>
+      <ul class="plan-features">
+        <li>Todo lo de Starter</li>
+        <li>Voz personalizada (clonada o diseñada)</li>
+        <li>Cambios ilimitados de menú</li>
+        <li>Panel de admin para el dueño</li>
+        <li>Especiales del día automáticos</li>
+        <li>Reporte mensual de interacciones</li>
+        <li>Setup inicial: USD 200 único pago</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <strong>Margen estimado por cliente:</strong> Costo operativo por local (APIs + hosting): ~USD 15-25/mes. Margen neto por cliente activo: USD 55–125/mes.
+  </div>
+
+  <!-- 6. PROCESO DE IMPLEMENTACIÓN -->
+  <h1>Proceso de implementación (onboarding)</h1>
+
+  <table>
+    <tr>
+      <th>Día</th>
+      <th>Paso</th>
+      <th>Quién actúa</th>
+    </tr>
+    <tr>
+      <td><strong>Día 1</strong></td>
+      <td>Firma de contrato y pago del setup</td>
+      <td>Cliente</td>
+    </tr>
+    <tr>
+      <td><strong>Día 1-2</strong></td>
+      <td>Envío de la carta completa (foto, PDF o Excel)</td>
+      <td>Cliente</td>
+    </tr>
+    <tr>
+      <td><strong>Día 2-4</strong></td>
+      <td>Configuración: carga del menú, diseño de personalidad de la mesera, selección de voz, colores</td>
+      <td>QuantumHive</td>
+    </tr>
+    <tr>
+      <td><strong>Día 4-5</strong></td>
+      <td>Demo en vivo con el dueño. Ajustes finos de personalidad y tono.</td>
+      <td>Ambos</td>
+    </tr>
+    <tr>
+      <td><strong>Día 5-6</strong></td>
+      <td>Generación y entrega del QR. Instrucciones de impresión y colocación.</td>
+      <td>QuantumHive</td>
+    </tr>
+    <tr>
+      <td><strong>Día 7</strong></td>
+      <td>🚀 Go live. La mesera virtual empieza a atender clientes.</td>
+      <td>—</td>
+    </tr>
+  </table>
+
+  <!-- 7. PEDIDOS A COCINA -->
+  <h1>¿Puede tomar el pedido y enviarlo a cocina?</h1>
+
+  <p>Esta funcionalidad está en la hoja de ruta. El estado actual y el roadmap:</p>
+
+  <table>
+    <tr>
+      <th>Versión</th>
+      <th>Funcionalidad</th>
+      <th>Estado</th>
+    </tr>
+    <tr>
+      <td><strong>v1 — Actual</strong></td>
+      <td>La mesera informa, recomienda y responde. El cliente llama al mozo para pedir.</td>
+      <td><span class="tag">Disponible</span></td>
+    </tr>
+    <tr>
+      <td><strong>v2 — Q3 2026</strong></td>
+      <td>La mesera toma el pedido en el chat → genera resumen → envía por WhatsApp/Telegram al encargado de cocina.</td>
+      <td><span class="tag">En desarrollo</span></td>
+    </tr>
+    <tr>
+      <td><strong>v3 — Q4 2026</strong></td>
+      <td>Pantalla de cocina (KDS) propia. El pedido aparece en la pantalla de cocina al instante. Sin papel, sin teléfonos.</td>
+      <td><span class="tag">Roadmap</span></td>
+    </tr>
+  </table>
+
+  <div class="highlight">
+    <strong>Para restaurantes que quieren pedidos ahora:</strong> Con la v2 el mozo recibe un WhatsApp con el pedido del cliente antes de llegar a la mesa. Reduce errores y acelera el servicio.
+  </div>
+
+  <!-- 8. PREGUNTAS FRECUENTES -->
+  <h1>Preguntas frecuentes</h1>
+
+  <div class="faq-item">
+    <div class="faq-q">¿Los clientes tienen que descargar una app?</div>
+    <div class="faq-a">No. Funciona directo desde el navegador del celular. El cliente escanea el QR y listo.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">¿Funciona en todos los celulares?</div>
+    <div class="faq-a">Sí, en cualquier iPhone o Android moderno. La voz requiere conexión a internet, pero la carta digital funciona aunque la señal sea lenta.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">¿Qué pasa si hay ruido en el restaurante?</div>
+    <div class="faq-a">El micrófono usa supresión de ruido. En ambientes muy ruidosos, el cliente puede escribir en vez de hablar — ambas opciones están siempre disponibles.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">¿La mesera puede decir cosas incorrectas?</div>
+    <div class="faq-a">Está entrenada solo con la información del restaurante. No inventa precios ni platos que no existen. Si algo no está cargado, responde "eso te lo confirma el mozo" — nunca fabrica datos.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">¿Qué pasa si tenemos muchos clientes al mismo tiempo?</div>
+    <div class="faq-a">El sistema escala automáticamente. Cien personas escaneando el QR simultáneamente no genera ningún problema — cada una tiene su propia conversación independiente.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">¿Podemos tener más de una carta (almuerzo / cena)?</div>
+    <div class="faq-a">Sí. Se pueden configurar cartas por horario o el dueño solicita el cambio por WhatsApp para eventos especiales.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">¿Cuánto tiempo lleva implementarlo?</div>
+    <div class="faq-a">Una semana desde la firma hasta el primer cliente real. Casos simples se resuelven en 4 días.</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CIERRE -->
+  <div style="text-align: center; padding: 10mm 0 5mm;">
+    <div style="font-family: 'Fraunces', serif; font-size: 26pt; font-weight: 300; color: #8B1C2B; margin-bottom: 4px;">Carta Viva</div>
+    <div style="font-size: 9pt; color: #888; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 16px;">por QuantumHive</div>
+    <p style="font-size: 10pt; color: #555;">¿Interesado en implementarlo en tu restaurante?</p>
+    <p style="font-size: 10pt; color: #555; margin-bottom: 20px;">Escribinos y coordinamos una demo en vivo.</p>
+    <div style="display: inline-block; background: #8B1C2B; color: white; padding: 10px 28px; border-radius: 999px; font-weight: 700; font-size: 10pt; letter-spacing: 0.08em;">
+      quantumhive.io
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
