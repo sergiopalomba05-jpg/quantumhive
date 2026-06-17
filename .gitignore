@@ -56,3 +56,6 @@ directimport/db/_backup_prod_*/
 directimport/db/.ultimo_backup.txt
 # Temporales con secretos (tokens, passwords) — JAMÁS al repo
 directimport/db/*.tmp
+
+# graphify (output generado del grafo de conocimiento) — no al repo
+graphify-out/
