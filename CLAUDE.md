@@ -38,6 +38,7 @@
 8. **No re-explicar la arquitectura cada sesión.** Para eso está este archivo y la bóveda.
 9. **El catálogo es biblioteca: nada se descarta. Tener ≠ usar** — la herramienta concreta se elige AL APLICAR cada paso. Las alternativas conviven (no se "reemplaza y tira").
 10. **`/rewind` (o doble Esc) en vez de corregir errores con mensajes.** Mantiene el contexto limpio y ahorra tokens.
+11. **Consultá el grafo ANTES de releer el repo.** Hay un grafo de conocimiento en `graphify-out/` (local, gitignorado). Para "¿dónde está X?", arquitectura, o "¿cómo se conecta Y con Z?": preguntale al grafo (`graphify query "..."`, `graphify explain "Nodo"`, o `graphify-out/graph.json`) ANTES de abrir archivos sueltos. Releer todo el repo es el último recurso, no el primero. **Mantenelo vivo:** el hook post-commit lo actualiza en cada commit (código); tras cambios grandes en docs/estructura, corré `graphify --update`. Si no existe `graphify-out/`, regeneralo con `/graphify`.
 
 ## 3. ANTI-PATRONES PROHIBIDOS (errores reales de los 3 meses)
 
@@ -67,7 +68,7 @@ No es paranoia de seguridad (no hay nada que robar, el repo lo ve cualquiera a p
 > - **El modelo RAZONA y planifica** (Ultraplan). **Jamás** amordazar el razonamiento para ahorrar tokens — eso da peor código y es falsa economía.
 > - Delegar a modelos baratos (DeepSeek/Kimi) **solo para tareas mecánicas/repetitivas**, NUNCA para lógica.
 > - Concisión **en el chat/output**, no en el razonamiento.
-> - Ahorro real = cañería: Claude-Mem (no re-leer el repo), `/rewind`, no cargar archivos de más, CLAUDE.md conciso.
+> - Ahorro real = cañería: **grafo graphify (consultar `graphify-out/` antes de releer el repo)**, Claude-Mem (no re-leer el repo), `/rewind`, no cargar archivos de más, CLAUDE.md conciso.
 
 **FreeEngine — 3 capas:**
 1. **Arquitecto:** Claude Code (este agente). Construye y limpia estructura.
