@@ -39,6 +39,7 @@
 9. **El catálogo es biblioteca: nada se descarta. Tener ≠ usar** — la herramienta concreta se elige AL APLICAR cada paso. Las alternativas conviven (no se "reemplaza y tira").
 10. **`/rewind` (o doble Esc) en vez de corregir errores con mensajes.** Mantiene el contexto limpio y ahorra tokens.
 11. **Consultá el grafo ANTES de releer el repo.** Hay un grafo de conocimiento en `graphify-out/` (local, gitignorado). Para "¿dónde está X?", arquitectura, o "¿cómo se conecta Y con Z?": preguntale al grafo (`graphify query "..."`, `graphify explain "Nodo"`, o `graphify-out/graph.json`) ANTES de abrir archivos sueltos. Releer todo el repo es el último recurso, no el primero. **Mantenelo vivo:** el hook post-commit lo actualiza en cada commit (código); tras cambios grandes en docs/estructura, corré `graphify --update`. Si no existe `graphify-out/`, regeneralo con `/graphify`.
+12. **Trabajar siempre sobre `main`, sin crear worktrees nuevas.** Un solo árbol de trabajo (`C:\Users\sergio\Desktop\boveda obsidian`): las tareas normales van directo a `main`. No crear ramas/worktrees nuevas. (Las `claude/*` viejas ya se consolidaron — lista y comandos en `archivos a revisar/RAMAS-Y-WORKTREES.txt`.)
 
 ## 3. ANTI-PATRONES PROHIBIDOS (errores reales de los 3 meses)
 
