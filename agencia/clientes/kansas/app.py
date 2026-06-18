@@ -29,6 +29,13 @@ ELEVENLABS_VOICE_ID = os.environ.get("ELEVENLABS_VOICE_ID", "4wDRKlxcHNOFO5kBvE8
 ELEVENLABS_MODEL    = os.environ.get("ELEVENLABS_MODEL", "eleven_multilingual_v2").strip()
 GEMINI_MODEL        = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash").strip()
 
+# Supabase — opcional. Si no están seteadas, /feedback no persiste pero NO rompe.
+# (Se cargan como env vars del Space; nunca al repo público.)
+SUPABASE_URL            = os.environ.get("SUPABASE_URL", "").strip().rstrip("/")
+SUPABASE_KEY            = os.environ.get("SUPABASE_SERVICE_KEY", "").strip()
+SUPABASE_FEEDBACK_TABLE = os.environ.get("SUPABASE_FEEDBACK_TABLE", "feedback").strip()
+RESTAURANT_ID           = os.environ.get("RESTAURANT_ID", "la-escaloneta").strip()
+
 GEMINI_GENERATE = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
 GEMINI_STREAM   = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:streamGenerateContent"
 ELEVEN_TTS      = f"https://api.elevenlabs.io/v1/text-to-speech/{ELEVENLABS_VOICE_ID}/stream?optimize_streaming_latency=3"
@@ -1938,6 +1945,187 @@ body.keyboard-open .sol-banner { display: none; }
 body.keyboard-open .topbar { padding: 8px 14px; }
 body.keyboard-open .carta-tabs { padding: 4px 16px 6px; }
 body.keyboard-open .carta-section:last-child { margin-bottom: 20px; }
+
+/* ============================================================
+   NUEVO — mesa, acciones rápidas, pedido, mozo, valoración, modales
+   ============================================================ */
+
+/* Chip de mesa en la topbar */
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
+.table-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 999px;
+  border: 1px solid rgba(201,168,106,0.30);
+  background: rgba(24,18,16,0.85);
+  color: var(--gold); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; font-weight: 700; cursor: pointer; white-space: nowrap;
+  transition: all 200ms ease;
+}
+.table-chip:hover { border-color: var(--gold); background: rgba(36,26,22,0.95); }
+.table-chip b { color: var(--paper); font-weight: 800; }
+
+/* Botón "+" en cada plato */
+.dish-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.dish-add {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 1px solid rgba(201,168,106,0.40);
+  background: rgba(139,28,43,0.18); color: var(--gold);
+  font-size: 17px; line-height: 1; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 160ms ease; flex-shrink: 0;
+}
+.dish-add:hover { background: var(--accent); color: var(--paper); border-color: var(--accent); transform: scale(1.08); }
+.dish-add:active { transform: scale(0.92); }
+.dish-add.in-cart { background: var(--accent); color: var(--paper); border-color: var(--accent); font-size: 12px; }
+
+/* Chips de acción rápida flanqueando el orbe */
+.quick-actions {
+  position: fixed; bottom: 36px; left: 0; right: 0; z-index: 48;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 12px; pointer-events: none;
+}
+.quick-col { display: flex; flex-direction: column; gap: 9px; width: 38%; max-width: 168px; pointer-events: auto; }
+.quick-col.right { align-items: flex-end; }
+.quick-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 12px; border-radius: 15px;
+  border: 1px solid rgba(201,168,106,0.28);
+  background: rgba(24,18,16,0.92); backdrop-filter: blur(6px);
+  color: var(--paper); font-size: 11px; line-height: 1.15; font-weight: 600;
+  text-align: left; box-shadow: 0 8px 22px -12px rgba(0,0,0,0.7);
+  transition: all 180ms ease;
+}
+.quick-chip:hover { border-color: var(--gold); transform: translateY(-2px); }
+.quick-chip:active { transform: scale(0.96); }
+.quick-chip .qi { font-size: 15px; flex-shrink: 0; }
+.quick-actions.hidden { opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity 240ms ease, transform 240ms ease; }
+body.keyboard-open .quick-actions { display: none; }
+
+/* Barra "Ver mi pedido" */
+.cart-bar {
+  position: fixed; left: 50%; bottom: 142px; z-index: 49;
+  transform: translateX(-50%) translateY(20px);
+  display: none; align-items: center; gap: 11px;
+  padding: 11px 18px; border-radius: 999px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-dk));
+  color: var(--paper); font-size: 13px; font-weight: 700; letter-spacing: 0.02em;
+  box-shadow: 0 14px 34px -12px rgba(139,28,43,0.8); cursor: pointer;
+  opacity: 0; transition: opacity 260ms ease, transform 260ms ease;
+}
+.cart-bar.show { display: flex; opacity: 1; transform: translateX(-50%) translateY(0); }
+.cart-bar .cart-count {
+  background: var(--paper); color: var(--accent);
+  border-radius: 999px; min-width: 22px; height: 22px; padding: 0 6px;
+  display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800;
+}
+body.keyboard-open .cart-bar { display: none; }
+
+/* Sheets (pedido / valoración) */
+.sheet-overlay {
+  position: fixed; inset: 0; z-index: 80; background: rgba(8,5,4,0.62);
+  backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity 280ms ease;
+}
+.sheet-overlay.open { opacity: 1; pointer-events: auto; }
+.sheet {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 81;
+  max-height: 88dvh; display: flex; flex-direction: column;
+  background: linear-gradient(180deg, #1B1411, #0E0A07);
+  border-top-left-radius: 22px; border-top-right-radius: 22px;
+  border-top: 1px solid rgba(201,168,106,0.22);
+  box-shadow: 0 -20px 60px -20px rgba(0,0,0,0.8);
+  transform: translateY(102%); transition: transform 320ms cubic-bezier(.2,.7,.2,1);
+}
+.sheet.open { transform: translateY(0); }
+.sheet-handle { width: 42px; height: 4px; border-radius: 999px; background: rgba(201,168,106,0.35); margin: 10px auto 4px; }
+.sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 6px 20px 12px; }
+.sheet-head h3 { font-family: 'Fraunces', serif; font-weight: 400; font-size: 22px; color: var(--gold); margin: 0; }
+.sheet-close { width: 30px; height: 30px; border-radius: 50%; background: rgba(201,168,106,0.12); color: var(--bone); font-size: 15px; display: flex; align-items: center; justify-content: center; }
+.sheet-body { overflow-y: auto; padding: 0 20px 16px; }
+.sheet-foot { padding: 14px 20px calc(18px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(201,168,106,0.12); }
+
+/* Ítems del pedido */
+.order-empty { color: var(--bone-soft); text-align: center; padding: 30px 10px; font-size: 13.5px; line-height: 1.6; }
+.order-item { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px dashed rgba(111,90,75,0.22); }
+.order-item .oi-name { font-family: 'Fraunces', serif; font-size: 16px; color: var(--paper); line-height: 1.2; }
+.order-item .oi-price { font-size: 12px; color: var(--bone-soft); margin-top: 3px; }
+.qty-stepper { display: inline-flex; align-items: center; gap: 10px; }
+.qty-stepper button { width: 28px; height: 28px; border-radius: 50%; border: 1px solid rgba(201,168,106,0.35); color: var(--gold); font-size: 16px; display: flex; align-items: center; justify-content: center; }
+.qty-stepper b { min-width: 18px; text-align: center; color: var(--paper); font-size: 14px; }
+.oi-line { color: var(--gold); font-weight: 700; font-size: 13.5px; min-width: 62px; text-align: right; }
+.order-total { display: flex; justify-content: space-between; align-items: baseline; padding: 16px 0 2px; font-size: 14px; color: var(--bone); }
+.order-total b { font-family: 'Fraunces', serif; font-size: 24px; color: var(--gold); }
+.order-tba { font-size: 11.5px; color: var(--bone-soft); font-style: italic; margin-top: 4px; }
+
+/* Campos de formulario */
+.field { margin: 14px 0 0; }
+.field label { display: block; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; font-weight: 700; }
+.field input {
+  width: 100%; padding: 12px 14px; border-radius: 12px;
+  border: 1px solid rgba(201,168,106,0.25); background: rgba(0,0,0,0.25);
+  color: var(--paper); font-size: 15px;
+}
+.field input:focus { border-color: var(--gold); }
+.field .hint { font-size: 10.5px; color: var(--bone-soft); margin-top: 5px; line-height: 1.4; }
+
+/* Botones grandes */
+.btn-primary, .btn-ghost {
+  width: 100%; padding: 15px; border-radius: 14px; font-size: 14.5px; font-weight: 700;
+  letter-spacing: 0.02em; display: flex; align-items: center; justify-content: center; gap: 9px;
+  transition: all 180ms ease;
+}
+.btn-primary { background: linear-gradient(180deg, var(--accent), var(--accent-dk)); color: var(--paper); box-shadow: 0 12px 30px -12px rgba(139,28,43,0.8); }
+.btn-primary:hover { filter: brightness(1.08); }
+.btn-primary:active { transform: scale(0.98); }
+.btn-primary:disabled { filter: grayscale(0.4) brightness(0.7); }
+.btn-ghost { background: transparent; border: 1px solid rgba(201,168,106,0.35); color: var(--gold); margin-top: 10px; }
+.btn-ghost:hover { background: rgba(201,168,106,0.10); }
+
+/* Cartel para el mozo (pantalla completa) */
+.mozo-card {
+  position: fixed; inset: 0; z-index: 95; background: var(--paper);
+  color: #231a14; display: none; flex-direction: column;
+  padding: 28px 24px calc(24px + env(safe-area-inset-bottom));
+}
+.mozo-card.open { display: flex; }
+.mozo-card .mc-table { font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; color: #8B1C2B; font-weight: 800; margin-bottom: 4px; }
+.mozo-card h2 { font-family: 'Fraunces', serif; font-size: 30px; margin: 0 0 14px; color: #5A1010; }
+.mozo-card .mc-list { flex: 1; overflow-y: auto; }
+.mozo-card .mc-item { display: flex; justify-content: space-between; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(90,16,16,0.15); font-size: 18px; }
+.mozo-card .mc-item .q { color: #8B1C2B; font-weight: 800; }
+.mozo-card .mc-total { display: flex; justify-content: space-between; font-size: 20px; font-weight: 800; padding-top: 14px; color: #5A1010; }
+.mozo-card .mc-foot { margin-top: 18px; }
+.mozo-card .mc-foot .btn-primary { background: linear-gradient(180deg, #8B1C2B, #6E1422); }
+
+/* Valoración con estrellas */
+.rating-intro { text-align: center; color: var(--bone); font-size: 14px; margin: 4px 0 16px; line-height: 1.5; }
+.stars { display: flex; justify-content: center; gap: 8px; margin: 6px 0 4px; }
+.star { font-size: 34px; line-height: 1; color: rgba(201,168,106,0.28); transition: transform 120ms ease, color 120ms ease; cursor: pointer; }
+.star.on { color: var(--gold); }
+.star:active { transform: scale(1.2); }
+.rate-block { margin: 12px 0 6px; padding-bottom: 12px; border-bottom: 1px solid rgba(201,168,106,0.10); }
+.rate-block:last-of-type { border-bottom: 0; }
+.rate-label { text-align: center; color: var(--bone); font-size: 13.5px; margin-bottom: 8px; line-height: 1.4; }
+.rate-cta { margin-top: 10px; display: flex; justify-content: center; }
+.rate-cta[hidden] { display: none; }
+.rate-cta .btn-ghost { width: auto; padding: 11px 18px; margin-top: 0; }
+
+/* Modales centrados (mesa / salida) */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 100; background: rgba(8,5,4,0.7);
+  display: none; align-items: center; justify-content: center; padding: 26px;
+}
+.modal-overlay.open { display: flex; }
+.modal-card {
+  width: 100%; max-width: 340px; background: linear-gradient(180deg, #201712, #14100D);
+  border: 1px solid rgba(201,168,106,0.25); border-radius: 20px; padding: 26px 22px;
+  text-align: center; box-shadow: var(--shadow);
+}
+.modal-card h3 { font-family: 'Fraunces', serif; font-size: 21px; color: var(--paper); margin: 0 0 8px; }
+.modal-card p { color: var(--bone-soft); font-size: 13.5px; margin: 0 0 18px; line-height: 1.5; }
+.modal-actions { display: flex; gap: 10px; }
+.modal-actions button { flex: 1; padding: 13px; border-radius: 12px; font-weight: 700; font-size: 13.5px; }
+.modal-actions .stay { background: linear-gradient(180deg, var(--accent), var(--accent-dk)); color: var(--paper); }
+.modal-actions .leave { background: transparent; border: 1px solid rgba(201,168,106,0.35); color: var(--bone); }
 </style>
 </head>
 <body>
@@ -1968,11 +2156,14 @@ body.keyboard-open .carta-section:last-child { margin-bottom: 20px; }
       La Escaloneta
       <small>Carta viva</small>
     </div>
-    <button class="chat-trigger" id="solChip" data-state="idle" aria-label="Escribile a tu mesera">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 11.5a8.38 8.38 0 01-9 8.4 8.5 8.5 0 01-3.4-.7L3 21l1.8-5.6a8.38 8.38 0 01-.7-3.4 8.5 8.5 0 018.4-9 8.38 8.38 0 019 8.5z"/></svg>
-      <span>Escribile a tu mesera…</span>
-      <small id="solState" hidden></small>
-    </button>
+    <div class="topbar-actions">
+      <button class="table-chip" id="tableChip" aria-label="Tu número de mesa">🍽️ Mesa <b id="tableNum">—</b></button>
+      <button class="chat-trigger" id="solChip" data-state="idle" aria-label="Escribile a tu mesera">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 11.5a8.38 8.38 0 01-9 8.4 8.5 8.5 0 01-3.4-.7L3 21l1.8-5.6a8.38 8.38 0 01-.7-3.4 8.5 8.5 0 018.4-9 8.38 8.38 0 019 8.5z"/></svg>
+        <span>Escribile a tu mesera…</span>
+        <small id="solState" hidden></small>
+      </button>
+    </div>
   </header>
 
   <nav class="carta-tabs" id="cartaTabs" aria-label="Secciones de la carta"></nav>
@@ -2029,6 +2220,135 @@ body.keyboard-open .carta-section:last-child { margin-bottom: 20px; }
 <div class="listening-overlay" id="listenOverlay">Escuchando…</div>
 <div class="toast" id="toast"></div>
 
+<!-- ==================== ACCIONES RÁPIDAS (flanquean el orbe) ==================== -->
+<div class="quick-actions" id="quickActions">
+  <div class="quick-col left">
+    <button class="quick-chip" data-ask="¿Cuál es la especialidad de la casa?"><span class="qi">🔥</span>Especialidad de la casa</button>
+    <button class="quick-chip" data-ask="¿Qué tenés para picar?"><span class="qi">🍢</span>¿Qué hay para picar?</button>
+  </div>
+  <div class="quick-col right">
+    <button class="quick-chip" data-ask="Recomendame un vino"><span class="qi">🍷</span>Recomendame un vino</button>
+    <button class="quick-chip" data-ask="¿Qué postre me recomendás?"><span class="qi">🍰</span>¿Qué postre va bien?</button>
+  </div>
+</div>
+
+<!-- ==================== BARRA "VER MI PEDIDO" ==================== -->
+<button class="cart-bar" id="cartBar" aria-label="Ver mi pedido">
+  <span class="cart-count" id="cartCount">0</span>
+  <span>Ver mi pedido</span>
+  <span id="cartTotalBar"></span>
+</button>
+
+<!-- ==================== PANTALLA DE PEDIDO ==================== -->
+<div class="sheet-overlay" id="orderOverlay"></div>
+<section class="sheet" id="orderSheet" aria-hidden="true">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <h3>Tu pedido</h3>
+    <button class="sheet-close" id="orderClose" aria-label="Cerrar">✕</button>
+  </div>
+  <div class="sheet-body">
+    <div id="orderItems"></div>
+    <div class="order-total"><span>Total estimado</span><b id="orderTotal">$0</b></div>
+    <div class="order-tba" id="orderTba"></div>
+    <div class="field">
+      <label>Número de mesa</label>
+      <input id="orderTable" inputmode="numeric" placeholder="Ej: 5" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>WhatsApp del local (demo)</label>
+      <input id="orderWa" inputmode="tel" placeholder="Ej: 5491122334455" autocomplete="off">
+      <div class="hint">Solo para la demo: con código de país, sin + ni espacios. Cuando el local lo contrate, queda fijo y este campo desaparece.</div>
+    </div>
+  </div>
+  <div class="sheet-foot">
+    <button class="btn-primary" id="orderSend">Realizar pedido</button>
+    <button class="btn-ghost" id="orderShow">Mostrar al mozo</button>
+  </div>
+</section>
+
+<!-- ==================== CARTEL PARA EL MOZO ==================== -->
+<div class="mozo-card" id="mozoCard">
+  <div class="mc-table" id="mcTable"></div>
+  <h2>Pedido</h2>
+  <div class="mc-list" id="mcList"></div>
+  <div class="mc-total"><span>Total estimado</span><span id="mcTotal">$0</span></div>
+  <div class="mc-foot"><button class="btn-primary" id="mozoDone">Listo, pedido tomado</button></div>
+</div>
+
+<!-- ==================== VALORACIÓN ==================== -->
+<div class="sheet-overlay" id="ratingOverlay"></div>
+<section class="sheet" id="ratingSheet" aria-hidden="true">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <h3>¿Cómo te atendió?</h3>
+    <button class="sheet-close" id="ratingClose" aria-label="Cerrar">✕</button>
+  </div>
+  <div class="sheet-body">
+    <p class="rating-intro">Tu pedido ya está en camino 🎉<br>¿Nos dejás tu opinión? Tarda 10 segundos.</p>
+
+    <div class="rate-block">
+      <div class="rate-label">¿Cómo te atendió la mesera virtual?</div>
+      <div class="stars" data-target="mesera">
+        <span class="star" data-v="1">★</span><span class="star" data-v="2">★</span><span class="star" data-v="3">★</span><span class="star" data-v="4">★</span><span class="star" data-v="5">★</span>
+      </div>
+    </div>
+
+    <div class="rate-block">
+      <div class="rate-label">¿Y el restaurante? (la comida y la atención)</div>
+      <div class="stars" data-target="restaurante">
+        <span class="star" data-v="1">★</span><span class="star" data-v="2">★</span><span class="star" data-v="3">★</span><span class="star" data-v="4">★</span><span class="star" data-v="5">★</span>
+      </div>
+      <div class="rate-cta" id="ctaGoogle" hidden>
+        <button class="btn-ghost" id="ctaGoogleBtn">⭐ Dejá tu reseña en Google</button>
+      </div>
+    </div>
+
+    <div class="rate-block">
+      <div class="rate-label">¿Y la experiencia digital de QuantumHive?</div>
+      <div class="stars" data-target="quantumhive">
+        <span class="star" data-v="1">★</span><span class="star" data-v="2">★</span><span class="star" data-v="3">★</span><span class="star" data-v="4">★</span><span class="star" data-v="5">★</span>
+      </div>
+      <div class="rate-cta" id="ctaQh" hidden>
+        <button class="btn-ghost" id="ctaQhBtn">Seguí a QuantumHive</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>¿Algo para mejorar? (opcional)</label>
+      <input id="ratingComment" placeholder="Escribí tu comentario o queja" autocomplete="off">
+    </div>
+  </div>
+  <div class="sheet-foot">
+    <button class="btn-primary" id="ratingSend">Enviar</button>
+  </div>
+</section>
+
+<!-- ==================== MODAL DE MESA ==================== -->
+<div class="modal-overlay" id="tableModal">
+  <div class="modal-card">
+    <h3>¿En qué mesa estás?</h3>
+    <p>Lo encontrás impreso arriba del QR, en tu mesa.</p>
+    <div class="field"><input id="tableInput" inputmode="numeric" placeholder="Número de mesa" autocomplete="off"></div>
+    <div class="modal-actions" style="margin-top:18px;">
+      <button class="leave" id="tableCancel">Cancelar</button>
+      <button class="stay" id="tableSave">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL DE SALIDA ==================== -->
+<div class="modal-overlay" id="exitModal">
+  <div class="modal-card">
+    <h3>¿Seguro que querés salir?</h3>
+    <p>Vas a cerrar la mesera virtual. Si tenés un pedido sin enviar, se va a perder.</p>
+    <div class="modal-actions">
+      <button class="stay" id="exitStay">Quedarme</button>
+      <button class="leave" id="exitLeave">Salir</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ============================================================
 // State
@@ -2057,13 +2377,14 @@ function setSolState(s) {
     idle: 'Mantené apretado',
     listening: 'Escuchando…',
     thinking: 'Pensando…',
-    speaking: 'Hablando',
+    speaking: 'Detener',
   };
   const chipLabels = { idle: '', listening: 'Escuchando', thinking: 'Pensando', speaking: 'Hablando' };
   $('#solState').textContent = chipLabels[s] || '';
   // mini-orb del chip ya no existe — el data-state queda en el ticker por compat
   const lbl = $('#orbLabel');
   if (lbl) lbl.textContent = labels[s] || 'Tocá para hablar';
+  if (typeof toggleQuickActions === 'function') toggleQuickActions();
 }
 
 // Mensajes: viven en la lista de la ventana de chat (#historyList)
@@ -2149,6 +2470,9 @@ $('#splashCta').addEventListener('click', async () => {
 
   $('#splash').classList.add('gone');
   $('#app').classList.add('ready');
+
+  // Armar la guarda de navegación: que "atrás" no expulse de la carta
+  navInit();
 
   // Cargar menú + render
   await loadMenu();
@@ -2259,9 +2583,11 @@ function renderCarta() {
       dish.appendChild(left);
 
       const right = document.createElement('div');
-      right.className = 'price';
+      right.className = 'dish-right';
+      const priceEl = document.createElement('div');
+      priceEl.className = 'price';
       if (it.price !== undefined && it.price !== null) {
-        right.textContent = fmtPrice(it.price);
+        priceEl.textContent = fmtPrice(it.price);
       } else if (it.price_copa !== undefined || it.price_botella !== undefined) {
         const parts = [];
         if (it.price_copa !== undefined && it.price_copa !== null) {
@@ -2270,10 +2596,25 @@ function renderCarta() {
         if (it.price_botella !== undefined && it.price_botella !== null) {
           parts.push(`${fmtPrice(it.price_botella)}<small>Botella</small>`);
         }
-        right.innerHTML = parts.join('<br>');
+        priceEl.innerHTML = parts.join('<br>');
       } else {
-        right.innerHTML = '<span class="price-tba">a confirmar</span>';
+        priceEl.innerHTML = '<span class="price-tba">a confirmar</span>';
       }
+      right.appendChild(priceEl);
+
+      // "+" para sumar al pedido (solo platos con precio único)
+      if (typeof it.price === 'number') {
+        const itemId = sec.id + '|' + it.name;
+        const add = document.createElement('button');
+        add.className = 'dish-add';
+        add.dataset.id = itemId;
+        add.setAttribute('aria-label', 'Agregar ' + it.name + ' al pedido');
+        add.textContent = '+';
+        add.onclick = () => addToCart({ id: itemId, name: it.name, price: it.price });
+        updateDishAdd(add);
+        right.appendChild(add);
+      }
+
       dish.appendChild(right);
       sectionEl.appendChild(dish);
     }
@@ -2308,6 +2649,9 @@ function renderCarta() {
     });
   }, { root: body, rootMargin: '-10% 0px -75% 0px' });
   body.querySelectorAll('.carta-section').forEach(s => observer.observe(s));
+
+  // Reflejar el carrito restaurado (localStorage) en los "+" y la barra
+  if (typeof refreshCartUI === 'function') refreshCartUI();
 }
 
 // ============================================================
@@ -2317,18 +2661,21 @@ $('#solChip').addEventListener('click', () => {
   openHistory(true);  // abre la ventana de chat y enfoca el input
 });
 
-function openHistory(focusInput) {
+function openChatDom(focusInput) {
   renderHistory();
   $('#historyOverlay').classList.add('open');
   $('#historyPanel').classList.add('open');
   $('#historyPanel').setAttribute('aria-hidden', 'false');
   if (focusInput) setTimeout(() => { try { input.focus(); } catch(e){} }, 420);
 }
-function closeHistory() {
+function closeChatDom() {
   $('#historyOverlay').classList.remove('open');
   $('#historyPanel').classList.remove('open');
   $('#historyPanel').setAttribute('aria-hidden', 'true');
 }
+// Integradas con la pila de navegación (que "atrás" cierre el chat, no la página)
+function openHistory(focusInput) { navOpen('chat', () => openChatDom(focusInput)); }
+function closeHistory() { navCloseUI('chat'); }
 $('#historyClose').onclick = closeHistory;
 $('#historyOverlay').onclick = closeHistory;
 
@@ -2556,9 +2903,18 @@ async function playAudioUrl(url, myToken) {
     if (myToken !== state.cancelToken) { URL.revokeObjectURL(url); resolve(); return; }
     const a = new Audio(url);
     state.currentAudio = a;
-    a.onended = () => { URL.revokeObjectURL(url); if (state.currentAudio === a) state.currentAudio = null; resolve(); };
-    a.onerror = () => { URL.revokeObjectURL(url); if (state.currentAudio === a) state.currentAudio = null; resolve(); };
-    a.play().catch(() => resolve());
+    let settled = false;
+    const finish = () => {
+      if (settled) return; settled = true;
+      try { URL.revokeObjectURL(url); } catch(e) {}
+      if (state.currentAudio === a) state.currentAudio = null;
+      resolve();
+    };
+    a.onended = finish;
+    a.onerror = finish;
+    // Cuando "Detener" pausa el audio (stopCurrentAudio), resolvemos para no colgar la cola TTS.
+    a.onpause = () => { if (state.currentAudio !== a) finish(); };
+    a.play().catch(() => finish());
   });
 }
 
@@ -2586,6 +2942,8 @@ if (orbFloat) {
 
   const beginHold = async (e) => {
     e.preventDefault();
+    // Si la mesera está hablando, un toque la DETIENE (no graba).
+    if (orbFloat.dataset.state === 'speaking') { stopSpeaking(); return; }
     if (holding || state.isStreaming) return;
     holding = true;
     orbFloat.classList.add('holding');
@@ -2818,6 +3176,346 @@ function blobToBase64(blob) {
   refreshH();
 })();
 
+// ============================================================
+// NUEVO — navegación por capas, pedido, mozo y valoración
+// ============================================================
+state.cart = (function(){ try { const c = JSON.parse(localStorage.getItem('cv_cart') || '[]'); return Array.isArray(c) ? c : []; } catch(e){ return []; } })();
+state.table = (function(){ try { return localStorage.getItem('cv_table') || ''; } catch(e){ return ''; } })();
+function saveCart(){ try { localStorage.setItem('cv_cart', JSON.stringify(state.cart)); } catch(e){} }
+const _ratings = { mesera: 0, restaurante: 0, quantumhive: 0 };
+// Links de reseña — VACÍOS hasta que el cliente contrate. Completar acá la conexión real
+// (o setear localStorage 'cv_google' / 'cv_qh' para demostrarlo sin tocar código).
+const CV_LINKS = { googleReviewUrl: '', quantumhiveUrl: '' };
+try {
+  CV_LINKS.googleReviewUrl = localStorage.getItem('cv_google') || CV_LINKS.googleReviewUrl;
+  CV_LINKS.quantumhiveUrl  = localStorage.getItem('cv_qh') || CV_LINKS.quantumhiveUrl;
+} catch(e){}
+
+// ---------- Navegación por capas (que "atrás" no expulse) ----------
+const NAV = { armed: false, stack: [], cardOpen: false };
+const NAV_CLOSERS = {
+  chat:   () => closeChatDom(),
+  order:  () => closeOrderDom(),
+  rating: () => closeRatingDom(),
+  mesa:   () => closeMesaDom(),
+};
+function navInit(){
+  if (NAV.armed) return;
+  NAV.armed = true;
+  history.pushState({ cv: 'carta' }, '');   // guarda inicial: el primer "atrás" no abandona
+  window.addEventListener('popstate', onPop);
+}
+function navOpen(name, openFn){
+  if (NAV.stack.includes(name)) { if (openFn) openFn(); return; }
+  if (openFn) openFn();
+  NAV.stack.push(name);
+  history.pushState({ cv: name }, '');
+  toggleQuickActions();
+}
+function navCloseUI(name){ if (NAV.stack.includes(name)) history.back(); }
+function navSwap(from, to, closeFrom, openTo){
+  const i = NAV.stack.lastIndexOf(from);
+  if (i >= 0) NAV.stack[i] = to; else NAV.stack.push(to);
+  if (closeFrom) closeFrom();
+  if (openTo) openTo();
+  toggleQuickActions();
+}
+function onPop(){
+  if (NAV.cardOpen) { closeMozoCardDom(); }
+  else if (NAV.stack.length) { const name = NAV.stack.pop(); (NAV_CLOSERS[name] || (()=>{}))(); }
+  else if (cartaAwayFromHome()) { goHome(); }
+  else { openExitModal(); }
+  history.pushState({ cv: 'carta' }, '');   // siempre dejamos una guarda arriba
+  toggleQuickActions();
+}
+function cartaAwayFromHome(){
+  const body = $('#cartaBody');
+  const firstTab = $('#cartaTabs') ? $('#cartaTabs').querySelector('.tab') : null;
+  const onFirst = firstTab ? firstTab.classList.contains('active') : true;
+  return (body && body.scrollTop > 40) || !onFirst;
+}
+function goHome(){
+  const tabs = $('#cartaTabs');
+  if (tabs) { const ts = tabs.querySelectorAll('.tab'); ts.forEach((x, i) => x.classList.toggle('active', i === 0)); }
+  const body = $('#cartaBody');
+  if (body) body.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ---------- Detener la voz ----------
+function stopSpeaking(){
+  state.cancelToken++;       // invalida la cola TTS y el player
+  stopCurrentAudio();        // pausa el audio actual (dispara onpause → resuelve)
+  setSolState('idle');
+}
+
+// ---------- Carrito ----------
+function cartCount(){ return state.cart.reduce((a, i) => a + i.qty, 0); }
+function cartTotal(){ return state.cart.reduce((a, i) => a + (i.price || 0) * i.qty, 0); }
+function findCart(id){ return state.cart.find(i => i.id === id); }
+function addToCart(item){
+  const ex = findCart(item.id);
+  if (ex) ex.qty++; else state.cart.push({ id: item.id, name: item.name, price: item.price, qty: 1 });
+  saveCart();
+  refreshCartUI();
+  showToast(item.name + ' agregado');
+}
+function changeQty(id, d){
+  const it = findCart(id);
+  if (!it) return;
+  it.qty += d;
+  if (it.qty <= 0) state.cart = state.cart.filter(x => x.id !== id);
+  saveCart();
+  refreshCartUI();
+  renderOrderItems();
+}
+function refreshCartUI(){
+  const n = cartCount();
+  $('#cartCount').textContent = n;
+  $('#cartTotalBar').textContent = cartTotal() ? fmtPrice(cartTotal()) : '';
+  $('#cartBar').classList.toggle('show', n > 0);
+  document.querySelectorAll('.dish-add').forEach(updateDishAdd);
+}
+function updateDishAdd(btn){
+  const it = findCart(btn.dataset.id);
+  btn.classList.toggle('in-cart', !!it);
+  btn.textContent = it ? (it.qty + '×') : '+';
+}
+
+// ---------- Pantalla de pedido ----------
+function openOrderDom(){
+  renderOrderItems();
+  $('#orderTable').value = state.table || '';
+  try { $('#orderWa').value = localStorage.getItem('cv_wa') || ''; } catch(e){}
+  $('#orderOverlay').classList.add('open');
+  $('#orderSheet').classList.add('open');
+  $('#orderSheet').setAttribute('aria-hidden', 'false');
+}
+function closeOrderDom(){
+  $('#orderOverlay').classList.remove('open');
+  $('#orderSheet').classList.remove('open');
+  $('#orderSheet').setAttribute('aria-hidden', 'true');
+}
+function renderOrderItems(){
+  const box = $('#orderItems');
+  box.innerHTML = '';
+  if (!state.cart.length){
+    box.innerHTML = '<div class="order-empty">Tu pedido está vacío.<br>Tocá el “+” en los platos para sumarlos.</div>';
+    $('#orderTotal').textContent = '$0';
+    $('#orderTba').textContent = '';
+    return;
+  }
+  for (const it of state.cart){
+    const row = document.createElement('div');
+    row.className = 'order-item';
+    const info = document.createElement('div');
+    info.innerHTML = '<div class="oi-name"></div>' + (it.price ? '<div class="oi-price">' + fmtPrice(it.price) + ' c/u</div>' : '<div class="oi-price">a confirmar</div>');
+    info.querySelector('.oi-name').textContent = it.name;
+    const step = document.createElement('div');
+    step.className = 'qty-stepper';
+    const minus = document.createElement('button'); minus.textContent = '−'; minus.onclick = () => changeQty(it.id, -1);
+    const q = document.createElement('b'); q.textContent = it.qty;
+    const plus = document.createElement('button'); plus.textContent = '+'; plus.onclick = () => changeQty(it.id, 1);
+    step.appendChild(minus); step.appendChild(q); step.appendChild(plus);
+    const line = document.createElement('div'); line.className = 'oi-line';
+    line.textContent = it.price ? fmtPrice(it.price * it.qty) : '—';
+    row.appendChild(info); row.appendChild(step); row.appendChild(line);
+    box.appendChild(row);
+  }
+  $('#orderTotal').textContent = fmtPrice(cartTotal());
+  const tba = state.cart.filter(i => !i.price).map(i => i.name);
+  $('#orderTba').textContent = tba.length ? ('A confirmar con el mozo: ' + tba.join(', ')) : '';
+}
+function buildOrderMessage(){
+  // Formato pensado para que la cocina/el mozo lo lea rápido.
+  const rname = (state.menu && state.menu.restaurant && state.menu.restaurant.name) || 'Pedido';
+  const sep = '———————————————';
+  const lines = [];
+  lines.push('*' + rname.toUpperCase() + ' — MESA ' + (state.table || '?') + '*');
+  lines.push(sep);
+  for (const it of state.cart){
+    const price = it.price ? fmtPrice(it.price * it.qty) : '(a confirmar)';
+    lines.push(it.qty + 'x ' + it.name + ' — ' + price);
+  }
+  lines.push(sep);
+  if (cartTotal()) lines.push('*TOTAL: ' + fmtPrice(cartTotal()) + '*');
+  return lines.join('\n');
+}
+function realizarPedido(){
+  if (!state.cart.length){ showToast('Tu pedido está vacío'); return; }
+  const mesa = ($('#orderTable').value || '').trim();
+  if (!mesa){ showToast('Decinos tu número de mesa'); $('#orderTable').focus(); return; }
+  state.table = mesa; try { localStorage.setItem('cv_table', mesa); } catch(e){}
+  updateTableChip();
+  const wa = ($('#orderWa').value || '').replace(/[^0-9]/g, '');
+  if (!wa){ showToast('Falta el WhatsApp del local (demo)'); $('#orderWa').focus(); return; }
+  try { localStorage.setItem('cv_wa', wa); } catch(e){}
+  // Sol se despide por voz (en paralelo, no bloquea el envío)
+  solFarewell();
+  const url = 'https://wa.me/' + wa + '?text=' + encodeURIComponent(buildOrderMessage());
+  window.open(url, '_blank');
+  showToast('¡Listo! La mesera ya tomó tu pedido 🎉', 4000);
+  navSwap('order', 'rating', closeOrderDom, openRatingDom);
+}
+
+// Despedida cálida de la mesera al cerrar el pedido (cierre de experiencia).
+function solFarewell(){
+  const text = '¡Excelente elección! Ya le mandé tu comanda a los mozos. Disfrutá la comida.';
+  try {
+    setSolState('speaking');
+    playAudioForText(text, ++state.cancelToken)
+      .then(() => setSolState('idle'))
+      .catch(() => setSolState('idle'));
+  } catch(e) { setSolState('idle'); }
+}
+
+// ---------- Cartel para el mozo ----------
+function openMozoCardDom(){
+  $('#mcTable').textContent = 'Mesa ' + (($('#orderTable').value || state.table || '—').trim() || '—');
+  const list = $('#mcList'); list.innerHTML = '';
+  for (const it of state.cart){
+    const row = document.createElement('div'); row.className = 'mc-item';
+    const left = document.createElement('span');
+    left.innerHTML = '<span class="q"></span> ';
+    left.querySelector('.q').textContent = it.qty + '×';
+    left.appendChild(document.createTextNode(it.name));
+    const rightS = document.createElement('span');
+    rightS.textContent = it.price ? fmtPrice(it.price * it.qty) : 'a confirmar';
+    row.appendChild(left); row.appendChild(rightS);
+    list.appendChild(row);
+  }
+  $('#mcTotal').textContent = cartTotal() ? fmtPrice(cartTotal()) : '—';
+  $('#mozoCard').classList.add('open');
+  NAV.cardOpen = true;
+  toggleQuickActions();
+}
+function closeMozoCardDom(){ $('#mozoCard').classList.remove('open'); NAV.cardOpen = false; }
+function showMozo(){
+  if (!state.cart.length){ showToast('Tu pedido está vacío'); return; }
+  const mesa = ($('#orderTable').value || '').trim();
+  if (mesa){ state.table = mesa; try { localStorage.setItem('cv_table', mesa); } catch(e){} updateTableChip(); }
+  openMozoCardDom();
+}
+function mozoDone(){
+  closeMozoCardDom();
+  navSwap('order', 'rating', closeOrderDom, openRatingDom);
+}
+
+// ---------- Valoración ----------
+function openRatingDom(){
+  _ratings.mesera = 0; _ratings.restaurante = 0; _ratings.quantumhive = 0;
+  paintStars('mesera', 0); paintStars('restaurante', 0); paintStars('quantumhive', 0);
+  document.getElementById('ctaGoogle').hidden = true;
+  document.getElementById('ctaQh').hidden = true;
+  $('#ratingComment').value = '';
+  $('#ratingSend').disabled = false;
+  $('#ratingOverlay').classList.add('open');
+  $('#ratingSheet').classList.add('open');
+  $('#ratingSheet').setAttribute('aria-hidden', 'false');
+}
+function closeRatingDom(){
+  $('#ratingOverlay').classList.remove('open');
+  $('#ratingSheet').classList.remove('open');
+  $('#ratingSheet').setAttribute('aria-hidden', 'true');
+}
+function paintStars(target, v){
+  document.querySelectorAll('#ratingSheet .stars[data-target="' + target + '"] .star')
+    .forEach(s => s.classList.toggle('on', Number(s.dataset.v) <= v));
+}
+function maybeShowCta(id, url){ const el = document.getElementById(id); if (el) el.hidden = !url; }
+async function enviarValoracion(){
+  if (!_ratings.mesera && !_ratings.restaurante && !_ratings.quantumhive){ showToast('Tocá las estrellas para valorar'); return; }
+  const payload = {
+    stars_mesera: _ratings.mesera || null,
+    stars_restaurante: _ratings.restaurante || null,
+    stars_quantumhive: _ratings.quantumhive || null,
+    comment: ($('#ratingComment').value || '').trim() || null,
+    table: state.table || null,
+    order_items: state.cart.map(i => ({ name: i.name, qty: i.qty, price: (i.price === undefined ? null : i.price) })),
+  };
+  // Por ahora queda guardada EN LA CARTA (en el dispositivo). Más tarde → Supabase.
+  try {
+    const arr = JSON.parse(localStorage.getItem('cv_feedback') || '[]');
+    arr.push(Object.assign({ at: new Date().toISOString() }, payload));
+    localStorage.setItem('cv_feedback', JSON.stringify(arr));
+  } catch(e){}
+  // Best-effort al backend (si Supabase está configurado, persiste; si no, no rompe).
+  try { await fetch('/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); } catch(e){}
+  $('#ratingSend').disabled = true;
+  showToast('¡Gracias por tu valoración! 🙏', 3500);
+  state.cart = []; saveCart(); refreshCartUI();
+  navCloseUI('rating');
+}
+
+// ---------- Mesa ----------
+function updateTableChip(){ const el = $('#tableNum'); if (el) el.textContent = state.table ? state.table : '—'; }
+function openMesaDom(){
+  $('#tableInput').value = state.table || '';
+  $('#tableModal').classList.add('open');
+  setTimeout(() => { try { $('#tableInput').focus(); } catch(e){} }, 200);
+}
+function closeMesaDom(){ $('#tableModal').classList.remove('open'); }
+function guardarMesa(){
+  const v = ($('#tableInput').value || '').trim();
+  if (!v){ showToast('Escribí tu número de mesa'); return; }
+  state.table = v; try { localStorage.setItem('cv_table', v); } catch(e){}
+  updateTableChip();
+  const ot = $('#orderTable'); if (ot) ot.value = v;
+  navCloseUI('mesa');
+}
+
+// ---------- Modal de salida ----------
+function openExitModal(){ $('#exitModal').classList.add('open'); }
+function closeExitModal(){ $('#exitModal').classList.remove('open'); }
+
+// ---------- Acciones rápidas ----------
+function quickAsk(text){
+  if (state.isStreaming) return;
+  openHistory(false);
+  converse(text, true);
+}
+function toggleQuickActions(){
+  const qa = $('#quickActions'); if (!qa) return;
+  const orb = $('#orbFloat');
+  const orbState = orb ? orb.dataset.state : 'idle';
+  const busy = NAV.stack.length > 0 || NAV.cardOpen || state.isStreaming || (orbState && orbState !== 'idle');
+  qa.classList.toggle('hidden', !!busy);
+}
+
+// ---------- Wiring ----------
+document.querySelectorAll('.quick-chip').forEach(b => b.addEventListener('click', () => quickAsk(b.dataset.ask)));
+$('#cartBar').addEventListener('click', () => navOpen('order', openOrderDom));
+$('#orderClose').addEventListener('click', () => navCloseUI('order'));
+$('#orderOverlay').addEventListener('click', () => navCloseUI('order'));
+$('#orderSend').addEventListener('click', realizarPedido);
+$('#orderShow').addEventListener('click', showMozo);
+$('#mozoDone').addEventListener('click', mozoDone);
+$('#ratingClose').addEventListener('click', () => navCloseUI('rating'));
+$('#ratingOverlay').addEventListener('click', () => navCloseUI('rating'));
+$('#ratingSend').addEventListener('click', enviarValoracion);
+document.querySelectorAll('#ratingSheet .stars').forEach(group => {
+  const target = group.dataset.target;
+  group.querySelectorAll('.star').forEach(s => s.addEventListener('click', () => {
+    _ratings[target] = Number(s.dataset.v);
+    paintStars(target, _ratings[target]);
+    if (target === 'restaurante') maybeShowCta('ctaGoogle', CV_LINKS.googleReviewUrl);
+    if (target === 'quantumhive') maybeShowCta('ctaQh', CV_LINKS.quantumhiveUrl);
+  }));
+});
+(function(){
+  const cg = document.getElementById('ctaGoogleBtn');
+  if (cg) cg.addEventListener('click', () => { if (CV_LINKS.googleReviewUrl) window.open(CV_LINKS.googleReviewUrl, '_blank'); });
+  const cq = document.getElementById('ctaQhBtn');
+  if (cq) cq.addEventListener('click', () => { if (CV_LINKS.quantumhiveUrl) window.open(CV_LINKS.quantumhiveUrl, '_blank'); });
+})();
+$('#tableChip').addEventListener('click', () => navOpen('mesa', openMesaDom));
+$('#tableSave').addEventListener('click', guardarMesa);
+$('#tableCancel').addEventListener('click', () => navCloseUI('mesa'));
+$('#tableInput').addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); guardarMesa(); } });
+$('#exitStay').addEventListener('click', closeExitModal);
+$('#exitLeave').addEventListener('click', () => { closeExitModal(); location.reload(); });
+updateTableChip();
+refreshCartUI();
+
 </script>
 </body>
 </html>
@@ -3011,6 +3709,16 @@ class STTRequest(BaseModel):
     mime_type: str = "audio/webm"
 
 
+class FeedbackRequest(BaseModel):
+    stars_mesera: Optional[int] = None        # nota a la mesera virtual (producto QuantumHive)
+    stars_restaurante: Optional[int] = None   # nota al restaurante (→ Google Maps a futuro)
+    stars_quantumhive: Optional[int] = None   # nota a la experiencia QuantumHive
+    stars: Optional[int] = None               # compat con clientes viejos (= mesera)
+    comment: Optional[str] = None
+    table: Optional[str] = None
+    order_items: Optional[List[Dict[str, Any]]] = None
+
+
 # ----------------------------------------------------------------------------
 @app.get("/")
 async def root():
@@ -3032,6 +3740,7 @@ async def health():
         "gemini_model": GEMINI_MODEL,
         "eleven_model": ELEVENLABS_MODEL,
         "system_prompt_chars": len(SYSTEM_PROMPT),
+        "supabase_configured": bool(SUPABASE_URL and SUPABASE_KEY),
     }
 
 
@@ -3184,3 +3893,47 @@ async def stt(req: STTRequest):
         except (KeyError, IndexError):
             text = ""
         return {"text": text}
+
+
+# ----------------------------------------------------------------------------
+@app.post("/feedback")
+async def feedback(req: FeedbackRequest):
+    """Guarda la valoración del comensal en Supabase.
+    Tolerante: si Supabase no está configurado o falla, NO rompe la demo
+    (el frontend igual agradece y guarda una copia local en el dispositivo).
+    """
+    def _clamp(v):
+        try:
+            return max(1, min(5, int(v))) if v is not None else None
+        except (TypeError, ValueError):
+            return None
+    row = {
+        "restaurant_id": RESTAURANT_ID,
+        "table_number": (req.table or None),
+        "stars_mesera": _clamp(req.stars_mesera if req.stars_mesera is not None else req.stars),
+        "stars_restaurante": _clamp(req.stars_restaurante),
+        "stars_quantumhive": _clamp(req.stars_quantumhive),
+        "comment": (req.comment or None),
+        "order_items": req.order_items,
+    }
+
+    if not (SUPABASE_URL and SUPABASE_KEY):
+        return {"ok": True, "stored": False, "reason": "supabase_no_configurado"}
+
+    try:
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            r = await client.post(
+                f"{SUPABASE_URL}/rest/v1/{SUPABASE_FEEDBACK_TABLE}",
+                headers={
+                    "apikey": SUPABASE_KEY,
+                    "Authorization": f"Bearer {SUPABASE_KEY}",
+                    "Content-Type": "application/json",
+                    "Prefer": "return=minimal",
+                },
+                json=row,
+            )
+        if r.status_code in (200, 201, 204):
+            return {"ok": True, "stored": True}
+        return {"ok": True, "stored": False, "reason": f"supabase_{r.status_code}", "detail": r.text[:300]}
+    except Exception as e:  # noqa: BLE001 — nunca tirar 500 por el feedback
+        return {"ok": True, "stored": False, "reason": "excepcion", "detail": str(e)[:300]}

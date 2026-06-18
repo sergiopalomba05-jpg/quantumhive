@@ -176,13 +176,23 @@ Total estimado: $XX.XXX
 Al completar el pedido (4.5, por cualquiera de los dos caminos) aparece la capa
 `rating`:
 
-- **⭐⭐⭐⭐⭐ "¿Cómo te atendió la mesera?"** (1–5, requerido).
-- Textarea opcional: quejas / comentarios.
+Tres valoraciones (1–5) en una sola pantalla; al menos una requerida:
+- **La mesera virtual** → interno (feedback del producto QuantumHive).
+- **El restaurante** → si hay link configurado, aparece **"Dejá tu reseña en Google"**
+  (Google Maps del local) para subir su nota. Vacío por ahora; se completa cuando el
+  cliente contrate.
+- **QuantumHive** → reputación de la agencia; mismo esquema (CTA configurable, vacío por ahora).
+- Textarea opcional: quejas / comentarios (privado).
 - Botón **"Enviar"** → `POST /feedback` → muestra *"¡Gracias! 🙏"* y cierra.
 
+Los links (`googleReviewUrl`, `quantumhiveUrl`) viven en un objeto `CV_LINKS` en el front
+(o `localStorage` `cv_google`/`cv_qh` para demo): si están vacíos, el CTA no aparece; al
+completarlos se activa la conexión real. **Sin *review gating*** — el CTA de Google se
+ofrece a todos (cumple las políticas de Google).
+
 **Backend nuevo `POST /feedback` (en `app.py`):**
-- Body: `{ stars:int(1..5), comment:str|null, table:str|null,
-  restaurant_id:str, order_items:list|null }`.
+- Body: `{ stars_mesera, stars_restaurante, stars_quantumhive (int 1..5|null),
+  comment:str|null, table:str|null, order_items:list|null }`.
 - Inserta en Supabase por REST con `httpx`:
   `POST {SUPABASE_URL}/rest/v1/feedback`
   headers: `apikey`, `Authorization: Bearer <service key>`,
@@ -200,7 +210,9 @@ create table if not exists public.feedback (
   created_at timestamptz not null default now(),
   restaurant_id text not null default 'la-escaloneta',
   table_number text,
-  stars int not null check (stars between 1 and 5),
+  stars_mesera int check (stars_mesera between 1 and 5),
+  stars_restaurante int check (stars_restaurante between 1 and 5),
+  stars_quantumhive int check (stars_quantumhive between 1 and 5),
   comment text,
   order_items jsonb
 );
@@ -249,8 +261,9 @@ Cada fase se prueba estable antes de la siguiente. `git push` al cerrar.
 - [ ] "Realizar pedido" (con mesa + número) abre WhatsApp con el pedido y muestra
       el cartel de confirmación dentro de la app.
 - [ ] "Mostrar al mozo" muestra el pedido a pantalla completa.
-- [ ] La encuesta envía a `/feedback` y la fila aparece en la tabla `feedback` de
-      Supabase; si falta config, igual agradece sin romper.
+- [ ] La encuesta toma 3 notas (mesera / restaurante / QuantumHive); el CTA de Google
+      aparece solo si hay link configurado; envía a `/feedback` con las tres y, si falta
+      config de Supabase, igual agradece sin romper.
 
 ## 8. Consideraciones
 
