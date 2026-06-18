@@ -17,7 +17,7 @@ class Config:
     TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN", "")
     TELEGRAM_ADMIN_ID = os.environ.get("TELEGRAM_ADMIN_ID", "")
     GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-    MODEL_CHAT = os.environ.get("MODEL_CHAT", "gemini-3.5-flash")
+    MODEL_CHAT = os.environ.get("MODEL_CHAT", "gemini-2.5-flash")
     MODEL_TTS = os.environ.get("MODEL_TTS", "gemini-3.1-flash-tts-preview")
     TTS_VOICE = os.environ.get("TTS_VOICE", "Aoede")
     MEMORY_DB = os.environ.get("MEMORY_DB", str(CLIENT_DIR / "cata.db"))
