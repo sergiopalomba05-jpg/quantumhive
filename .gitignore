@@ -59,3 +59,13 @@ directimport/db/*.tmp
 
 # graphify (output generado del grafo de conocimiento) — no al repo
 graphify-out/
+
+# Python
+.venv/
+venv/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+# Memoria local del bot (SQLite) — no al repo
+agencia/clientes/*/cata.db
+agencia/clientes/*/*.db
