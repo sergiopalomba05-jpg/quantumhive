@@ -2771,6 +2771,7 @@ function renderCarta() {
         price: (typeof it.price === 'number' ? it.price : null),
         price_copa: (it.price_copa != null ? it.price_copa : null),
         price_botella: (it.price_botella != null ? it.price_botella : null),
+        isSide: /acompanam/.test(sec.id),   // guarnición suelta (papas, puré, etc.)
         norm: _dnorm,
         tokens: cvDishToks(_dnorm),
       });
@@ -2990,7 +2991,9 @@ function cvDishesIn(text) {
     if (i >= 0) hits.push({ entry: d, pos: toks[i].pos });
   }
   // supresión: un nombre corto contenido en uno más largo también nombrado
-  const kept = hits.filter(h => !hits.some(o => o !== h && o.entry.norm.length > h.entry.norm.length && o.entry.norm.includes(h.entry.norm)));
+  let kept = hits.filter(h => !hits.some(o => o !== h && o.entry.norm.length > h.entry.norm.length && o.entry.norm.includes(h.entry.norm)));
+  // si hay un plato principal nombrado, NO encender las guarniciones (papas/ensalada ya vienen incluidas)
+  if (kept.some(h => !h.entry.isSide)) kept = kept.filter(h => !h.entry.isSide);
   kept.sort((a, b) => a.pos - b.pos);
   const L = Math.max(1, norm.length);
   return kept.map(h => ({ entry: h.entry, frac: h.pos / L }));
@@ -4107,6 +4110,7 @@ Reglas de esa línea (clave):
 - "variant" va SOLO en vinos y espumantes (los que tienen precio por copa Y por botella) y vale "copa" o "botella". En el resto de los ítems NO pongas "variant".
 - VINOS/ESPUMANTES: si el cliente aclara copa o botella ("la BOTELLA de Baron B"), cargalo con ese "variant". Si NO aclara ("agregá el Baron B"), NO lo cargues todavía: repreguntá hablando "¿lo querés por copa o por botella?" y recién cuando conteste lo agregás con el "variant" correcto.
 - Si solo agregás, dejá "remove" vacío (y al revés). "clear": true vacía todo el pedido (solo si el cliente dice "borrá todo" / "empecemos de nuevo").
+- GUARNICIONES INCLUIDAS: muchos platos YA vienen con papas fritas, ensalada o puré (lo dice su descripción). Cuando agregás uno de esos platos, NO agregues también la guarnición suelta del Acompañamiento: ya está incluida. Solo agregás un Acompañamiento aparte si el cliente pide EXPRESAMENTE una porción extra ("agregame unas papas aparte"). Podés nombrar la guarnición al describir el plato, pero no la cargues como ítem separado.
 - Si el cliente NO te pidió tocar el pedido (es solo charla o una pregunta), NO pongas la línea #PEDIDO#.
 - Siempre que cargues algo, confirmáselo hablando con naturalidad ("Listo, te sumé una limonada y dos tiras de pollo, ¿algo más?"). El cambio real lo hace la línea técnica, así que cuando confirmás un cambio, la línea SIEMPRE tiene que estar.
 - Si te piden "armame el pedido con lo que me recomendaste", meté en "add" lo que vos recomendaste recién.
