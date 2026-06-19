@@ -988,11 +988,17 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
    SPLASH — sigue siendo épica
    ============================================================ */
 #splash {
-  position: fixed; top: 0; left: 0; right: 0; height: 100dvh; z-index: 90;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; padding: 24px;
+  position: fixed; inset: 0; z-index: 90;
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+  text-align: center; padding: 34px 22px 20px;
   background: var(--ink);
+  overflow-y: auto;   /* si la pantalla es muy baja, scrollea en vez de superponerse */
   transition: opacity 700ms ease, transform 700ms ease;
+}
+/* bloque principal: toma el alto disponible y se centra (se achica solo) */
+.splash-main {
+  flex: 1 1 auto; min-height: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
 #splash::before {
   content: ''; position: absolute; inset: 0;
@@ -1007,7 +1013,7 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
   font-family: 'Fraunces', serif;
   font-weight: 300;
   font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1;
-  font-size: clamp(72px, 18vw, 140px);
+  font-size: min(clamp(60px, 17vw, 140px), 17vh);   /* también limitado por el ALTO */
   line-height: 0.95;
   letter-spacing: -0.04em;
   color: var(--paper);
@@ -1026,9 +1032,9 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
   letter-spacing: 0.42em;
   text-transform: uppercase;
   color: var(--gold);
-  margin: 0 0 56px;
+  margin: 0 0 clamp(22px, 6vh, 56px);
 }
-.splash-orb { width: 88px; height: 88px; margin-bottom: 36px; position: relative; z-index: 2; }
+.splash-orb { width: clamp(64px, 12vh, 88px); height: clamp(64px, 12vh, 88px); margin-bottom: clamp(18px, 4vh, 36px); position: relative; z-index: 2; }
 .splash-cta {
   position: relative; z-index: 2;
   display: inline-flex; align-items: center; gap: 10px;
@@ -1064,8 +1070,9 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 }
 .splash-sub b { color: var(--gold); font-weight: 700; }
 .splash-legal {
-  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-  z-index: 2; width: min(92%, 460px);
+  position: relative; z-index: 2;
+  flex: 0 0 auto;                 /* pie en flujo: nunca se superpone con el contenido */
+  width: min(94%, 460px); margin: 16px auto 0;
   display: flex; gap: 10px; align-items: flex-start; text-align: left;
   padding: 11px 13px; border-radius: 13px;
   border: 1px solid rgba(201,168,106,0.22);
@@ -1078,6 +1085,14 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
   border-radius: 50%; background: var(--accent); color: var(--paper);
   display: inline-flex; align-items: center; justify-content: center;
   font-weight: 800; font-size: 12px; font-family: 'Manrope', sans-serif;
+}
+/* Pantallas bajas: achicar todo para que entre sin tapar nada */
+@media (max-height: 640px) {
+  .splash-mark { font-size: min(clamp(44px, 13vw, 80px), 16vh); }
+  .splash-eyebrow { margin-bottom: 14px; }
+  .splash-orb { width: 58px; height: 58px; margin-bottom: 12px; }
+  .splash-sub { margin-top: 12px; font-size: 13px; }
+  .splash-legal { font-size: 10.3px; padding: 9px 11px; margin-top: 12px; }
 }
 
 /* ============================================================
@@ -2223,20 +2238,22 @@ body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
 
 <!-- ==================== SPLASH ==================== -->
 <div id="splash">
-  <h1 class="splash-mark">La Escaloneta</h1>
-  <div class="splash-rules">
-    <span class="line"></span>
-    <p class="splash-eyebrow">Carta viva</p>
-    <span class="line"></span>
-  </div>
-  <div class="splash-orb">
-    <div class="orb-wrap">
-      <div class="orb-halo"></div>
-      <div class="orb"></div>
+  <div class="splash-main">
+    <h1 class="splash-mark">La Escaloneta</h1>
+    <div class="splash-rules">
+      <span class="line"></span>
+      <p class="splash-eyebrow">Carta viva</p>
+      <span class="line"></span>
     </div>
+    <div class="splash-orb">
+      <div class="orb-wrap">
+        <div class="orb-halo"></div>
+        <div class="orb"></div>
+      </div>
+    </div>
+    <button class="splash-cta" id="splashCta">Tocá para empezar</button>
+    <p class="splash-sub">Te atiende un <b>mozo virtual</b></p>
   </div>
-  <button class="splash-cta" id="splashCta">Tocá para empezar</button>
-  <p class="splash-sub">Te atiende un <b>mozo virtual</b></p>
   <div class="splash-legal">
     <span class="splash-legal-ic" aria-hidden="true">!</span>
     <span>Tu mozo virtual es una <b>guía informativa</b> y puede equivocarse. Ante cualquier
