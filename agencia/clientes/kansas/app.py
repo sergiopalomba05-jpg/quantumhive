@@ -1282,6 +1282,7 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 .chat-trigger:hover { border-color: var(--gold); color: var(--bone); }
 .chat-trigger svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--gold); }
 .chat-trigger span { overflow: hidden; text-overflow: ellipsis; }
+.chat-trigger .ct-short { display: none; }   /* en desktop se ve el texto largo */
 
 /* Tabs — secciones de la carta */
 .carta-tabs {
@@ -1700,23 +1701,30 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
   transition: opacity 300ms ease, border-color 300ms ease;
 }
 
-/* Tooltip arriba del orbe */
+/* Cartel arriba del orbe — visible, invita a hablar */
 .orb-float-label {
   position: absolute;
-  bottom: calc(100% + 12px);
+  bottom: calc(100% + 14px);
   left: 50%; transform: translateX(-50%);
   font-family: 'Manrope', sans-serif;
-  font-size: 10px;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: var(--gold);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--paper);
   white-space: nowrap;
-  opacity: 0.95;
   pointer-events: none;
   font-weight: 600;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.6);
-  transition: opacity 300ms ease;
+  padding: 7px 14px; border-radius: 999px;
+  border: 1px solid rgba(201,168,106,0.40);
+  background: rgba(24,18,16,0.92); backdrop-filter: blur(6px);
+  box-shadow: 0 8px 22px -12px rgba(0,0,0,0.7);
+  opacity: 0;   /* oculto por defecto: no es invasivo */
+  transition: opacity 400ms ease;
 }
+/* el cartel se muestra en estados activos, o como recordatorio tras inactividad */
+.orb-float[data-state="listening"] .orb-float-label,
+.orb-float[data-state="thinking"]  .orb-float-label,
+.orb-float[data-state="speaking"]  .orb-float-label,
+.orb-float.idle-hint .orb-float-label { opacity: 1; }
 
 /* Estados */
 .orb-float[data-state="idle"] .orb-float-ring { opacity: 0.45; }
@@ -1893,7 +1901,8 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
   .topbar { padding: 12px 12px 8px; }
   .sol-chip { padding: 6px 12px 6px 6px; font-size: 11px; }
   .chat-trigger { flex: 0 0 auto; padding: 9px 11px; }
-  .chat-trigger span { display: none; }   /* solo el ícono: no empuja el ancho */
+  .chat-trigger .ct-full { display: none; }     /* en celu: el texto largo no entra */
+  .chat-trigger .ct-short { display: inline; }  /* ...se muestra "Chat" */
   .table-chip { font-size: 9px; padding: 6px 9px; }
   .quick-chip { font-size: 10.5px; padding: 8px 10px; }
   .carta-section h2 { font-size: 27px; }
@@ -1988,6 +1997,25 @@ body.keyboard-open .carta-section:last-child { margin-bottom: 20px; }
 .dish-add:hover { background: var(--accent); color: var(--paper); border-color: var(--accent); }
 .dish-add:active { transform: scale(0.94); }
 .dish-add.in-cart { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+/* Control con stepper: "Agregar" cuando no está, "− N +" cuando ya está en el pedido */
+.dish-add-ctl { display: inline-flex; align-items: center; flex-shrink: 0; }
+.dish-add-ctl[data-in="1"] .dish-add { display: none; }
+.dish-add-ctl[data-in="0"] .qty-ctl { display: none; }
+.qty-ctl {
+  display: inline-flex; align-items: center;
+  border: 1px solid var(--accent); border-radius: 999px;
+  background: rgba(139,28,43,0.16); overflow: hidden;
+}
+.qty-ctl button {
+  width: 32px; height: 30px; color: var(--gold);
+  font-size: 18px; font-weight: 700; line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.qty-ctl button:active { background: var(--accent); color: var(--paper); }
+.qty-ctl .qn {
+  min-width: 24px; text-align: center; color: var(--paper);
+  font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 13.5px;
+}
 
 /* Autoguiado: la mesera resalta y te lleva a lo que va nombrando */
 .dish.guided {
@@ -2274,7 +2302,8 @@ body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
       <button class="table-chip" id="tableChip" aria-label="Tu número de mesa">🍽️ Mesa <b id="tableNum">—</b></button>
       <button class="chat-trigger" id="solChip" data-state="idle" aria-label="Escribile a tu mesera">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 11.5a8.38 8.38 0 01-9 8.4 8.5 8.5 0 01-3.4-.7L3 21l1.8-5.6a8.38 8.38 0 01-.7-3.4 8.5 8.5 0 018.4-9 8.38 8.38 0 019 8.5z"/></svg>
-        <span>Escribile a tu mesera…</span>
+        <span class="ct-full">Escribile a tu mesera…</span>
+        <span class="ct-short">Chat</span>
         <small id="solState" hidden></small>
       </button>
     </div>
@@ -2454,6 +2483,18 @@ body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
   </div>
 </div>
 
+<!-- ==================== MODAL CONFIRMAR (ej: agregar repetido) ==================== -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-card">
+    <h3 id="confirmTitle">¿Agregar otro?</h3>
+    <p id="confirmText"></p>
+    <div class="modal-actions">
+      <button class="stay" id="confirmYes">Sí, agregar</button>
+      <button class="leave" id="confirmNo">No</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ============================================================
 // State
@@ -2474,21 +2515,39 @@ const $ = sel => document.querySelector(sel);
 // ============================================================
 // UI helpers
 // ============================================================
+// Nudge de inactividad: si nadie interactúa por un rato, el orbe recuerda que se puede hablar.
+let _idleTimer = null;
+function cvResetIdleHint() {
+  const orb = $('#orbFloat');
+  if (orb) orb.classList.remove('idle-hint');
+  clearTimeout(_idleTimer);
+  _idleTimer = setTimeout(() => {
+    const o = $('#orbFloat');
+    const cartShown = $('#cartBar') && $('#cartBar').classList.contains('show');
+    if (o && o.dataset.state === 'idle' && !state.isStreaming && !chatPanelOpen() && !cartShown) {
+      o.classList.add('idle-hint');
+    }
+  }, 7000);
+}
+
 function setSolState(s) {
   $('#solChip').dataset.state = s;
   const orb = $('#orbFloat');
   if (orb) orb.dataset.state = s;
   const labels = {
-    idle: 'Mantené apretado',
+    idle: '🎙 Mantené apretado para hablar',
     listening: 'Escuchando…',
     thinking: 'Pensando…',
-    speaking: 'Detener',
+    speaking: 'Tocá para detener',
   };
   const chipLabels = { idle: '', listening: 'Escuchando', thinking: 'Pensando', speaking: 'Hablando' };
   $('#solState').textContent = chipLabels[s] || '';
   // mini-orb del chip ya no existe — el data-state queda en el ticker por compat
   const lbl = $('#orbLabel');
   if (lbl) lbl.textContent = labels[s] || 'Tocá para hablar';
+  // el cartel "mantené apretado" solo aparece tras inactividad, no de entrada
+  if (s === 'idle') { cvResetIdleHint(); }
+  else { clearTimeout(_idleTimer); if (orb) orb.classList.remove('idle-hint'); }
   if (typeof toggleQuickActions === 'function') toggleQuickActions();
 }
 
@@ -2713,15 +2772,9 @@ function renderCarta() {
         priceEl.textContent = fmtPrice(it.price);
         right.appendChild(priceEl);
         const itemId = sec.id + '|' + it.name;
-        const add = document.createElement('button');
-        add.className = 'dish-add';
-        add.dataset.id = itemId;
-        add.setAttribute('aria-label', 'Agregar ' + it.name + ' al pedido');
-        add.textContent = 'Agregar';
-        add.onclick = () => addToCart({ id: itemId, name: it.name, price: it.price });
-        updateDishAdd(add);
-        right.appendChild(add);
-        addBtnEl = add;
+        const ctl = makeAddControl(itemId, it.name, it.price);
+        right.appendChild(ctl);
+        addBtnEl = ctl.querySelector('.dish-add');
       } else if (it.price_copa != null || it.price_botella != null) {
         // Vinos/espumantes: una fila por variante (copa / botella), cada una con su "+"
         const variants = [];
@@ -2735,17 +2788,11 @@ function renderCarta() {
           p.innerHTML = `${fmtPrice(v.price)}<small>${v.tag}</small>`;
           row.appendChild(p);
           const vid = sec.id + '|' + it.name + '|' + v.tag.toLowerCase();
-          const vadd = document.createElement('button');
-          vadd.className = 'dish-add';
-          vadd.dataset.id = vid;
-          vadd.setAttribute('aria-label', 'Agregar ' + it.name + ' (' + v.tag + ') al pedido');
-          vadd.textContent = 'Agregar';
           const vname = it.name + ' (' + v.tag.toLowerCase() + ')';
-          vadd.onclick = () => addToCart({ id: vid, name: vname, price: v.price });
-          updateDishAdd(vadd);
-          row.appendChild(vadd);
+          const vctl = makeAddControl(vid, vname, v.price);
+          row.appendChild(vctl);
           right.appendChild(row);
-          if (!addBtnEl) addBtnEl = vadd;   // para el hint del autoguiado
+          if (!addBtnEl) addBtnEl = vctl.querySelector('.dish-add');   // para el hint del autoguiado
         }
       } else {
         // Sin precio: "a confirmar" (sin botón)
@@ -2825,6 +2872,7 @@ function renderCarta() {
     });
   }
   body.addEventListener('scroll', updateActiveTab, { passive: true });
+  body.addEventListener('scroll', cvResetIdleHint, { passive: true });
   updateActiveTab();
 
   // Reflejar el carrito restaurado (localStorage) en los "+" y la barra
@@ -3768,12 +3816,35 @@ function refreshCartUI(){
   $('#cartCount').textContent = n;
   $('#cartTotalBar').textContent = cartTotal() ? fmtPrice(cartTotal()) : '';
   $('#cartBar').classList.toggle('show', n > 0);
-  document.querySelectorAll('.dish-add').forEach(updateDishAdd);
+  document.querySelectorAll('.dish-add-ctl').forEach(updateAddControl);
 }
-function updateDishAdd(btn){
-  const it = findCart(btn.dataset.id);
-  btn.classList.toggle('in-cart', !!it);
-  btn.textContent = it ? ('En pedido · ' + it.qty) : 'Agregar';
+// Control de cada plato: botón "Agregar"; si ya está en el pedido, stepper "− N +"
+// (así no se apila el carrito con un toque distraído).
+function makeAddControl(id, name, price){
+  const wrap = document.createElement('div');
+  wrap.className = 'dish-add-ctl';
+  wrap.dataset.id = id;
+  const addb = document.createElement('button');
+  addb.className = 'dish-add'; addb.type = 'button'; addb.textContent = 'Agregar';
+  addb.dataset.id = id;
+  addb.setAttribute('aria-label', 'Agregar ' + name + ' al pedido');
+  addb.addEventListener('click', () => addToCart({ id, name, price }));
+  const qc = document.createElement('div');
+  qc.className = 'qty-ctl';
+  qc.innerHTML = '<button class="qm" type="button" aria-label="Quitar uno">−</button>'
+               + '<span class="qn">0</span>'
+               + '<button class="qp" type="button" aria-label="Sumar uno">+</button>';
+  qc.querySelector('.qm').addEventListener('click', () => changeQty(id, -1));
+  qc.querySelector('.qp').addEventListener('click', () => changeQty(id, +1));
+  wrap.appendChild(addb); wrap.appendChild(qc);
+  updateAddControl(wrap);
+  return wrap;
+}
+function updateAddControl(wrap){
+  const it = findCart(wrap.dataset.id);
+  const n = it ? it.qty : 0;
+  wrap.dataset.in = n > 0 ? '1' : '0';
+  const qn = wrap.querySelector('.qn'); if (qn) qn.textContent = n;
 }
 
 // ---------- Pantalla de pedido ----------
@@ -3985,9 +4056,31 @@ function toggleQuickActions(){
 
 // ---------- Wiring ----------
 cvSetChips(null);   // render inicial de los 4 atajos por defecto (con sus listeners)
+// Cualquier interacción reinicia el contador de inactividad (esconde el cartel del orbe)
+['pointerdown', 'keydown'].forEach(ev => document.addEventListener(ev, cvResetIdleHint, { passive: true }));
+// Modal de confirmación genérico (callback en Sí)
+let _confirmCb = null;
+function cvConfirm(text, onYes){
+  _confirmCb = onYes;
+  $('#confirmText').textContent = text;
+  $('#confirmModal').classList.add('open');
+}
+function cvCloseConfirm(){ $('#confirmModal').classList.remove('open'); _confirmCb = null; }
+$('#confirmYes').addEventListener('click', () => { const cb = _confirmCb; cvCloseConfirm(); if (cb) cb(); });
+$('#confirmNo').addEventListener('click', cvCloseConfirm);
+$('#confirmModal').addEventListener('click', (e) => { if (e.target.id === 'confirmModal') cvCloseConfirm(); });
+
+// Botón flotante "Agregar al pedido": si el plato YA está en el pedido, pide confirmación
 $('#addFloat').addEventListener('click', () => {
   const btn = $('#addFloat'), e = btn && btn._entry;
-  if (e) addToCart({ id: e.id, name: e.name, price: e.price });
+  if (!e) return;
+  const ex = findCart(e.id);
+  if (ex) {
+    cvConfirm('Ya tenés ' + ex.qty + ' ' + e.name + ' en el pedido. ¿Agregar otro?',
+              () => addToCart({ id: e.id, name: e.name, price: e.price }));
+  } else {
+    addToCart({ id: e.id, name: e.name, price: e.price });
+  }
 });
 $('#cartBar').addEventListener('click', () => navOpen('order', openOrderDom));
 $('#orderClose').addEventListener('click', () => navCloseUI('order'));
@@ -4111,6 +4204,7 @@ Reglas de esa línea (clave):
 - VINOS/ESPUMANTES: si el cliente aclara copa o botella ("la BOTELLA de Baron B"), cargalo con ese "variant". Si NO aclara ("agregá el Baron B"), NO lo cargues todavía: repreguntá hablando "¿lo querés por copa o por botella?" y recién cuando conteste lo agregás con el "variant" correcto.
 - Si solo agregás, dejá "remove" vacío (y al revés). "clear": true vacía todo el pedido (solo si el cliente dice "borrá todo" / "empecemos de nuevo").
 - GUARNICIONES INCLUIDAS: muchos platos YA vienen con papas fritas, ensalada o puré (lo dice su descripción). Cuando agregás uno de esos platos, NO agregues también la guarnición suelta del Acompañamiento: ya está incluida. Solo agregás un Acompañamiento aparte si el cliente pide EXPRESAMENTE una porción extra ("agregame unas papas aparte"). Podés nombrar la guarnición al describir el plato, pero no la cargues como ítem separado.
+- NO REPITAS lo que ya cargaste: en "add" va SOLO lo nuevo de este pedido. Fijate el historial — si algo ya lo agregaste antes en esta charla, NO lo vuelvas a poner en #PEDIDO# (el sistema lo sumaría de nuevo). Solo lo agregás otra vez si el cliente pide EXPRESAMENTE más cantidad ("sumá otra gaseosa").
 - Si el cliente NO te pidió tocar el pedido (es solo charla o una pregunta), NO pongas la línea #PEDIDO#.
 - Siempre que cargues algo, confirmáselo hablando con naturalidad ("Listo, te sumé una limonada y dos tiras de pollo, ¿algo más?"). El cambio real lo hace la línea técnica, así que cuando confirmás un cambio, la línea SIEMPRE tiene que estar.
 - Si te piden "armame el pedido con lo que me recomendaste", meté en "add" lo que vos recomendaste recién.
