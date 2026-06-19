@@ -36,6 +36,11 @@ SUPABASE_KEY            = os.environ.get("SUPABASE_SERVICE_KEY", "").strip()
 SUPABASE_FEEDBACK_TABLE = os.environ.get("SUPABASE_FEEDBACK_TABLE", "feedback").strip()
 RESTAURANT_ID           = os.environ.get("RESTAURANT_ID", "la-escaloneta").strip()
 
+# Canal INTERNO del pedido al mozo (opcional). Si está configurado, /order
+# manda el pedido por Telegram sin que el comensal salga de la app.
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN", "").strip()
+ORDER_CHAT_ID  = os.environ.get("ORDER_CHAT_ID", "").strip()
+
 GEMINI_GENERATE = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
 GEMINI_STREAM   = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:streamGenerateContent"
 ELEVEN_TTS      = f"https://api.elevenlabs.io/v1/text-to-speech/{ELEVENLABS_VOICE_ID}/stream?optimize_streaming_latency=3"
@@ -99,11 +104,11 @@ EMBEDDED_MENU_JSON = r"""{
     "extras": {
       "panceta_cheeseburger": {
         "amount": 2500,
-        "note": "Adicional para agregar panceta a la Cheeseburger"
+        "note": "Adicional para agregar panceta a la Hamburguesa con Queso"
       },
       "salsa_extra_hot_fudge": {
         "amount": 2500,
-        "note": "Adicional por salsa de chocolate o dulce de leche en Hot Fudge Sundae"
+        "note": "Adicional por salsa de chocolate o dulce de leche en Sundae de Chocolate Caliente"
       }
     },
     "kids_menu": {
@@ -127,19 +132,19 @@ EMBEDDED_MENU_JSON = r"""{
       "items": [
         {
           "id": "spinach_dip",
-          "name": "Chicago Style Spinach Dip",
+          "name": "Dip de Espinaca y Queso",
           "description": "Dip de espinaca con salsa blanca y queso, acompañado con tortilla chips, salsa picante y queso crema",
           "price": 27300
         },
         {
           "id": "chicken_tenders_entrada",
-          "name": "Kansas Chicken Tenders",
+          "name": "Tiras de Pollo Crocante",
           "description": "Lonchas de pollo aderezadas, acompañadas con salsa Honey Mustard",
           "price": 29000
         },
         {
           "id": "kansas_rolls",
-          "name": "Kansas Rolls",
+          "name": "Arrolladitos de Pollo y Verduras",
           "description": "Arrolladitos crocantes de pollo y verduras, condimentados con especias de la casa, servidos con salsa picante y queso",
           "price": 27800
         },
@@ -151,7 +156,7 @@ EMBEDDED_MENU_JSON = r"""{
         },
         {
           "id": "smoked_salmon_entrada",
-          "name": "Smoked Salmon with Homemade Dressing",
+          "name": "Salmón Ahumado con Aderezo de la Casa",
           "description": "Salmón ahumado, acompañado con tostaditas y aderezo del chef",
           "price": 29000
         }
@@ -159,24 +164,24 @@ EMBEDDED_MENU_JSON = r"""{
     },
     {
       "id": "flatbreads",
-      "name": "Flatbreads",
+      "name": "Pizzetas",
       "sharing_surcharge": false,
       "items": [
         {
           "id": "bbq_chicken_flatbread",
-          "name": "Barbecue Chicken Flatbread",
+          "name": "Pizzeta de Pollo BBQ",
           "description": "Pan plano con pollo, quesos mixtos, queso de cabra, cebollas y cilantro, aderezado con barbacoa",
           "price": 32000
         },
         {
           "id": "steak_mushroom_flatbread",
-          "name": "Steak & Mushrooms Flatbread",
+          "name": "Pizzeta de Bife y Hongos",
           "description": "Pan plano con lomo, queso azul, champignones y espinacas",
           "price": 31300
         },
         {
           "id": "shrimp_flatbread",
-          "name": "Shrimp Goat Cheese & Dates Flatbread",
+          "name": "Pizzeta de Camarón, Queso de Cabra y Dátiles",
           "description": "Pan plano con langostinos asados, dátiles, morrones y queso de cabra",
           "price": null,
           "_verify": true,
@@ -191,7 +196,7 @@ EMBEDDED_MENU_JSON = r"""{
       "items": [
         {
           "id": "grilled_chicken_salad",
-          "name": "Grilled Chicken Salad",
+          "name": "Ensalada de Pollo Grillado",
           "description": "Lechugas frescas de estación, repollo, fetas de pollo grilladas y tiritas de tortilla, con Honey Lime Vinaigrette y Peanut Sauce",
           "price": 18000,
           "options": [
@@ -200,13 +205,13 @@ EMBEDDED_MENU_JSON = r"""{
         },
         {
           "id": "mediterranean_salad",
-          "name": "Mediterranean Salad",
+          "name": "Ensalada Mediterránea",
           "description": "Lechugas frescas, queso feta, aceitunas negras, pollo grillado y tiritas de tortilla, con Classic Vinaigrette",
           "price": 18000
         },
         {
           "id": "caesar_salad",
-          "name": "Chicken Caesar Salad",
+          "name": "Ensalada César con Pollo",
           "description": "Lechuga fresca, croutones, pollo rebozado o grillado y queso reggianito con aderezo Caesar",
           "price": 18900,
           "options": [
@@ -216,7 +221,7 @@ EMBEDDED_MENU_JSON = r"""{
         },
         {
           "id": "bistro_salad",
-          "name": "Bistro Salad",
+          "name": "Ensalada Bistró",
           "description": "Mix de lechugas frescas con pollo, queso de cabra, dátiles, palta, almendras tostadas, tomates cherry, croutons de maíz y aderezo cítrico",
           "price": 19300
         }
@@ -229,7 +234,7 @@ EMBEDDED_MENU_JSON = r"""{
       "items": [
         {
           "id": "cheeseburger",
-          "name": "Cheeseburger",
+          "name": "Hamburguesa con Queso",
           "description": "Hamburguesa casera con queso cheddar, lechuga, tomate, pepino y cebolla, acompañada con papas fritas",
           "price": 26800,
           "extras": [
@@ -241,7 +246,7 @@ EMBEDDED_MENU_JSON = r"""{
         },
         {
           "id": "club_sandwich",
-          "name": "Club Sandwich",
+          "name": "Club Sándwich",
           "description": "Sandwich frío de jamón, queso y pollo fileteado con panceta, tomate y lechuga, en pan de trigo con papas fritas",
           "price": 28500
         }
@@ -254,49 +259,49 @@ EMBEDDED_MENU_JSON = r"""{
       "items": [
         {
           "id": "white_rice",
-          "name": "White Rice",
+          "name": "Arroz Blanco",
           "description": "Arroz blanco",
           "price": 11500
         },
         {
           "id": "french_fries",
-          "name": "French Fries",
+          "name": "Papas Fritas",
           "description": "Papas fritas",
           "price": 11500
         },
         {
           "id": "fresh_vegetables",
-          "name": "Fresh Vegetables",
+          "name": "Verduras Salteadas",
           "description": "Vegetales rostizados, brócolis o zucchinis asados a la leña",
           "price": 11500
         },
         {
           "id": "cole_slaw",
-          "name": "Cole Slaw",
+          "name": "Ensalada de Repollo",
           "description": "Ensalada de repollo blanco y colorado con aderezo cole slaw",
           "price": 11500
         },
         {
           "id": "mashed_potato",
-          "name": "Mashed Potato",
+          "name": "Puré de Papa",
           "description": "Puré de papas",
           "price": 12500
         },
         {
           "id": "quinoa_medley",
-          "name": "Quinoa Medley",
+          "name": "Quinoa Salteada",
           "description": "Quinoa tricolor con almendras, granos de maíz y pasas de uva, aderezo de yogur",
           "price": 12500
         },
         {
           "id": "cream_spinach",
-          "name": "Cream Spinach",
+          "name": "Espinaca a la Crema",
           "description": "Espinacas a la crema",
           "price": 12500
         },
         {
           "id": "loaded_baked_potato",
-          "name": "Loaded Baked Potato",
+          "name": "Papa Rellena",
           "description": "Papa rellena con manteca, queso crema, queso cheddar, panceta y cebollines",
           "price": 12500
         }
@@ -310,25 +315,25 @@ EMBEDDED_MENU_JSON = r"""{
       "items": [
         {
           "id": "bbq_ribs",
-          "name": "Houston's Barbecue Ribs 500gr",
-          "description": "Costillar de cerdo asado a fuego lento con salsa barbacoa, acompañado con papas fritas y Cole Slaw",
+          "name": "Costillas BBQ 500gr",
+          "description": "Costillar de cerdo asado a fuego lento con salsa barbacoa, acompañado con papas fritas y Ensalada de Repollo",
           "price": 42000
         },
         {
           "id": "ny_strip",
-          "name": "New York Strip 400gr",
+          "name": "Bife de Chorizo 400gr",
           "description": "Bife de chorizo grillado a la leña, acompañado con papa rellena",
           "price": 53500
         },
         {
           "id": "rib_eye",
-          "name": "Rib Eye Steak 400gr",
+          "name": "Ojo de Bife 400gr",
           "description": "Ojo de bife grillado a la leña, acompañado con papas fritas",
           "price": 56700
         },
         {
           "id": "montreal_steak",
-          "name": "Montreal Steak 400gr",
+          "name": "Bife a las Especias 400gr",
           "description": "Bife de chorizo grillado a la leña con pimientas variadas, acompañado con papas fritas",
           "price": 56700
         },
@@ -340,7 +345,7 @@ EMBEDDED_MENU_JSON = r"""{
         },
         {
           "id": "hawaiian_steak",
-          "name": "Hawaiian Steak 400gr",
+          "name": "Bife a la Hawaiana 400gr",
           "description": "Ojo de bife marinado en salsa de soja, ananá y jengibre, grillado a la leña, acompañado con puré de papas",
           "price": 58900
         }
@@ -354,19 +359,19 @@ EMBEDDED_MENU_JSON = r"""{
       "items": [
         {
           "id": "cilantro_shrimp",
-          "name": "Cilantro Shrimp",
+          "name": "Camarones al Cilantro",
           "description": "Brochette de langostinos grillados a la leña sobre arroz con aceite de cilantro, morrones y cebollines, acompañado con espinaca a la crema",
           "price": 36500
         },
         {
           "id": "grilled_salmon",
-          "name": "Fresh Grilled Salmon 300gr",
+          "name": "Salmón Grillado 300gr",
           "description": "Filet de salmón grillado a la leña, acompañado con papas fritas",
           "price": 42000
         },
         {
           "id": "cedar_salmon",
-          "name": "Cedar Plank Salmon 300gr",
+          "name": "Salmón a la Plancha de Cedro 300gr",
           "description": "Salmón cocido en horno de barro sobre tabla de cedro, pintado con glacé de mostaza, acompañado con papa rellena",
           "price": 44000
         }
@@ -380,25 +385,25 @@ EMBEDDED_MENU_JSON = r"""{
       "items": [
         {
           "id": "grilled_chicken_breast",
-          "name": "Grilled Chicken Breast",
+          "name": "Pechuga de Pollo Grillada",
           "description": "Pechuga de pollo deshuesada grillada a la leña con brócoli al vapor",
           "price": 25800
         },
         {
           "id": "bbq_chicken_main",
-          "name": "Barbecue Chicken",
+          "name": "Pollo BBQ",
           "description": "Pechuga de pollo grillada a la leña con salsa barbacoa, acompañada con papas fritas",
           "price": 26000
         },
         {
           "id": "kansas_chicken_main",
-          "name": "Kansas Chicken",
+          "name": "Pollo de la Casa",
           "description": "Pechuga de pollo grillada a la leña con queso mixto, tomate picado y cebolla de verdeo, acompañada con papas fritas",
           "price": 30000
         },
         {
           "id": "tennessee_chicken",
-          "name": "Tennessee Chicken and Friends",
+          "name": "Pollo Crocante con Guarniciones",
           "description": "Pechuga de pollo grillada a la leña con salsa barbacoa, jamón ahumado y queso, acompañada con papas fritas",
           "price": 31000,
           "_verify": true,
@@ -413,13 +418,13 @@ EMBEDDED_MENU_JSON = r"""{
       "items": [
         {
           "id": "vegetarian_platter",
-          "name": "Vegetarian Platter",
+          "name": "Plato Vegetariano",
           "description": "Zucchinis asados a la leña, quinoa medley, arroz y brócoli",
           "price": 25800
         },
         {
           "id": "thai_pasta",
-          "name": "Chicken Thai Pasta",
+          "name": "Pasta Thai con Pollo",
           "description": "Pasta penne salteada con vegetales, pollo y castañas de cajú en salsa Thai con soja y jengibre",
           "price": 25800,
           "options": [
@@ -429,13 +434,13 @@ EMBEDDED_MENU_JSON = r"""{
         },
         {
           "id": "arizona_pasta",
-          "name": "Arizona Pasta",
+          "name": "Pasta de la Casa",
           "description": "Pasta Penne al dente con salsa Alfredo, pollo, morrones y especias de Arizona",
           "price": 28500
         },
         {
           "id": "smoked_salmon_pasta",
-          "name": "Smoked Salmon Pasta",
+          "name": "Pasta con Salmón Ahumado",
           "description": "Pasta Linguini al dente con salsa de crema, salmón ahumado, vino blanco, morrones y eneldo fresco",
           "price": 28500
         }
@@ -443,31 +448,31 @@ EMBEDDED_MENU_JSON = r"""{
     },
     {
       "id": "kids",
-      "name": "Kids",
+      "name": "Menú Niños",
       "note": "Menú exclusivo para menores de 10 años",
       "sharing_surcharge": false,
       "items": [
         {
           "id": "kid_pasta",
-          "name": "Kid Pasta",
+          "name": "Pasta para Niños",
           "description": "Pasta Fusilli con salsa crema, marinara o rosada",
           "price": 15000
         },
         {
           "id": "kid_cheeseburger",
-          "name": "Kid Cheeseburger",
+          "name": "Hamburguesa para Niños",
           "description": "Hamburguesa casera con queso, servida con papas fritas",
           "price": 17000
         },
         {
           "id": "kid_chicken",
-          "name": "Kid Chicken Tender",
+          "name": "Tiras de Pollo para Niños",
           "description": "Trozos de pollo rebozado, servido con papas fritas",
           "price": 17000
         },
         {
           "id": "kid_ribs",
-          "name": "Kid Barbecue Ribs",
+          "name": "Costillitas BBQ para Niños",
           "description": "Costilla de cerdo estilo Kansas, servida con papas fritas",
           "price": 18000
         }
@@ -475,42 +480,42 @@ EMBEDDED_MENU_JSON = r"""{
     },
     {
       "id": "postres",
-      "name": "Desserts",
+      "name": "Postres",
       "sharing_surcharge": false,
       "items": [
         {
           "id": "carrot_cake",
-          "name": "Carrot Cake",
+          "name": "Torta de Zanahoria",
           "description": "Torta de coco, nueces y canela con cobertura de crema",
           "price": 12400
         },
         {
           "id": "key_lime_pie",
-          "name": "Key Lime Pie",
+          "name": "Tarta de Lima",
           "description": "Deliciosa tarta de lima servida con crema batida",
           "price": 12400
         },
         {
           "id": "going_bananas",
-          "name": "Going Bananas",
+          "name": "Banana Split",
           "description": "Torta tibia de bananas con cobertura de crema de avellanas, salsa de dulce de leche y helado de vainilla",
           "price": 14900
         },
         {
           "id": "kansas_cheesecake",
-          "name": "Kansas Cheesecake",
+          "name": "Cheesecake de la Casa",
           "description": "Cheesecake clásico estilo New York con crema, escamas de chocolate blanco y salsa de frambuesa",
           "price": 17000
         },
         {
           "id": "argentinean_cheesecake",
-          "name": "Argentinean Style Cheesecake",
+          "name": "Cheesecake Argentino",
           "description": "Cheesecake de dulce de leche con crema y salsa de dulce de leche",
           "price": 17000
         },
         {
           "id": "hot_fudge_sundae",
-          "name": "Hot Fudge Sundae",
+          "name": "Sundae de Chocolate Caliente",
           "description": "Helado de vainilla bañado con salsa de chocolate, crema y pecans acarameladas",
           "price": 17500,
           "extras": [
@@ -529,25 +534,25 @@ EMBEDDED_MENU_JSON = r"""{
       "items": [
         {
           "id": "kansas_blend",
-          "name": "Kansas' Blend",
+          "name": "Blend de la Casa",
           "description": "Manzanas asadas, canela, nueces, miel, limón y jengibre",
           "price": 5500
         },
         {
           "id": "kansas_calm",
-          "name": "Kansas Calm",
+          "name": "Calma de la Casa",
           "description": "Cedrón, clementina, manzanas y rosa mosqueta",
           "price": 5500
         },
         {
           "id": "very_berries",
-          "name": "Very Berries",
+          "name": "Frutos Rojos",
           "description": "Moras, arándanos, grosellas y frambuesas",
           "price": 5500
         },
         {
           "id": "thai_wind",
-          "name": "Thai Wind",
+          "name": "Brisa Thai",
           "description": "Té verde con ananá, maracuyá y coco",
           "price": 5500
         },
@@ -597,7 +602,7 @@ EMBEDDED_MENU_JSON = r"""{
         },
         {
           "id": "iced_tea",
-          "name": "Iced Tea",
+          "name": "Té Helado",
           "price": 5000
         },
         {
@@ -695,7 +700,7 @@ EMBEDDED_MENU_JSON = r"""{
     },
     {
       "id": "cocktails",
-      "name": "Cocktails",
+      "name": "Tragos",
       "note": "Selección curada para demo. La carta completa tiene más opciones.",
       "items": [
         {
@@ -767,7 +772,7 @@ EMBEDDED_MENU_JSON = r"""{
     },
     {
       "id": "mocktails",
-      "name": "Mocktails",
+      "name": "Tragos sin Alcohol",
       "note": "Sin alcohol",
       "items": [
         {
@@ -1300,23 +1305,31 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 .carta-body::-webkit-scrollbar-track { background: transparent; }
 .carta-body::-webkit-scrollbar-thumb { background: rgba(139,28,43,0.25); border-radius: 6px; }
 
-.carta-section { margin-bottom: 32px; }
+.carta-section { margin-bottom: 44px; }
 .carta-section:last-child { margin-bottom: 150px; }
 .carta-section h2 {
   font-family: 'Fraunces', serif;
-  font-weight: 400;
-  font-variation-settings: "opsz" 36;
-  font-size: 26px;
-  letter-spacing: -0.01em;
+  font-weight: 500;
+  font-variation-settings: "opsz" 44;
+  font-size: 34px;
+  letter-spacing: -0.015em;
   color: var(--gold);
-  margin: 0 0 4px;
+  margin: 0 0 6px;
 }
 .carta-section .sep {
-  height: 1px;
-  background: linear-gradient(90deg, var(--gold) 0%, transparent 75%);
-  margin: 6px 0 18px;
-  opacity: 0.7;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold) 0%, var(--accent) 35%, transparent 82%);
+  margin: 8px 0 20px;
+  opacity: 0.9;
+  border-radius: 2px;
 }
+/* Reveal del encabezado: se redispara al pasar a una sección nueva (scroll-spy) */
+@keyframes sectionReveal {
+  0%   { opacity: 0; transform: translateY(16px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.carta-section.reveal > h2  { animation: sectionReveal 520ms cubic-bezier(.2,.7,.2,1) both; }
+.carta-section.reveal > .sep { animation: sectionReveal 520ms cubic-bezier(.2,.7,.2,1) both; animation-delay: 90ms; }
 .carta-section .note {
   font-size: 11.5px;
   font-style: italic;
@@ -1685,6 +1698,10 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
   position: absolute; inset: 0;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,240,220,0.9)' stroke-width='1.6' stroke-linecap='round'%3E%3Crect x='9' y='3' width='6' height='11' rx='3'/%3E%3Cpath d='M5 11a7 7 0 0014 0M12 18v3'/%3E%3C/svg%3E") center/36% no-repeat;
 }
+/* Al hablar, el ícono del orbe pasa de micrófono a un cuadrado de "detener" */
+.orb-float[data-state="speaking"] .orb-float-inner::after {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgba(255,240,220,0.95)'%3E%3Crect x='6.5' y='6.5' width='11' height='11' rx='2.5'/%3E%3C/svg%3E") center/30% no-repeat;
+}
 .orb-float-halo {
   position: absolute; inset: -20%;
   border-radius: 50%;
@@ -1891,12 +1908,18 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 
 /* Responsive */
 @media (max-width: 480px) {
-  .brand { font-size: 22px; }
-  .topbar { padding: 12px 14px 8px; }
+  .brand { font-size: 21px; }
+  .topbar { padding: 12px 12px 8px; }
   .sol-chip { padding: 6px 12px 6px 6px; font-size: 11px; }
-  .carta-section h2 { font-size: 22px; }
+  .chat-trigger { flex: 0 0 auto; padding: 9px 11px; }
+  .chat-trigger span { display: none; }   /* solo el ícono: no empuja el ancho */
+  .table-chip { font-size: 9px; padding: 6px 9px; }
+  .quick-chip { font-size: 10.5px; padding: 8px 10px; }
+  .carta-section h2 { font-size: 27px; }
   .dish .name { font-size: 16px; }
 }
+/* Red de seguridad: nada se desborda horizontalmente */
+html, body, #app { max-width: 100vw; overflow-x: hidden; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 100ms !important; }
 }
@@ -1951,7 +1974,10 @@ body.keyboard-open .carta-section:last-child { margin-bottom: 20px; }
    ============================================================ */
 
 /* Chip de mesa en la topbar */
-.topbar-actions { display: flex; align-items: center; gap: 8px; }
+.topbar-actions { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; justify-content: flex-end; }
+.topbar .brand { flex-shrink: 0; }
+.topbar-actions .table-chip { flex-shrink: 0; }
+.topbar-actions .chat-trigger { min-width: 0; }
 .table-chip {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 6px 12px; border-radius: 999px;
@@ -2027,7 +2053,7 @@ body.keyboard-open .cart-bar { display: none; }
 }
 .sheet-overlay.open { opacity: 1; pointer-events: auto; }
 .sheet {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 81;
+  position: fixed; left: 0; right: 0; bottom: var(--kb, 0px); z-index: 81;
   max-height: 88dvh; display: flex; flex-direction: column;
   background: linear-gradient(180deg, #1B1411, #0E0A07);
   border-top-left-radius: 22px; border-top-right-radius: 22px;
@@ -2055,6 +2081,8 @@ body.keyboard-open .cart-bar { display: none; }
 .order-total { display: flex; justify-content: space-between; align-items: baseline; padding: 16px 0 2px; font-size: 14px; color: var(--bone); }
 .order-total b { font-family: 'Fraunces', serif; font-size: 24px; color: var(--gold); }
 .order-tba { font-size: 11.5px; color: var(--bone-soft); font-style: italic; margin-top: 4px; }
+.order-note { font-size: 12px; color: var(--bone-soft); line-height: 1.5; margin-top: 14px; padding: 11px 13px; border: 1px dashed rgba(201,168,106,0.28); border-radius: 10px; }
+.order-note b { color: var(--gold); font-weight: 600; }
 
 /* Campos de formulario */
 .field { margin: 14px 0 0; }
@@ -2115,6 +2143,9 @@ body.keyboard-open .cart-bar { display: none; }
   display: none; align-items: center; justify-content: center; padding: 26px;
 }
 .modal-overlay.open { display: flex; }
+/* Teclado abierto: subir el modal y achicar el sheet para que el campo se vea */
+body.keyboard-open .modal-overlay { align-items: flex-start; padding-top: 16px; }
+body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
 .modal-card {
   width: 100%; max-width: 340px; background: linear-gradient(180deg, #201712, #14100D);
   border: 1px solid rgba(201,168,106,0.25); border-radius: 20px; padding: 26px 22px;
@@ -2255,11 +2286,7 @@ body.keyboard-open .cart-bar { display: none; }
       <label>Número de mesa</label>
       <input id="orderTable" inputmode="numeric" placeholder="Ej: 5" autocomplete="off">
     </div>
-    <div class="field">
-      <label>WhatsApp del local (demo)</label>
-      <input id="orderWa" inputmode="tel" placeholder="Ej: 5491122334455" autocomplete="off">
-      <div class="hint">Solo para la demo: con código de país, sin + ni espacios. Cuando el local lo contrate, queda fijo y este campo desaparece.</div>
-    </div>
+    <div class="order-note">📩 El pedido le llega directo al mozo. <b>(En la versión real se configura el número interno del restaurante — mozo, recepción o cocina.)</b></div>
   </div>
   <div class="sheet-foot">
     <button class="btn-primary" id="orderSend">Realizar pedido</button>
@@ -2479,7 +2506,7 @@ $('#splashCta').addEventListener('click', async () => {
 
   // Saludo de Sol con voz
   setTimeout(async () => {
-    const greeting = state.menu?.assistant?.greeting || '¡Bienvenidos a Kansas!';
+    const greeting = state.menu?.assistant?.greeting || '¡Bienvenidos a La Escaloneta!';
     state.history.push({ role: 'model', text: greeting });
     showBanner(greeting);
     setSolState('speaking');
@@ -2637,18 +2664,37 @@ function renderCarta() {
   houseEl.innerHTML = rulesHtml;
   body.appendChild(houseEl);
 
-  // Detectar sección visible al scrollear (highlight tab)
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        const id = e.target.id;
-        tabs.querySelectorAll('.tab').forEach(t => {
-          t.classList.toggle('active', t.dataset.target === id);
-        });
+  // Scroll-spy: al navegar el menú, resaltar la sección actual y mover la barra
+  let _lastSectionId = null;
+  function updateActiveTab(){
+    const line = body.getBoundingClientRect().top + 90;  // detección cerca del tope
+    let currentId = null;
+    body.querySelectorAll('.carta-section').forEach(s => {
+      if (s.getBoundingClientRect().top <= line) currentId = s.id;
+    });
+    if (!currentId) { const first = body.querySelector('.carta-section'); currentId = first && first.id; }
+    if (!currentId) return;
+    if (currentId !== _lastSectionId) {
+      _lastSectionId = currentId;
+      // redisparar la animación SOLO en la sección a la que entrás
+      const cur = document.getElementById(currentId);
+      if (cur) {
+        body.querySelectorAll('.carta-section.reveal').forEach(s => s.classList.remove('reveal'));
+        void cur.offsetWidth;
+        cur.classList.add('reveal');
+      }
+    }
+    tabs.querySelectorAll('.tab').forEach(t => {
+      const on = t.dataset.target === currentId;
+      t.classList.toggle('active', on);
+      if (on) {
+        const left = t.offsetLeft - (tabs.clientWidth - t.offsetWidth) / 2;
+        tabs.scrollTo({ left: Math.max(0, left), behavior: 'smooth' });
       }
     });
-  }, { root: body, rootMargin: '-10% 0px -75% 0px' });
-  body.querySelectorAll('.carta-section').forEach(s => observer.observe(s));
+  }
+  body.addEventListener('scroll', updateActiveTab, { passive: true });
+  updateActiveTab();
 
   // Reflejar el carrito restaurado (localStorage) en los "+" y la barra
   if (typeof refreshCartUI === 'function') refreshCartUI();
@@ -3139,6 +3185,7 @@ function blobToBase64(blob) {
     const h = visibleHeight();
     const offTop = window.visualViewport ? window.visualViewport.offsetTop : 0;
     const kb = Math.max(0, window.innerHeight - h - offTop);  // alto del teclado
+    document.body.style.setProperty('--kb', kb + 'px');  // para subir sheets/modales
     if (h && h !== lastH) {
       lastH = h;
       appEl.style.height = h + 'px';
@@ -3160,13 +3207,17 @@ function blobToBase64(blob) {
   // POLLING mientras el teclado está abierto — cubre navegadores que no
   // disparan resize (MIUI, Samsung Internet, etc.)
   let kbPoll = null;
-  input.addEventListener('focus', () => {
+  // Delegado a TODOS los inputs/textarea (chat, pedido, valoración, mesa)
+  document.addEventListener('focusin', (e) => {
+    if (!e.target || !e.target.matches || !e.target.matches('input, textarea')) return;
     document.body.classList.add('keyboard-open');
     clearInterval(kbPoll);
     kbPoll = setInterval(refreshH, 150);
     setTimeout(refreshH, 100);
+    setTimeout(() => { try { e.target.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch(_){} }, 320);
   });
-  input.addEventListener('blur', () => {
+  document.addEventListener('focusout', (e) => {
+    if (!e.target || !e.target.matches || !e.target.matches('input, textarea')) return;
     document.body.classList.remove('keyboard-open');
     clearInterval(kbPoll);
     setTimeout(refreshH, 250);
@@ -3285,7 +3336,6 @@ function updateDishAdd(btn){
 function openOrderDom(){
   renderOrderItems();
   $('#orderTable').value = state.table || '';
-  try { $('#orderWa').value = localStorage.getItem('cv_wa') || ''; } catch(e){}
   $('#orderOverlay').classList.add('open');
   $('#orderSheet').classList.add('open');
   $('#orderSheet').setAttribute('aria-hidden', 'false');
@@ -3346,15 +3396,24 @@ function realizarPedido(){
   if (!mesa){ showToast('Decinos tu número de mesa'); $('#orderTable').focus(); return; }
   state.table = mesa; try { localStorage.setItem('cv_table', mesa); } catch(e){}
   updateTableChip();
-  const wa = ($('#orderWa').value || '').replace(/[^0-9]/g, '');
-  if (!wa){ showToast('Falta el WhatsApp del local (demo)'); $('#orderWa').focus(); return; }
-  try { localStorage.setItem('cv_wa', wa); } catch(e){}
-  // Sol se despide por voz (en paralelo, no bloquea el envío)
+  // El pedido viaja INTERNO al backend — el comensal NO sale de la app.
+  enviarPedidoInterno();
+  // Sol se despide por voz (ahora SÍ se escucha, porque seguimos dentro de la app)
   solFarewell();
-  const url = 'https://wa.me/' + wa + '?text=' + encodeURIComponent(buildOrderMessage());
-  window.open(url, '_blank');
   showToast('¡Listo! La mesera ya tomó tu pedido 🎉', 4000);
   navSwap('order', 'rating', closeOrderDom, openRatingDom);
+}
+
+function enviarPedidoInterno(){
+  const payload = {
+    table: state.table || null,
+    total: cartTotal() || null,
+    items: state.cart.map(i => ({ name: i.name, qty: i.qty, price: (i.price === undefined ? null : i.price) })),
+    text: buildOrderMessage(),
+  };
+  try {
+    fetch('/order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+  } catch(e){}
 }
 
 // Despedida cálida de la mesera al cerrar el pedido (cierre de experiencia).
@@ -3568,16 +3627,16 @@ Cuando digas un precio, SIEMPRE en palabras: "veintisiete mil pesos", jamás "$2
 Ejemplos exactos de tu estilo:
 
 Cliente: "recomendame algo rápido y rico"
-Vos: "Los Kansas Chicken Tenders: pollo crocante con salsa honey mustard, salen rápido y no fallan nunca. Para acompañar, una limonada con menta y jengibre va perfecta. Y si después queda lugar, el cheesecake de dulce de leche es el broche de oro."
+Vos: "Los Tiras de Pollo Crocante: pollo crocante con salsa honey mustard, salen rápido y no fallan nunca. Para acompañar, una limonada con menta y jengibre va perfecta. Y si después queda lugar, el cheesecake de dulce de leche es el broche de oro."
 
 Cliente: "¿y cuánto está eso?"
 Vos: "Los tenders están dieciocho mil pesos, la limonada seis mil ochocientos y el cheesecake diecisiete mil. Buen plan completo. ¿Te lo armo así?"
 
 Cliente: "estoy entre el lomo y el salmón, no me decido"
-Vos: "Los dos son de lo mejor de la casa. El Filet Mignon viene a la leña con papa rellena, bien contundente; el Fresh Grilled Salmon es más liviano, con papas fritas. Si venís con hambre de verdad, lomo sin dudar. ¿Te paso los precios o elegís primero y después vemos?"
+Vos: "Los dos son de lo mejor de la casa. El Filet Mignon viene a la leña con papa rellena, bien contundente; el Salmón Grillado es más liviano, con papas fritas. Si venís con hambre de verdad, lomo sin dudar. ¿Te paso los precios o elegís primero y después vemos?"
 
 Cliente: "¿qué vino va con el lomo?"
-Vos: "Un Malbec, de una. El Saint Felicien por botella es el clásico que nunca falla, y por copa el Trapiche Reserva anda bárbaro. Y guardate lugar para el Hot Fudge Sundae de postre, que cierra la noche de diez."
+Vos: "Un Malbec, de una. El Saint Felicien por botella es el clásico que nunca falla, y por copa el Trapiche Reserva anda bárbaro. Y guardate lugar para el Sundae de Chocolate Caliente de postre, que cierra la noche de diez."
 
 Fijate el patrón: recomendación segura con dos o tres opciones máximo, empuje amable al siguiente paso de la comanda (bebida, postre), y los precios solo cuando el cliente los pide o cuando dudás que esté decidido — ahí los ofrecés, no los imponés.
 
@@ -3717,6 +3776,14 @@ class FeedbackRequest(BaseModel):
     comment: Optional[str] = None
     table: Optional[str] = None
     order_items: Optional[List[Dict[str, Any]]] = None
+
+
+class OrderRequest(BaseModel):
+    table: Optional[str] = None
+    whatsapp: Optional[str] = None
+    total: Optional[int] = None
+    items: Optional[List[Dict[str, Any]]] = None
+    text: Optional[str] = None
 
 
 # ----------------------------------------------------------------------------
@@ -3937,3 +4004,24 @@ async def feedback(req: FeedbackRequest):
         return {"ok": True, "stored": False, "reason": f"supabase_{r.status_code}", "detail": r.text[:300]}
     except Exception as e:  # noqa: BLE001 — nunca tirar 500 por el feedback
         return {"ok": True, "stored": False, "reason": "excepcion", "detail": str(e)[:300]}
+
+
+# ----------------------------------------------------------------------------
+@app.post("/order")
+async def order(req: OrderRequest):
+    """Envío INTERNO del pedido al local — el comensal NO sale de la app.
+    Si hay canal configurado (Telegram), manda el pedido; si no, queda recibido.
+    """
+    msg = req.text or f"Pedido — Mesa {req.table or '?'}"
+    sent = False
+    if TELEGRAM_TOKEN and ORDER_CHAT_ID:
+        try:
+            async with httpx.AsyncClient(timeout=15.0) as client:
+                r = await client.post(
+                    f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
+                    json={"chat_id": ORDER_CHAT_ID, "text": msg, "parse_mode": "Markdown"},
+                )
+            sent = r.status_code == 200
+        except Exception:
+            sent = False
+    return {"ok": True, "sent": sent}
