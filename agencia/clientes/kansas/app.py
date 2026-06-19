@@ -1316,6 +1316,51 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
   background: rgba(139,28,43,0.25);
   color: var(--paper);
 }
+/* Botón "☰ Menú" fijo a la izquierda de los tabs */
+.tab-menu {
+  position: sticky; left: 0; z-index: 3; flex-shrink: 0;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800;
+  padding: 7px 14px; border-radius: 999px; margin-right: 4px;
+  color: var(--paper);
+  background: linear-gradient(180deg, var(--accent), var(--accent-dk));
+  box-shadow: 0 4px 12px -3px rgba(139,28,43,0.55);
+}
+.tab-menu .mt-ic { font-size: 13px; line-height: 1; }
+.tab-menu.open { background: linear-gradient(180deg, var(--gold-dk), #8a6e3e); }
+
+/* Menú desplegable — índice de secciones */
+.menu-overlay {
+  position: fixed; inset: 0; z-index: 59;
+  background: rgba(8,5,4,0.45); backdrop-filter: blur(2px);
+  opacity: 0; pointer-events: none; transition: opacity 220ms ease;
+}
+.menu-overlay.open { opacity: 1; pointer-events: auto; }
+.menu-drop {
+  position: fixed; left: 10px; right: 10px; top: 120px; z-index: 60;
+  max-height: 64vh; overflow-y: auto;
+  background: linear-gradient(180deg, rgba(30,22,18,0.98), rgba(20,15,12,0.98));
+  border: 1px solid rgba(201,168,106,0.25); border-radius: 16px;
+  box-shadow: 0 26px 60px -18px rgba(0,0,0,0.78);
+  padding: 8px 8px 12px;
+  opacity: 0; transform: translateY(-10px); pointer-events: none;
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+.menu-drop.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.menu-drop-group {
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold); font-weight: 700; padding: 12px 12px 6px;
+}
+.menu-drop-item {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; text-align: left;
+  padding: 12px 14px; border-radius: 10px;
+  font-family: 'Fraunces', serif; font-size: 16px; color: var(--paper);
+  transition: background 140ms ease;
+}
+.menu-drop-item:hover { background: rgba(201,168,106,0.10); }
+.menu-drop-item.active { background: var(--accent); color: var(--paper); }
+.menu-drop-item.active::after { content: '✓'; color: var(--gold); font-size: 13px; }
 
 /* CARTA — el contenido principal */
 
@@ -2314,6 +2359,10 @@ body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
   <main class="carta-body" id="cartaBody"></main>
 </div>
 
+<!-- ==================== MENÚ DESPLEGABLE (índice de secciones) ==================== -->
+<div class="menu-overlay" id="menuOverlay"></div>
+<div class="menu-drop" id="menuDrop" role="menu" aria-label="Secciones del menú"></div>
+
 <!-- ==================== HISTORIAL OVERLAY (se abre del chip) ==================== -->
 <div class="history-overlay" id="historyOverlay"></div>
 <aside class="history-panel" id="historyPanel" aria-hidden="true">
@@ -2685,12 +2734,12 @@ function renderCarta() {
 
   // Comida
   for (const s of (state.menu.menu || [])) {
-    sections.push({ id: 'sec-' + s.id, title: s.name, items: s.items, note: null });
+    sections.push({ id: 'sec-' + s.id, title: s.name, items: s.items, note: null, group: 'Comida' });
   }
   // Bebidas
   for (const s of (state.menu.drinks || [])) {
     if (s.items) {
-      sections.push({ id: 'sec-' + s.id, title: s.name, items: s.items, note: s.note });
+      sections.push({ id: 'sec-' + s.id, title: s.name, items: s.items, note: s.note, group: 'Bebidas' });
     }
     if (s.subcategories) {
       for (const sub of s.subcategories) {
@@ -2699,10 +2748,19 @@ function renderCarta() {
           title: sub.name + ' (' + s.name.replace('Vinos ', '') + ')',
           items: sub.items,
           note: null,
+          group: 'Bebidas',
         });
       }
     }
   }
+
+  // Botón "☰ Menú" fijo (sticky) — abre el desplegable con todas las secciones
+  const menuTab = document.createElement('button');
+  menuTab.className = 'tab-menu'; menuTab.id = 'menuTab'; menuTab.type = 'button';
+  menuTab.innerHTML = '<span class="mt-ic">☰</span>Menú';
+  menuTab.setAttribute('aria-label', 'Ver todas las secciones del menú');
+  menuTab.onclick = (e) => { e.stopPropagation(); toggleMenuDrop(); };
+  tabs.appendChild(menuTab);
 
   sections.forEach((sec, idx) => {
     // tab
@@ -2827,6 +2885,8 @@ function renderCarta() {
     body.appendChild(sectionEl);
   });
 
+  buildMenuDrop(sections);   // poblar el desplegable "Menú" con todas las secciones
+
   // Reglas de la casa al final
   const rules = state.menu.rules || {};
   const houseEl = document.createElement('div');
@@ -2873,10 +2933,58 @@ function renderCarta() {
   }
   body.addEventListener('scroll', updateActiveTab, { passive: true });
   body.addEventListener('scroll', cvResetIdleHint, { passive: true });
+  state.updateActiveTab = updateActiveTab;   // para refrescar el tab activo tras un salto programático
   updateActiveTab();
 
   // Reflejar el carrito restaurado (localStorage) en los "+" y la barra
   if (typeof refreshCartUI === 'function') refreshCartUI();
+}
+
+// ============================================================
+// Menú desplegable — índice de todas las secciones
+// ============================================================
+function buildMenuDrop(sections){
+  const drop = $('#menuDrop');
+  if (!drop) return;
+  drop.innerHTML = '';
+  let lastGroup = null;
+  for (const sec of sections){
+    if (sec.group !== lastGroup){
+      lastGroup = sec.group;
+      const h = document.createElement('div');
+      h.className = 'menu-drop-group';
+      h.textContent = (sec.group === 'Bebidas' ? '🍷 ' : '🍽 ') + sec.group;
+      drop.appendChild(h);
+    }
+    const row = document.createElement('button');
+    row.className = 'menu-drop-item'; row.type = 'button';
+    row.dataset.target = sec.id;
+    row.textContent = sec.title;
+    row.onclick = () => { closeMenuDrop(); cvScrollToSection(sec.id); };
+    drop.appendChild(row);
+  }
+}
+function openMenuDrop(){
+  const drop = $('#menuDrop'); if (!drop) return;
+  const tabsEl = $('#cartaTabs');
+  if (tabsEl) drop.style.top = Math.round(tabsEl.getBoundingClientRect().bottom + 6) + 'px';
+  // marcar la sección actual (según el tab activo)
+  const cur = $('#cartaTabs .tab.active');
+  const curId = cur && cur.dataset.target;
+  drop.querySelectorAll('.menu-drop-item').forEach(it => it.classList.toggle('active', it.dataset.target === curId));
+  drop.scrollTop = 0;   // abrir siempre desde el tope (Comida primero)
+  drop.classList.add('open');
+  const ov = $('#menuOverlay'); if (ov) ov.classList.add('open');
+  const btn = $('#menuTab'); if (btn) btn.classList.add('open');
+}
+function closeMenuDrop(){
+  const drop = $('#menuDrop'); if (drop) drop.classList.remove('open');
+  const ov = $('#menuOverlay'); if (ov) ov.classList.remove('open');
+  const btn = $('#menuTab'); if (btn) btn.classList.remove('open');
+}
+function toggleMenuDrop(){
+  const drop = $('#menuDrop');
+  (drop && drop.classList.contains('open')) ? closeMenuDrop() : openMenuDrop();
 }
 
 // ============================================================
@@ -3061,9 +3169,16 @@ function cvCategoryIn(text) {
 function cvScrollToSection(id) {
   const el = document.getElementById(id);
   if (!el) return;
-  try { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
   const body = document.getElementById('cartaBody');
-  if (body) body.querySelectorAll('.carta-section.reveal').forEach(s => s.classList.remove('reveal'));
+  if (body) {
+    // posición exacta del top de la sección dentro del contenedor que scrollea
+    const top = body.scrollTop + el.getBoundingClientRect().top - body.getBoundingClientRect().top - 4;
+    body.scrollTo({ top: Math.max(0, top), behavior: 'auto' });
+    body.querySelectorAll('.carta-section.reveal').forEach(s => s.classList.remove('reveal'));
+    if (state.updateActiveTab) state.updateActiveTab();   // refrescar el tab activo / scroll-spy
+  } else {
+    try { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
+  }
   void el.offsetWidth; el.classList.add('reveal');
 }
 
@@ -4058,6 +4173,8 @@ function toggleQuickActions(){
 cvSetChips(null);   // render inicial de los 4 atajos por defecto (con sus listeners)
 // Cualquier interacción reinicia el contador de inactividad (esconde el cartel del orbe)
 ['pointerdown', 'keydown'].forEach(ev => document.addEventListener(ev, cvResetIdleHint, { passive: true }));
+// Menú desplegable: tocar afuera lo cierra
+$('#menuOverlay').addEventListener('click', closeMenuDrop);
 // Modal de confirmación genérico (callback en Sí)
 let _confirmCb = null;
 function cvConfirm(text, onYes){

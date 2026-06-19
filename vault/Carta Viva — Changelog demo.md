@@ -61,6 +61,9 @@ actualizado: 2026-06-18
     **repregunta "¿copa o botella?"**.
 - **Navegación por categoría**: si pedís "mostrame las **gaseosas**", la carta scrollea sola
   a esa sección (gaseosas→Bebidas, postres→Postres, etc.).
+- **Botón "☰ Menú"** (fijo a la izquierda de los tabs): abre un **desplegable con todas las
+  secciones** agrupadas (Comida / Bebidas), con la actual marcada. Tocás una → salta a esa
+  sección y se cierra. Pensado para que la gente lo vea fácil; los tabs que scrollean siguen.
 
 ## ⚖️ Portada y descargo legal (blindaje)
 - En la **portada** se agrandó el subtítulo: **"Te atiende un mozo virtual"**.
