@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "carta-kansas",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "uvicorn", "app:app", "--app-dir", "agencia/clientes/kansas", "--host", "127.0.0.1", "--port", "7860", "--log-level", "warning"],
+      "port": 7860,
+      "autoPort": false
+    }
+  ]
+}

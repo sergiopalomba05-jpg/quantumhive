@@ -38,13 +38,26 @@ actualizado: 2026-06-18
 - Comentario/queja opcional.
 - Guardado local + envío a `POST /feedback` (listo para Supabase a futuro).
 
+## 🤖 La mesera guía y arma el pedido (lo nuevo)
+- **Autoguiado**: mientras la mesera habla, la carta **scrollea sola** hasta cada plato
+  que va nombrando y lo **resalta en dorado** con el cartelito *"✦ Te lo sugirió tu mesera ·
+  tocá + para sumarlo"*. El cliente ve al instante de qué le está hablando.
+  - Detección precisa por tokens contiguos (sin falsos positivos: si dice "Pizzeta de Pollo BBQ"
+    no enciende también el plato "Pollo BBQ").
+- **Carga el pedido por voz/chat**: si el cliente le dice *"agregame una gaseosa"*,
+  *"sumá dos tiras de pollo"*, *"sacá la pizza"*, *"armame el pedido con lo que me recomendaste"*
+  o *"borrá todo"*, la mesera **modifica el carrito de verdad** (antes decía "listo" y no lo hacía).
+  - Lo hace con una línea técnica **invisible** que el cliente nunca ve ni escucha; ella solo
+    confirma hablando ("Listo, te sumé una limonada").
+  - Resuelve el nombre contra la carta real (ej: "coca"/"gaseosa" → "Gaseosa Línea Coca Cola").
+
 ## ⚙️ Backend
 - Endpoint **`/feedback`** tolerante: persiste en Supabase si está configurado; si no, no rompe.
 - Config `SUPABASE_*` por env vars del Space.
 
 ## ✅ Estado
-- Todo en `agencia/clientes/kansas/app.py`, commit `8ac7af9`, pusheado a GitHub.
-- Verificado en navegador real (carrito, pedido, WhatsApp, valoración) — 0 errores.
+- Todo en `agencia/clientes/kansas/app.py`.
+- Verificado en navegador real (autoguiado, carrito por voz, pedido, valoración) — 0 errores.
 
 ---
 

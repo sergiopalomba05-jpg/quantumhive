@@ -2004,6 +2004,40 @@ body.keyboard-open .carta-section:last-child { margin-bottom: 20px; }
 .dish-add:active { transform: scale(0.92); }
 .dish-add.in-cart { background: var(--accent); color: var(--paper); border-color: var(--accent); font-size: 12px; }
 
+/* Autoguiado: la mesera resalta y te lleva a lo que va nombrando */
+.dish.guided {
+  background: rgba(201,168,106,0.09);
+  border-radius: 12px;
+  padding: 12px;
+  margin: 0 -12px;
+  box-shadow: inset 3px 0 0 0 var(--gold);
+  animation: guideGlow 1.5s ease-out 2;
+}
+@keyframes guideGlow {
+  0%   { box-shadow: inset 3px 0 0 0 var(--gold), 0 0 0 0 rgba(201,168,106,0.55); }
+  100% { box-shadow: inset 3px 0 0 0 var(--gold), 0 0 0 14px rgba(201,168,106,0); }
+}
+.dish.guided .name { color: var(--gold); }
+.dish.guided .dish-add {
+  background: var(--accent); color: var(--paper); border-color: var(--accent);
+  animation: guideAddPulse 1.1s ease-in-out infinite;
+}
+@keyframes guideAddPulse {
+  0%, 100% { transform: scale(1);    box-shadow: 0 0 0 0 rgba(201,168,106,0.65); }
+  50%      { transform: scale(1.12); box-shadow: 0 0 0 7px rgba(201,168,106,0); }
+}
+.guide-hint {
+  margin-top: 6px;
+  font-size: 10.5px;
+  letter-spacing: 0.03em;
+  color: var(--gold);
+  font-weight: 600;
+  display: inline-flex; align-items: center; gap: 5px;
+  animation: guideHintIn 320ms ease-out both;
+}
+.guide-hint::before { content: '✦'; font-size: 11px; opacity: 0.9; }
+@keyframes guideHintIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
 /* Chips de acción rápida flanqueando el orbe */
 .quick-actions {
   position: fixed; bottom: 36px; left: 0; right: 0; z-index: 48;
@@ -2536,6 +2570,7 @@ function renderCarta() {
   const body = $('#cartaBody');
   tabs.innerHTML = '';
   body.innerHTML = '';
+  state.dishIndex = [];   // se repuebla abajo, para el autoguiado
 
   const sections = [];
 
@@ -2630,6 +2665,7 @@ function renderCarta() {
       right.appendChild(priceEl);
 
       // "+" para sumar al pedido (solo platos con precio único)
+      let addBtnEl = null;
       if (typeof it.price === 'number') {
         const itemId = sec.id + '|' + it.name;
         const add = document.createElement('button');
@@ -2640,10 +2676,26 @@ function renderCarta() {
         add.onclick = () => addToCart({ id: itemId, name: it.name, price: it.price });
         updateDishAdd(add);
         right.appendChild(add);
+        addBtnEl = add;
       }
 
       dish.appendChild(right);
       sectionEl.appendChild(dish);
+
+      // Índice para el autoguiado (la mesera resalta lo que nombra)
+      const gid = sec.id + '|' + it.name;
+      dish.dataset.gid = gid;
+      const _dnorm = cvNorm(it.name);
+      state.dishIndex.push({
+        id: gid,
+        el: dish,
+        leftEl: left,
+        addBtn: addBtnEl,
+        name: it.name,
+        price: (typeof it.price === 'number' ? it.price : null),
+        norm: _dnorm,
+        tokens: cvDishToks(_dnorm),
+      });
     }
 
     body.appendChild(sectionEl);
@@ -2791,6 +2843,180 @@ async function sendMessage() {
 //   withVoice=true  → respuesta por TTS además de texto
 //   withVoice=false → solo texto (banner + historial)
 // ============================================================
+// ============================================================
+// Autoguiado — la mesera resalta y te lleva a lo que va nombrando
+// ============================================================
+const CV_STOP = new Set([
+  'que','los','las','una','uno','con','del','por','sus','mas','muy','dos','para','pero',
+  'como','tipo','plato','salsa','estilo','nuestro','nuestra','casero','casera','servido',
+  'servida','fresco','fresca','grande','chico','sobre','entre','este','esta','unos','unas'
+]);
+function cvNorm(s) {
+  return (s || '').toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')   // saca acentos (ñ→n)
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+// tokens "fuertes" de un texto normalizado (descarta conectores y palabras genéricas)
+function cvSig(norm) {
+  return norm.split(' ').filter(w => w.length >= 3 && !CV_STOP.has(w));
+}
+function cvDishToks(norm) {
+  const t = cvSig(norm);
+  return t.length ? t : norm.split(' ').filter(Boolean);   // si quedó vacío, usar el nombre entero
+}
+function cvClearGuide() {
+  if (!state.dishIndex) return;
+  for (const d of state.dishIndex) {
+    d.el.classList.remove('guided');
+    const h = d.el.querySelector('.guide-hint');
+    if (h) h.remove();
+  }
+  if (state.guide) state.guide.ids.clear();
+}
+function cvMarkGuided(d) {
+  d.el.classList.add('guided');
+  if (d.leftEl && !d.leftEl.querySelector('.guide-hint')) {
+    const h = document.createElement('div');
+    h.className = 'guide-hint';
+    h.textContent = d.addBtn ? 'Te lo sugirió tu mesera · tocá + para sumarlo' : 'Te lo sugirió tu mesera';
+    d.leftEl.appendChild(h);
+  }
+}
+function cvUnguide(d) {
+  d.el.classList.remove('guided');
+  const h = d.el.querySelector('.guide-hint');
+  if (h) h.remove();
+  state.guide.ids.delete(d.id);
+}
+// Escanea el texto de la mesera y resalta/scrollea cada plato nuevo que nombra.
+// Match: los tokens fuertes del plato aparecen CONTIGUOS (tolera plural) en el texto,
+// así no se encienden platos por palabras sueltas dispersas.
+function cvGuideScan(text) {
+  if (!state.dishIndex || !state.dishIndex.length || !state.guide) return;
+  const R = cvSig(cvNorm(text));
+  if (!R.length) return;
+  const contig = (D) => {
+    if (!D.length || D.length > R.length) return false;
+    for (let i = 0; i + D.length <= R.length; i++) {
+      let ok = true;
+      for (let j = 0; j < D.length; j++) {
+        const rt = R[i + j], dt = D[j];
+        if (rt !== dt && rt !== dt + 's' && dt !== rt + 's') { ok = false; break; }
+      }
+      if (ok) return true;
+    }
+    return false;
+  };
+  const hits = [];
+  for (const d of state.dishIndex) {
+    if (state.guide.ids.has(d.id)) continue;
+    if (contig(d.tokens)) hits.push(d);
+  }
+  // si un nombre corto está contenido en uno más largo también nombrado, quedate con el largo
+  const keep = hits.filter(d => !hits.some(o => o !== d && o.norm.length > d.norm.length && o.norm.includes(d.norm)));
+  let newest = null;
+  for (const d of keep) {
+    // si este plato es superset de uno ya resaltado, apagá el corto
+    for (const o of state.dishIndex) {
+      if (o !== d && state.guide.ids.has(o.id) && d.norm.length > o.norm.length && d.norm.includes(o.norm)) cvUnguide(o);
+    }
+    state.guide.ids.add(d.id);
+    cvMarkGuided(d);
+    newest = d;
+  }
+  if (newest) {
+    const now = Date.now();
+    if (now - state.guide.lastScroll > 850) {          // no saltar como loco
+      state.guide.lastScroll = now;
+      try { newest.el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+    }
+  }
+}
+
+// ============================================================
+// Pedido por voz — la mesera carga/saca/arma el pedido a pedido del cliente
+// Emite una línea técnica invisible:  #PEDIDO# {"add":[...],"remove":[...],"clear":false}
+// ============================================================
+const CV_DIR = '#PEDIDO#';
+// saca la directiva (y un prefijo parcial del centinela al final) del texto hablado/visible
+function cvStripDirective(t) {
+  const i = t.indexOf(CV_DIR);
+  if (i >= 0) return t.slice(0, i);
+  for (let k = CV_DIR.length - 1; k > 0; k--) {       // evita "hablar" un #PED a medio llegar
+    if (t.endsWith(CV_DIR.slice(0, k))) return t.slice(0, t.length - k);
+  }
+  return t;
+}
+// resuelve un nombre suelto contra la carta real (solo ítems con precio único = sumables)
+function cvResolveItem(name) {
+  const q = cvNorm(name);
+  if (!q || !state.dishIndex) return null;
+  const idx = state.dishIndex.filter(d => d.price != null);
+  let hit = idx.find(d => d.norm === q);                          // exacto
+  if (hit) return hit;
+  hit = idx.find(d => d.norm.includes(q) || q.includes(d.norm));  // uno contiene al otro
+  if (hit) return hit;
+  const qt = cvSig(q);                                            // tokens contiguos
+  return idx.find(d => {
+    const D = d.tokens;
+    if (!D.length || D.length > qt.length) return false;
+    for (let i = 0; i + D.length <= qt.length; i++) {
+      let ok = true;
+      for (let j = 0; j < D.length; j++) {
+        const a = qt[i + j], b = D[j];
+        if (a !== b && a !== b + 's' && b !== a + 's') { ok = false; break; }
+      }
+      if (ok) return true;
+    }
+    return false;
+  }) || null;
+}
+function cvCartAdd(entry, qty) {
+  qty = Math.max(1, qty | 0 || 1);
+  const ex = findCart(entry.id);
+  if (ex) ex.qty += qty;
+  else state.cart.push({ id: entry.id, name: entry.name, price: entry.price, qty });
+}
+function cvCartRemove(entry, qty) {
+  const it = findCart(entry.id);
+  if (!it) return;
+  if (qty && qty > 0) { it.qty -= qty; if (it.qty <= 0) state.cart = state.cart.filter(x => x.id !== it.id); }
+  else state.cart = state.cart.filter(x => x.id !== it.id);   // sin qty = sacar todo
+}
+// aplica la directiva del modelo al carrito real. Devuelve {changed, added:[], lastEl}
+function cvApplyOrderDirective(raw) {
+  const res = { changed: false, added: [], lastEl: null };
+  const i = raw.indexOf(CV_DIR);
+  if (i < 0) return res;
+  const m = raw.slice(i + CV_DIR.length).match(/\{[\s\S]*\}/);
+  if (!m) return res;
+  let obj;
+  try { obj = JSON.parse(m[0]); } catch (e) { return res; }
+  if (obj.clear && state.cart.length) { state.cart = []; res.changed = true; }
+  for (const r of (obj.remove || [])) {
+    const nm = typeof r === 'string' ? r : (r && r.name);
+    if (!nm) continue;
+    const e = cvResolveItem(nm);
+    if (e && findCart(e.id)) { cvCartRemove(e, typeof r === 'object' ? r.qty : 0); res.changed = true; }
+  }
+  for (const a of (obj.add || [])) {
+    const nm = typeof a === 'string' ? a : (a && a.name);
+    if (!nm) continue;
+    const qty = (typeof a === 'object' && a.qty) ? a.qty : 1;
+    const e = cvResolveItem(nm);
+    if (e) { cvCartAdd(e, qty); res.added.push(qty > 1 ? (qty + '× ' + e.name) : e.name); res.lastEl = e.el; res.changed = true; }
+  }
+  if (res.changed) {
+    saveCart();
+    refreshCartUI();
+    if (typeof renderOrderItems === 'function') renderOrderItems();
+  }
+  if (res.added.length) showToast('Agregado al pedido: ' + res.added.join(', '));
+  if (res.lastEl) { try { res.lastEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }
+  return res;
+}
+
 async function converse(userText, withVoice) {
   if (!userText) return;
   state.isStreaming = true;
@@ -2798,6 +3024,11 @@ async function converse(userText, withVoice) {
   // cancelar cualquier audio que esté reproduciéndose
   const myToken = ++state.cancelToken;
   stopCurrentAudio();
+
+  // Autoguiado: arrancar limpio para este turno
+  state.guide = state.guide || { ids: new Set(), lastScroll: 0, lastScan: 0 };
+  state.guide.lastScroll = 0; state.guide.lastScan = 0;
+  cvClearGuide();
 
   // registrar turn del usuario + mostrar su burbuja
   state.history.push({ role: 'user', text: userText });
@@ -2809,6 +3040,7 @@ async function converse(userText, withVoice) {
 
   let fullReply = '';
   let sentenceBuffer = '';
+  let spokenLen = 0;          // cuánto del texto VISIBLE ya pasó a TTS (sin la directiva)
   const ttsQueue = [];
   let producerDone = false;
 
@@ -2884,13 +3116,19 @@ async function converse(userText, withVoice) {
             const piece = obj.text || '';
             if (piece) {
               fullReply += piece;
-              sentenceBuffer += piece;
               if (firstChunk) {
                 firstChunk = false;
                 setSolState(withVoice ? 'speaking' : 'idle');
               }
-              updateBanner(fullReply);
+              // separar lo VISIBLE/hablado de la directiva técnica del pedido
+              const visible = cvStripDirective(fullReply);
+              const added = visible.slice(spokenLen);
+              if (added) { sentenceBuffer += added; spokenLen = visible.length; }
+              updateBanner(visible);
               flushSentences(false);
+              // Autoguiado: escanear lo visible (acotado para no recalcular en cada token)
+              const _gt = Date.now();
+              if (_gt - state.guide.lastScan > 260) { state.guide.lastScan = _gt; cvGuideScan(visible); }
             }
           } catch(e) {}
         } else if (event === 'error') {
@@ -2905,9 +3143,18 @@ async function converse(userText, withVoice) {
   }
 
   producerDone = true;
+  const finalVisible = cvStripDirective(fullReply).trim();
+  cvGuideScan(finalVisible);              // pasada final del autoguiado
+  const order = cvApplyOrderDirective(fullReply);   // aplicar add/remove/clear al carrito real
 
-  if (fullReply.trim()) {
-    state.history.push({ role: 'model', text: fullReply.trim() });
+  // si solo vino la orden sin texto hablado, dejar una confirmación mínima
+  let toStore = finalVisible;
+  if (!toStore && order.changed) {
+    toStore = '¡Listo, te actualicé el pedido!';
+    updateBotBubble(toStore);
+  }
+  if (toStore) {
+    state.history.push({ role: 'model', text: toStore });
     if (state.history.length > 20) state.history = state.history.slice(-20);
   }
 
@@ -3649,6 +3896,27 @@ REGLAS DURAS:
 - Si piden TODA la carta: "la tenés completa en pantalla — decime de qué tenés ganas y te tiro la posta".
 
 Tu carta completa con todos los precios está abajo (para cuando te los pidan).""")
+    lines.append("")
+
+    # Cargar / modificar el pedido (directiva técnica invisible)
+    lines.append("""ARMAR Y MODIFICAR EL PEDIDO — MUY IMPORTANTE:
+Vos misma cargás el pedido del cliente. Cuando te pida sumar, sacar o armar el pedido —ejemplos: "agregame una gaseosa", "sumá dos tiras de pollo", "sacá la pizza", "armame el pedido con lo que me recomendaste", "cambiá la coca por agua", "borrá todo"— además de contestarle hablando normal, agregás AL FINAL de tu respuesta UNA SOLA línea técnica con este formato EXACTO:
+
+#PEDIDO# {"add":[{"name":"<nombre EXACTO de la carta>","qty":<numero>}],"remove":[{"name":"<nombre EXACTO>","qty":<numero, o 0 para sacar todo>}],"clear":false}
+
+Reglas de esa línea (clave):
+- Va SOLA, al final, en su propio renglón, arrancando con #PEDIDO#. Es INVISIBLE para el cliente: NUNCA la leas en voz alta ni la menciones. El cliente solo escucha tu confirmación hablada.
+- "name" tiene que ser el nombre EXACTO como figura en la carta de abajo (mismas palabras; podés omitir tildes). No inventes nombres.
+- Solo cargás ítems con UN precio fijo (entradas, platos, postres, gaseosas, cervezas, etc.). Los vinos por copa/botella NO se cargan: recomendalos hablando, pero no los pongas en #PEDIDO#.
+- Si solo agregás, dejá "remove" vacío (y al revés). "clear": true vacía todo el pedido (solo si el cliente dice "borrá todo" / "empecemos de nuevo").
+- Si el cliente NO te pidió tocar el pedido (es solo charla o una pregunta), NO pongas la línea #PEDIDO#.
+- Siempre que cargues algo, confirmáselo hablando con naturalidad ("Listo, te sumé una limonada y dos tiras de pollo, ¿algo más?"). El cambio real lo hace la línea técnica, así que cuando confirmás un cambio, la línea SIEMPRE tiene que estar.
+- Si te piden "armame el pedido con lo que me recomendaste", meté en "add" lo que vos recomendaste recién.
+
+Ejemplo (la última línea el cliente NO la ve ni la escucha):
+Cliente: "agregame una gaseosa y dos tiras de pollo"
+Vos: "¡Hecho! Te sumé una Coca-Cola y dos porciones de Tiras de Pollo Crocante. ¿Te tiro algún postre para cerrar?
+#PEDIDO# {"add":[{"name":"Coca-Cola","qty":1},{"name":"Tiras de Pollo Crocante","qty":2}],"remove":[],"clear":false}\"""")
     lines.append("")
 
     # Reglas finas
