@@ -40,19 +40,26 @@ actualizado: 2026-06-18
 - Guardado local + envío a `POST /feedback` (listo para Supabase a futuro).
 
 ## 🤖 La mesera guía y arma el pedido (lo nuevo)
-- **Autoguiado**: mientras la mesera habla, la carta **scrollea sola** hasta cada plato
-  que va nombrando y lo **resalta en dorado** con el cartelito *"✦ Te lo sugirió tu mesera ·
-  tocá + para sumarlo"*. El cliente ve al instante de qué le está hablando.
+- **Spotlight por voz (la carta es el escenario)**: sacamos el banner de texto. Mientras la
+  mesera habla, la carta queda limpia y un **resaltado dorado se mueve plato por plato,
+  al ritmo de su voz** — enciende cada plato justo cuando lo nombra y avanza al siguiente
+  (cronometrado contra el audio de cada frase, no se queda clavado).
   - Detección precisa por tokens contiguos (sin falsos positivos: si dice "Pizzeta de Pollo BBQ"
-    no enciende también el plato "Pollo BBQ").
-  - Los **4 atajos** (especialidad, picar, vino, postre) y el **orbe de voz** ya **no abren el chat**:
-    la carta queda visible y la mesera habla en un **banner arriba** mientras te guía por la carta.
-- **Carga el pedido por voz/chat**: si el cliente le dice *"agregame una gaseosa"*,
-  *"sumá dos tiras de pollo"*, *"sacá la pizza"*, *"armame el pedido con lo que me recomendaste"*
-  o *"borrá todo"*, la mesera **modifica el carrito de verdad** (antes decía "listo" y no lo hacía).
-  - Lo hace con una línea técnica **invisible** que el cliente nunca ve ni escucha; ella solo
-    confirma hablando ("Listo, te sumé una limonada").
-  - Resuelve el nombre contra la carta real (ej: "coca"/"gaseosa" → "Gaseosa Línea Coca Cola").
+    no enciende también "Pollo BBQ").
+  - Los **4 atajos** y el **orbe de voz** ya **no abren el chat**: la carta queda visible.
+- **Botón "Agregar al pedido"**: el "+" de cada plato pasó a una pastilla **"Agregar"** (más
+  clara). Y mientras el spotlight está sobre un plato, abajo aparece un botón grande
+  **"Agregar al pedido · [plato]"** que sigue al spotlight.
+- **Sugerencias contextuales**: al terminar de hablar, los 4 atajos se vuelven **sugerencias
+  que propone la mesera** ("¿Y para tomar?", "Un postre rico"…) según lo que venías hablando.
+- **Carga el pedido por voz/chat**: *"agregame una gaseosa"*, *"sacá la pizza"*, *"armame el
+  pedido con lo que me recomendaste"*, *"borrá todo"* → la mesera **modifica el carrito de
+  verdad** (con una línea técnica invisible; ella solo confirma hablando).
+  - Resuelve el nombre contra la carta real ("coca"/"gaseosa" → "Gaseosa Línea Coca Cola").
+  - **Vinos por voz**: si aclarás "la **botella** de Baron B" lo agrega; si no aclarás,
+    **repregunta "¿copa o botella?"**.
+- **Navegación por categoría**: si pedís "mostrame las **gaseosas**", la carta scrollea sola
+  a esa sección (gaseosas→Bebidas, postres→Postres, etc.).
 
 ## ⚖️ Portada y descargo legal (blindaje)
 - En la **portada** se agrandó el subtítulo: **"Te atiende un mozo virtual"**.
