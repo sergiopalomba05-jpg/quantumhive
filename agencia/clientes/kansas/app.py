@@ -1449,7 +1449,7 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 .sol-banner {
   position: fixed; left: 14px; right: 14px;
   top: 80px;
-  z-index: 8;
+  z-index: 12;   /* por encima de #app (z-10), si no la carta lo tapa */
   padding: 14px 18px 14px 22px;
   background: linear-gradient(180deg, rgba(40,28,22,0.97), rgba(28,20,16,0.97));
   color: var(--paper);
@@ -2546,10 +2546,29 @@ function updateBotBubble(text) {
 }
 function endBotBubble() { _currentBotBubble = null; }
 
-// Compat
-function showBanner(text) { startBotBubble(); updateBotBubble(text); endBotBubble(); }
-function updateBanner(text) { updateBotBubble(text); }
-function hideBanner(delay) { endBotBubble(); }
+// ----- Banner de la mesera sobre la carta (cuando el chat está cerrado) -----
+let _solBannerTimer = null;
+function chatPanelOpen() { return $('#historyPanel').classList.contains('open'); }
+function showSolBanner(text) {
+  if (_solBannerTimer) { clearTimeout(_solBannerTimer); _solBannerTimer = null; }
+  $('#solBannerBody').textContent = text || '';
+  $('#solBanner').classList.add('show');
+}
+function hideSolBanner() {
+  if (_solBannerTimer) { clearTimeout(_solBannerTimer); _solBannerTimer = null; }
+  $('#solBanner').classList.remove('show');
+}
+function scheduleSolBannerHide(ms) {
+  if (_solBannerTimer) clearTimeout(_solBannerTimer);
+  _solBannerTimer = setTimeout(() => $('#solBanner').classList.remove('show'), ms || 0);
+}
+// El texto vivo de la mesera va al historial y, si el chat está cerrado, al banner sobre la carta
+function showBanner(text) { if (!chatPanelOpen()) showSolBanner(text); }   // estado transitorio (ej. "Transcribiendo…")
+function updateBanner(text) {
+  updateBotBubble(text);
+  if (chatPanelOpen()) hideSolBanner(); else showSolBanner(text);
+}
+function hideBanner(delay) { endBotBubble(); scheduleSolBannerHide(delay || 0); }
 
 function showToast(text, ms = 3000) {
   const t = $('#toast');
@@ -2820,6 +2839,7 @@ $('#solChip').addEventListener('click', () => {
 });
 
 function openChatDom(focusInput) {
+  hideSolBanner();   // el texto ya vive en el panel
   renderHistory();
   $('#historyOverlay').classList.add('open');
   $('#historyPanel').classList.add('open');
@@ -3097,6 +3117,7 @@ async function converse(userText, withVoice) {
   setSolState('thinking');
   startBotBubble();
   updateBotBubble('…');
+  if (!chatPanelOpen()) showSolBanner('…');   // feedback inmediato sobre la carta
 
   let fullReply = '';
   let sentenceBuffer = '';
@@ -3225,6 +3246,7 @@ async function converse(userText, withVoice) {
   state.isStreaming = false;
   setSolState('idle');
   endBotBubble();
+  if (!chatPanelOpen()) scheduleSolBannerHide(9000);   // el banner se va solo tras unos segundos
 }
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
@@ -3836,8 +3858,7 @@ function closeExitModal(){ $('#exitModal').classList.remove('open'); }
 // ---------- Acciones rápidas ----------
 function quickAsk(text){
   if (state.isStreaming) return;
-  openHistory(false);
-  converse(text, true);
+  converse(text, true);   // voz + autoguiado sobre la carta, sin abrir el chat (la mesera habla en el banner de arriba)
 }
 function toggleQuickActions(){
   const qa = $('#quickActions'); if (!qa) return;

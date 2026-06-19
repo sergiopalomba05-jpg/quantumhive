@@ -44,6 +44,8 @@ actualizado: 2026-06-18
   tocá + para sumarlo"*. El cliente ve al instante de qué le está hablando.
   - Detección precisa por tokens contiguos (sin falsos positivos: si dice "Pizzeta de Pollo BBQ"
     no enciende también el plato "Pollo BBQ").
+  - Los **4 atajos** (especialidad, picar, vino, postre) y el **orbe de voz** ya **no abren el chat**:
+    la carta queda visible y la mesera habla en un **banner arriba** mientras te guía por la carta.
 - **Carga el pedido por voz/chat**: si el cliente le dice *"agregame una gaseosa"*,
   *"sumá dos tiras de pollo"*, *"sacá la pizza"*, *"armame el pedido con lo que me recomendaste"*
   o *"borrá todo"*, la mesera **modifica el carrito de verdad** (antes decía "listo" y no lo hacía).
