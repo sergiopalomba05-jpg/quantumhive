@@ -41,9 +41,10 @@ actualizado: 2026-06-18
 
 ## 🤖 La mesera guía y arma el pedido (lo nuevo)
 - **Spotlight por voz (la carta es el escenario)**: sacamos el banner de texto. Mientras la
-  mesera habla, la carta queda limpia y un **resaltado dorado se mueve plato por plato,
-  al ritmo de su voz** — enciende cada plato justo cuando lo nombra y avanza al siguiente
-  (cronometrado contra el audio de cada frase, no se queda clavado).
+  mesera habla, la carta queda limpia y va **resaltando en dorado cada plato justo cuando
+  lo nombra**, de a uno, al ritmo de su voz (cronometrado contra el audio de cada frase).
+  Los platos nombrados **quedan resaltados** (se acumulan, no se apaga el anterior); solo
+  el que está nombrando ahora "pulsa" y es seguido por el botón flotante.
   - Detección precisa por tokens contiguos (sin falsos positivos: si dice "Pizzeta de Pollo BBQ"
     no enciende también "Pollo BBQ").
   - Los **4 atajos** y el **orbe de voz** ya **no abren el chat**: la carta queda visible.

@@ -1988,7 +1988,7 @@ body.keyboard-open .carta-section:last-child { margin-bottom: 20px; }
   100% { box-shadow: inset 3px 0 0 0 var(--gold), 0 0 0 14px rgba(201,168,106,0); }
 }
 .dish.guided .name { color: var(--gold); }
-.dish.guided .dish-add {
+.dish.spotlight-current .dish-add {
   background: var(--accent); color: var(--paper); border-color: var(--accent);
   animation: guideAddPulse 1.1s ease-in-out infinite;
 }
@@ -2935,9 +2935,9 @@ function cvNorm(s) {
     .replace(/[^a-z0-9\s]/g, ' ')
     .replace(/\s+/g, ' ').trim();
 }
-// tokens "fuertes" de un texto normalizado (descarta conectores y palabras genéricas)
+// tokens "fuertes" de un texto normalizado (descarta conectores, genéricas y cantidades)
 function cvSig(norm) {
-  return norm.split(' ').filter(w => w.length >= 3 && !CV_STOP.has(w));
+  return norm.split(' ').filter(w => w.length >= 3 && !CV_STOP.has(w) && !/\d/.test(w));
 }
 function cvDishToks(norm) {
   const t = cvSig(norm);
@@ -2964,7 +2964,7 @@ function cvDishesIn(text) {
   if (!norm.length) return [];
   const toks = [], re = /[a-z0-9]+/g; let mm;
   while ((mm = re.exec(norm))) {
-    if (mm[0].length >= 3 && !CV_STOP.has(mm[0])) toks.push({ w: mm[0], pos: mm.index });
+    if (mm[0].length >= 3 && !CV_STOP.has(mm[0]) && !/\d/.test(mm[0])) toks.push({ w: mm[0], pos: mm.index });
   }
   const R = toks.map(t => t.w);
   const hits = [];
@@ -3005,18 +3005,25 @@ function cvClearSpotTimers() {
   state.spotTimers = [];
 }
 function cvSpotlightClear() {
-  if (state.dishIndex) for (const d of state.dishIndex) d.el.classList.remove('guided');
+  if (state.dishIndex) for (const d of state.dishIndex) d.el.classList.remove('guided', 'spotlight-current');
   state.spotlightEntry = null;
   cvClearSpotTimers();
   cvUpdateAddFloat(null);
 }
+// ACUMULA: cada plato nombrado queda resaltado. Solo el actual pulsa y es seguido.
 function cvSpotlight(entry) {
   if (!entry || entry === state.spotlightEntry) return;
-  if (state.spotlightEntry) state.spotlightEntry.el.classList.remove('guided');
+  if (state.spotlightEntry) state.spotlightEntry.el.classList.remove('spotlight-current');
   state.spotlightEntry = entry;
-  entry.el.classList.add('guided');
+  entry.el.classList.add('guided');           // resaltado persistente (no se apaga)
+  entry.el.classList.add('spotlight-current'); // marca del que está nombrando ahora
   try { entry.el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
   cvUpdateAddFloat(entry);
+}
+// Fin del turno: corta el pulso del actual y oculta el botón, pero deja todo resaltado.
+function cvSpotlightSettle() {
+  if (state.spotlightEntry) state.spotlightEntry.el.classList.remove('spotlight-current');
+  cvUpdateAddFloat(null);
 }
 // Programa el spotlight de una frase: cada plato en su fracción del audio.
 function cvScheduleSpotlight(dishes, cat, totalMs, token) {
@@ -3324,7 +3331,7 @@ async function converse(userText, withVoice) {
   state.isStreaming = false;
   setSolState('idle');
   endBotBubble();
-  cvUpdateAddFloat(null);   // ocultar el botón flotante al terminar (queda el último resaltado)
+  cvSpotlightSettle();      // corta el pulso y oculta el botón; deja todo lo nombrado resaltado
   cvSetChips(chips);        // atajos = sugerencias de la mesera, o los 4 por defecto
 }
 
@@ -3712,7 +3719,7 @@ function stopSpeaking(){
   state.cancelToken++;       // invalida la cola TTS y el player
   stopCurrentAudio();        // pausa el audio actual (dispara onpause → resuelve)
   cvClearSpotTimers();       // frena el avance del spotlight
-  cvUpdateAddFloat(null);    // oculta el botón flotante
+  cvSpotlightSettle();       // corta el pulso y oculta el botón (deja lo resaltado)
   setSolState('idle');
 }
 
@@ -4088,11 +4095,11 @@ Reglas de esa línea (clave):
 - Si te piden "armame el pedido con lo que me recomendaste", meté en "add" lo que vos recomendaste recién.
 
 SUGERENCIAS DE SEGUIMIENTO — otra línea técnica invisible:
-Casi siempre que termines de responder, ofrecé de 2 a 4 atajos cortos para que el cliente siga la charla, con esta línea (TAMBIÉN invisible, va al final, después del #PEDIDO# si lo hubiera):
+Casi siempre que termines de responder, ofrecé de 2 a 4 atajos cortos para que el cliente siga, con esta línea (TAMBIÉN invisible, va al final, después del #PEDIDO# si lo hubiera):
 #CHIPS# ["texto corto 1","texto corto 2","texto corto 3"]
-- Son frases cortas en primera persona del cliente, como botones: "¿Y para tomar?", "Un postre rico", "Algo más liviano", "Sin TACC". Máximo 4, idealmente de 2 a 4 palabras.
-- Adaptalas a lo que venís hablando: si recomendaste un principal, sugerí bebida y postre; si mostraste entradas, sugerí un principal; etc.
-- NUNCA las leas en voz alta. Es solo la línea técnica.
+- Son frases cortas en primera persona del cliente, como botones. Máximo 4, idealmente de 2 a 4 palabras. NUNCA las leas en voz alta.
+- CUANDO RECOMENDÁS UN PLATO O COMBO CONCRETO: cerrá hablando con algo tipo "¿Te lo agrego al pedido o preferís ver otra opción?" y poné chips de ACCIÓN: ["Sí, agregalo","Otra opción"] (o "Sí, el combo" / "Mostrame otra"). Si el cliente después toca "Sí, agregalo" / "Sí, el combo", en tu PRÓXIMA respuesta agregás al pedido lo que acababas de recomendar (con la línea #PEDIDO#).
+- Si mostraste varias cosas o ya cargaste algo, sugerí el siguiente paso: bebida, postre, etc. Ej: ["¿Y para tomar?","Un postre rico","Algo más liviano"].
 
 Ejemplo (las dos últimas líneas el cliente NO las ve ni las escucha):
 Cliente: "agregame una gaseosa y dos tiras de pollo"
