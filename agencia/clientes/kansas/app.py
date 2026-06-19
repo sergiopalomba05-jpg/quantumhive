@@ -1055,10 +1055,29 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
   0%,100% { opacity: 0.7; transform: scale(1); }
   50%     { opacity: 1;   transform: scale(1.2); }
 }
-.splash-foot {
-  position: absolute; bottom: 28px; left: 0; right: 0; z-index: 2;
-  font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase;
-  color: var(--bone-soft); opacity: 0.5;
+.splash-sub {
+  position: relative; z-index: 2;
+  margin: 22px 0 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: 15px; font-weight: 500; letter-spacing: 0.01em;
+  color: var(--bone);
+}
+.splash-sub b { color: var(--gold); font-weight: 700; }
+.splash-legal {
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  z-index: 2; width: min(92%, 460px);
+  display: flex; gap: 10px; align-items: flex-start; text-align: left;
+  padding: 11px 13px; border-radius: 13px;
+  border: 1px solid rgba(201,168,106,0.22);
+  background: rgba(20,15,12,0.55); backdrop-filter: blur(6px);
+  font-size: 11.5px; line-height: 1.5; color: var(--bone-soft);
+}
+.splash-legal b { color: var(--bone); font-weight: 700; }
+.splash-legal-ic {
+  flex: 0 0 auto; width: 19px; height: 19px; margin-top: 1px;
+  border-radius: 50%; background: var(--accent); color: var(--paper);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 12px; font-family: 'Manrope', sans-serif;
 }
 
 /* ============================================================
@@ -2191,6 +2210,40 @@ body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
 .modal-actions button { flex: 1; padding: 13px; border-radius: 12px; font-weight: 700; font-size: 13.5px; }
 .modal-actions .stay { background: linear-gradient(180deg, var(--accent), var(--accent-dk)); color: var(--paper); }
 .modal-actions .leave { background: transparent; border: 1px solid rgba(201,168,106,0.35); color: var(--bone); }
+
+/* ===== Recordatorio legal en el chat ===== */
+.chat-legal {
+  flex: 0 0 auto;
+  margin: 0 16px 6px;
+  padding: 8px 11px;
+  border-radius: 10px;
+  background: rgba(139,28,43,0.08);
+  border: 1px solid rgba(139,28,43,0.16);
+  font-size: 10.5px; line-height: 1.45;
+  color: var(--bone-soft);
+}
+.chat-legal b { color: var(--accent); font-weight: 700; }
+
+/* ===== Broche de oro: detalles de animación ===== */
+/* Burbujas del chat entran suave */
+.msg { animation: msgIn 280ms cubic-bezier(.2,.7,.2,1) both; }
+@keyframes msgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* La barra del pedido aparece con rebote */
+.cart-bar.show { animation: cartPop 440ms cubic-bezier(.34,1.56,.64,1); }
+@keyframes cartPop {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(20px) scale(.96); }
+  60%  { transform: translateX(-50%) translateY(-5px) scale(1.02); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+/* Estrellas de valoración: pop al elegir */
+.star.on { animation: starPop 360ms cubic-bezier(.34,1.56,.64,1); }
+@keyframes starPop {
+  0%   { transform: scale(.6) rotate(-12deg); }
+  60%  { transform: scale(1.25) rotate(6deg); }
+  100% { transform: scale(1) rotate(0); }
+}
 </style>
 </head>
 <body>
@@ -2210,7 +2263,13 @@ body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
     </div>
   </div>
   <button class="splash-cta" id="splashCta">Tocá para empezar</button>
-  <div class="splash-foot">Un mozo virtual te recibe</div>
+  <p class="splash-sub">Te atiende un <b>mozo virtual</b></p>
+  <div class="splash-legal">
+    <span class="splash-legal-ic" aria-hidden="true">!</span>
+    <span>Tu mozo virtual es una <b>guía informativa</b> y puede equivocarse. Ante cualquier
+    <b>alergia, intolerancia o condición médica</b>, confirmá siempre con el personal del
+    restaurante antes de pedir. La composición final de cada plato es responsabilidad del restaurante.</span>
+  </div>
 </div>
 
 <!-- ==================== APP ==================== -->
@@ -2255,6 +2314,7 @@ body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6l-12 12"/></svg>
     </button>
   </div>
+  <div class="chat-legal">Guía informativa, puede contener errores. Por <b>alergias o intolerancias</b>, confirmá con el personal antes de pedir.</div>
   <div class="history-list" id="historyList"></div>
   <div class="dock panel-dock">
     <div class="dock-row">

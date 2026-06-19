@@ -51,6 +51,17 @@ actualizado: 2026-06-18
     confirma hablando ("Listo, te sumé una limonada").
   - Resuelve el nombre contra la carta real (ej: "coca"/"gaseosa" → "Gaseosa Línea Coca Cola").
 
+## ⚖️ Portada y descargo legal (blindaje)
+- En la **portada** se agrandó el subtítulo: **"Te atiende un mozo virtual"**.
+- **Descargo legal antes de entrar al chat** (la IA puede alucinar → riesgo de alergias):
+  aclara que la mesera es una **guía informativa que puede equivocarse**, que ante
+  **alergia/intolerancia/condición médica** hay que **confirmar con el personal** antes de pedir,
+  y que la composición final del plato es responsabilidad del restaurante.
+- **Recordatorio permanente** del mismo descargo dentro del chat (arriba de la charla).
+
+## ✨ Detalles visuales (broche de oro)
+- Burbujas del chat con entrada suave, barra del pedido con rebote, estrellas con "pop" al elegir.
+
 ## ⚙️ Backend
 - Endpoint **`/feedback`** tolerante: persiste en Supabase si está configurado; si no, no rompe.
 - Config `SUPABASE_*` por env vars del Space.
