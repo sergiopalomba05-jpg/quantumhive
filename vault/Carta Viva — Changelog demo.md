@@ -22,7 +22,8 @@ actualizado: 2026-06-18
 
 ## 🧾 Pedido (cierre del circuito)
 - Chip **"Mesa: __"** + modal para tipear el número de mesa.
-- Botón **"+"** en cada plato → carrito.
+- Botón **"+"** en cada plato → carrito. En **vinos y espumantes**, "+" por **copa** y por
+  **botella** por separado (cada variante suma su propia línea al pedido).
 - Barra flotante **"Ver mi pedido (N) · $total"**.
 - **Pantalla de pedido**: ítems con +/−, total estimado, campo de mesa y de WhatsApp.
 - **"Realizar pedido"** → manda el pedido por WhatsApp (formato legible para cocina)

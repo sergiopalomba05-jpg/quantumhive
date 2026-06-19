@@ -2011,6 +2011,9 @@ body.keyboard-open .carta-section:last-child { margin-bottom: 20px; }
 
 /* Botón "+" en cada plato */
 .dish-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+/* Vinos/espumantes: fila por variante (copa / botella) con su propio "+" */
+.wine-row { display: flex; align-items: center; justify-content: flex-end; gap: 9px; }
+.wine-row .price { padding-top: 0; }
 .dish-add {
   width: 30px; height: 30px; border-radius: 50%;
   border: 1px solid rgba(201,168,106,0.40);
@@ -2725,27 +2728,14 @@ function renderCarta() {
 
       const right = document.createElement('div');
       right.className = 'dish-right';
-      const priceEl = document.createElement('div');
-      priceEl.className = 'price';
-      if (it.price !== undefined && it.price !== null) {
-        priceEl.textContent = fmtPrice(it.price);
-      } else if (it.price_copa !== undefined || it.price_botella !== undefined) {
-        const parts = [];
-        if (it.price_copa !== undefined && it.price_copa !== null) {
-          parts.push(`${fmtPrice(it.price_copa)}<small>Copa</small>`);
-        }
-        if (it.price_botella !== undefined && it.price_botella !== null) {
-          parts.push(`${fmtPrice(it.price_botella)}<small>Botella</small>`);
-        }
-        priceEl.innerHTML = parts.join('<br>');
-      } else {
-        priceEl.innerHTML = '<span class="price-tba">a confirmar</span>';
-      }
-      right.appendChild(priceEl);
-
-      // "+" para sumar al pedido (solo platos con precio único)
       let addBtnEl = null;
+
       if (typeof it.price === 'number') {
+        // Precio único: precio + botón "+"
+        const priceEl = document.createElement('div');
+        priceEl.className = 'price';
+        priceEl.textContent = fmtPrice(it.price);
+        right.appendChild(priceEl);
         const itemId = sec.id + '|' + it.name;
         const add = document.createElement('button');
         add.className = 'dish-add';
@@ -2756,6 +2746,37 @@ function renderCarta() {
         updateDishAdd(add);
         right.appendChild(add);
         addBtnEl = add;
+      } else if (it.price_copa != null || it.price_botella != null) {
+        // Vinos/espumantes: una fila por variante (copa / botella), cada una con su "+"
+        const variants = [];
+        if (it.price_copa != null)    variants.push({ tag: 'Copa',    price: it.price_copa });
+        if (it.price_botella != null) variants.push({ tag: 'Botella', price: it.price_botella });
+        for (const v of variants) {
+          const row = document.createElement('div');
+          row.className = 'wine-row';
+          const p = document.createElement('div');
+          p.className = 'price';
+          p.innerHTML = `${fmtPrice(v.price)}<small>${v.tag}</small>`;
+          row.appendChild(p);
+          const vid = sec.id + '|' + it.name + '|' + v.tag.toLowerCase();
+          const vadd = document.createElement('button');
+          vadd.className = 'dish-add';
+          vadd.dataset.id = vid;
+          vadd.setAttribute('aria-label', 'Agregar ' + it.name + ' (' + v.tag + ') al pedido');
+          vadd.textContent = '+';
+          const vname = it.name + ' (' + v.tag.toLowerCase() + ')';
+          vadd.onclick = () => addToCart({ id: vid, name: vname, price: v.price });
+          updateDishAdd(vadd);
+          row.appendChild(vadd);
+          right.appendChild(row);
+          if (!addBtnEl) addBtnEl = vadd;   // para el hint del autoguiado
+        }
+      } else {
+        // Sin precio: "a confirmar" (sin botón)
+        const priceEl = document.createElement('div');
+        priceEl.className = 'price';
+        priceEl.innerHTML = '<span class="price-tba">a confirmar</span>';
+        right.appendChild(priceEl);
       }
 
       dish.appendChild(right);
