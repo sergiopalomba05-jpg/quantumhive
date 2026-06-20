@@ -21,7 +21,7 @@ from pathlib import Path
 from typing import Optional, List, Dict, Any
 
 import httpx
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, Response, StreamingResponse, JSONResponse, HTMLResponse
 from pydantic import BaseModel
 
@@ -59,6 +59,9 @@ MAX_HISTORY_TURNS  = int(os.environ.get("MAX_HISTORY_TURNS", "0"))  # 0 = mandar
 # ni el build si fallan: el chat sigue andando y el error queda en la respuesta de /tts).
 TTS_ENGINE     = os.environ.get("TTS_ENGINE", "piper").strip().lower()
 TTS_MODELS_DIR = os.environ.get("TTS_MODELS_DIR", "/tmp/tts-models").strip()
+# HÍBRIDO: con TTS_ENGINE=browser, los iPhone/iPad (Safari bloquea la voz asíncrona)
+# reciben voz del server con este motor; Android/PC usan la voz del navegador (instantánea).
+BROWSER_FALLBACK_ENGINE = os.environ.get("BROWSER_FALLBACK_ENGINE", "piper").strip().lower()
 # Piper
 PIPER_VOICE = os.environ.get("PIPER_VOICE", "es_AR-daniela-high").strip()
 PIPER_VOICE_URL = os.environ.get("PIPER_VOICE_URL", "").strip()  # opcional: URL directa al .onnx (override)
@@ -4599,6 +4602,7 @@ async def health():
                       else KOKORO_VOICE if TTS_ENGINE == "kokoro"
                       else ELEVENLABS_VOICE_ID if TTS_ENGINE == "elevenlabs"
                       else PIPER_VOICE),
+        "browser_ios_fallback": (BROWSER_FALLBACK_ENGINE if TTS_ENGINE == "browser" else None),
         "system_prompt_chars": len(SYSTEM_PROMPT),
         "supabase_configured": bool(SUPABASE_URL and SUPABASE_KEY),
     }
@@ -4916,9 +4920,10 @@ def _kokoro_synth(text: str) -> bytes:
     return buf.getvalue()
 
 
-def _synth_local(text: str) -> bytes:
-    """Sintetiza con el motor local configurado. Bloqueante → se corre en un thread."""
-    if TTS_ENGINE == "kokoro":
+def _synth_local(text: str, engine: str = None) -> bytes:
+    """Sintetiza con el motor local indicado (o el configurado). Bloqueante → en un thread."""
+    eng = engine or TTS_ENGINE
+    if eng == "kokoro":
         return _kokoro_synth(text)
     return _piper_synth(text)
 
@@ -4952,16 +4957,29 @@ async def _tts_elevenlabs(text: str) -> Response:
 
 
 # ----------------------------------------------------------------------------
+def _is_ios(ua: str) -> bool:
+    """iPhone/iPad/iPod (incluye Chrome/Firefox en iOS, que igual usan WebKit de Safari)."""
+    ua = (ua or "").lower()
+    return any(s in ua for s in ("iphone", "ipad", "ipod", "crios", "fxios"))
+
+
 @app.post("/tts")
-async def tts(req: TTSRequest):
+async def tts(req: TTSRequest, request: Request):
     text = (req.text or "").strip()
     if not text:
         raise HTTPException(400, "Texto vacío")
     text = _normalize_for_tts(text)
 
     if TTS_ENGINE == "browser":
-        # La voz la pone el NAVEGADOR del cliente (instantáneo, $0, sin carga en el server):
-        # devolvemos solo el texto ya normalizado y el front lo habla con speechSynthesis.
+        # HÍBRIDO: Android/PC → voz del NAVEGADOR (instantánea, $0). iOS bloquea la voz
+        # asíncrona del navegador, así que a iPhone/iPad les damos voz del SERVER, que
+        # reproduce un archivo de audio y SÍ suena en Safari.
+        if _is_ios(request.headers.get("user-agent", "")):
+            try:
+                audio = await asyncio.to_thread(_synth_local, text, BROWSER_FALLBACK_ENGINE)
+                return Response(content=audio, media_type="audio/wav")
+            except Exception:
+                pass  # si la voz del server falla, igual probamos la del navegador
         return {"mode": "browser", "text": text}
 
     if TTS_ENGINE == "elevenlabs":
