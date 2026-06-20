@@ -3411,7 +3411,7 @@ async function converse(userText, withVoice) {
       try {
         const url = await item.audio;
         if (myToken !== state.cancelToken || !url) {
-          if (url) URL.revokeObjectURL(url);
+          if (typeof url === 'string') URL.revokeObjectURL(url);
           continue;
         }
         await playAudioUrl(url, myToken, item);
@@ -3545,6 +3545,12 @@ async function synthesize(text) {
       console.warn('TTS', r.status);
       return null;
     }
+    const ct = r.headers.get('content-type') || '';
+    if (ct.includes('application/json')) {
+      // motor "browser": la voz la pone el navegador del cliente (instantáneo)
+      const j = await r.json();
+      return (j && j.mode === 'browser') ? { speak: j.text || text } : null;
+    }
     const blob = await r.blob();
     return URL.createObjectURL(blob);
   } catch (e) {
@@ -3553,7 +3559,67 @@ async function synthesize(text) {
   }
 }
 
+// ---- Voz del NAVEGADOR (motor "browser": instantánea, corre en el celular) ----
+let _cvVoice = undefined;
+function cvPickVoice() {
+  if (_cvVoice !== undefined) return _cvVoice;
+  const ss = window.speechSynthesis;
+  const vs = ss ? ss.getVoices() : [];
+  if (!vs || !vs.length) return null;   // todavía no cargaron las voces
+  const pref = ['es-ar', 'es-419', 'es-mx', 'es-us', 'es-es', 'es'];
+  for (const p of pref) {
+    const v = vs.find(x => (x.lang || '').toLowerCase().startsWith(p));
+    if (v) { _cvVoice = v; return v; }
+  }
+  _cvVoice = vs.find(x => (x.lang || '').toLowerCase().startsWith('es')) || null;
+  return _cvVoice;
+}
+if (window.speechSynthesis) {
+  try { window.speechSynthesis.getVoices(); } catch (e) {}
+  window.speechSynthesis.onvoiceschanged = () => { _cvVoice = undefined; };
+}
+// iOS exige un gesto para "desbloquear" la voz: disparamos una vacía en el 1er toque.
+let _ttsUnlocked = false;
+function cvUnlockSpeech() {
+  if (_ttsUnlocked || !window.speechSynthesis) return;
+  _ttsUnlocked = true;
+  try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; window.speechSynthesis.speak(u); } catch (e) {}
+}
+document.addEventListener('pointerdown', cvUnlockSpeech, { once: true });
+
+function speakBrowser(text, myToken, item) {
+  return new Promise((resolve) => {
+    const ss = window.speechSynthesis;
+    if (!ss || myToken !== state.cancelToken || !text) { resolve(); return; }
+    let settled = false, watch = 0;
+    const finish = () => {
+      if (settled) return; settled = true;
+      if (watch) clearInterval(watch);
+      if (state.currentSpeech) state.currentSpeech = null;
+      resolve();
+    };
+    try {
+      const u = new SpeechSynthesisUtterance(text);
+      const v = cvPickVoice();
+      if (v) u.voice = v;
+      u.lang = (v && v.lang) || 'es-AR';
+      u.rate = 1.05; u.pitch = 1.0;
+      state.currentSpeech = u;
+      // spotlight: estimamos la duración por largo del texto (~14 caracteres/seg)
+      if (item) cvScheduleSpotlight(item.dishes, item.cat, Math.max(800, Math.round(text.length / 14 * 1000)), myToken);
+      u.onend = finish; u.onerror = finish;
+      ss.speak(u);
+      // watchdog: si cancelan el turno (o no dispara onend), no colgamos la cola TTS
+      watch = setInterval(() => { if (myToken !== state.cancelToken) finish(); }, 250);
+    } catch (e) { finish(); }
+  });
+}
+
 async function playAudioUrl(url, myToken, item) {
+  // motor "browser": no hay archivo de audio, la voz la pone el dispositivo
+  if (url && typeof url === 'object' && url.speak !== undefined) {
+    return speakBrowser(url.speak, myToken, item);
+  }
   return new Promise((resolve) => {
     if (myToken !== state.cancelToken) { URL.revokeObjectURL(url); resolve(); return; }
     const a = new Audio(url);
@@ -3589,6 +3655,10 @@ function stopCurrentAudio() {
   if (state.currentAudio) {
     try { state.currentAudio.pause(); } catch(e) {}
     state.currentAudio = null;
+  }
+  if (state.currentSpeech) {
+    try { window.speechSynthesis.cancel(); } catch(e) {}
+    state.currentSpeech = null;
   }
 }
 
@@ -4518,7 +4588,8 @@ async def health():
         "openrouter_key_set": bool(OPENROUTER_API_KEY),
         "eleven_model": ELEVENLABS_MODEL,
         "tts_engine": TTS_ENGINE,
-        "tts_voice": (KOKORO_VOICE if TTS_ENGINE == "kokoro"
+        "tts_voice": ("navegador (dispositivo)" if TTS_ENGINE == "browser"
+                      else KOKORO_VOICE if TTS_ENGINE == "kokoro"
                       else ELEVENLABS_VOICE_ID if TTS_ENGINE == "elevenlabs"
                       else PIPER_VOICE),
         "system_prompt_chars": len(SYSTEM_PROMPT),
@@ -4880,6 +4951,11 @@ async def tts(req: TTSRequest):
     if not text:
         raise HTTPException(400, "Texto vacío")
     text = _normalize_for_tts(text)
+
+    if TTS_ENGINE == "browser":
+        # La voz la pone el NAVEGADOR del cliente (instantáneo, $0, sin carga en el server):
+        # devolvemos solo el texto ya normalizado y el front lo habla con speechSynthesis.
+        return {"mode": "browser", "text": text}
 
     if TTS_ENGINE == "elevenlabs":
         return await _tts_elevenlabs(text)
