@@ -11,8 +11,12 @@ Endpoints:
 """
 import os
 import re
+import io
 import json
+import wave
 import base64
+import asyncio
+import threading
 from pathlib import Path
 from typing import Optional, List, Dict, Any
 
@@ -29,6 +33,24 @@ ELEVENLABS_API_KEY = os.environ.get("ELEVENLABS_API_KEY", "").strip()
 ELEVENLABS_VOICE_ID = os.environ.get("ELEVENLABS_VOICE_ID", "4wDRKlxcHNOFO5kBvE81").strip()
 ELEVENLABS_MODEL    = os.environ.get("ELEVENLABS_MODEL", "eleven_multilingual_v2").strip()
 GEMINI_MODEL        = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash").strip()
+
+# Motor de voz (TTS) — PLUGGABLE por env, así cada clon elige su voz sin tocar código.
+#   piper      → self-hosteado en el Space, GRATIS e ILIMITADO, acento es_AR (porteño). DEFAULT.
+#   kokoro     → self-hosteado, gratis/ilimitado, más natural/premium, español neutro.
+#   elevenlabs → premium pago (gasta crédito). Queda disponible para una demo puntual.
+# Los modelos open source se cargan lazy y se descargan en el primer uso (no rompen el boot
+# ni el build si fallan: el chat sigue andando y el error queda en la respuesta de /tts).
+TTS_ENGINE     = os.environ.get("TTS_ENGINE", "piper").strip().lower()
+TTS_MODELS_DIR = os.environ.get("TTS_MODELS_DIR", "/tmp/tts-models").strip()
+# Piper
+PIPER_VOICE = os.environ.get("PIPER_VOICE", "es_AR-daniela-high").strip()
+# Kokoro (int8 = 88MB, el más rápido en CPU)
+KOKORO_MODEL_URL  = os.environ.get("KOKORO_MODEL_URL",
+    "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.int8.onnx").strip()
+KOKORO_VOICES_URL = os.environ.get("KOKORO_VOICES_URL",
+    "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin").strip()
+KOKORO_VOICE = os.environ.get("KOKORO_VOICE", "ef_dora").strip()
+KOKORO_LANG  = os.environ.get("KOKORO_LANG", "es").strip()
 
 # Supabase — opcional. Si no están seteadas, /feedback no persiste pero NO rompe.
 # (Se cargan como env vars del Space; nunca al repo público.)
@@ -4468,6 +4490,10 @@ async def health():
         "voice_id": ELEVENLABS_VOICE_ID,
         "gemini_model": GEMINI_MODEL,
         "eleven_model": ELEVENLABS_MODEL,
+        "tts_engine": TTS_ENGINE,
+        "tts_voice": (KOKORO_VOICE if TTS_ENGINE == "kokoro"
+                      else ELEVENLABS_VOICE_ID if TTS_ENGINE == "elevenlabs"
+                      else PIPER_VOICE),
         "system_prompt_chars": len(SYSTEM_PROMPT),
         "supabase_configured": bool(SUPABASE_URL and SUPABASE_KEY),
     }
@@ -4576,15 +4602,98 @@ def _normalize_for_tts(text: str) -> str:
 
 
 # ----------------------------------------------------------------------------
-@app.post("/tts")
-async def tts(req: TTSRequest):
+# Motores de voz self-hosteados (Piper / Kokoro). Carga LAZY: el modelo se descarga
+# y se carga en el PRIMER pedido de voz, no al arrancar — así el Space bootea al toque
+# y, si algo del TTS falla, el chat sigue andando (el error sale en la respuesta de /tts).
+_tts_lock = threading.Lock()
+_piper_voice = None
+_kokoro = None
+
+
+def _download_file(url: str, dest: str) -> str:
+    """Descarga url→dest si no existe ya (cache en el disco del contenedor)."""
+    if os.path.exists(dest):
+        return dest
+    os.makedirs(os.path.dirname(dest), exist_ok=True)
+    tmp = dest + ".part"
+    with httpx.stream("GET", url, follow_redirects=True, timeout=600.0) as r:
+        r.raise_for_status()
+        with open(tmp, "wb") as f:
+            for chunk in r.iter_bytes(chunk_size=1 << 16):
+                f.write(chunk)
+    os.replace(tmp, dest)
+    return dest
+
+
+def _get_piper():
+    global _piper_voice
+    if _piper_voice is None:
+        with _tts_lock:
+            if _piper_voice is None:
+                import sys
+                import subprocess
+                from piper import PiperVoice  # import lazy: no carga si no se usa
+                os.makedirs(TTS_MODELS_DIR, exist_ok=True)
+                onnx = os.path.join(TTS_MODELS_DIR, PIPER_VOICE + ".onnx")
+                if not os.path.exists(onnx):
+                    # downloader oficial de piper: resuelve solo la ruta del repo de voces
+                    subprocess.run(
+                        [sys.executable, "-m", "piper.download_voices",
+                         PIPER_VOICE, "--download-dir", TTS_MODELS_DIR],
+                        check=True,
+                    )
+                _piper_voice = PiperVoice.load(onnx)
+    return _piper_voice
+
+
+def _piper_synth(text: str) -> bytes:
+    voice = _get_piper()
+    buf = io.BytesIO()
+    with wave.open(buf, "wb") as wf:
+        voice.synthesize_wav(text, wf)
+    return buf.getvalue()
+
+
+def _get_kokoro():
+    global _kokoro
+    if _kokoro is None:
+        with _tts_lock:
+            if _kokoro is None:
+                from kokoro_onnx import Kokoro  # import lazy
+                model = _download_file(
+                    KOKORO_MODEL_URL,
+                    os.path.join(TTS_MODELS_DIR, os.path.basename(KOKORO_MODEL_URL)))
+                voices = _download_file(
+                    KOKORO_VOICES_URL,
+                    os.path.join(TTS_MODELS_DIR, os.path.basename(KOKORO_VOICES_URL)))
+                _kokoro = Kokoro(model, voices)
+    return _kokoro
+
+
+def _kokoro_synth(text: str) -> bytes:
+    import numpy as np
+    k = _get_kokoro()
+    samples, sr = k.create(text, voice=KOKORO_VOICE, speed=1.0, lang=KOKORO_LANG)
+    pcm16 = (np.clip(np.asarray(samples, dtype="float32"), -1.0, 1.0) * 32767.0).astype("<i2").tobytes()
+    buf = io.BytesIO()
+    with wave.open(buf, "wb") as wf:
+        wf.setnchannels(1)
+        wf.setsampwidth(2)
+        wf.setframerate(int(sr))
+        wf.writeframes(pcm16)
+    return buf.getvalue()
+
+
+def _synth_local(text: str) -> bytes:
+    """Sintetiza con el motor local configurado. Bloqueante → se corre en un thread."""
+    if TTS_ENGINE == "kokoro":
+        return _kokoro_synth(text)
+    return _piper_synth(text)
+
+
+async def _tts_elevenlabs(text: str) -> Response:
     if not ELEVENLABS_API_KEY:
         raise HTTPException(500, "ELEVENLABS_API_KEY no está configurada en el Space")
-    text = (req.text or "").strip()
-    if not text:
-        raise HTTPException(400, "Texto vacío")
-    text = _normalize_for_tts(text)
-
     async with httpx.AsyncClient(timeout=60.0) as client:
         r = await client.post(
             ELEVEN_TTS,
@@ -4608,6 +4717,26 @@ async def tts(req: TTSRequest):
             # devolvemos detalle para diagnosticar desde el frontend
             raise HTTPException(r.status_code, f"ElevenLabs error: {r.text[:500]}")
         return Response(content=r.content, media_type="audio/mpeg")
+
+
+# ----------------------------------------------------------------------------
+@app.post("/tts")
+async def tts(req: TTSRequest):
+    text = (req.text or "").strip()
+    if not text:
+        raise HTTPException(400, "Texto vacío")
+    text = _normalize_for_tts(text)
+
+    if TTS_ENGINE == "elevenlabs":
+        return await _tts_elevenlabs(text)
+
+    # Motores locales (piper/kokoro): síntesis bloqueante en un thread para no frenar
+    # el event loop. Devuelven WAV (el frontend lo reproduce igual que el MP3).
+    try:
+        audio = await asyncio.to_thread(_synth_local, text)
+    except Exception as e:
+        raise HTTPException(500, f"TTS '{TTS_ENGINE}' error: {type(e).__name__}: {str(e)[:400]}")
+    return Response(content=audio, media_type="audio/wav")
 
 
 # ----------------------------------------------------------------------------
