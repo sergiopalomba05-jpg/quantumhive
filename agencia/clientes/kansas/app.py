@@ -62,6 +62,13 @@ TTS_MODELS_DIR = os.environ.get("TTS_MODELS_DIR", "/tmp/tts-models").strip()
 # HÍBRIDO: con TTS_ENGINE=browser, los iPhone/iPad (Safari bloquea la voz asíncrona)
 # reciben voz del server con este motor; Android/PC usan la voz del navegador (instantánea).
 BROWSER_FALLBACK_ENGINE = os.environ.get("BROWSER_FALLBACK_ENGINE", "piper").strip().lower()
+# DEMO: muestra en la portada "Demo Premium" / "Demo Básico"; cada uno usa una voz para
+# mostrar la diferencia de planes EN VIVO desde un solo Space. Solo si DEMO_MODE está on
+# (los restaurantes reales NO lo ven). El cliente elige un PLAN, no un motor: el server
+# mapea plan→voz acá (seguro). Sin crédito ElevenLabs, podés poner premium=kokoro, basic=piper.
+DEMO_MODE           = os.environ.get("DEMO_MODE", "").strip().lower() in ("1", "true", "yes", "si", "sí")
+DEMO_PREMIUM_ENGINE = os.environ.get("DEMO_PREMIUM_ENGINE", "elevenlabs").strip().lower()
+DEMO_BASIC_ENGINE   = os.environ.get("DEMO_BASIC_ENGINE", "kokoro").strip().lower()
 # Piper
 PIPER_VOICE = os.environ.get("PIPER_VOICE", "es_AR-daniela-high").strip()
 PIPER_VOICE_URL = os.environ.get("PIPER_VOICE_URL", "").strip()  # opcional: URL directa al .onnx (override)
@@ -1094,6 +1101,9 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
   transition: all 250ms ease;
 }
 .splash-cta:hover { border-color: var(--gold); background: rgba(40,28,22,0.6); }
+.splash-demos { position: relative; z-index: 2; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+.splash-demos .splash-cta { min-width: 230px; justify-content: center; }
+.splash-cta.demo.premium { border-color: var(--gold); color: var(--gold); font-weight: 700; }
 .splash-cta::after {
   content: ''; width: 6px; height: 6px; border-radius: 50%;
   background: var(--ember-core);
@@ -2331,6 +2341,7 @@ body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
 </style>
 </head>
 <body>
+<script>window.CV_DEMO_MODE = __CV_DEMO_MODE__;</script>
 
 <!-- ==================== SPLASH ==================== -->
 <div id="splash">
@@ -2348,6 +2359,10 @@ body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
       </div>
     </div>
     <button class="splash-cta" id="splashCta">Tocá para empezar</button>
+    <div class="splash-demos" id="splashDemos" hidden>
+      <button class="splash-cta demo premium" id="demoPremium">★ Demo Premium</button>
+      <button class="splash-cta demo" id="demoBasic">Demo Básico</button>
+    </div>
     <p class="splash-sub">Te atiende un <b>mozo virtual</b></p>
   </div>
   <div class="splash-legal">
@@ -2683,7 +2698,8 @@ function fmtPrice(n) {
 // ============================================================
 // Splash → App
 // ============================================================
-$('#splashCta').addEventListener('click', async () => {
+async function enterApp(tier) {
+  window.CV_TIER = tier || null;   // demo: "premium" | "basic" | null (server lo mapea a una voz)
   // Unlock audio en iOS
   try {
     state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -2723,7 +2739,15 @@ $('#splashCta').addEventListener('click', async () => {
     setSolState('idle');
     endBotBubble();
   }, 700);
-});
+}
+$('#splashCta').addEventListener('click', () => enterApp(null));
+// DEMO: dos botones que entran con un plan distinto (voz premium vs básica), solo si DEMO_MODE
+if (window.CV_DEMO_MODE) {
+  const _cta = $('#splashCta'); if (_cta) _cta.style.display = 'none';
+  const _dz = $('#splashDemos'); if (_dz) _dz.hidden = false;
+  const _dp = $('#demoPremium'); if (_dp) _dp.addEventListener('click', () => enterApp('premium'));
+  const _db = $('#demoBasic'); if (_db) _db.addEventListener('click', () => enterApp('basic'));
+}
 
 // ============================================================
 // Carga + render de la carta
@@ -3540,7 +3564,7 @@ async function synthesize(text) {
     const r = await fetch('/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text })
+      body: JSON.stringify({ text, tier: (window.CV_TIER || undefined) })
     });
     if (!r.ok) {
       console.warn('TTS', r.status);
@@ -4550,6 +4574,7 @@ class ChatRequest(BaseModel):
 
 class TTSRequest(BaseModel):
     text: str
+    tier: Optional[str] = None   # demo: "premium" | "basic" (solo se respeta si DEMO_MODE)
 
 
 class STTRequest(BaseModel):
@@ -4578,7 +4603,8 @@ class OrderRequest(BaseModel):
 # ----------------------------------------------------------------------------
 @app.get("/")
 async def root():
-    return HTMLResponse(EMBEDDED_INDEX_HTML)
+    html = EMBEDDED_INDEX_HTML.replace("__CV_DEMO_MODE__", "true" if DEMO_MODE else "false")
+    return HTMLResponse(html)
 
 
 @app.get("/menu.json")
@@ -4603,6 +4629,8 @@ async def health():
                       else ELEVENLABS_VOICE_ID if TTS_ENGINE == "elevenlabs"
                       else PIPER_VOICE),
         "browser_ios_fallback": (BROWSER_FALLBACK_ENGINE if TTS_ENGINE == "browser" else None),
+        "demo_mode": DEMO_MODE,
+        "demo_engines": ({"premium": DEMO_PREMIUM_ENGINE, "basic": DEMO_BASIC_ENGINE} if DEMO_MODE else None),
         "system_prompt_chars": len(SYSTEM_PROMPT),
         "supabase_configured": bool(SUPABASE_URL and SUPABASE_KEY),
     }
@@ -4970,7 +4998,16 @@ async def tts(req: TTSRequest, request: Request):
         raise HTTPException(400, "Texto vacío")
     text = _normalize_for_tts(text)
 
-    if TTS_ENGINE == "browser":
+    # Motor efectivo: el configurado, salvo que sea una DEMO y el cliente elija un plan.
+    engine = TTS_ENGINE
+    if DEMO_MODE and req.tier:
+        t = req.tier.strip().lower()
+        if t == "premium":
+            engine = DEMO_PREMIUM_ENGINE
+        elif t == "basic":
+            engine = DEMO_BASIC_ENGINE
+
+    if engine == "browser":
         # HÍBRIDO: Android/PC → voz del NAVEGADOR (instantánea, $0). iOS bloquea la voz
         # asíncrona del navegador, así que a iPhone/iPad les damos voz del SERVER, que
         # reproduce un archivo de audio y SÍ suena en Safari.
@@ -4984,15 +5021,15 @@ async def tts(req: TTSRequest, request: Request):
                 pass  # si la voz del server/cloud falla, igual probamos la del navegador
         return {"mode": "browser", "text": text}
 
-    if TTS_ENGINE == "elevenlabs":
+    if engine == "elevenlabs":
         return await _tts_elevenlabs(text)
 
     # Motores locales (piper/kokoro): síntesis bloqueante en un thread para no frenar
     # el event loop. Devuelven WAV (el frontend lo reproduce igual que el MP3).
     try:
-        audio = await asyncio.to_thread(_synth_local, text)
+        audio = await asyncio.to_thread(_synth_local, text, engine)
     except Exception as e:
-        raise HTTPException(500, f"TTS '{TTS_ENGINE}' error: {type(e).__name__}: {str(e)[:400]}")
+        raise HTTPException(500, f"TTS '{engine}' error: {type(e).__name__}: {str(e)[:400]}")
     return Response(content=audio, media_type="audio/wav")
 
 
