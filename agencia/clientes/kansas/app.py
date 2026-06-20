@@ -1363,17 +1363,6 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 .menu-drop-item.active::after { content: '✓'; color: var(--gold); font-size: 13px; }
 
 /* CARTA — el contenido principal */
-
-/* Contenedor central: carta + chat superpuesto */
-.center-stage {
-  position: relative;
-  min-height: 0;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-.center-stage .carta-body { flex: 1; }
-
 .carta-body {
   background: #0E0A07;
   overflow-y: auto;
@@ -2084,18 +2073,6 @@ body.keyboard-open .carta-section:last-child { margin-bottom: 20px; }
   0%, 100% { transform: scale(1);    box-shadow: 0 0 0 0 rgba(201,168,106,0.65); }
   50%      { transform: scale(1.12); box-shadow: 0 0 0 7px rgba(201,168,106,0); }
 }
-.guide-hint {
-  margin-top: 6px;
-  font-size: 10.5px;
-  letter-spacing: 0.03em;
-  color: var(--gold);
-  font-weight: 600;
-  display: inline-flex; align-items: center; gap: 5px;
-  animation: guideHintIn 320ms ease-out both;
-}
-.guide-hint::before { content: '✦'; font-size: 11px; opacity: 0.9; }
-@keyframes guideHintIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
-
 /* Botón flotante "Agregar al pedido" — sigue al spotlight mientras la mesera habla */
 .add-float {
   position: fixed; left: 50%; bottom: 198px; z-index: 50;
@@ -2349,7 +2326,6 @@ body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 11.5a8.38 8.38 0 01-9 8.4 8.5 8.5 0 01-3.4-.7L3 21l1.8-5.6a8.38 8.38 0 01-.7-3.4 8.5 8.5 0 018.4-9 8.38 8.38 0 019 8.5z"/></svg>
         <span class="ct-full">Escribile a tu mesera…</span>
         <span class="ct-short">Chat</span>
-        <small id="solState" hidden></small>
       </button>
     </div>
   </header>
@@ -2589,9 +2565,6 @@ function setSolState(s) {
     thinking: 'Pensando…',
     speaking: 'Tocá para detener',
   };
-  const chipLabels = { idle: '', listening: 'Escuchando', thinking: 'Pensando', speaking: 'Hablando' };
-  $('#solState').textContent = chipLabels[s] || '';
-  // mini-orb del chip ya no existe — el data-state queda en el ticker por compat
   const lbl = $('#orbLabel');
   if (lbl) lbl.textContent = labels[s] || 'Tocá para hablar';
   // el cartel "mantené apretado" solo aparece tras inactividad, no de entrada
@@ -2641,12 +2614,6 @@ function endBotBubble() { _currentBotBubble = null; }
 // La carta es el escenario: ya NO hay banner de texto sobre la carta.
 // El texto de la mesera vive en el historial; la guía visual es el spotlight.
 function chatPanelOpen() { return $('#historyPanel').classList.contains('open'); }
-function showBanner(text) {}                                  // no-op (compat)
-function updateBanner(text) { updateBotBubble(text); }        // solo historial
-function hideBanner(delay) { endBotBubble(); }
-function showSolBanner() {}
-function hideSolBanner() {}
-function scheduleSolBannerHide() {}
 
 function showToast(text, ms = 3000) {
   const t = $('#toast');
@@ -2699,11 +2666,10 @@ $('#splashCta').addEventListener('click', async () => {
   setTimeout(async () => {
     const greeting = state.menu?.assistant?.greeting || '¡Bienvenidos a La Escaloneta!';
     state.history.push({ role: 'model', text: greeting });
-    showBanner(greeting);
     setSolState('speaking');
     await playAudioForText(greeting, ++state.cancelToken);
     setSolState('idle');
-    hideBanner(3500);
+    endBotBubble();
   }, 700);
 });
 
@@ -3666,7 +3632,7 @@ async function startRecording() {
     console.error('No mic', e);
     showToast('No pude acceder al micrófono');
     setSolState('idle');
-    hideBanner(200);
+    endBotBubble();
   }
 }
 
@@ -3722,11 +3688,10 @@ async function onRecorderStop() {
   state.recorder = null;
   state.recStream = null;
 
-  if (!chunks.length) { setSolState('idle'); hideBanner(200); return; }
+  if (!chunks.length) { setSolState('idle'); endBotBubble(); return; }
   const blob = new Blob(chunks, { type: mime });
 
   setSolState('thinking');
-  showBanner('Transcribiendo…');
 
   const b64 = await blobToBase64(blob);
 
@@ -3739,14 +3704,14 @@ async function onRecorderStop() {
     if (!r.ok) {
       showToast('No entendí el audio');
       setSolState('idle');
-      hideBanner(200);
+      endBotBubble();
       return;
     }
     const data = await r.json();
     const text = (data.text || '').trim();
     if (!text) {
       setSolState('idle');
-      hideBanner(200);
+      endBotBubble();
       return;
     }
     // Voz disparada → respuesta con voz
@@ -3755,7 +3720,7 @@ async function onRecorderStop() {
     console.error(e);
     showToast('Falló la transcripción');
     setSolState('idle');
-    hideBanner(200);
+    endBotBubble();
   }
 }
 
