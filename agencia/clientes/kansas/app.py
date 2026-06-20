@@ -40,6 +40,17 @@ MESERA_BUSY_MSG     = os.environ.get("MESERA_BUSY_MSG",
     "Perdoná, estoy con muchísima gente en este momento y no llego a atenderte bien. "
     "Dame unos segundos y volvé a escribirme, ¿dale?")
 
+# CEREBRO PLUGGABLE — cadena de proveedores/modelos "provider:model, ..." en orden de
+# prioridad. Se prueba el primero; ante 429/503/error rota al siguiente (fallback). Vacío
+# = "gemini:{GEMINI_MODEL}" (compat). Cada clon define su cadena por env, p.ej.:
+#   chico/barato → "gemini:gemini-2.5-flash-lite"
+#   grande/uso   → "gemini:gemini-2.5-flash, openrouter:openai/gpt-4o-mini"
+#   demo gratis  → "gemini:gemini-2.5-flash, openrouter:deepseek/deepseek-chat-v3:free"
+BRAIN_CHAIN        = os.environ.get("BRAIN_CHAIN", "").strip()
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "").strip()
+OPENROUTER_URL     = "https://openrouter.ai/api/v1/chat/completions"
+MAX_HISTORY_TURNS  = int(os.environ.get("MAX_HISTORY_TURNS", "0"))  # 0 = mandar todo el historial
+
 # Motor de voz (TTS) — PLUGGABLE por env, así cada clon elige su voz sin tocar código.
 #   piper      → self-hosteado en el Space, GRATIS e ILIMITADO, acento es_AR (porteño). DEFAULT.
 #   kokoro     → self-hosteado, gratis/ilimitado, más natural/premium, español neutro.
@@ -71,8 +82,7 @@ RESTAURANT_ID           = os.environ.get("RESTAURANT_ID", "la-escaloneta").strip
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN", "").strip()
 ORDER_CHAT_ID  = os.environ.get("ORDER_CHAT_ID", "").strip()
 
-GEMINI_GENERATE = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
-GEMINI_STREAM   = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:streamGenerateContent"
+GEMINI_GENERATE = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"  # solo /stt
 ELEVEN_TTS      = f"https://api.elevenlabs.io/v1/text-to-speech/{ELEVENLABS_VOICE_ID}/stream?optimize_streaming_latency=3"
 
 BASE_DIR = Path(__file__).parent
@@ -4503,6 +4513,8 @@ async def health():
         "eleven_key_set": bool(ELEVENLABS_API_KEY),
         "voice_id": ELEVENLABS_VOICE_ID,
         "gemini_model": GEMINI_MODEL,
+        "brain_chain": [f"{p}:{m}" for p, m in BRAIN_CHAIN_PARSED],
+        "openrouter_key_set": bool(OPENROUTER_API_KEY),
         "eleven_model": ELEVENLABS_MODEL,
         "tts_engine": TTS_ENGINE,
         "tts_voice": (KOKORO_VOICE if TTS_ENGINE == "kokoro"
@@ -4514,7 +4526,50 @@ async def health():
 
 
 # ----------------------------------------------------------------------------
-def _gemini_body(message: str, history: List[ChatTurn]) -> Dict[str, Any]:
+# CEREBRO PLUGGABLE — soporta "gemini" (directo) y "openrouter" (OpenAI-compatible,
+# 1 key → muchos modelos + su propio failover). El parseo de #PEDIDO#/#CHIPS# trabaja
+# sobre el texto, así que da igual qué cerebro responda.
+# ----------------------------------------------------------------------------
+def _parse_brain_chain() -> List[tuple]:
+    raw = BRAIN_CHAIN or f"gemini:{GEMINI_MODEL}"
+    chain: List[tuple] = []
+    for entry in raw.split(","):
+        entry = entry.strip()
+        if not entry:
+            continue
+        prov, _, model = entry.partition(":")
+        prov = prov.strip().lower()
+        model = model.strip() or GEMINI_MODEL
+        if prov not in ("gemini", "openrouter"):
+            prov = "gemini"
+        # saltar entradas sin su key (no rompen la cadena, simplemente no se usan)
+        if prov == "openrouter" and not OPENROUTER_API_KEY:
+            continue
+        if prov == "gemini" and not GEMINI_API_KEY:
+            continue
+        chain.append((prov, model))
+    if not chain:
+        chain.append(("gemini", GEMINI_MODEL))
+    return chain
+
+
+BRAIN_CHAIN_PARSED = _parse_brain_chain()
+
+
+class _BrainUnavailable(Exception):
+    """El cerebro no pudo arrancar (429/503/4xx/error) → probar el siguiente de la cadena."""
+    def __init__(self, status: int):
+        self.status = status
+        super().__init__(f"brain unavailable: {status}")
+
+
+def _trim_history(history: List[ChatTurn]) -> List[ChatTurn]:
+    if MAX_HISTORY_TURNS and len(history) > MAX_HISTORY_TURNS:
+        return history[-MAX_HISTORY_TURNS:]
+    return history
+
+
+def _gemini_chat_body(history: List[ChatTurn], message: str) -> Dict[str, Any]:
     contents = []
     for t in history:
         contents.append({"role": t.role, "parts": [{"text": t.text}]})
@@ -4525,18 +4580,43 @@ def _gemini_body(message: str, history: List[ChatTurn]) -> Dict[str, Any]:
         "generationConfig": {
             "temperature": 0.8,
             "maxOutputTokens": 2048,
-            "thinkingConfig": {"thinkingBudget": 0}
-        }
+            "thinkingConfig": {"thinkingBudget": 0},
+        },
     }
 
 
-async def _gemini_post(client: httpx.AsyncClient, url: str, body: dict) -> httpx.Response:
-    """POST a Gemini con reintentos en 429 (cupo/ráfaga) y 503 (caído un toque), con
-    backoff exponencial. Devuelve la última respuesta; el caller decide el fallback."""
+def _openai_messages(history: List[ChatTurn], message: str) -> List[Dict[str, str]]:
+    msgs = [{"role": "system", "content": SYSTEM_PROMPT}]
+    for t in history:
+        msgs.append({"role": "assistant" if t.role == "model" else "user", "content": t.text})
+    msgs.append({"role": "user", "content": message})
+    return msgs
+
+
+def _brain_request(prov: str, model: str, history: List[ChatTurn], message: str):
+    """(url, headers, body) para una llamada NO streaming al proveedor dado."""
+    if prov == "openrouter":
+        return (OPENROUTER_URL,
+                {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "Content-Type": "application/json"},
+                {"model": model, "messages": _openai_messages(history, message),
+                 "temperature": 0.8, "max_tokens": 2048})
+    return (f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_API_KEY}",
+            {"Content-Type": "application/json"},
+            _gemini_chat_body(history, message))
+
+
+def _brain_extract(prov: str, data: dict) -> str:
+    if prov == "openrouter":
+        return data["choices"][0]["message"]["content"]
+    return data["candidates"][0]["content"]["parts"][0]["text"]
+
+
+async def _post_with_retry(client: httpx.AsyncClient, url: str, body: dict, headers: dict) -> httpx.Response:
+    """POST con reintentos en 429 (cupo/ráfaga) y 503 (caído) con backoff exponencial."""
     delay = 0.6
     r = None
     for attempt in range(GEMINI_MAX_RETRIES + 1):
-        r = await client.post(url, json=body, headers={"Content-Type": "application/json"})
+        r = await client.post(url, json=body, headers=headers)
         if r.status_code == 200 or r.status_code not in (429, 503) or attempt == GEMINI_MAX_RETRIES:
             return r
         await asyncio.sleep(delay)
@@ -4546,71 +4626,99 @@ async def _gemini_post(client: httpx.AsyncClient, url: str, body: dict) -> httpx
 
 @app.post("/chat")
 async def chat(req: ChatRequest):
-    if not GEMINI_API_KEY:
-        raise HTTPException(500, "GEMINI_API_KEY no está configurada en el Space")
-    body = _gemini_body(req.message, req.history)
+    history = _trim_history(req.history)
+    last_status = None
     async with httpx.AsyncClient(timeout=30.0) as client:
-        r = await _gemini_post(client, f"{GEMINI_GENERATE}?key={GEMINI_API_KEY}", body)
-        if r.status_code == 429:
-            return {"reply": MESERA_BUSY_MSG}   # cupo/ráfaga: la mesera responde con gracia
-        if r.status_code != 200:
-            raise HTTPException(r.status_code, f"Gemini error: {r.text[:500]}")
-        data = r.json()
-        try:
-            reply = data["candidates"][0]["content"]["parts"][0]["text"]
-        except (KeyError, IndexError):
-            raise HTTPException(500, f"Respuesta inesperada de Gemini: {json.dumps(data)[:500]}")
-        return {"reply": reply}
+        for prov, model in BRAIN_CHAIN_PARSED:
+            url, headers, body = _brain_request(prov, model, history, req.message)
+            try:
+                r = await _post_with_retry(client, url, body, headers)
+            except Exception:
+                last_status = -1
+                continue
+            if r.status_code == 200:
+                try:
+                    reply = _brain_extract(prov, r.json())
+                except (KeyError, IndexError, ValueError):
+                    reply = ""
+                if reply:
+                    return {"reply": reply, "brain": f"{prov}:{model}"}
+            last_status = r.status_code
+            # no-200 o respuesta vacía → probar el siguiente cerebro de la cadena
+    return {"reply": MESERA_BUSY_MSG, "brain": "busy", "last_status": last_status}
+
+
+async def _brain_stream_once(client, prov, model, history, message):
+    """Async-gen que emite texto a medida. Lanza _BrainUnavailable si no logra arrancar
+    (para que la cadena rote al siguiente cerebro). Reintenta 429/503 antes del 1er chunk."""
+    if prov == "openrouter":
+        url = OPENROUTER_URL
+        headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "Content-Type": "application/json"}
+        body = {"model": model, "messages": _openai_messages(history, message),
+                "temperature": 0.8, "max_tokens": 2048, "stream": True}
+        is_openai = True
+    else:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:streamGenerateContent?alt=sse&key={GEMINI_API_KEY}"
+        headers = {"Content-Type": "application/json"}
+        body = _gemini_chat_body(history, message)
+        is_openai = False
+
+    delay = 0.6
+    for attempt in range(GEMINI_MAX_RETRIES + 1):
+        async with client.stream("POST", url, json=body, headers=headers) as r:
+            if r.status_code == 200:
+                async for line in r.aiter_lines():
+                    if not line or not line.startswith("data:"):
+                        continue
+                    payload = line[5:].strip()
+                    if not payload or payload == "[DONE]":
+                        continue
+                    try:
+                        obj = json.loads(payload)
+                        if is_openai:
+                            piece = obj["choices"][0]["delta"].get("content") or ""
+                        else:
+                            piece = obj["candidates"][0]["content"]["parts"][0].get("text") or ""
+                    except Exception:
+                        continue
+                    if piece:
+                        yield piece
+                return
+            retryable = r.status_code in (429, 503) and attempt < GEMINI_MAX_RETRIES
+            await r.aread()
+            if not retryable:
+                raise _BrainUnavailable(r.status_code)
+        await asyncio.sleep(delay)
+        delay *= 2
+    raise _BrainUnavailable(503)
 
 
 @app.post("/chat/stream")
 async def chat_stream(req: ChatRequest):
-    """Stream SSE: cada chunk de texto que va llegando."""
-    if not GEMINI_API_KEY:
-        raise HTTPException(500, "GEMINI_API_KEY no está configurada en el Space")
-    body = _gemini_body(req.message, req.history)
+    """Stream SSE con cadena de cerebros: si el primero no arranca, rota al siguiente."""
+    history = _trim_history(req.history)
 
     async def event_gen():
-        url = f"{GEMINI_STREAM}?alt=sse&key={GEMINI_API_KEY}"
         async with httpx.AsyncClient(timeout=60.0) as client:
-            delay = 0.6
-            for attempt in range(GEMINI_MAX_RETRIES + 1):
-                async with client.stream(
-                    "POST", url, json=body,
-                    headers={"Content-Type": "application/json"},
-                ) as r:
-                    if r.status_code == 200:
-                        async for line in r.aiter_lines():
-                            if not line:
-                                continue
-                            if line.startswith("data:"):
-                                payload = line[5:].strip()
-                                if not payload:
-                                    continue
-                                try:
-                                    obj = json.loads(payload)
-                                    piece = obj["candidates"][0]["content"]["parts"][0].get("text", "")
-                                    if piece:
-                                        yield f"event: chunk\ndata: {json.dumps({'text': piece})}\n\n"
-                                except Exception:
-                                    # chunks parciales / sin texto — ignorar
-                                    continue
+            for prov, model in BRAIN_CHAIN_PARSED:
+                produced = False
+                try:
+                    async for piece in _brain_stream_once(client, prov, model, history, req.message):
+                        produced = True
+                        yield f"event: chunk\ndata: {json.dumps({'text': piece})}\n\n"
+                except Exception:
+                    # _BrainUnavailable (no arrancó) o corte a mitad
+                    if produced:
+                        # ya emitimos texto: cerramos limpio (no se puede rotar a mitad)
                         yield "event: done\ndata: {}\n\n"
                         return
-                    # respuesta no-200
-                    if r.status_code in (429, 503) and attempt < GEMINI_MAX_RETRIES:
-                        await r.aread()  # drenar y reintentar
-                    elif r.status_code == 429:
-                        # cupo/ráfaga llena: la mesera "habla" el mensaje en vez de cortar
-                        yield f"event: chunk\ndata: {json.dumps({'text': MESERA_BUSY_MSG})}\n\n"
-                        yield "event: done\ndata: {}\n\n"
-                        return
-                    else:
-                        body_err = await r.aread()
-                        yield f"event: error\ndata: {json.dumps({'status': r.status_code, 'body': body_err.decode('utf-8', 'ignore')[:500]})}\n\n"
-                        return
-                await asyncio.sleep(delay)
-                delay *= 2
+                    continue  # no arrancó: probar el siguiente cerebro de la cadena
+                else:
+                    yield "event: done\ndata: {}\n\n"
+                    return
+            # ningún cerebro arrancó: la mesera responde con gracia
+            yield f"event: chunk\ndata: {json.dumps({'text': MESERA_BUSY_MSG})}\n\n"
+            yield "event: done\ndata: {}\n\n"
 
     return StreamingResponse(event_gen(), media_type="text/event-stream", headers={
         "Cache-Control": "no-cache",
@@ -4806,7 +4914,8 @@ async def stt(req: STTRequest):
     }
 
     async with httpx.AsyncClient(timeout=30.0) as client:
-        r = await _gemini_post(client, f"{GEMINI_GENERATE}?key={GEMINI_API_KEY}", body)
+        r = await _post_with_retry(client, f"{GEMINI_GENERATE}?key={GEMINI_API_KEY}", body,
+                                   {"Content-Type": "application/json"})
         if r.status_code == 429:
             # cupo/ráfaga: no rompemos; el front lo trata como "no te entendí" y reintenta
             return {"text": "", "busy": True}
