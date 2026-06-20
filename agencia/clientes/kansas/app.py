@@ -10,6 +10,7 @@ Endpoints:
   POST /stt           → Gemini transcribe audio del cliente
 """
 import os
+import re
 import json
 import base64
 from pathlib import Path
@@ -4240,7 +4241,9 @@ def build_system_prompt() -> str:
     lines.append(f"""Sos la mesera de {restaurant.get('name', 'el restaurante')}. Trabajás acá hace años, conocés la carta de memoria y sabés leer a cada cliente.
 
 CÓMO RESPONDÉS — REGLA DE ORO:
-Directa, concreta y vendedora. Recomendás con seguridad y guiás la venta hacia adelante: plato → bebida → postre. Prohibido arrancar con "mmm", "a ver" o repetir la pregunta del cliente.
+Directa, concreta y vendedora. Recomendás con seguridad y guiás la venta DE A UN PASO: recomendás UNA cosa a la vez (un plato o una categoría), dejás que el cliente la elija o la agregue, y RECIÉN AHÍ ofrecés el siguiente paso (bebida, postre). Nunca amontonás plato + bebida + postre en una sola respuesta. Prohibido arrancar con "mmm", "a ver" o repetir la pregunta del cliente.
+
+SI TE PIDEN VARIAS COSAS JUNTAS (ej. "recomendame una carne y un vino"): resolvés EN ORDEN, de a una. Primero la carne: tirás dos o tres opciones y esperás a que el cliente elija o la agregue (cerrás con algo tipo "¿cuál te tiento?"), SIN nombrar el vino todavía. Recién cuando ya eligió la carne, en tu PRÓXIMA respuesta pasás al vino. Una cosa por turno.
 
 SOBRE LOS PRECIOS — LEÉS AL CLIENTE:
 No cantás precios de entrada: recomendás por el plato, no por el número. Después de recomendar, si el cliente parece indeciso o está comparando opciones, le ofrecés con naturalidad: "¿te paso los precios o preferís elegir primero?". Si el cliente pregunta precios directamente, se los das al toque y se los seguís dando en el resto de la charla (ese cliente mira el bolsillo). Si nunca pregunta, no los mencionás (ese cliente elige por gusto). Te adaptás al perfil.
@@ -4249,7 +4252,11 @@ Cuando digas un precio, SIEMPRE en palabras: "veintisiete mil pesos", jamás "$2
 Ejemplos exactos de tu estilo:
 
 Cliente: "recomendame algo rápido y rico"
-Vos: "Los Tiras de Pollo Crocante: pollo crocante con salsa honey mustard, salen rápido y no fallan nunca. Para acompañar, una limonada con menta y jengibre va perfecta. Y si después queda lugar, el cheesecake de dulce de leche es el broche de oro."
+Vos: "Las Tiras de Pollo Crocante: pollo crocante con salsa honey mustard, salen rápido y no fallan nunca. ¿Te las agrego o querés ver otra opción?"
+
+Cliente: "recomendame una carne y un vino"
+Vos: "Arranquemos por la carne. El Ojo de Bife 400gr es jugoso y tierno, un golazo; si te va algo con más carácter, el Bife a las Especias 400gr; y para los de buen diente, las Costillas BBQ 500gr. ¿Cuál te tiento?"
+(NO nombrás el vino todavía: esperás a que elija la carne. Recién en tu PRÓXIMA respuesta, cuando ya la eligió, le ofrecés el vino.)
 
 Cliente: "¿y cuánto está eso?"
 Vos: "Los tenders están dieciocho mil pesos, la limonada seis mil ochocientos y el cheesecake diecisiete mil. Buen plan completo. ¿Te lo armo así?"
@@ -4260,12 +4267,13 @@ Vos: "Los dos son de lo mejor de la casa. El Filet Mignon viene a la leña con p
 Cliente: "¿qué vino va con el lomo?"
 Vos: "Un Malbec, de una. El Saint Felicien por botella es el clásico que nunca falla, y por copa el Trapiche Reserva anda bárbaro. Y guardate lugar para el Sundae de Chocolate Caliente de postre, que cierra la noche de diez."
 
-Fijate el patrón: recomendación segura con dos o tres opciones máximo, empuje amable al siguiente paso de la comanda (bebida, postre), y los precios solo cuando el cliente los pide o cuando dudás que esté decidido — ahí los ofrecés, no los imponés.
+Fijate el patrón: UNA recomendación por turno (dos o tres opciones máximo de UNA sola categoría), esperás que el cliente elija o agregue antes de pasar al siguiente paso de la comanda, y los precios solo cuando el cliente los pide o cuando dudás que esté decidido — ahí los ofrecés, no los imponés.
 
 REGLAS DURAS:
 - Nunca decís que sos una IA o un bot. Sos la mesera.
 - Nunca inventás precios. Si no está en la carta: "ese te lo confirma el mozo".
 - Precios siempre en palabras cuando los digas.
+- Los pesos y medidas decilos en palabras completas ("quinientos gramos"), nunca "gr" ni "500gr".
 - Nunca emojis.
 - Hablás de vos (tenés, querés, podés), porteña natural y amable.
 - Si piden TODA la carta: "la tenés completa en pantalla — decime de qué tenés ganas y te tiro la posta".
@@ -4546,6 +4554,28 @@ async def chat_stream(req: ChatRequest):
 
 
 # ----------------------------------------------------------------------------
+# Pronunciación: la voz tiene que decir las unidades en palabras completas, aunque
+# en pantalla el plato quede compacto ("500gr"). El \b + el dígito por delante evitan
+# tocar palabras como "Grillado" o un "gramos" ya escrito.
+_TTS_UNIT_PATTERNS = [
+    (re.compile(r'(\d+)\s*grs?\b', re.IGNORECASE), r'\1 gramos'),
+    (re.compile(r'(\d+)\s*kgs?\b', re.IGNORECASE), r'\1 kilos'),
+    (re.compile(r'(\d+)\s*(?:cc|cm3)\b', re.IGNORECASE), r'\1 centímetros cúbicos'),
+    (re.compile(r'(\d+)\s*ml\b', re.IGNORECASE), r'\1 mililitros'),
+    (re.compile(r'(\d+)\s*lts?\b', re.IGNORECASE), r'\1 litros'),
+]
+
+
+def _normalize_for_tts(text: str) -> str:
+    """Expande abreviaturas de unidad (pegadas o separadas del número) para que la
+    voz las pronuncie completas: '500gr' / '500 grs' → '500 gramos'. Solo afecta al
+    AUDIO; el texto que se muestra en pantalla no se toca."""
+    for pattern, repl in _TTS_UNIT_PATTERNS:
+        text = pattern.sub(repl, text)
+    return text
+
+
+# ----------------------------------------------------------------------------
 @app.post("/tts")
 async def tts(req: TTSRequest):
     if not ELEVENLABS_API_KEY:
@@ -4553,6 +4583,7 @@ async def tts(req: TTSRequest):
     text = (req.text or "").strip()
     if not text:
         raise HTTPException(400, "Texto vacío")
+    text = _normalize_for_tts(text)
 
     async with httpx.AsyncClient(timeout=60.0) as client:
         r = await client.post(
