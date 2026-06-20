@@ -62,6 +62,9 @@ TTS_MODELS_DIR = os.environ.get("TTS_MODELS_DIR", "/tmp/tts-models").strip()
 # HÍBRIDO: con TTS_ENGINE=browser, los iPhone/iPad (Safari bloquea la voz asíncrona)
 # reciben voz del server con este motor; Android/PC usan la voz del navegador (instantánea).
 BROWSER_FALLBACK_ENGINE = os.environ.get("BROWSER_FALLBACK_ENGINE", "piper").strip().lower()
+# Exprimir TODOS los núcleos del CPU para la síntesis de voz (vale gratis, y más aún si
+# subís a CPU upgrade). Se setea antes de importar onnxruntime (los imports de TTS son lazy).
+os.environ.setdefault("OMP_NUM_THREADS", str(os.cpu_count() or 2))
 # DEMO: muestra en la portada "Demo Premium" / "Demo Básico"; cada uno usa una voz para
 # mostrar la diferencia de planes EN VIVO desde un solo Space. Solo si DEMO_MODE está on
 # (los restaurantes reales NO lo ven). El cliente elige un PLAN, no un motor: el server
@@ -4949,6 +4952,33 @@ def _synth_local(text: str, engine: str = None) -> bytes:
     if eng == "kokoro":
         return _kokoro_synth(text)
     return _piper_synth(text)
+
+
+@app.on_event("startup")
+async def _prewarm_tts():
+    """Pre-carga el/los modelo(s) de voz en segundo plano para que la PRIMERA frase no
+    penalice (hoy cargan recién en el 1er pedido). No bloquea el arranque (thread daemon)
+    ni rompe si falla (el chat sigue andando; en el peor caso carga lazy igual que antes)."""
+    engines = set()
+    if TTS_ENGINE in ("piper", "kokoro"):
+        engines.add(TTS_ENGINE)
+    if TTS_ENGINE == "browser" and BROWSER_FALLBACK_ENGINE in ("piper", "kokoro"):
+        engines.add(BROWSER_FALLBACK_ENGINE)
+    if DEMO_MODE:
+        for e in (DEMO_PREMIUM_ENGINE, DEMO_BASIC_ENGINE):
+            if e in ("piper", "kokoro"):
+                engines.add(e)
+    if not engines:
+        return
+
+    def _warm():
+        for e in engines:
+            try:
+                _synth_local("Hola", e)   # fuerza descarga + carga del modelo + 1 inferencia
+            except Exception as ex:
+                print(f"[tts prewarm] {e}: {ex}")
+
+    threading.Thread(target=_warm, daemon=True).start()
 
 
 async def _tts_elevenlabs(text: str) -> Response:
