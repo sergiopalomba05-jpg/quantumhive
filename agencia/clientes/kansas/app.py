@@ -44,6 +44,7 @@ TTS_ENGINE     = os.environ.get("TTS_ENGINE", "piper").strip().lower()
 TTS_MODELS_DIR = os.environ.get("TTS_MODELS_DIR", "/tmp/tts-models").strip()
 # Piper
 PIPER_VOICE = os.environ.get("PIPER_VOICE", "es_AR-daniela-high").strip()
+PIPER_VOICE_URL = os.environ.get("PIPER_VOICE_URL", "").strip()  # opcional: URL directa al .onnx (override)
 # Kokoro (int8 = 88MB, el más rápido en CPU)
 KOKORO_MODEL_URL  = os.environ.get("KOKORO_MODEL_URL",
     "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.int8.onnx").strip()
@@ -4632,24 +4633,30 @@ def _download_file(url: str, dest: str) -> str:
     return dest
 
 
+def _piper_onnx_url() -> str:
+    """URL del .onnx de la voz Piper en el repo oficial de voces. Se arma desde la clave
+    (es_AR-daniela-high → es/es_AR/daniela/high/...) o se toma de PIPER_VOICE_URL."""
+    if PIPER_VOICE_URL:
+        return PIPER_VOICE_URL
+    parts = PIPER_VOICE.split("-")            # ["es_AR", "daniela", "high"]
+    locale = parts[0]                         # es_AR
+    lang = locale.split("_")[0]               # es
+    name, quality = parts[1], parts[2]
+    return (f"https://huggingface.co/rhasspy/piper-voices/resolve/main/"
+            f"{lang}/{locale}/{name}/{quality}/{PIPER_VOICE}.onnx")
+
+
 def _get_piper():
     global _piper_voice
     if _piper_voice is None:
         with _tts_lock:
             if _piper_voice is None:
-                import sys
-                import subprocess
                 from piper import PiperVoice  # import lazy: no carga si no se usa
-                os.makedirs(TTS_MODELS_DIR, exist_ok=True)
                 onnx = os.path.join(TTS_MODELS_DIR, PIPER_VOICE + ".onnx")
-                if not os.path.exists(onnx):
-                    # downloader oficial de piper: resuelve solo la ruta del repo de voces
-                    subprocess.run(
-                        [sys.executable, "-m", "piper.download_voices",
-                         PIPER_VOICE, "--download-dir", TTS_MODELS_DIR],
-                        check=True,
-                    )
-                _piper_voice = PiperVoice.load(onnx)
+                url = _piper_onnx_url()
+                _download_file(url, onnx)               # modelo
+                _download_file(url + ".json", onnx + ".json")  # config (mismo nombre + .json)
+                _piper_voice = PiperVoice.load(onnx)    # toma el .json de al lado
     return _piper_voice
 
 
