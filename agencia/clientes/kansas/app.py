@@ -4976,10 +4976,12 @@ async def tts(req: TTSRequest, request: Request):
         # reproduce un archivo de audio y SÍ suena en Safari.
         if _is_ios(request.headers.get("user-agent", "")):
             try:
+                if BROWSER_FALLBACK_ENGINE == "elevenlabs":
+                    return await _tts_elevenlabs(text)   # iPhone premium (requiere crédito)
                 audio = await asyncio.to_thread(_synth_local, text, BROWSER_FALLBACK_ENGINE)
                 return Response(content=audio, media_type="audio/wav")
             except Exception:
-                pass  # si la voz del server falla, igual probamos la del navegador
+                pass  # si la voz del server/cloud falla, igual probamos la del navegador
         return {"mode": "browser", "text": text}
 
     if TTS_ENGINE == "elevenlabs":
