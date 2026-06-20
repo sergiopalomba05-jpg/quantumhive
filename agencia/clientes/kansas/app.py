@@ -1105,6 +1105,7 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 }
 .splash-cta:hover { border-color: var(--gold); background: rgba(40,28,22,0.6); }
 .splash-demos { position: relative; z-index: 2; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+.splash-demos[hidden] { display: none; }   /* respetar el atributo hidden (si no, el flex lo mostraba siempre) */
 .splash-demos .splash-cta { min-width: 230px; justify-content: center; }
 .splash-cta.demo.premium { border-color: var(--gold); color: var(--gold); font-weight: 700; }
 .splash-cta::after {
