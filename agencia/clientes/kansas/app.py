@@ -33,6 +33,12 @@ ELEVENLABS_API_KEY = os.environ.get("ELEVENLABS_API_KEY", "").strip()
 ELEVENLABS_VOICE_ID = os.environ.get("ELEVENLABS_VOICE_ID", "4wDRKlxcHNOFO5kBvE81").strip()
 ELEVENLABS_MODEL    = os.environ.get("ELEVENLABS_MODEL", "eleven_multilingual_v2").strip()
 GEMINI_MODEL        = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash").strip()
+# Resiliencia del cerebro: ante 429 (cupo/ráfaga llena) o 503 (Gemini caído un toque)
+# reintenta con backoff; si igual no llega, la mesera contesta con gracia y NO rompe.
+GEMINI_MAX_RETRIES  = int(os.environ.get("GEMINI_MAX_RETRIES", "2"))
+MESERA_BUSY_MSG     = os.environ.get("MESERA_BUSY_MSG",
+    "Perdoná, estoy con muchísima gente en este momento y no llego a atenderte bien. "
+    "Dame unos segundos y volvé a escribirme, ¿dale?")
 
 # Motor de voz (TTS) — PLUGGABLE por env, así cada clon elige su voz sin tocar código.
 #   piper      → self-hosteado en el Space, GRATIS e ILIMITADO, acento es_AR (porteño). DEFAULT.
@@ -4524,17 +4530,29 @@ def _gemini_body(message: str, history: List[ChatTurn]) -> Dict[str, Any]:
     }
 
 
+async def _gemini_post(client: httpx.AsyncClient, url: str, body: dict) -> httpx.Response:
+    """POST a Gemini con reintentos en 429 (cupo/ráfaga) y 503 (caído un toque), con
+    backoff exponencial. Devuelve la última respuesta; el caller decide el fallback."""
+    delay = 0.6
+    r = None
+    for attempt in range(GEMINI_MAX_RETRIES + 1):
+        r = await client.post(url, json=body, headers={"Content-Type": "application/json"})
+        if r.status_code == 200 or r.status_code not in (429, 503) or attempt == GEMINI_MAX_RETRIES:
+            return r
+        await asyncio.sleep(delay)
+        delay *= 2
+    return r
+
+
 @app.post("/chat")
 async def chat(req: ChatRequest):
     if not GEMINI_API_KEY:
         raise HTTPException(500, "GEMINI_API_KEY no está configurada en el Space")
     body = _gemini_body(req.message, req.history)
     async with httpx.AsyncClient(timeout=30.0) as client:
-        r = await client.post(
-            f"{GEMINI_GENERATE}?key={GEMINI_API_KEY}",
-            json=body,
-            headers={"Content-Type": "application/json"},
-        )
+        r = await _gemini_post(client, f"{GEMINI_GENERATE}?key={GEMINI_API_KEY}", body)
+        if r.status_code == 429:
+            return {"reply": MESERA_BUSY_MSG}   # cupo/ráfaga: la mesera responde con gracia
         if r.status_code != 200:
             raise HTTPException(r.status_code, f"Gemini error: {r.text[:500]}")
         data = r.json()
@@ -4553,33 +4571,46 @@ async def chat_stream(req: ChatRequest):
     body = _gemini_body(req.message, req.history)
 
     async def event_gen():
+        url = f"{GEMINI_STREAM}?alt=sse&key={GEMINI_API_KEY}"
         async with httpx.AsyncClient(timeout=60.0) as client:
-            async with client.stream(
-                "POST",
-                f"{GEMINI_STREAM}?alt=sse&key={GEMINI_API_KEY}",
-                json=body,
-                headers={"Content-Type": "application/json"},
-            ) as r:
-                if r.status_code != 200:
-                    body_err = await r.aread()
-                    yield f"event: error\ndata: {json.dumps({'status': r.status_code, 'body': body_err.decode('utf-8', 'ignore')[:500]})}\n\n"
-                    return
-                async for line in r.aiter_lines():
-                    if not line:
-                        continue
-                    if line.startswith("data:"):
-                        payload = line[5:].strip()
-                        if not payload:
-                            continue
-                        try:
-                            obj = json.loads(payload)
-                            piece = obj["candidates"][0]["content"]["parts"][0].get("text", "")
-                            if piece:
-                                yield f"event: chunk\ndata: {json.dumps({'text': piece})}\n\n"
-                        except Exception:
-                            # chunks parciales / sin texto — ignorar
-                            continue
-                yield "event: done\ndata: {}\n\n"
+            delay = 0.6
+            for attempt in range(GEMINI_MAX_RETRIES + 1):
+                async with client.stream(
+                    "POST", url, json=body,
+                    headers={"Content-Type": "application/json"},
+                ) as r:
+                    if r.status_code == 200:
+                        async for line in r.aiter_lines():
+                            if not line:
+                                continue
+                            if line.startswith("data:"):
+                                payload = line[5:].strip()
+                                if not payload:
+                                    continue
+                                try:
+                                    obj = json.loads(payload)
+                                    piece = obj["candidates"][0]["content"]["parts"][0].get("text", "")
+                                    if piece:
+                                        yield f"event: chunk\ndata: {json.dumps({'text': piece})}\n\n"
+                                except Exception:
+                                    # chunks parciales / sin texto — ignorar
+                                    continue
+                        yield "event: done\ndata: {}\n\n"
+                        return
+                    # respuesta no-200
+                    if r.status_code in (429, 503) and attempt < GEMINI_MAX_RETRIES:
+                        await r.aread()  # drenar y reintentar
+                    elif r.status_code == 429:
+                        # cupo/ráfaga llena: la mesera "habla" el mensaje en vez de cortar
+                        yield f"event: chunk\ndata: {json.dumps({'text': MESERA_BUSY_MSG})}\n\n"
+                        yield "event: done\ndata: {}\n\n"
+                        return
+                    else:
+                        body_err = await r.aread()
+                        yield f"event: error\ndata: {json.dumps({'status': r.status_code, 'body': body_err.decode('utf-8', 'ignore')[:500]})}\n\n"
+                        return
+                await asyncio.sleep(delay)
+                delay *= 2
 
     return StreamingResponse(event_gen(), media_type="text/event-stream", headers={
         "Cache-Control": "no-cache",
@@ -4775,11 +4806,10 @@ async def stt(req: STTRequest):
     }
 
     async with httpx.AsyncClient(timeout=30.0) as client:
-        r = await client.post(
-            f"{GEMINI_GENERATE}?key={GEMINI_API_KEY}",
-            json=body,
-            headers={"Content-Type": "application/json"},
-        )
+        r = await _gemini_post(client, f"{GEMINI_GENERATE}?key={GEMINI_API_KEY}", body)
+        if r.status_code == 429:
+            # cupo/ráfaga: no rompemos; el front lo trata como "no te entendí" y reintenta
+            return {"text": "", "busy": True}
         if r.status_code != 200:
             raise HTTPException(r.status_code, f"Gemini STT error: {r.text[:500]}")
         data = r.json()
