@@ -1634,8 +1634,8 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 
 .history-panel {
   position: fixed; top: 0; left: 0; right: 0;
-  height: 72dvh;          /* más alto: entra más texto del chat */
-  max-height: 72dvh;
+  height: 55dvh;          /* alto fijo y chico: así el teclado no lo tapa al escribir */
+  max-height: 55dvh;
   z-index: 70;
   background: var(--paper);
   border-bottom-left-radius: 22px;
@@ -1646,11 +1646,6 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
   box-shadow: 0 30px 60px rgba(0,0,0,0.4);
 }
 .history-panel.open { transform: translateY(0); }
-/* Al escribir, el panel se ajusta al alto visible para que el teclado no tape el input */
-body.keyboard-open .history-panel {
-  height: calc(100dvh - var(--kb, 0px) - 8px);
-  max-height: calc(100dvh - var(--kb, 0px) - 8px);
-}
 .history-handle {
   order: 99;              /* el handle va abajo del panel ahora */
   width: 40px; height: 4px;
@@ -1686,11 +1681,11 @@ body.keyboard-open .history-panel {
   display: flex; flex-direction: column; gap: 10px;
 }
 .msg {
-  max-width: 86%;
-  padding: 10px 15px 11px;
+  max-width: 88%;
+  padding: 9px 14px 10px;
   border-radius: 16px;
-  font-size: 14.5px;
-  line-height: 1.45;
+  font-size: 13.5px;     /* un toque más chica → entra más texto, pero legible para grandes */
+  line-height: 1.4;
 }
 .msg.user {
   align-self: flex-end;
@@ -3568,19 +3563,19 @@ async function synthesize(text) {
     });
     if (!r.ok) {
       console.warn('TTS', r.status);
-      return null;
+      return { speak: text };   // el server no pudo → que hable el navegador del celu
     }
     const ct = r.headers.get('content-type') || '';
     if (ct.includes('application/json')) {
-      // motor "browser": la voz la pone el navegador del cliente (instantáneo)
+      // motor "browser" (o fallback): la voz la pone el navegador del cliente
       const j = await r.json();
-      return (j && j.mode === 'browser') ? { speak: j.text || text } : null;
+      return { speak: (j && j.text) ? j.text : text };
     }
     const blob = await r.blob();
     return URL.createObjectURL(blob);
   } catch (e) {
     console.warn('TTS err', e);
-    return null;
+    return { speak: text };   // sin red / error → fallback al navegador
   }
 }
 
