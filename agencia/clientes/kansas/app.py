@@ -1621,8 +1621,8 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 
 .history-panel {
   position: fixed; top: 0; left: 0; right: 0;
-  height: 52dvh;          /* termina a mitad de pantalla: el teclado nunca lo tapa */
-  max-height: 52dvh;
+  height: 72dvh;          /* más alto: entra más texto del chat */
+  max-height: 72dvh;
   z-index: 70;
   background: var(--paper);
   border-bottom-left-radius: 22px;
@@ -1633,6 +1633,11 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
   box-shadow: 0 30px 60px rgba(0,0,0,0.4);
 }
 .history-panel.open { transform: translateY(0); }
+/* Al escribir, el panel se ajusta al alto visible para que el teclado no tape el input */
+body.keyboard-open .history-panel {
+  height: calc(100dvh - var(--kb, 0px) - 8px);
+  max-height: calc(100dvh - var(--kb, 0px) - 8px);
+}
 .history-handle {
   order: 99;              /* el handle va abajo del panel ahora */
   width: 40px; height: 4px;
@@ -2299,18 +2304,6 @@ body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
 .modal-actions .stay { background: linear-gradient(180deg, var(--accent), var(--accent-dk)); color: var(--paper); }
 .modal-actions .leave { background: transparent; border: 1px solid rgba(201,168,106,0.35); color: var(--bone); }
 
-/* ===== Recordatorio legal en el chat ===== */
-.chat-legal {
-  flex: 0 0 auto;
-  margin: 0 16px 6px;
-  padding: 8px 11px;
-  border-radius: 10px;
-  background: rgba(139,28,43,0.08);
-  border: 1px solid rgba(139,28,43,0.16);
-  font-size: 10.5px; line-height: 1.45;
-  color: var(--bone-soft);
-}
-.chat-legal b { color: var(--accent); font-weight: 700; }
 
 /* ===== Broche de oro: detalles de animación ===== */
 /* Burbujas del chat entran suave */
@@ -2400,7 +2393,6 @@ body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6l-12 12"/></svg>
     </button>
   </div>
-  <div class="chat-legal">Guía informativa, puede contener errores. Por <b>alergias o intolerancias</b>, confirmá con el personal antes de pedir.</div>
   <div class="history-list" id="historyList"></div>
   <div class="dock panel-dock">
     <div class="dock-row">
@@ -2628,6 +2620,11 @@ function setSolState(s) {
 let _currentBotBubble = null;
 
 function _list() { return $('#historyList'); }
+// ¿el usuario está cerca del fondo? (si subió a leer, NO lo tiramos abajo)
+function _nearBottom() {
+  const l = _list();
+  return l ? (l.scrollHeight - l.scrollTop - l.clientHeight) < 80 : true;
+}
 function _clearEmpty() {
   const e = _list().querySelector('.history-empty');
   if (e) e.remove();
@@ -2657,8 +2654,9 @@ function startBotBubble() {
 }
 function updateBotBubble(text) {
   if (!_currentBotBubble) startBotBubble();
+  const stick = _nearBottom();          // solo seguimos al fondo si ya estabas ahí
   _currentBotBubble.textContent = text;
-  _list().scrollTop = _list().scrollHeight;
+  if (stick) _list().scrollTop = _list().scrollHeight;
 }
 function endBotBubble() { _currentBotBubble = null; }
 
@@ -3581,11 +3579,17 @@ if (window.speechSynthesis) {
 // iOS exige un gesto para "desbloquear" la voz: disparamos una vacía en el 1er toque.
 let _ttsUnlocked = false;
 function cvUnlockSpeech() {
-  if (_ttsUnlocked || !window.speechSynthesis) return;
-  _ttsUnlocked = true;
-  try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; window.speechSynthesis.speak(u); } catch (e) {}
+  if (!window.speechSynthesis) return;
+  try {
+    window.speechSynthesis.resume();
+    if (!_ttsUnlocked) {
+      _ttsUnlocked = true;
+      window.speechSynthesis.speak(new SpeechSynthesisUtterance(' '));  // "despierta" la voz en el gesto
+    }
+  } catch (e) {}
 }
-document.addEventListener('pointerdown', cvUnlockSpeech, { once: true });
+// desbloqueo en cada toque (iOS necesita el gesto cerca del habla; no usamos {once})
+document.addEventListener('pointerdown', cvUnlockSpeech);
 
 function speakBrowser(text, myToken, item) {
   return new Promise((resolve) => {
@@ -3608,6 +3612,7 @@ function speakBrowser(text, myToken, item) {
       // spotlight: estimamos la duración por largo del texto (~14 caracteres/seg)
       if (item) cvScheduleSpotlight(item.dishes, item.cat, Math.max(800, Math.round(text.length / 14 * 1000)), myToken);
       u.onend = finish; u.onerror = finish;
+      try { ss.resume(); } catch (e) {}   // Chrome Android a veces queda "pausado"
       ss.speak(u);
       // watchdog: si cancelan el turno (o no dispara onend), no colgamos la cola TTS
       watch = setInterval(() => { if (myToken !== state.cancelToken) finish(); }, 250);
@@ -3879,7 +3884,7 @@ function blobToBase64(blob) {
       if (splashEl) splashEl.style.height = h + 'px';
     }
     const list = document.getElementById('historyList');
-    if (list) list.scrollTop = list.scrollHeight;
+    if (list && (list.scrollHeight - list.scrollTop - list.clientHeight) < 80) list.scrollTop = list.scrollHeight;
   }
 
   if (window.visualViewport) {
