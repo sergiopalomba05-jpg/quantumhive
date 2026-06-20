@@ -1137,8 +1137,11 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 
 /* Topbar — marca + Sol chip */
 .topbar {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 22px 10px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;  /* menú | marca centrada | acciones */
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px 10px;
   border-bottom: 1px solid rgba(139,28,43,0.10);
   background: linear-gradient(180deg, #181210, #0E0A07);
   position: relative; z-index: 3;
@@ -1147,10 +1150,13 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
   font-family: 'Fraunces', serif;
   font-weight: 300;
   font-variation-settings: "opsz" 48, "SOFT" 30;
-  font-size: 26px;
+  font-size: clamp(17px, 5vw, 26px);  /* escala con el ancho: ~18px @360, 26px en grande */
   line-height: 1;
   letter-spacing: -0.01em;
   color: var(--paper);
+  text-align: center;       /* centrada en la columna del medio */
+  white-space: nowrap;      /* "La Escaloneta" nunca parte en dos */
+  min-width: 0;
 }
 .brand small {
   display: block;
@@ -1340,17 +1346,19 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
   color: var(--paper);
 }
 /* Botón "☰ Menú" fijo a la izquierda de los tabs */
-.tab-menu {
-  position: sticky; left: 0; z-index: 3; flex-shrink: 0;
+/* Botón "☰ Menú" en el header (a la izquierda) */
+.menu-btn {
+  flex-shrink: 0;
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800;
-  padding: 7px 14px; border-radius: 999px; margin-right: 4px;
-  color: var(--paper);
+  padding: 8px 14px; border-radius: 999px;
+  color: var(--paper); cursor: pointer; white-space: nowrap;
   background: linear-gradient(180deg, var(--accent), var(--accent-dk));
   box-shadow: 0 4px 12px -3px rgba(139,28,43,0.55);
+  transition: all 180ms ease;
 }
-.tab-menu .mt-ic { font-size: 13px; line-height: 1; }
-.tab-menu.open { background: linear-gradient(180deg, var(--gold-dk), #8a6e3e); }
+.menu-btn .mt-ic { font-size: 13px; line-height: 1; }
+.menu-btn.open { background: linear-gradient(180deg, var(--gold-dk), #8a6e3e); }
 
 /* Menú desplegable — índice de secciones */
 .menu-overlay {
@@ -1954,13 +1962,14 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 
 /* Responsive */
 @media (max-width: 480px) {
-  .brand { font-size: 21px; }
-  .topbar { padding: 12px 12px 8px; }
+  .topbar { gap: 7px; padding: 12px 10px 8px; }
+  .menu-btn { font-size: 9.5px; padding: 7px 11px; letter-spacing: 0.10em; }
   .sol-chip { padding: 6px 12px 6px 6px; font-size: 11px; }
   .chat-trigger { flex: 0 0 auto; padding: 9px 11px; }
   .chat-trigger .ct-full { display: none; }     /* en celu: el texto largo no entra */
   .chat-trigger .ct-short { display: inline; }  /* ...se muestra "Chat" */
-  .table-chip { font-size: 9px; padding: 6px 9px; }
+  .table-chip { padding: 3px 9px; }
+  .table-chip b { font-size: 14px; }
   .quick-chip { font-size: 10.5px; padding: 8px 10px; }
   .carta-section h2 { font-size: 27px; }
   .dish .name { font-size: 16px; }
@@ -2020,21 +2029,22 @@ body.keyboard-open .carta-section:last-child { margin-bottom: 20px; }
    ============================================================ */
 
 /* Chip de mesa en la topbar */
-.topbar-actions { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; justify-content: flex-end; }
-.topbar .brand { flex-shrink: 0; }
+.topbar-actions { display: flex; align-items: center; gap: 8px; min-width: 0; justify-content: flex-end; }
+.topbar .brand { min-width: 0; }
 .topbar-actions .table-chip { flex-shrink: 0; }
 .topbar-actions .chat-trigger { min-width: 0; }
+/* Chip de mesa apilado: "MESA" chico arriba + número grande abajo (ocupa poco ancho) */
 .table-chip {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 6px 12px; border-radius: 999px;
+  display: inline-flex; flex-direction: column; align-items: center; gap: 1px;
+  padding: 4px 11px; border-radius: 13px;
   border: 1px solid rgba(201,168,106,0.30);
   background: rgba(24,18,16,0.85);
-  color: var(--gold); font-size: 10px; letter-spacing: 0.12em;
-  text-transform: uppercase; font-weight: 700; cursor: pointer; white-space: nowrap;
+  color: var(--gold); cursor: pointer; white-space: nowrap; line-height: 1;
   transition: all 200ms ease;
 }
+.table-chip .tc-label { font-size: 7.5px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; opacity: 0.85; }
 .table-chip:hover { border-color: var(--gold); background: rgba(36,26,22,0.95); }
-.table-chip b { color: var(--paper); font-weight: 800; }
+.table-chip b { color: var(--paper); font-weight: 800; font-size: 15px; }
 
 /* Botón "+" en cada plato */
 .dish-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
@@ -2339,12 +2349,13 @@ body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
 <div id="app">
 
   <header class="topbar">
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Ver todas las secciones del menú"><span class="mt-ic">☰</span>Menú</button>
     <div class="brand">
       La Escaloneta
       <small>Carta viva</small>
     </div>
     <div class="topbar-actions">
-      <button class="table-chip" id="tableChip" aria-label="Tu número de mesa">🍽️ Mesa <b id="tableNum">—</b></button>
+      <button class="table-chip" id="tableChip" aria-label="Tu número de mesa"><span class="tc-label">Mesa</span><b id="tableNum">—</b></button>
       <button class="chat-trigger" id="solChip" data-state="idle" aria-label="Escribile a tu mesera">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 11.5a8.38 8.38 0 01-9 8.4 8.5 8.5 0 01-3.4-.7L3 21l1.8-5.6a8.38 8.38 0 01-.7-3.4 8.5 8.5 0 018.4-9 8.38 8.38 0 019 8.5z"/></svg>
         <span class="ct-full">Escribile a tu mesera…</span>
@@ -2743,14 +2754,8 @@ function renderCarta() {
     }
   }
 
-  // Botón "☰ Menú" fijo (sticky) — abre el desplegable con todas las secciones
-  const menuTab = document.createElement('button');
-  menuTab.className = 'tab-menu'; menuTab.id = 'menuTab'; menuTab.type = 'button';
-  menuTab.innerHTML = '<span class="mt-ic">☰</span>Menú';
-  menuTab.setAttribute('aria-label', 'Ver todas las secciones del menú');
-  menuTab.onclick = (e) => { e.stopPropagation(); toggleMenuDrop(); };
-  tabs.appendChild(menuTab);
-
+  // El botón "☰ Menú" ahora vive fijo en el header (#menuBtn); la barra de tabs
+  // queda solo con las secciones que scrollean.
   sections.forEach((sec, idx) => {
     // tab
     const tab = document.createElement('button');
@@ -2964,12 +2969,12 @@ function openMenuDrop(){
   drop.scrollTop = 0;   // abrir siempre desde el tope (Comida primero)
   drop.classList.add('open');
   const ov = $('#menuOverlay'); if (ov) ov.classList.add('open');
-  const btn = $('#menuTab'); if (btn) btn.classList.add('open');
+  const btn = $('#menuBtn'); if (btn) btn.classList.add('open');
 }
 function closeMenuDrop(){
   const drop = $('#menuDrop'); if (drop) drop.classList.remove('open');
   const ov = $('#menuOverlay'); if (ov) ov.classList.remove('open');
-  const btn = $('#menuTab'); if (btn) btn.classList.remove('open');
+  const btn = $('#menuBtn'); if (btn) btn.classList.remove('open');
 }
 function toggleMenuDrop(){
   const drop = $('#menuDrop');
@@ -4163,6 +4168,8 @@ cvSetChips(null);   // render inicial de los 4 atajos por defecto (con sus liste
 ['pointerdown', 'keydown'].forEach(ev => document.addEventListener(ev, cvResetIdleHint, { passive: true }));
 // Menú desplegable: tocar afuera lo cierra
 $('#menuOverlay').addEventListener('click', closeMenuDrop);
+// Botón "☰ Menú" del header → abre/cierra el desplegable de secciones
+$('#menuBtn').addEventListener('click', (e) => { e.stopPropagation(); toggleMenuDrop(); });
 // Modal de confirmación genérico (callback en Sí)
 let _confirmCb = null;
 function cvConfirm(text, onYes){
