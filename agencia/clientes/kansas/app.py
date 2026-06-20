@@ -2360,8 +2360,8 @@ body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
     </div>
     <button class="splash-cta" id="splashCta">Tocá para empezar</button>
     <div class="splash-demos" id="splashDemos" hidden>
-      <button class="splash-cta demo premium" id="demoPremium">★ Demo Premium</button>
-      <button class="splash-cta demo" id="demoBasic">Demo Básico</button>
+      <button class="splash-cta demo" id="demoBasic">Demo Plan Básico</button>
+      <button class="splash-cta demo premium" id="demoPremium">★ Demo Plan Premium</button>
     </div>
     <p class="splash-sub">Te atiende un <b>mozo virtual</b></p>
   </div>
