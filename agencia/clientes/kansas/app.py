@@ -3962,7 +3962,9 @@ function navSwap(from, to, closeFrom, openTo){
   toggleQuickActions();
 }
 function onPop(){
-  if (NAV.cardOpen) { closeMozoCardDom(); }
+  const _drop = $('#menuDrop');
+  if (_drop && _drop.classList.contains('open')) { closeMenuDrop(); }   // atrás cierra el menú desplegable primero
+  else if (NAV.cardOpen) { closeMozoCardDom(); }
   else if (NAV.stack.length) { const name = NAV.stack.pop(); (NAV_CLOSERS[name] || (()=>{}))(); }
   else if (cartaAwayFromHome()) { goHome(); }
   else { openExitModal(); }
