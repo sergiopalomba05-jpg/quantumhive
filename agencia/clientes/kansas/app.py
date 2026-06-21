@@ -6,17 +6,14 @@ Endpoints:
   GET  /health        → verifica que las keys estén configuradas
   POST /chat          → Gemini chat (no streaming, devuelve respuesta completa)
   POST /chat/stream   → Gemini chat con streaming SSE (texto a medida que se genera)
-  POST /tts           → ElevenLabs TTS, devuelve audio MP3
+  POST /tts           → MiniMax TTS, devuelve audio MP3
   POST /stt           → Gemini transcribe audio del cliente
 """
 import os
 import re
-import io
 import json
-import wave
 import base64
 import asyncio
-import threading
 from pathlib import Path
 from typing import Optional, List, Dict, Any
 from html import escape as _esc
@@ -30,9 +27,6 @@ from pydantic import BaseModel
 # Configuración — todo desde env vars (las setea el Space)
 # ============================================================================
 GEMINI_API_KEY     = os.environ.get("GEMINI_API_KEY", "").strip()
-ELEVENLABS_API_KEY = os.environ.get("ELEVENLABS_API_KEY", "").strip()
-ELEVENLABS_VOICE_ID = os.environ.get("ELEVENLABS_VOICE_ID", "4wDRKlxcHNOFO5kBvE81").strip()
-ELEVENLABS_MODEL    = os.environ.get("ELEVENLABS_MODEL", "eleven_multilingual_v2").strip()
 GEMINI_MODEL        = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash").strip()
 # Resiliencia del cerebro: ante 429 (cupo/ráfaga llena) o 503 (Gemini caído un toque)
 # reintenta con backoff; si igual no llega, la mesera contesta con gracia y NO rompe.
@@ -52,41 +46,11 @@ OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "").strip()
 OPENROUTER_URL     = "https://openrouter.ai/api/v1/chat/completions"
 MAX_HISTORY_TURNS  = int(os.environ.get("MAX_HISTORY_TURNS", "0"))  # 0 = mandar todo el historial
 
-# Motor de voz (TTS) — PLUGGABLE por env, así cada clon elige su voz sin tocar código.
-#   minimax    → API cloud MiniMax T2A v2 (streaming, baja latencia, voz natural). DEFAULT.
-#   piper      → self-hosteado en el Space, GRATIS e ILIMITADO, acento es_AR (porteño).
-#   kokoro     → self-hosteado, gratis/ilimitado, más natural/premium, español neutro.
-#   elevenlabs → premium pago (gasta crédito).
-#   browser    → voz del navegador (instantánea, $0).
-TTS_ENGINE     = os.environ.get("TTS_ENGINE", "minimax").strip().lower()
-TTS_MODELS_DIR = os.environ.get("TTS_MODELS_DIR", "/tmp/tts-models").strip()
-# HÍBRIDO: con TTS_ENGINE=browser, los iPhone/iPad (Safari bloquea la voz asíncrona)
-# reciben voz del server con este motor; Android/PC usan la voz del navegador (instantánea).
-BROWSER_FALLBACK_ENGINE = os.environ.get("BROWSER_FALLBACK_ENGINE", "minimax").strip().lower()
 # MiniMax T2A v2 — MINIMAX_API_KEY va SOLO en env vars del Space, nunca al repo.
 MINIMAX_API_KEY = os.environ.get("MINIMAX_API_KEY", "").strip()
 MINIMAX_VOICE   = os.environ.get("MINIMAX_VOICE", "Spanish_UpsetGirl").strip()
-MINIMAX_MODEL   = os.environ.get("MINIMAX_MODEL", "speech-02-turbo").strip()  # turbo = menor latencia
-# Exprimir TODOS los núcleos del CPU para la síntesis de voz (vale gratis, y más aún si
-# subís a CPU upgrade). Se setea antes de importar onnxruntime (los imports de TTS son lazy).
-os.environ.setdefault("OMP_NUM_THREADS", str(os.cpu_count() or 2))
-# DEMO: muestra en la portada "Demo Premium" / "Demo Básico"; cada uno usa una voz para
-# mostrar la diferencia de planes EN VIVO desde un solo Space. Solo si DEMO_MODE está on
-# (los restaurantes reales NO lo ven). El cliente elige un PLAN, no un motor: el server
-# mapea plan→voz acá (seguro). Sin crédito ElevenLabs, podés poner premium=kokoro, basic=piper.
-DEMO_MODE           = os.environ.get("DEMO_MODE", "").strip().lower() in ("1", "true", "yes", "si", "sí")
-DEMO_PREMIUM_ENGINE = os.environ.get("DEMO_PREMIUM_ENGINE", "elevenlabs").strip().lower()
-DEMO_BASIC_ENGINE   = os.environ.get("DEMO_BASIC_ENGINE", "kokoro").strip().lower()
-# Piper
-PIPER_VOICE = os.environ.get("PIPER_VOICE", "es_AR-daniela-high").strip()
-PIPER_VOICE_URL = os.environ.get("PIPER_VOICE_URL", "").strip()  # opcional: URL directa al .onnx (override)
-# Kokoro (int8 = 88MB, el más rápido en CPU)
-KOKORO_MODEL_URL  = os.environ.get("KOKORO_MODEL_URL",
-    "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.int8.onnx").strip()
-KOKORO_VOICES_URL = os.environ.get("KOKORO_VOICES_URL",
-    "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin").strip()
-KOKORO_VOICE = os.environ.get("KOKORO_VOICE", "ef_dora").strip()
-KOKORO_LANG  = os.environ.get("KOKORO_LANG", "es").strip()
+MINIMAX_MODEL   = os.environ.get("MINIMAX_MODEL", "speech-02-turbo").strip()
+DEMO_MODE = os.environ.get("DEMO_MODE", "").strip().lower() in ("1", "true", "yes", "si", "sí")
 
 # Supabase — opcional. Si no están seteadas, /feedback no persiste pero NO rompe.
 # (Se cargan como env vars del Space; nunca al repo público.)
@@ -101,7 +65,6 @@ TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN", "").strip()
 ORDER_CHAT_ID  = os.environ.get("ORDER_CHAT_ID", "").strip()
 
 GEMINI_GENERATE = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"  # solo /stt
-ELEVEN_TTS      = f"https://api.elevenlabs.io/v1/text-to-speech/{ELEVENLABS_VOICE_ID}/stream?optimize_streaming_latency=3"
 
 BASE_DIR = Path(__file__).parent
 STATIC_DIR = BASE_DIR / "static"  # legacy, no usado en versión mono
@@ -4696,7 +4659,6 @@ class ChatRequest(BaseModel):
 
 class TTSRequest(BaseModel):
     text: str
-    tier: Optional[str] = None   # demo: "premium" | "basic" (solo se respeta si DEMO_MODE)
 
 
 class STTRequest(BaseModel):
@@ -4758,21 +4720,13 @@ async def health():
     return {
         "ok": True,
         "gemini_key_set": bool(GEMINI_API_KEY),
-        "eleven_key_set": bool(ELEVENLABS_API_KEY),
-        "voice_id": ELEVENLABS_VOICE_ID,
         "gemini_model": GEMINI_MODEL,
         "brain_chain": [f"{p}:{m}" for p, m in BRAIN_CHAIN_PARSED],
         "openrouter_key_set": bool(OPENROUTER_API_KEY),
-        "eleven_model": ELEVENLABS_MODEL,
-        "tts_engine": TTS_ENGINE,
-        "tts_voice": ("navegador (dispositivo)" if TTS_ENGINE == "browser"
-                      else MINIMAX_VOICE if TTS_ENGINE == "minimax"
-                      else KOKORO_VOICE if TTS_ENGINE == "kokoro"
-                      else ELEVENLABS_VOICE_ID if TTS_ENGINE == "elevenlabs"
-                      else PIPER_VOICE),
-        "browser_ios_fallback": (BROWSER_FALLBACK_ENGINE if TTS_ENGINE == "browser" else None),
+        "minimax_key_set": bool(MINIMAX_API_KEY),
+        "tts_voice": MINIMAX_VOICE,
+        "tts_model": MINIMAX_MODEL,
         "demo_mode": DEMO_MODE,
-        "demo_engines": ({"premium": DEMO_PREMIUM_ENGINE, "basic": DEMO_BASIC_ENGINE} if DEMO_MODE else None),
         "system_prompt_chars": len(SYSTEM_PROMPT),
         "supabase_configured": bool(SUPABASE_URL and SUPABASE_KEY),
     }
@@ -5024,160 +4978,12 @@ def _normalize_for_tts(text: str) -> str:
     return text
 
 
-# ----------------------------------------------------------------------------
-# Motores de voz self-hosteados (Piper / Kokoro). Carga LAZY: el modelo se descarga
-# y se carga en el PRIMER pedido de voz, no al arrancar — así el Space bootea al toque
-# y, si algo del TTS falla, el chat sigue andando (el error sale en la respuesta de /tts).
-_tts_lock = threading.Lock()
-_piper_voice = None
-_kokoro = None
-
-
-def _download_file(url: str, dest: str) -> str:
-    """Descarga url→dest si no existe ya (cache en el disco del contenedor)."""
-    if os.path.exists(dest):
-        return dest
-    os.makedirs(os.path.dirname(dest), exist_ok=True)
-    tmp = dest + ".part"
-    with httpx.stream("GET", url, follow_redirects=True, timeout=600.0) as r:
-        r.raise_for_status()
-        with open(tmp, "wb") as f:
-            for chunk in r.iter_bytes(chunk_size=1 << 16):
-                f.write(chunk)
-    os.replace(tmp, dest)
-    return dest
-
-
-def _piper_onnx_url() -> str:
-    """URL del .onnx de la voz Piper en el repo oficial de voces. Se arma desde la clave
-    (es_AR-daniela-high → es/es_AR/daniela/high/...) o se toma de PIPER_VOICE_URL."""
-    if PIPER_VOICE_URL:
-        return PIPER_VOICE_URL
-    parts = PIPER_VOICE.split("-")            # ["es_AR", "daniela", "high"]
-    locale = parts[0]                         # es_AR
-    lang = locale.split("_")[0]               # es
-    name, quality = parts[1], parts[2]
-    return (f"https://huggingface.co/rhasspy/piper-voices/resolve/main/"
-            f"{lang}/{locale}/{name}/{quality}/{PIPER_VOICE}.onnx")
-
-
-def _get_piper():
-    global _piper_voice
-    if _piper_voice is None:
-        with _tts_lock:
-            if _piper_voice is None:
-                from piper import PiperVoice  # import lazy: no carga si no se usa
-                onnx = os.path.join(TTS_MODELS_DIR, PIPER_VOICE + ".onnx")
-                url = _piper_onnx_url()
-                _download_file(url, onnx)               # modelo
-                _download_file(url + ".json", onnx + ".json")  # config (mismo nombre + .json)
-                _piper_voice = PiperVoice.load(onnx)    # toma el .json de al lado
-    return _piper_voice
-
-
-def _piper_synth(text: str) -> bytes:
-    voice = _get_piper()
-    buf = io.BytesIO()
-    with wave.open(buf, "wb") as wf:
-        voice.synthesize_wav(text, wf)
-    return buf.getvalue()
-
-
-def _get_kokoro():
-    global _kokoro
-    if _kokoro is None:
-        with _tts_lock:
-            if _kokoro is None:
-                from kokoro_onnx import Kokoro  # import lazy
-                model = _download_file(
-                    KOKORO_MODEL_URL,
-                    os.path.join(TTS_MODELS_DIR, os.path.basename(KOKORO_MODEL_URL)))
-                voices = _download_file(
-                    KOKORO_VOICES_URL,
-                    os.path.join(TTS_MODELS_DIR, os.path.basename(KOKORO_VOICES_URL)))
-                _kokoro = Kokoro(model, voices)
-    return _kokoro
-
-
-def _kokoro_synth(text: str) -> bytes:
-    import numpy as np
-    k = _get_kokoro()
-    samples, sr = k.create(text, voice=KOKORO_VOICE, speed=1.0, lang=KOKORO_LANG)
-    pcm16 = (np.clip(np.asarray(samples, dtype="float32"), -1.0, 1.0) * 32767.0).astype("<i2").tobytes()
-    buf = io.BytesIO()
-    with wave.open(buf, "wb") as wf:
-        wf.setnchannels(1)
-        wf.setsampwidth(2)
-        wf.setframerate(int(sr))
-        wf.writeframes(pcm16)
-    return buf.getvalue()
-
-
-def _synth_local(text: str, engine: str = None) -> bytes:
-    """Sintetiza con el motor local indicado (o el configurado). Bloqueante → en un thread."""
-    eng = engine or TTS_ENGINE
-    if eng == "kokoro":
-        return _kokoro_synth(text)
-    return _piper_synth(text)
-
-
-@app.on_event("startup")
-async def _prewarm_tts():
-    """Pre-carga el/los modelo(s) de voz en segundo plano para que la PRIMERA frase no
-    penalice (hoy cargan recién en el 1er pedido). No bloquea el arranque (thread daemon)
-    ni rompe si falla (el chat sigue andando; en el peor caso carga lazy igual que antes)."""
-    engines = set()
-    LOCAL = ("piper", "kokoro")
-    if TTS_ENGINE in LOCAL:
-        engines.add(TTS_ENGINE)
-    if TTS_ENGINE == "browser" and BROWSER_FALLBACK_ENGINE in LOCAL:
-        engines.add(BROWSER_FALLBACK_ENGINE)
-    if DEMO_MODE:
-        for e in (DEMO_PREMIUM_ENGINE, DEMO_BASIC_ENGINE):
-            if e in LOCAL:
-                engines.add(e)
-    if not engines:
-        return
-
-    def _warm():
-        for e in engines:
-            try:
-                _synth_local("Hola", e)   # fuerza descarga + carga del modelo + 1 inferencia
-            except Exception as ex:
-                print(f"[tts prewarm] {e}: {ex}")
-
-    threading.Thread(target=_warm, daemon=True).start()
-
-
-async def _tts_elevenlabs(text: str) -> Response:
-    if not ELEVENLABS_API_KEY:
-        raise HTTPException(500, "ELEVENLABS_API_KEY no está configurada en el Space")
-    async with httpx.AsyncClient(timeout=60.0) as client:
-        r = await client.post(
-            ELEVEN_TTS,
-            headers={
-                "xi-api-key": ELEVENLABS_API_KEY,
-                "Content-Type": "application/json",
-                "Accept": "audio/mpeg",
-            },
-            json={
-                "text": text,
-                "model_id": ELEVENLABS_MODEL,
-                "voice_settings": {
-                    "stability": 0.45,
-                    "similarity_boost": 0.85,
-                    "style": 0.30,
-                    "use_speaker_boost": True,
-                },
-            },
-        )
-        if r.status_code != 200:
-            raise HTTPException(r.status_code, f"ElevenLabs error: {r.text[:500]}")
-        return Response(content=r.content, media_type="audio/mpeg")
-
-
-async def _tts_minimax(text: str) -> Response:
-    """MiniMax T2A v2 streaming — recibe chunks hex de MP3, los ensambla y devuelve audio."""
+@app.post("/tts")
+async def tts(req: TTSRequest):
+    text = (req.text or "").strip()
+    if not text:
+        raise HTTPException(400, "Texto vacío")
+    text = _normalize_for_tts(text)
     if not MINIMAX_API_KEY:
         raise HTTPException(500, "MINIMAX_API_KEY no está configurada en el Space")
     audio_buf = bytearray()
@@ -5193,18 +4999,8 @@ async def _tts_minimax(text: str) -> Response:
                 "model": MINIMAX_MODEL,
                 "text": text,
                 "stream": True,
-                "voice_setting": {
-                    "voice_id": MINIMAX_VOICE,
-                    "speed": 1.0,
-                    "vol": 1.0,
-                    "pitch": 0,
-                },
-                "audio_setting": {
-                    "sample_rate": 32000,
-                    "bitrate": 128000,
-                    "format": "mp3",
-                    "channel": 1,
-                },
+                "voice_setting": {"voice_id": MINIMAX_VOICE, "speed": 1.0, "vol": 1.0, "pitch": 0},
+                "audio_setting": {"sample_rate": 32000, "bitrate": 128000, "format": "mp3", "channel": 1},
             },
         ) as r:
             if r.status_code != 200:
@@ -5226,60 +5022,6 @@ async def _tts_minimax(text: str) -> Response:
     if not audio_buf:
         raise HTTPException(500, "MiniMax TTS: respuesta vacía")
     return Response(content=bytes(audio_buf), media_type="audio/mpeg")
-
-
-# ----------------------------------------------------------------------------
-def _is_ios(ua: str) -> bool:
-    """iPhone/iPad/iPod (incluye Chrome/Firefox en iOS, que igual usan WebKit de Safari)."""
-    ua = (ua or "").lower()
-    return any(s in ua for s in ("iphone", "ipad", "ipod", "crios", "fxios"))
-
-
-@app.post("/tts")
-async def tts(req: TTSRequest, request: Request):
-    text = (req.text or "").strip()
-    if not text:
-        raise HTTPException(400, "Texto vacío")
-    text = _normalize_for_tts(text)
-
-    # Motor efectivo: el configurado, salvo que sea una DEMO y el cliente elija un plan.
-    engine = TTS_ENGINE
-    if DEMO_MODE and req.tier:
-        t = req.tier.strip().lower()
-        if t == "premium":
-            engine = DEMO_PREMIUM_ENGINE
-        elif t == "basic":
-            engine = DEMO_BASIC_ENGINE
-
-    if engine == "browser":
-        # HÍBRIDO: Android/PC → voz del NAVEGADOR (instantánea, $0). iOS bloquea la voz
-        # asíncrona del navegador, así que a iPhone/iPad les damos voz del SERVER, que
-        # reproduce un archivo de audio y SÍ suena en Safari.
-        if _is_ios(request.headers.get("user-agent", "")):
-            try:
-                if BROWSER_FALLBACK_ENGINE == "minimax":
-                    return await _tts_minimax(text)
-                if BROWSER_FALLBACK_ENGINE == "elevenlabs":
-                    return await _tts_elevenlabs(text)
-                audio = await asyncio.to_thread(_synth_local, text, BROWSER_FALLBACK_ENGINE)
-                return Response(content=audio, media_type="audio/wav")
-            except Exception:
-                pass  # si la voz del server/cloud falla, igual probamos la del navegador
-        return {"mode": "browser", "text": text}
-
-    if engine == "minimax":
-        return await _tts_minimax(text)
-
-    if engine == "elevenlabs":
-        return await _tts_elevenlabs(text)
-
-    # Motores locales (piper/kokoro): síntesis bloqueante en un thread para no frenar
-    # el event loop. Devuelven WAV (el frontend lo reproduce igual que el MP3).
-    try:
-        audio = await asyncio.to_thread(_synth_local, text, engine)
-    except Exception as e:
-        raise HTTPException(500, f"TTS '{engine}' error: {type(e).__name__}: {str(e)[:400]}")
-    return Response(content=audio, media_type="audio/wav")
 
 
 # ----------------------------------------------------------------------------
