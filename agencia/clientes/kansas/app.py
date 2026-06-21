@@ -72,6 +72,10 @@ RESTAURANT_ID           = os.environ.get("RESTAURANT_ID", "la-escaloneta").strip
 # instantáneo. Tolerante: si Storage falla o no está configurado, se genera con MiniMax igual.
 TTS_CACHE        = os.environ.get("TTS_CACHE", "1").strip().lower() in ("1", "true", "yes", "si", "sí")
 TTS_CACHE_BUCKET = os.environ.get("TTS_CACHE_BUCKET", "tts-cache").strip()
+# Caché de respuestas del flujo guiado (chips): la pregunta de un chip es fija, así que la respuesta
+# del LLM se guarda una vez y se reproduce $0. Solo aplica a mensajes "guided" (no a preguntas libres).
+RESPUESTAS_CACHE = os.environ.get("RESPUESTAS_CACHE", "1").strip().lower() in ("1", "true", "yes", "si", "sí")
+RESPUESTAS_TABLE = os.environ.get("RESPUESTAS_TABLE", "respuestas_cache").strip()
 
 # Canal INTERNO del pedido al mozo (opcional). Si está configurado, /order
 # manda el pedido por Telegram sin que el comensal salga de la app.
@@ -3453,7 +3457,7 @@ function cvApplyOrderDirective(raw) {
   return res;
 }
 
-async function converse(userText, withVoice) {
+async function converse(userText, withVoice, guided) {
   if (!userText) return;
   state.isStreaming = true;
 
@@ -3531,6 +3535,7 @@ async function converse(userText, withVoice) {
         message: userText,
         history: state.history.slice(0, -1),
         cart: state.cart.map(i => ({ name: i.name, qty: i.qty })),   // lo que ya está en el pedido
+        guided: !!guided,                                            // chip/flujo guiado → cacheable ($0)
       })
     });
     if (!resp.ok) throw new Error('Server ' + resp.status);
@@ -4111,12 +4116,19 @@ function stopSpeaking(){
 function cartCount(){ return state.cart.reduce((a, i) => a + i.qty, 0); }
 function cartTotal(){ return state.cart.reduce((a, i) => a + (i.price || 0) * i.qty, 0); }
 function findCart(id){ return state.cart.find(i => i.id === id); }
+// Tras agregar un plato A MANO durante un flujo guiado, la mesera retoma la charla (no se queda
+// colgada con las opciones viejas). Mensaje fijo → respuesta cacheada ($0 tras la 1ª vez).
+function cvManualFollowup(){
+  if (!state.hasContextChips || state.isStreaming) return;
+  converse('¿Qué más me recomendás?', true, true);
+}
 function addToCart(item){
   const ex = findCart(item.id);
   if (ex) ex.qty++; else state.cart.push({ id: item.id, name: item.name, price: item.price, qty: 1 });
   saveCart();
   refreshCartUI();
   showToast('Agregado al pedido: ' + item.name);
+  cvManualFollowup();
 }
 function changeQty(id, d){
   const it = findCart(id);
@@ -4366,9 +4378,13 @@ function openExitModal(){ $('#exitModal').classList.add('open'); }
 function closeExitModal(){ $('#exitModal').classList.remove('open'); }
 
 // ---------- Acciones rápidas ----------
+// Chips de acción que dependen del contexto previo (qué se ofreció recién): NO se cachean,
+// para no servirle a otro cliente la respuesta del contexto equivocado.
+const CV_NO_CACHE = new Set(['más opciones', 'sí, agregalo', 'otra opción']);
 function quickAsk(text){
   if (state.isStreaming) return;
-  converse(text, true);   // voz + spotlight sobre la carta, sin abrir el chat
+  const cacheable = !CV_NO_CACHE.has((text || '').trim().toLowerCase());
+  converse(text, true, cacheable);   // chip guiado con voz; cacheable salvo los de acción contextual
 }
 function toggleQuickActions(){
   const qa = $('#quickActions'); if (!qa) return;
@@ -4671,6 +4687,8 @@ class ChatRequest(BaseModel):
     message: str
     history: List[ChatTurn] = []
     cart: Optional[List[Dict[str, Any]]] = None   # [{name, qty}] — lo que YA está en el pedido
+    guided: bool = False                          # viene de un chip/flujo guiado → cacheable ($0)
+    device_id: Optional[str] = None               # id anónimo del dispositivo (memoria/métricas)
 
 
 class TTSRequest(BaseModel):
@@ -4871,6 +4889,52 @@ async def _post_with_retry(client: httpx.AsyncClient, url: str, body: dict, head
     return r
 
 
+# ----------------------------------------------------------------------------
+# Caché de respuestas del flujo guiado (chips) en Supabase. Tolerante: si falla o no está
+# configurado, se genera con el LLM igual (nunca rompe). Solo cachea mensajes "guided".
+def _resp_cache_on() -> bool:
+    return bool(RESPUESTAS_CACHE and SUPABASE_URL and SUPABASE_KEY)
+
+
+def _resp_cache_key(message: str) -> str:
+    raw = f"{RESTAURANT_ID}|{(message or '').strip().lower()}"
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+
+async def _resp_cache_get(client: httpx.AsyncClient, key: str) -> Optional[str]:
+    try:
+        r = await client.get(
+            f"{SUPABASE_URL}/rest/v1/{RESPUESTAS_TABLE}",
+            params={"restaurant_id": f"eq.{RESTAURANT_ID}", "hash": f"eq.{key}",
+                    "select": "respuesta", "limit": "1"},
+            headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"},
+            timeout=8.0)
+        if r.status_code == 200:
+            rows = r.json()
+            if rows:
+                return ((rows[0] or {}).get("respuesta") or {}).get("raw")
+    except Exception:
+        pass
+    return None
+
+
+async def _resp_cache_put(client: httpx.AsyncClient, key: str, message: str, raw: str) -> None:
+    if not (raw or "").strip():
+        return
+    if "#PEDIDO#" in raw:   # respuestas que agregan/sacan del carrito dependen del contexto → no cachear
+        return
+    try:
+        await client.post(
+            f"{SUPABASE_URL}/rest/v1/{RESPUESTAS_TABLE}",
+            headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}",
+                     "Content-Type": "application/json", "Prefer": "resolution=merge-duplicates"},
+            json={"restaurant_id": RESTAURANT_ID, "hash": key,
+                  "pregunta": (message or "")[:300], "respuesta": {"raw": raw}},
+            timeout=8.0)
+    except Exception:
+        pass
+
+
 @app.post("/chat")
 async def chat(req: ChatRequest):
     history = _trim_history(req.history)
@@ -4943,27 +5007,42 @@ async def _brain_stream_once(client, prov, model, history, message, sys_extra: s
 
 @app.post("/chat/stream")
 async def chat_stream(req: ChatRequest):
-    """Stream SSE con cadena de cerebros: si el primero no arranca, rota al siguiente."""
+    """Stream SSE con cadena de cerebros: si el primero no arranca, rota al siguiente.
+    Flujo guiado (chips): si la respuesta ya está cacheada, se reproduce sin tocar el LLM ($0)."""
     history = _trim_history(req.history)
     sys_extra = _cart_note(req.cart)
+    cache_key = _resp_cache_key(req.message) if (req.guided and _resp_cache_on()) else None
 
     async def event_gen():
         async with httpx.AsyncClient(timeout=60.0) as client:
+            # Flujo guiado ya cacheado → reproducir tal cual, sin LLM
+            if cache_key:
+                cached = await _resp_cache_get(client, cache_key)
+                if cached:
+                    yield f"event: chunk\ndata: {json.dumps({'text': cached})}\n\n"
+                    yield "event: done\ndata: {}\n\n"
+                    return
+            collected = []   # para cachear la respuesta si es guiada y nueva
             for prov, model in BRAIN_CHAIN_PARSED:
                 produced = False
                 try:
                     async for piece in _brain_stream_once(client, prov, model, history, req.message, sys_extra):
                         produced = True
+                        collected.append(piece)
                         yield f"event: chunk\ndata: {json.dumps({'text': piece})}\n\n"
                 except Exception:
                     # _BrainUnavailable (no arrancó) o corte a mitad
                     if produced:
                         # ya emitimos texto: cerramos limpio (no se puede rotar a mitad)
                         yield "event: done\ndata: {}\n\n"
+                        if cache_key:
+                            await _resp_cache_put(client, cache_key, req.message, "".join(collected))
                         return
                     continue  # no arrancó: probar el siguiente cerebro de la cadena
                 else:
                     yield "event: done\ndata: {}\n\n"
+                    if cache_key:
+                        await _resp_cache_put(client, cache_key, req.message, "".join(collected))
                     return
             # ningún cerebro arrancó: la mesera responde con gracia
             yield f"event: chunk\ndata: {json.dumps({'text': MESERA_BUSY_MSG})}\n\n"
