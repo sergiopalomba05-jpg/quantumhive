@@ -3,12 +3,10 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Dependencias del sistema:
-#   curl       → healthcheck manual
-#   espeak-ng  → fonemización del español para el TTS (red de seguridad de Kokoro;
-#                Piper bundlea el suyo)
-#   ca-certificates → descargas https de los modelos de voz en el primer uso
+#   curl            → healthcheck manual
+#   ca-certificates → https a la API de MiniMax (voz) y Supabase (caché de voz)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        curl espeak-ng ca-certificates \
+        curl ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .

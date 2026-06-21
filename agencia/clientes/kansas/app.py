@@ -14,6 +14,7 @@ import re
 import json
 import base64
 import asyncio
+import hashlib
 from pathlib import Path
 from typing import Optional, List, Dict, Any
 from html import escape as _esc
@@ -49,7 +50,12 @@ MAX_HISTORY_TURNS  = int(os.environ.get("MAX_HISTORY_TURNS", "0"))  # 0 = mandar
 # MiniMax T2A v2 — MINIMAX_API_KEY va SOLO en env vars del Space, nunca al repo.
 MINIMAX_API_KEY = os.environ.get("MINIMAX_API_KEY", "").strip()
 MINIMAX_VOICE   = os.environ.get("MINIMAX_VOICE", "Spanish_UpsetGirl").strip()
-MINIMAX_MODEL   = os.environ.get("MINIMAX_MODEL", "speech-02-turbo").strip()
+MINIMAX_MODEL   = os.environ.get("MINIMAX_MODEL", "speech-02-turbo").strip()  # turbo = menor latencia
+MINIMAX_API_BASE = os.environ.get("MINIMAX_API_BASE", "https://api.minimax.io").strip().rstrip("/")
+try:
+    MINIMAX_SPEED = float(os.environ.get("MINIMAX_SPEED", "1.2"))   # 1.2 = ágil sin atropellarse
+except ValueError:
+    MINIMAX_SPEED = 1.2
 DEMO_MODE = os.environ.get("DEMO_MODE", "").strip().lower() in ("1", "true", "yes", "si", "sí")
 
 # Supabase — opcional. Si no están seteadas, /feedback no persiste pero NO rompe.
@@ -58,6 +64,10 @@ SUPABASE_URL            = os.environ.get("SUPABASE_URL", "").strip().rstrip("/")
 SUPABASE_KEY            = os.environ.get("SUPABASE_SERVICE_KEY", "").strip()
 SUPABASE_FEEDBACK_TABLE = os.environ.get("SUPABASE_FEEDBACK_TABLE", "feedback").strip()
 RESTAURANT_ID           = os.environ.get("RESTAURANT_ID", "la-escaloneta").strip()
+# Caché de voz: guarda cada MP3 por hash de frase en Supabase Storage. Frases repetidas → $0 e
+# instantáneo. Tolerante: si Storage falla o no está configurado, se genera con MiniMax igual.
+TTS_CACHE        = os.environ.get("TTS_CACHE", "1").strip().lower() in ("1", "true", "yes", "si", "sí")
+TTS_CACHE_BUCKET = os.environ.get("TTS_CACHE_BUCKET", "tts-cache").strip()
 
 # Canal INTERNO del pedido al mozo (opcional). Si está configurado, /order
 # manda el pedido por Telegram sin que el comensal salga de la app.
@@ -3612,7 +3622,7 @@ async function synthesize(text) {
     const r = await fetch('/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, tier: (window.CV_TIER || undefined) })
+      body: JSON.stringify({ text })
     });
     if (!r.ok) {
       console.warn('TTS', r.status);
@@ -4726,6 +4736,9 @@ async def health():
         "minimax_key_set": bool(MINIMAX_API_KEY),
         "tts_voice": MINIMAX_VOICE,
         "tts_model": MINIMAX_MODEL,
+        "minimax_speed": MINIMAX_SPEED,
+        "tts_cache": _tts_cache_enabled(),
+        "tts_cache_bucket": TTS_CACHE_BUCKET if _tts_cache_enabled() else None,
         "demo_mode": DEMO_MODE,
         "system_prompt_chars": len(SYSTEM_PROMPT),
         "supabase_configured": bool(SUPABASE_URL and SUPABASE_KEY),
@@ -4978,6 +4991,69 @@ def _normalize_for_tts(text: str) -> str:
     return text
 
 
+# ----------------------------------------------------------------------------
+# Caché de voz en Supabase Storage. Una frase ya generada se guarda por su hash; si se repite
+# (saludo, despedida, respuestas a los botones guiados, nombres de platos) se sirve $0 e instantáneo.
+# TODO tolerante: si Storage falla o no está configurado, se genera con MiniMax igual (nunca rompe).
+def _tts_cache_enabled() -> bool:
+    return bool(TTS_CACHE and SUPABASE_URL and SUPABASE_KEY)
+
+
+def _tts_cache_key(text: str) -> str:
+    raw = f"{RESTAURANT_ID}|{MINIMAX_MODEL}|{MINIMAX_VOICE}|{MINIMAX_SPEED}|{text}"
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+
+def _tts_cache_url(key: str) -> str:
+    return f"{SUPABASE_URL}/storage/v1/object/{TTS_CACHE_BUCKET}/{RESTAURANT_ID}/{key}.mp3"
+
+
+async def _tts_cache_get(client: httpx.AsyncClient, key: str) -> Optional[bytes]:
+    try:
+        r = await client.get(_tts_cache_url(key),
+                              headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"},
+                              timeout=10.0)
+        if r.status_code == 200 and r.content:
+            return r.content
+    except Exception:
+        pass
+    return None
+
+
+async def _tts_cache_put(client: httpx.AsyncClient, key: str, audio: bytes) -> None:
+    try:
+        await client.post(_tts_cache_url(key),
+                          headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}",
+                                   "Content-Type": "audio/mpeg", "x-upsert": "true"},
+                          content=audio, timeout=15.0)
+    except Exception:
+        pass
+
+
+async def _minimax_synth(client: httpx.AsyncClient, text: str) -> bytes:
+    """Genera el MP3 con MiniMax T2A v2. stream:False → un solo JSON con el audio (sin duplicar)."""
+    r = await client.post(
+        f"{MINIMAX_API_BASE}/v1/t2a_v2",
+        headers={"Authorization": f"Bearer {MINIMAX_API_KEY}", "Content-Type": "application/json"},
+        json={
+            "model": MINIMAX_MODEL,
+            "text": text,
+            "stream": False,
+            "voice_setting": {"voice_id": MINIMAX_VOICE, "speed": MINIMAX_SPEED, "vol": 1.0, "pitch": 0},
+            "audio_setting": {"sample_rate": 32000, "bitrate": 128000, "format": "mp3", "channel": 1},
+        },
+        timeout=30.0,
+    )
+    if r.status_code != 200:
+        raise HTTPException(r.status_code, f"MiniMax TTS error: {r.text[:400]}")
+    obj = r.json()
+    hex_audio = (obj.get("data") or {}).get("audio", "")
+    if not hex_audio:
+        br = obj.get("base_resp") or {}
+        raise HTTPException(502, f"MiniMax sin audio: {br.get('status_code')} {br.get('status_msg')}")
+    return bytes.fromhex(hex_audio)
+
+
 @app.post("/tts")
 async def tts(req: TTSRequest):
     text = (req.text or "").strip()
@@ -4986,42 +5062,22 @@ async def tts(req: TTSRequest):
     text = _normalize_for_tts(text)
     if not MINIMAX_API_KEY:
         raise HTTPException(500, "MINIMAX_API_KEY no está configurada en el Space")
-    audio_buf = bytearray()
-    async with httpx.AsyncClient(timeout=60.0) as client:
-        async with client.stream(
-            "POST",
-            "https://api.minimax.io/v1/t2a_v2",
-            headers={
-                "Authorization": f"Bearer {MINIMAX_API_KEY}",
-                "Content-Type": "application/json",
-            },
-            json={
-                "model": MINIMAX_MODEL,
-                "text": text,
-                "stream": True,
-                "voice_setting": {"voice_id": MINIMAX_VOICE, "speed": 1.0, "vol": 1.0, "pitch": 0},
-                "audio_setting": {"sample_rate": 32000, "bitrate": 128000, "format": "mp3", "channel": 1},
-            },
-        ) as r:
-            if r.status_code != 200:
-                body = await r.aread()
-                raise HTTPException(r.status_code, f"MiniMax TTS error: {body[:500]}")
-            async for line in r.aiter_lines():
-                if not line.startswith("data:"):
-                    continue
-                payload = line[5:].strip()
-                if not payload or payload == "[DONE]":
-                    continue
-                try:
-                    obj = json.loads(payload)
-                    hex_chunk = (obj.get("data") or {}).get("audio", "")
-                    if hex_chunk:
-                        audio_buf.extend(bytes.fromhex(hex_chunk))
-                except Exception:
-                    pass
-    if not audio_buf:
-        raise HTTPException(500, "MiniMax TTS: respuesta vacía")
-    return Response(content=bytes(audio_buf), media_type="audio/mpeg")
+
+    use_cache = _tts_cache_enabled()
+    key = _tts_cache_key(text) if use_cache else ""
+    async with httpx.AsyncClient() as client:
+        # 1) ¿está cacheada? → $0, instantáneo
+        if use_cache:
+            cached = await _tts_cache_get(client, key)
+            if cached:
+                return Response(content=cached, media_type="audio/mpeg", headers={"X-TTS-Cache": "hit"})
+        # 2) generar con MiniMax
+        audio = await _minimax_synth(client, text)
+        # 3) guardar en el caché para la próxima (no frena la respuesta si falla)
+        if use_cache:
+            await _tts_cache_put(client, key, audio)
+    return Response(content=audio, media_type="audio/mpeg",
+                    headers={"X-TTS-Cache": "miss" if use_cache else "off"})
 
 
 # ----------------------------------------------------------------------------
