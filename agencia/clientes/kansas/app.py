@@ -45,7 +45,7 @@ MESERA_BUSY_MSG     = os.environ.get("MESERA_BUSY_MSG",
 BRAIN_CHAIN        = os.environ.get("BRAIN_CHAIN", "").strip()
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "").strip()
 OPENROUTER_URL     = "https://openrouter.ai/api/v1/chat/completions"
-MAX_HISTORY_TURNS  = int(os.environ.get("MAX_HISTORY_TURNS", "0"))  # 0 = mandar todo el historial
+MAX_HISTORY_TURNS  = int(os.environ.get("MAX_HISTORY_TURNS", "8"))  # 8 ≈ 4 intercambios (anti bola de nieve de tokens)
 
 # MiniMax T2A v2 — MINIMAX_API_KEY va SOLO en env vars del Space, nunca al repo.
 MINIMAX_API_KEY = os.environ.get("MINIMAX_API_KEY", "").strip()
@@ -56,6 +56,10 @@ try:
     MINIMAX_SPEED = float(os.environ.get("MINIMAX_SPEED", "1.2"))   # 1.2 = ágil sin atropellarse
 except ValueError:
     MINIMAX_SPEED = 1.2
+try:
+    MINIMAX_VOL = float(os.environ.get("MINIMAX_VOL", "1.6"))       # 1.0 normal · sube el volumen (hasta 10)
+except ValueError:
+    MINIMAX_VOL = 1.6
 DEMO_MODE = os.environ.get("DEMO_MODE", "").strip().lower() in ("1", "true", "yes", "si", "sí")
 
 # Supabase — opcional. Si no están seteadas, /feedback no persiste pero NO rompe.
@@ -3357,7 +3361,13 @@ function cvSetChips(arr) {
   // Si son de contexto, NO se ocultan aunque la mesera esté hablando (hay que poder tocarlos).
   state.hasContextChips = !useDefault;
   document.body.classList.toggle('has-ctx-chips', !useDefault);   // CSS: visibles en el chat si son de contexto
-  const items = useDefault ? CV_DEFAULT_CHIPS : arr.slice(0, 4);
+  // Si ofrece 2+ opciones y ninguna es ya un "otra/más opciones", sumamos un chip "Más opciones"
+  // para que el cliente pida otra ronda sin tipear.
+  let ctx = useDefault ? null : arr.slice(0, 4);
+  if (ctx && ctx.length >= 2 && !ctx.some(c => /opci[oó]n/i.test(String(c)))) {
+    ctx = ctx.slice(0, 3); ctx.push('Más opciones');
+  }
+  const items = useDefault ? CV_DEFAULT_CHIPS : ctx;
   items.forEach((it, i) => {
     const ask = useDefault ? it.text : it;
     const label = useDefault ? it.label : it;
@@ -3595,7 +3605,7 @@ async function converse(userText, withVoice) {
   }
   if (toStore) {
     state.history.push({ role: 'model', text: toStore });
-    if (state.history.length > 20) state.history = state.history.slice(-20);
+    if (state.history.length > 8) state.history = state.history.slice(-8);
   }
 
   // Mostrar los chips YA (no esperar a que termine de hablar). Con state.hasContextChips, quedan
@@ -4106,7 +4116,7 @@ function addToCart(item){
   if (ex) ex.qty++; else state.cart.push({ id: item.id, name: item.name, price: item.price, qty: 1 });
   saveCart();
   refreshCartUI();
-  showToast(item.name + ' agregado');
+  showToast('Agregado al pedido: ' + item.name);
 }
 function changeQty(id, d){
   const it = findCart(id);
@@ -4392,17 +4402,13 @@ $('#confirmYes').addEventListener('click', () => { const cb = _confirmCb; cvClos
 $('#confirmNo').addEventListener('click', cvCloseConfirm);
 $('#confirmModal').addEventListener('click', (e) => { if (e.target.id === 'confirmModal') cvCloseConfirm(); });
 
-// Botón flotante "Agregar al pedido": si el plato YA está en el pedido, pide confirmación
+// Botón flotante "Agregar al pedido": idempotente — si el plato YA está, avisa y NO lo duplica.
+// Para sumar más unidades está el stepper "− N +" en la tarjeta del plato.
 $('#addFloat').addEventListener('click', () => {
   const btn = $('#addFloat'), e = btn && btn._entry;
   if (!e) return;
-  const ex = findCart(e.id);
-  if (ex) {
-    cvConfirm('Ya tenés ' + ex.qty + ' ' + e.name + ' en el pedido. ¿Agregar otro?',
-              () => addToCart({ id: e.id, name: e.name, price: e.price }));
-  } else {
-    addToCart({ id: e.id, name: e.name, price: e.price });
-  }
+  if (findCart(e.id)) { showToast('Ya lo tenés en el pedido'); return; }
+  addToCart({ id: e.id, name: e.name, price: e.price });
 });
 $('#cartBar').addEventListener('click', () => navOpen('order', openOrderDom));
 $('#orderClose').addEventListener('click', () => navCloseUI('order'));
@@ -5039,7 +5045,7 @@ async def _minimax_synth(client: httpx.AsyncClient, text: str) -> bytes:
             "model": MINIMAX_MODEL,
             "text": text,
             "stream": False,
-            "voice_setting": {"voice_id": MINIMAX_VOICE, "speed": MINIMAX_SPEED, "vol": 1.0, "pitch": 0},
+            "voice_setting": {"voice_id": MINIMAX_VOICE, "speed": MINIMAX_SPEED, "vol": MINIMAX_VOL, "pitch": 0},
             "audio_setting": {"sample_rate": 32000, "bitrate": 128000, "format": "mp3", "channel": 1},
         },
         timeout=30.0,
