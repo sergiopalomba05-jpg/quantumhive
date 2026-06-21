@@ -15,6 +15,7 @@ import json
 import base64
 import asyncio
 import hashlib
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, List, Dict, Any
 from html import escape as _esc
@@ -76,6 +77,10 @@ TTS_CACHE_BUCKET = os.environ.get("TTS_CACHE_BUCKET", "tts-cache").strip()
 # del LLM se guarda una vez y se reproduce $0. Solo aplica a mensajes "guided" (no a preguntas libres).
 RESPUESTAS_CACHE = os.environ.get("RESPUESTAS_CACHE", "1").strip().lower() in ("1", "true", "yes", "si", "sí")
 RESPUESTAS_TABLE = os.environ.get("RESPUESTAS_TABLE", "respuestas_cache").strip()
+# Memoria de clientes (Plan Premium): reconoce al comensal que vuelve (por device_id). Default OFF
+# → el Plan Básico NO recuerda nada. Aislada por restaurant_id.
+MEMORIA        = os.environ.get("MEMORIA", "").strip().lower() in ("1", "true", "yes", "si", "sí")
+CLIENTES_TABLE = os.environ.get("CLIENTES_TABLE", "clientes").strip()
 
 # Canal INTERNO del pedido al mozo (opcional). Si está configurado, /order
 # manda el pedido por Telegram sin que el comensal salga de la app.
@@ -2373,7 +2378,7 @@ body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
 __CV_THEME_STYLE__
 </head>
 <body>
-<script>window.CV_DEMO_MODE = __CV_DEMO_MODE__;</script>
+<script>window.CV_DEMO_MODE = __CV_DEMO_MODE__; window.CV_MEMORIA = __CV_MEMORIA__;</script>
 __CV_CONFIG_SCRIPT__
 
 <!-- ==================== SPLASH ==================== -->
@@ -2618,6 +2623,20 @@ __CV_CONFIG_SCRIPT__
   </div>
 </div>
 
+<!-- ==================== MODAL ¿CÓMO TE LLAMÁS? (memoria Premium) ==================== -->
+<div class="modal-overlay" id="nameModal">
+  <div class="modal-card">
+    <h3>¿Cómo te llamás?</h3>
+    <p>Así te reconozco la próxima vez y te recomiendo mejor. Es opcional — lo guardamos solo para vos.</p>
+    <input id="nameInput" type="text" maxlength="40" placeholder="Tu nombre" autocomplete="given-name"
+      style="width:100%;margin:8px 0 4px;padding:13px 14px;border:1px solid rgba(0,0,0,.16);border-radius:12px;font-size:16px;background:var(--paper,#fff);color:inherit;box-sizing:border-box;">
+    <div class="modal-actions">
+      <button class="leave" id="nameSkip">Ahora no</button>
+      <button class="stay" id="nameSave">Listo</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ============================================================
 // State
@@ -2767,16 +2786,60 @@ async function enterApp(tier) {
   // Cargar menú + render
   await loadMenu();
 
-  // Saludo de Sol con voz
-  setTimeout(async () => {
-    const greeting = state.menu?.assistant?.greeting || ('¡Bienvenidos a ' + ((window.CV_CONFIG && window.CV_CONFIG.nombre) || 'nuestra mesa') + '!');
-    state.history.push({ role: 'model', text: greeting });
-    setSolState('speaking');
-    await playAudioForText(greeting, ++state.cancelToken);
-    setSolState('idle');
-    endBotBubble();
-  }, 700);
+  // Saludo (con memoria Premium reconoce al que vuelve / pregunta el nombre al nuevo)
+  setTimeout(() => cvWelcome(), 700);
 }
+
+// Bienvenida con memoria Premium: reconoce al cliente que vuelve (saludo personalizado con su perfil)
+// o le pregunta el nombre la 1ª vez; sin memoria, saluda genérico como siempre.
+async function cvWelcome(){
+  if (window.CV_MEMORIA) {
+    try {
+      const r = await fetch('/cliente?device_id=' + encodeURIComponent(cvDeviceId()));
+      const c = await r.json();
+      if (c && c.conocido) {                 // ya te conoce → saludo personalizado (usa su perfil)
+        if (c.nombre) state.nombre = c.nombre;
+        converse('Hola', true, false);
+        return;
+      }
+    } catch(e){}
+    cvAskName();                             // cliente nuevo → cartel del nombre
+    return;
+  }
+  cvGreetGeneric();
+}
+function cvGreetGeneric(){
+  const greeting = state.menu?.assistant?.greeting
+    || ('¡Bienvenidos a ' + ((window.CV_CONFIG && window.CV_CONFIG.nombre) || 'nuestra mesa') + '!');
+  state.history.push({ role: 'model', text: greeting });
+  setSolState('speaking');
+  playAudioForText(greeting, ++state.cancelToken)
+    .then(() => { setSolState('idle'); endBotBubble(); })
+    .catch(() => { setSolState('idle'); endBotBubble(); });
+}
+function cvAskName(){
+  const m = $('#nameModal'); if (!m) { cvGreetGeneric(); return; }
+  m.classList.add('open');
+  const inp = $('#nameInput'); if (inp) setTimeout(() => { try { inp.focus(); } catch(e){} }, 120);
+}
+function cvFinishName(name){
+  const m = $('#nameModal'); if (m) m.classList.remove('open');
+  if (name) {
+    state.nombre = name;
+    try { fetch('/cliente', { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ device_id: cvDeviceId(), nombre: name }) }); } catch(e){}
+  }
+  cvGreetGeneric();
+}
+(function(){
+  const sv = document.getElementById('nameSave'), sk = document.getElementById('nameSkip'),
+        ip = document.getElementById('nameInput');
+  if (sv) sv.addEventListener('click', () => cvFinishName(((ip && ip.value) || '').trim().slice(0, 40)));
+  if (sk) sk.addEventListener('click', () => cvFinishName(''));
+  if (ip) ip.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); cvFinishName((ip.value || '').trim().slice(0, 40)); }
+  });
+})();
 $('#splashCta').addEventListener('click', () => enterApp(null));
 // DEMO: dos botones que entran con un plan distinto (voz premium vs básica), solo si DEMO_MODE
 if (window.CV_DEMO_MODE) {
@@ -3466,6 +3529,19 @@ function cvApplyOrderDirective(raw) {
   return res;
 }
 
+// id anónimo del dispositivo (memoria/métricas Premium). Se genera 1 vez y vive en el celu.
+function cvDeviceId(){
+  try {
+    let d = localStorage.getItem('cv_device');
+    if (!d) {
+      d = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+          : ('cv-' + Date.now() + '-' + Math.random().toString(36).slice(2));
+      localStorage.setItem('cv_device', d);
+    }
+    return d;
+  } catch(e){ return ''; }
+}
+
 async function converse(userText, withVoice, guided) {
   if (!userText) return;
   state.isStreaming = true;
@@ -3545,6 +3621,7 @@ async function converse(userText, withVoice, guided) {
         history: state.history.slice(0, -1),
         cart: state.cart.map(i => ({ name: i.name, qty: i.qty })),   // lo que ya está en el pedido
         guided: !!guided,                                            // chip/flujo guiado → cacheable ($0)
+        device_id: cvDeviceId(),                                     // memoria Premium (reconocer al volver)
       })
     });
     if (!resp.ok) throw new Error('Server ' + resp.status);
@@ -4278,6 +4355,14 @@ function enviarPedidoInterno(){
   try {
     fetch('/order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
   } catch(e){}
+  // Memoria Premium: guardar el último pedido + sumar visita (reconocerlo la próxima).
+  if (window.CV_MEMORIA) {
+    try {
+      fetch('/cliente', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ device_id: cvDeviceId(), nombre: state.nombre || undefined,
+          ultimo_pedido: state.cart.map(i => ({ name: i.name, qty: i.qty })), bump_visita: true }) });
+    } catch(e){}
+  }
 }
 
 // Despedida cálida de la mesera al cerrar el pedido (cierre de experiencia).
@@ -4704,6 +4789,14 @@ class ChatRequest(BaseModel):
     device_id: Optional[str] = None               # id anónimo del dispositivo (memoria/métricas)
 
 
+class ClienteRequest(BaseModel):
+    device_id: str
+    nombre: Optional[str] = None
+    ultimo_pedido: Optional[List[Dict[str, Any]]] = None
+    gustos: Optional[List[str]] = None
+    bump_visita: bool = False
+
+
 class TTSRequest(BaseModel):
     text: str
 
@@ -4751,6 +4844,7 @@ async def root():
     nombre_html = _esc(cfg.get("nombre", "") or "")
     html = (EMBEDDED_INDEX_HTML
             .replace("__CV_DEMO_MODE__", "true" if DEMO_MODE else "false")
+            .replace("__CV_MEMORIA__", "true" if MEMORIA else "false")
             .replace("__CV_THEME_STYLE__", theme_style)
             .replace("__CV_CONFIG_SCRIPT__", config_script)
             .replace("__CV_NOMBRE__", nombre_html))
@@ -4948,12 +5042,92 @@ async def _resp_cache_put(client: httpx.AsyncClient, key: str, message: str, raw
         pass
 
 
+# ----------------------------------------------------------------------------
+# Memoria de clientes (Premium). Tolerante: si Supabase falla o no está, la mesera atiende igual.
+def _memoria_on() -> bool:
+    return bool(MEMORIA and SUPABASE_URL and SUPABASE_KEY)
+
+
+async def _memoria_get(client: httpx.AsyncClient, device_id: str) -> Optional[Dict[str, Any]]:
+    if not (device_id and _memoria_on()):
+        return None
+    try:
+        r = await client.get(
+            f"{SUPABASE_URL}/rest/v1/{CLIENTES_TABLE}",
+            params={"restaurant_id": f"eq.{RESTAURANT_ID}", "device_id": f"eq.{device_id}",
+                    "select": "nombre,ultimo_pedido,gustos,visitas", "limit": "1"},
+            headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"}, timeout=8.0)
+        if r.status_code == 200:
+            rows = r.json()
+            if rows:
+                return rows[0]
+    except Exception:
+        pass
+    return None
+
+
+def _memoria_note(perfil: Optional[Dict[str, Any]]) -> str:
+    if not perfil:
+        return ""
+    nombre = (perfil.get("nombre") or "").strip()
+    visitas = perfil.get("visitas") or 0
+    ultimo = perfil.get("ultimo_pedido") or []
+    gustos = perfil.get("gustos") or []
+    if not (nombre or ultimo or gustos):
+        return ""
+    parts = ["\n\n--- CLIENTE QUE YA TE CONOCE (Plan Premium) ---"]
+    if nombre:
+        parts.append(f"Se llama {nombre}.")
+    if visitas:
+        parts.append(f"Ya vino {visitas} ve{'z' if visitas == 1 else 'ces'}.")
+    if ultimo:
+        nombres = ", ".join([(i.get("name") if isinstance(i, dict) else str(i)) for i in ultimo][:5])
+        if nombres:
+            parts.append(f"La última vez pidió: {nombres}.")
+    if gustos:
+        g = ", ".join([str(x) for x in gustos][:6])
+        if g:
+            parts.append(f"Gustos/notas: {g}.")
+    parts.append("Saludá con calidez como a un conocido y VARIÁ qué mencionás cada vez (a veces el nombre, "
+                 "a veces un gusto, a veces las visitas, a veces lo último que pidió); NO repitas siempre lo "
+                 "mismo ni lo enumeres todo junto. Que se sienta natural y cálido, no robótico.")
+    return "\n".join(parts)
+
+
+async def _memoria_upsert(client: httpx.AsyncClient, device_id: str, nombre=None,
+                          ultimo_pedido=None, gustos=None, bump: bool = False) -> None:
+    if not (device_id and _memoria_on()):
+        return
+    try:
+        row = {"restaurant_id": RESTAURANT_ID, "device_id": device_id,
+               "ultima_visita": datetime.now(timezone.utc).isoformat()}
+        if nombre is not None:
+            row["nombre"] = str(nombre)[:80]
+        if ultimo_pedido is not None:
+            row["ultimo_pedido"] = ultimo_pedido
+        if gustos is not None:
+            row["gustos"] = gustos
+        if bump:
+            prev = await _memoria_get(client, device_id)
+            row["visitas"] = ((prev or {}).get("visitas") or 0) + 1
+        await client.post(
+            f"{SUPABASE_URL}/rest/v1/{CLIENTES_TABLE}",
+            headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}",
+                     "Content-Type": "application/json",
+                     "Prefer": "resolution=merge-duplicates,return=minimal"},
+            json=row, timeout=8.0)
+    except Exception:
+        pass
+
+
 @app.post("/chat")
 async def chat(req: ChatRequest):
     history = _trim_history(req.history)
     sys_extra = _cart_note(req.cart)
     last_status = None
     async with httpx.AsyncClient(timeout=30.0) as client:
+        if MEMORIA and req.device_id:
+            sys_extra += _memoria_note(await _memoria_get(client, req.device_id))
         for prov, model in BRAIN_CHAIN_PARSED:
             url, headers, body = _brain_request(prov, model, history, req.message, sys_extra)
             try:
@@ -5023,11 +5197,18 @@ async def chat_stream(req: ChatRequest):
     """Stream SSE con cadena de cerebros: si el primero no arranca, rota al siguiente.
     Flujo guiado (chips): si la respuesta ya está cacheada, se reproduce sin tocar el LLM ($0)."""
     history = _trim_history(req.history)
-    sys_extra = _cart_note(req.cart)
-    cache_key = _resp_cache_key(req.message) if (req.guided and _resp_cache_on()) else None
+    base_extra = _cart_note(req.cart)
 
     async def event_gen():
         async with httpx.AsyncClient(timeout=60.0) as client:
+            # Memoria (Premium): inyectar el perfil del cliente que vuelve al prompt
+            mem_note = ""
+            if MEMORIA and req.device_id:
+                mem_note = _memoria_note(await _memoria_get(client, req.device_id))
+            sys_extra = base_extra + mem_note
+            # Caché del flujo guiado: SOLO sin perfil personalizado (básico/anónimo). Con memoria la
+            # respuesta es personalizada (lleva el nombre) y no se comparte entre clientes.
+            cache_key = _resp_cache_key(req.message) if (req.guided and _resp_cache_on() and not mem_note) else None
             # Flujo guiado ya cacheado → reproducir tal cual, sin LLM
             if cache_key:
                 cached = await _resp_cache_get(client, cache_key)
@@ -5065,6 +5246,31 @@ async def chat_stream(req: ChatRequest):
         "Cache-Control": "no-cache",
         "X-Accel-Buffering": "no",  # no buffereo en proxies
     })
+
+
+# ----------------------------------------------------------------------------
+# Memoria de clientes (Premium): el front consulta el perfil al entrar y lo guarda al dar el
+# nombre / cerrar el pedido. Tolerante: si la memoria está off o Supabase falla, no rompe.
+@app.get("/cliente")
+async def get_cliente(device_id: str = ""):
+    if not (device_id and _memoria_on()):
+        return {"conocido": False}
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        perfil = await _memoria_get(client, device_id)
+    if not perfil:
+        return {"conocido": False}
+    return {"conocido": True, "nombre": perfil.get("nombre"), "visitas": perfil.get("visitas"),
+            "ultimo_pedido": perfil.get("ultimo_pedido"), "gustos": perfil.get("gustos")}
+
+
+@app.post("/cliente")
+async def post_cliente(req: ClienteRequest):
+    if not _memoria_on():
+        return {"ok": True, "stored": False, "reason": "memoria_off"}
+    async with httpx.AsyncClient(timeout=15.0) as client:
+        await _memoria_upsert(client, req.device_id, nombre=req.nombre,
+                              ultimo_pedido=req.ultimo_pedido, gustos=req.gustos, bump=req.bump_visita)
+    return {"ok": True, "stored": True}
 
 
 # ----------------------------------------------------------------------------
