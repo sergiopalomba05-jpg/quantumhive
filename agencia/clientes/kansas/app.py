@@ -53,16 +53,20 @@ OPENROUTER_URL     = "https://openrouter.ai/api/v1/chat/completions"
 MAX_HISTORY_TURNS  = int(os.environ.get("MAX_HISTORY_TURNS", "0"))  # 0 = mandar todo el historial
 
 # Motor de voz (TTS) — PLUGGABLE por env, así cada clon elige su voz sin tocar código.
-#   piper      → self-hosteado en el Space, GRATIS e ILIMITADO, acento es_AR (porteño). DEFAULT.
+#   minimax    → API cloud MiniMax T2A v2 (streaming, baja latencia, voz natural). DEFAULT.
+#   piper      → self-hosteado en el Space, GRATIS e ILIMITADO, acento es_AR (porteño).
 #   kokoro     → self-hosteado, gratis/ilimitado, más natural/premium, español neutro.
-#   elevenlabs → premium pago (gasta crédito). Queda disponible para una demo puntual.
-# Los modelos open source se cargan lazy y se descargan en el primer uso (no rompen el boot
-# ni el build si fallan: el chat sigue andando y el error queda en la respuesta de /tts).
-TTS_ENGINE     = os.environ.get("TTS_ENGINE", "piper").strip().lower()
+#   elevenlabs → premium pago (gasta crédito).
+#   browser    → voz del navegador (instantánea, $0).
+TTS_ENGINE     = os.environ.get("TTS_ENGINE", "minimax").strip().lower()
 TTS_MODELS_DIR = os.environ.get("TTS_MODELS_DIR", "/tmp/tts-models").strip()
 # HÍBRIDO: con TTS_ENGINE=browser, los iPhone/iPad (Safari bloquea la voz asíncrona)
 # reciben voz del server con este motor; Android/PC usan la voz del navegador (instantánea).
-BROWSER_FALLBACK_ENGINE = os.environ.get("BROWSER_FALLBACK_ENGINE", "piper").strip().lower()
+BROWSER_FALLBACK_ENGINE = os.environ.get("BROWSER_FALLBACK_ENGINE", "minimax").strip().lower()
+# MiniMax T2A v2 — MINIMAX_API_KEY va SOLO en env vars del Space, nunca al repo.
+MINIMAX_API_KEY = os.environ.get("MINIMAX_API_KEY", "").strip()
+MINIMAX_VOICE   = os.environ.get("MINIMAX_VOICE", "Spanish_UpsetGirl").strip()
+MINIMAX_MODEL   = os.environ.get("MINIMAX_MODEL", "speech-02-turbo").strip()  # turbo = menor latencia
 # Exprimir TODOS los núcleos del CPU para la síntesis de voz (vale gratis, y más aún si
 # subís a CPU upgrade). Se setea antes de importar onnxruntime (los imports de TTS son lazy).
 os.environ.setdefault("OMP_NUM_THREADS", str(os.cpu_count() or 2))
@@ -4762,6 +4766,7 @@ async def health():
         "eleven_model": ELEVENLABS_MODEL,
         "tts_engine": TTS_ENGINE,
         "tts_voice": ("navegador (dispositivo)" if TTS_ENGINE == "browser"
+                      else MINIMAX_VOICE if TTS_ENGINE == "minimax"
                       else KOKORO_VOICE if TTS_ENGINE == "kokoro"
                       else ELEVENLABS_VOICE_ID if TTS_ENGINE == "elevenlabs"
                       else PIPER_VOICE),
@@ -5122,13 +5127,14 @@ async def _prewarm_tts():
     penalice (hoy cargan recién en el 1er pedido). No bloquea el arranque (thread daemon)
     ni rompe si falla (el chat sigue andando; en el peor caso carga lazy igual que antes)."""
     engines = set()
-    if TTS_ENGINE in ("piper", "kokoro"):
+    LOCAL = ("piper", "kokoro")
+    if TTS_ENGINE in LOCAL:
         engines.add(TTS_ENGINE)
-    if TTS_ENGINE == "browser" and BROWSER_FALLBACK_ENGINE in ("piper", "kokoro"):
+    if TTS_ENGINE == "browser" and BROWSER_FALLBACK_ENGINE in LOCAL:
         engines.add(BROWSER_FALLBACK_ENGINE)
     if DEMO_MODE:
         for e in (DEMO_PREMIUM_ENGINE, DEMO_BASIC_ENGINE):
-            if e in ("piper", "kokoro"):
+            if e in LOCAL:
                 engines.add(e)
     if not engines:
         return
@@ -5166,9 +5172,60 @@ async def _tts_elevenlabs(text: str) -> Response:
             },
         )
         if r.status_code != 200:
-            # devolvemos detalle para diagnosticar desde el frontend
             raise HTTPException(r.status_code, f"ElevenLabs error: {r.text[:500]}")
         return Response(content=r.content, media_type="audio/mpeg")
+
+
+async def _tts_minimax(text: str) -> Response:
+    """MiniMax T2A v2 streaming — recibe chunks hex de MP3, los ensambla y devuelve audio."""
+    if not MINIMAX_API_KEY:
+        raise HTTPException(500, "MINIMAX_API_KEY no está configurada en el Space")
+    audio_buf = bytearray()
+    async with httpx.AsyncClient(timeout=60.0) as client:
+        async with client.stream(
+            "POST",
+            "https://api.minimax.io/v1/t2a_v2",
+            headers={
+                "Authorization": f"Bearer {MINIMAX_API_KEY}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": MINIMAX_MODEL,
+                "text": text,
+                "stream": True,
+                "voice_setting": {
+                    "voice_id": MINIMAX_VOICE,
+                    "speed": 1.0,
+                    "vol": 1.0,
+                    "pitch": 0,
+                },
+                "audio_setting": {
+                    "sample_rate": 32000,
+                    "bitrate": 128000,
+                    "format": "mp3",
+                    "channel": 1,
+                },
+            },
+        ) as r:
+            if r.status_code != 200:
+                body = await r.aread()
+                raise HTTPException(r.status_code, f"MiniMax TTS error: {body[:500]}")
+            async for line in r.aiter_lines():
+                if not line.startswith("data:"):
+                    continue
+                payload = line[5:].strip()
+                if not payload or payload == "[DONE]":
+                    continue
+                try:
+                    obj = json.loads(payload)
+                    hex_chunk = (obj.get("data") or {}).get("audio", "")
+                    if hex_chunk:
+                        audio_buf.extend(bytes.fromhex(hex_chunk))
+                except Exception:
+                    pass
+    if not audio_buf:
+        raise HTTPException(500, "MiniMax TTS: respuesta vacía")
+    return Response(content=bytes(audio_buf), media_type="audio/mpeg")
 
 
 # ----------------------------------------------------------------------------
@@ -5200,13 +5257,18 @@ async def tts(req: TTSRequest, request: Request):
         # reproduce un archivo de audio y SÍ suena en Safari.
         if _is_ios(request.headers.get("user-agent", "")):
             try:
+                if BROWSER_FALLBACK_ENGINE == "minimax":
+                    return await _tts_minimax(text)
                 if BROWSER_FALLBACK_ENGINE == "elevenlabs":
-                    return await _tts_elevenlabs(text)   # iPhone premium (requiere crédito)
+                    return await _tts_elevenlabs(text)
                 audio = await asyncio.to_thread(_synth_local, text, BROWSER_FALLBACK_ENGINE)
                 return Response(content=audio, media_type="audio/wav")
             except Exception:
                 pass  # si la voz del server/cloud falla, igual probamos la del navegador
         return {"mode": "browser", "text": text}
+
+    if engine == "minimax":
+        return await _tts_minimax(text)
 
     if engine == "elevenlabs":
         return await _tts_elevenlabs(text)
