@@ -19,6 +19,7 @@ import asyncio
 import threading
 from pathlib import Path
 from typing import Optional, List, Dict, Any
+from html import escape as _esc
 
 import httpx
 from fastapi import FastAPI, HTTPException, Request
@@ -100,6 +101,42 @@ ELEVEN_TTS      = f"https://api.elevenlabs.io/v1/text-to-speech/{ELEVENLABS_VOIC
 
 BASE_DIR = Path(__file__).parent
 STATIC_DIR = BASE_DIR / "static"  # legacy, no usado en versión mono
+
+# ============================================================================
+# ╔══════════════════════════════════════════════════════════════════════════╗
+# ║  CARTA_CONFIG — ✏️  EDITAR ESTO POR CARTA                                  ║
+# ║                                                                            ║
+# ║  Para clonar una carta nueva: copiá esta carpeta y editá SOLO este bloque  ║
+# ║  + EMBEDDED_MENU_JSON (justo abajo). Nada más se toca en las 5.000 líneas. ║
+# ║  (En la fase DB, este bloque pasa a ser una fila de la tabla `restaurants`.)║
+# ╚══════════════════════════════════════════════════════════════════════════╝
+# ============================================================================
+CARTA_CONFIG = {
+    # Nombre visible del local: pestaña del navegador, splash y topbar.
+    # OJO: el nombre que usa la IA en el prompt y el saludo sale del MENÚ
+    # (EMBEDDED_MENU_JSON → restaurant.name / assistant.greeting). Mantené ambos iguales.
+    "nombre": "La Escaloneta",
+
+    # Tema de color. Cambiás el acento y el resto del CSS se adapta solo.
+    "tema": {
+        "accent":    "#8B1C2B",   # color principal de la marca (botones, títulos)
+        "accent_dk": "#6E1422",   # variante oscura (degradés, hover)
+    },
+
+    # Atajos rápidos del chat, cuando la mesera no propone sugerencias propias.
+    "chips": [
+        {"icon": "🔥", "text": "¿Cuál es la especialidad de la casa?", "label": "Especialidad de la casa"},
+        {"icon": "🍢", "text": "¿Qué tenés para picar?",               "label": "¿Qué hay para picar?"},
+        {"icon": "🍷", "text": "Recomendame un vino",                  "label": "Recomendame un vino"},
+        {"icon": "🍰", "text": "¿Qué postre me recomendás?",           "label": "¿Qué postre va bien?"},
+    ],
+
+    # Links de los CTA de reseña. Vacío = el botón no aparece.
+    "links": {
+        "googleReviewUrl": "",   # reseña de Google del local
+        "quantumhiveUrl":  "",   # link de QuantumHive (la agencia)
+    },
+}
 
 # ============================================================================
 # Contenido embebido — HTML del frontend y menu.json del restaurante
@@ -990,7 +1027,7 @@ EMBEDDED_INDEX_HTML = r"""<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="theme-color" content="#0E0A07">
-<title>La Escaloneta — Carta viva</title>
+<title>__CV_NOMBRE__ — Carta viva</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,200..900,0..100,0..1&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -2183,7 +2220,10 @@ body.keyboard-open .add-float { display: none; }
 .quick-chip:active { transform: scale(0.96); }
 .quick-chip .qi { font-size: 15px; flex-shrink: 0; }
 .quick-actions.hidden { opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity 240ms ease, transform 240ms ease; }
-body.keyboard-open .quick-actions { display: none; }
+body.keyboard-open .quick-actions { display: none; }   /* en el chat, los 4 por defecto se ocultan */
+/* ...pero los chips de CONTEXTO (acción/elección) quedan visibles, subidos arriba del teclado,
+   para poder seguir el hilo de la conversación sin que el teclado los tape (--kb lo setea el JS). */
+body.keyboard-open.has-ctx-chips .quick-actions { display: flex; bottom: calc(var(--kb, 0px) + 12px); }
 
 /* Barra "Ver mi pedido" */
 .cart-bar {
@@ -2251,6 +2291,8 @@ body.keyboard-open .cart-bar { display: none; }
   color: var(--paper); font-size: 15px;
 }
 .field input:focus { border-color: var(--gold); }
+/* Mesa que viene del QR: se muestra como dato fijo, no como campo editable */
+.field input.locked { border-color: transparent; background: transparent; padding-left: 0; font-weight: 700; font-size: 17px; pointer-events: none; -webkit-text-fill-color: var(--paper); }
 .field .hint { font-size: 10.5px; color: var(--bone-soft); margin-top: 5px; line-height: 1.4; }
 
 /* Botones grandes */
@@ -2338,14 +2380,16 @@ body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
   100% { transform: scale(1) rotate(0); }
 }
 </style>
+__CV_THEME_STYLE__
 </head>
 <body>
 <script>window.CV_DEMO_MODE = __CV_DEMO_MODE__;</script>
+__CV_CONFIG_SCRIPT__
 
 <!-- ==================== SPLASH ==================== -->
 <div id="splash">
   <div class="splash-main">
-    <h1 class="splash-mark">La Escaloneta</h1>
+    <h1 class="splash-mark">__CV_NOMBRE__</h1>
     <div class="splash-rules">
       <span class="line"></span>
       <p class="splash-eyebrow">Carta viva</p>
@@ -2378,7 +2422,7 @@ body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
   <header class="topbar">
     <button class="menu-btn" id="menuBtn" type="button" aria-label="Ver todas las secciones del menú"><span class="mt-ic">☰</span>Menú</button>
     <div class="brand">
-      La Escaloneta
+      __CV_NOMBRE__
       <small>Carta viva</small>
     </div>
     <div class="topbar-actions">
@@ -2731,7 +2775,7 @@ async function enterApp(tier) {
 
   // Saludo de Sol con voz
   setTimeout(async () => {
-    const greeting = state.menu?.assistant?.greeting || '¡Bienvenidos a La Escaloneta!';
+    const greeting = state.menu?.assistant?.greeting || ('¡Bienvenidos a ' + ((window.CV_CONFIG && window.CV_CONFIG.nombre) || 'nuestra mesa') + '!');
     state.history.push({ role: 'model', text: greeting });
     setSolState('speaking');
     await playAudioForText(greeting, ++state.cancelToken);
@@ -3125,14 +3169,25 @@ const CV_CAT_ALIASES = {
   cerveza:  ['cerveza','birra'],
   champagne:['champagne','champan','espumante','espumoso'],
   vino:     ['vino','tinto','blanco','malbec','cabernet','syrah'],
-  postre:   ['postre','dulce'],
+  postre:   ['postre'],   // OJO: nada de 'dulce' acá — choca con "vino dulce" y manda mal a Postres
   entrada:  ['entrada','picar','picada','fiambre'],
   ensalada: ['ensalada'],
   hamburg:  ['hamburguesa','burger'],
   pizz:     ['pizza','pizzeta'],
 };
-// Atajos por defecto (cuando la mesera no propone sugerencias propias)
-const CV_DEFAULT_CHIPS = [
+// Palabras genéricas/ingredientes: si el ÚNICO token fuerte de un plato es una de estas, NO se
+// enciende por la palabra suelta (ej. "Té Helado" no se prende ante "...con helado de vainilla").
+// Para esos platos se exige el nombre COMPLETO como frase.
+const CV_AMBIG = new Set([
+  'helado','cafe','agua','leche','crema','pan','arroz','papa','papas','pure',
+  'pollo','carne','queso','jamon','huevo','huevos','salsa','tomate','lechuga',
+  'cebolla','morron','dulce','fruta','verdura','sopa','fideos','milanesa'
+]);
+// Atajos por defecto (cuando la mesera no propone sugerencias propias).
+// Salen de CARTA_CONFIG.chips (inyectado en window.CV_CONFIG); fallback al set de abajo.
+const CV_DEFAULT_CHIPS = (window.CV_CONFIG && Array.isArray(window.CV_CONFIG.chips) && window.CV_CONFIG.chips.length)
+  ? window.CV_CONFIG.chips
+  : [
   { icon: '🔥', text: '¿Cuál es la especialidad de la casa?', label: 'Especialidad de la casa' },
   { icon: '🍢', text: '¿Qué tenés para picar?', label: '¿Qué hay para picar?' },
   { icon: '🍷', text: 'Recomendame un vino', label: 'Recomendame un vino' },
@@ -3176,8 +3231,16 @@ function cvDishesIn(text) {
     if (mm[0].length >= 3 && !CV_STOP.has(mm[0]) && !/\d/.test(mm[0])) toks.push({ w: mm[0], pos: mm.index });
   }
   const R = toks.map(t => t.w);
+  const padded = ' ' + norm + ' ';
   const hits = [];
   for (const d of state.dishIndex) {
+    // Baja confianza: nombre que se reduce a UN token genérico → exigir el nombre completo como
+    // frase (así "Té Helado" no se enciende por cualquier "helado" dicho al pasar).
+    if (d.tokens.length <= 1 && (!d.tokens.length || CV_AMBIG.has(d.tokens[0]))) {
+      const idx = padded.indexOf(' ' + d.norm + ' ');
+      if (idx >= 0) hits.push({ entry: d, pos: idx });
+      continue;
+    }
     const i = cvTokSeqMatch(R, d.tokens);
     if (i >= 0) hits.push({ entry: d, pos: toks[i].pos });
   }
@@ -3189,17 +3252,20 @@ function cvDishesIn(text) {
   const L = Math.max(1, norm.length);
   return kept.map(h => ({ entry: h.entry, frac: h.pos / L }));
 }
-// Categoría/sección nombrada en `text` (cuando no hay un plato puntual)
+// Categoría/sección nombrada en `text` (cuando no hay un plato puntual).
+// Navega SOLO si hay UNA categoría clara: si la frase pisa 0 o varias secciones (ambiguo,
+// ej. "vino tinto, blanco o dulce"), no me muevo — quedarse quieto > saltar mal.
 function cvCategoryIn(text) {
   if (!state.sections) return null;
   const n = ' ' + cvNorm(text) + ' ';
+  const matched = new Set();
   for (const s of state.sections) {
     for (const a of s.aliases) {
       if (a.length < 3) continue;
-      if (n.indexOf(' ' + a) >= 0) return s.id;   // palabra entera o plural
+      if (n.indexOf(' ' + a) >= 0) { matched.add(s.id); break; }   // palabra entera o plural
     }
   }
-  return null;
+  return matched.size === 1 ? [...matched][0] : null;
 }
 function cvScrollToSection(id) {
   const el = document.getElementById(id);
@@ -3310,6 +3376,10 @@ function cvSetChips(arr) {
   if (!left || !right) return;
   left.innerHTML = ''; right.innerHTML = '';
   const useDefault = !arr || !arr.length;
+  // ¿Son chips de contexto (sugerencias/acciones de la mesera) o los 4 por defecto?
+  // Si son de contexto, NO se ocultan aunque la mesera esté hablando (hay que poder tocarlos).
+  state.hasContextChips = !useDefault;
+  document.body.classList.toggle('has-ctx-chips', !useDefault);   // CSS: visibles en el chat si son de contexto
   const items = useDefault ? CV_DEFAULT_CHIPS : arr.slice(0, 4);
   items.forEach((it, i) => {
     const ask = useDefault ? it.text : it;
@@ -3322,6 +3392,7 @@ function cvSetChips(arr) {
     b.addEventListener('click', () => quickAsk(ask));
     (i < Math.ceil(items.length / 2) ? left : right).appendChild(b);
   });
+  if (typeof toggleQuickActions === 'function') toggleQuickActions();   // aplicar visibilidad ya
 }
 // resuelve {name, variant} contra la carta real → línea de carrito {id,name,price,el} o null
 function cvResolveOrderItem(name, variant) {
@@ -3472,6 +3543,7 @@ async function converse(userText, withVoice) {
       body: JSON.stringify({
         message: userText,
         history: state.history.slice(0, -1),
+        cart: state.cart.map(i => ({ name: i.name, qty: i.qty })),   // lo que ya está en el pedido
       })
     });
     if (!resp.ok) throw new Error('Server ' + resp.status);
@@ -3529,7 +3601,14 @@ async function converse(userText, withVoice) {
   producerDone = true;
   const finalVisible = cvStripDirective(fullReply).trim();
   const order = cvApplyOrderDirective(fullReply);   // aplicar add/remove/clear al carrito real
-  const chips = cvParseChips(fullReply);            // sugerencias que propone la mesera
+  let chips = cvParseChips(fullReply);              // sugerencias que propone la mesera
+  // FALLBACK del lado del cliente: si el modelo NO emitió #CHIPS# pero recomendó platos, sintetizar
+  // botones para que SIEMPRE haya algo para tocar (no depender de que el modelo se acuerde).
+  if (!chips || !chips.length) {
+    const named = cvDishesIn(finalVisible);
+    if (named.length >= 2)       chips = named.slice(0, 3).map(h => h.entry.name);
+    else if (named.length === 1) chips = ['Sí, agregalo', 'Otra opción'];
+  }
 
   // si solo vino la orden sin texto hablado, dejar una confirmación mínima
   let toStore = finalVisible;
@@ -3542,6 +3621,10 @@ async function converse(userText, withVoice) {
     if (state.history.length > 20) state.history = state.history.slice(-20);
   }
 
+  // Mostrar los chips YA (no esperar a que termine de hablar). Con state.hasContextChips, quedan
+  // visibles mientras la mesera habla, así el cliente puede tocar "¿cuál te tienta?" en el momento.
+  cvSetChips(chips);
+
   if (withVoice) {
     await playerPromise;
   }
@@ -3550,7 +3633,6 @@ async function converse(userText, withVoice) {
   setSolState('idle');
   endBotBubble();
   cvSpotlightSettle();      // corta el pulso y oculta el botón; deja todo lo nombrado resaltado
-  cvSetChips(chips);        // atajos = sugerencias de la mesera, o los 4 por defecto
 }
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
@@ -3948,11 +4030,30 @@ function blobToBase64(blob) {
 // ============================================================
 state.cart = (function(){ try { const c = JSON.parse(localStorage.getItem('cv_cart') || '[]'); return Array.isArray(c) ? c : []; } catch(e){ return []; } })();
 state.table = (function(){ try { return localStorage.getItem('cv_table') || ''; } catch(e){ return ''; } })();
+// Mesa por QR: el QR de cada mesa lleva su número en la URL (.../?mesa=7). Si viene, la mesa queda
+// FIJA y no editable (el comensal no la toca). Sin parámetro → carga manual (fallback).
+state.tableLocked = false;
+(function(){
+  try {
+    const p = new URLSearchParams(location.search);
+    const m = (p.get('mesa') || p.get('m') || p.get('table') || '').trim().slice(0, 12);
+    if (m && /^[A-Za-z0-9\-]{1,12}$/.test(m)) {
+      state.table = m; state.tableLocked = true;
+      try { localStorage.setItem('cv_table', m); } catch(e){}
+    }
+  } catch(e){}
+})();
 function saveCart(){ try { localStorage.setItem('cv_cart', JSON.stringify(state.cart)); } catch(e){} }
 const _ratings = { mesera: 0, restaurante: 0, quantumhive: 0 };
 // Links de reseña — VACÍOS hasta que el cliente contrate. Completar acá la conexión real
 // (o setear localStorage 'cv_google' / 'cv_qh' para demostrarlo sin tocar código).
 const CV_LINKS = { googleReviewUrl: '', quantumhiveUrl: '' };
+// 1) De CARTA_CONFIG.links (inyectado en window.CV_CONFIG).
+if (window.CV_CONFIG && window.CV_CONFIG.links) {
+  CV_LINKS.googleReviewUrl = window.CV_CONFIG.links.googleReviewUrl || CV_LINKS.googleReviewUrl;
+  CV_LINKS.quantumhiveUrl  = window.CV_CONFIG.links.quantumhiveUrl  || CV_LINKS.quantumhiveUrl;
+}
+// 2) localStorage pisa (para demostrar sin tocar código: 'cv_google' / 'cv_qh').
 try {
   CV_LINKS.googleReviewUrl = localStorage.getItem('cv_google') || CV_LINKS.googleReviewUrl;
   CV_LINKS.quantumhiveUrl  = localStorage.getItem('cv_qh') || CV_LINKS.quantumhiveUrl;
@@ -4078,7 +4179,15 @@ function updateAddControl(wrap){
 // ---------- Pantalla de pedido ----------
 function openOrderDom(){
   renderOrderItems();
-  $('#orderTable').value = state.table || '';
+  const ot = $('#orderTable');
+  if (ot) {
+    ot.value = state.table || '';
+    ot.readOnly = !!state.tableLocked;            // si vino del QR, no se edita
+    ot.classList.toggle('locked', !!state.tableLocked);
+  }
+  // si la mesa vino del QR, el label aclara que es fija (no se pide cargarla)
+  const olab = document.querySelector('label[for="orderTable"], #orderSheet .field label');
+  if (olab) olab.textContent = state.tableLocked ? 'Tu mesa' : 'Número de mesa';
   $('#orderOverlay').classList.add('open');
   $('#orderSheet').classList.add('open');
   $('#orderSheet').setAttribute('aria-hidden', 'false');
@@ -4278,7 +4387,11 @@ function toggleQuickActions(){
   const qa = $('#quickActions'); if (!qa) return;
   const orb = $('#orbFloat');
   const orbState = orb ? orb.dataset.state : 'idle';
-  const busy = NAV.stack.length > 0 || NAV.cardOpen || state.isStreaming || (orbState && orbState !== 'idle');
+  // Tarjeta/nav abiertos SIEMPRE tapan los chips. Hablar/pensar (orbe!=idle) o streaming los tapan
+  // SOLO si son los 4 por defecto: los chips de contexto (acción/elección) quedan visibles para tocar.
+  const hardBusy = NAV.stack.length > 0 || NAV.cardOpen;
+  const softBusy = state.isStreaming || (orbState && orbState !== 'idle');
+  const busy = hardBusy || (softBusy && !state.hasContextChips);
   qa.classList.toggle('hidden', !!busy);
 }
 
@@ -4338,7 +4451,10 @@ document.querySelectorAll('#ratingSheet .stars').forEach(group => {
   const cq = document.getElementById('ctaQhBtn');
   if (cq) cq.addEventListener('click', () => { if (CV_LINKS.quantumhiveUrl) window.open(CV_LINKS.quantumhiveUrl, '_blank'); });
 })();
-$('#tableChip').addEventListener('click', () => navOpen('mesa', openMesaDom));
+$('#tableChip').addEventListener('click', () => {
+  if (state.tableLocked) { showToast('Tu mesa es la ' + state.table + ' — viene del QR de la mesa'); return; }
+  navOpen('mesa', openMesaDom);
+});
 $('#tableSave').addEventListener('click', guardarMesa);
 $('#tableCancel').addEventListener('click', () => navCloseUI('mesa'));
 $('#tableInput').addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); guardarMesa(); } });
@@ -4392,7 +4508,8 @@ def build_system_prompt() -> str:
 CÓMO RESPONDÉS — REGLA DE ORO:
 Directa, concreta y vendedora. Recomendás con seguridad y guiás la venta DE A UN PASO: recomendás UNA cosa a la vez (un plato o una categoría), dejás que el cliente la elija o la agregue, y RECIÉN AHÍ ofrecés el siguiente paso (bebida, postre). Nunca amontonás plato + bebida + postre en una sola respuesta. Prohibido arrancar con "mmm", "a ver" o repetir la pregunta del cliente.
 
-SI TE PIDEN VARIAS COSAS JUNTAS (ej. "recomendame una carne y un vino"): resolvés EN ORDEN, de a una. Primero la carne: tirás dos o tres opciones y esperás a que el cliente elija o la agregue (cerrás con algo tipo "¿cuál te tiento?"), SIN nombrar el vino todavía. Recién cuando ya eligió la carne, en tu PRÓXIMA respuesta pasás al vino. Una cosa por turno.
+SI TE PIDEN VARIAS COSAS JUNTAS (ej. "recomendame una carne y un vino", o "un postre y el menú infantil"): resolvés EN ORDEN, de a una. Primero la carne: tirás dos o tres opciones y esperás a que el cliente elija o la agregue (cerrás con algo tipo "¿cuál te tiento?"), SIN nombrar el vino todavía. Recién cuando ya eligió la carne, en tu PRÓXIMA respuesta pasás al vino. Una cosa por turno.
+PROHIBIDO ABSOLUTO: si decís que algo lo ven "después", "más tarde" o "ahora vemos lo otro" (ej. "después vemos el menú infantil para tu hijo"), entonces en ESE turno NO lo desarrollás, NO lo describís y NO tirás sus opciones — lo dejás de verdad para tu PRÓXIMA respuesta, recién cuando el cliente cerró lo primero. Decir "después vemos X" y en el mismo turno desarrollar X es el error más grave: NO lo hagas. Lo que queda pendiente lo dejás como chip para que el cliente lo toque cuando quiera avanzar.
 
 SOBRE LOS PRECIOS — LEÉS AL CLIENTE:
 No cantás precios de entrada: recomendás por el plato, no por el número. Después de recomendar, si el cliente parece indeciso o está comparando opciones, le ofrecés con naturalidad: "¿te paso los precios o preferís elegir primero?". Si el cliente pregunta precios directamente, se los das al toque y se los seguís dando en el resto de la charla (ese cliente mira el bolsillo). Si nunca pregunta, no los mencionás (ese cliente elige por gusto). Te adaptás al perfil.
@@ -4426,6 +4543,7 @@ REGLAS DURAS:
 - Nunca emojis.
 - Hablás de vos (tenés, querés, podés), porteña natural y amable.
 - Si piden TODA la carta: "la tenés completa en pantalla — decime de qué tenés ganas y te tiro la posta".
+- UNA categoría por turno SIEMPRE: si dijiste "después vemos X", X no aparece hasta el próximo turno. Esperás la elección del cliente antes de avanzar — no te adelantes nunca.
 
 Tu carta completa con todos los precios está abajo (para cuando te los pidan).""")
     lines.append("")
@@ -4569,6 +4687,7 @@ class ChatTurn(BaseModel):
 class ChatRequest(BaseModel):
     message: str
     history: List[ChatTurn] = []
+    cart: Optional[List[Dict[str, Any]]] = None   # [{name, qty}] — lo que YA está en el pedido
 
 
 class TTSRequest(BaseModel):
@@ -4602,7 +4721,26 @@ class OrderRequest(BaseModel):
 # ----------------------------------------------------------------------------
 @app.get("/")
 async def root():
-    html = EMBEDDED_INDEX_HTML.replace("__CV_DEMO_MODE__", "true" if DEMO_MODE else "false")
+    cfg = CARTA_CONFIG
+    tema = cfg.get("tema") or {}
+    # Override de colores: cascada DESPUÉS del :root base, así gana sin tocar el CSS.
+    vars_css = ""
+    if tema.get("accent"):    vars_css += f"--accent:{tema['accent']};"
+    if tema.get("accent_dk"): vars_css += f"--accent-dk:{tema['accent_dk']};"
+    theme_style = f"<style>:root{{{vars_css}}}</style>" if vars_css else ""
+    # Config que lee el frontend (nombre, chips, links). Escapo "</" por seguridad en <script>.
+    cv_json = json.dumps({
+        "nombre": cfg.get("nombre", ""),
+        "chips":  cfg.get("chips", []),
+        "links":  cfg.get("links", {}),
+    }, ensure_ascii=False).replace("</", "<\\/")
+    config_script = f"<script>window.CV_CONFIG = {cv_json};</script>"
+    nombre_html = _esc(cfg.get("nombre", "") or "")
+    html = (EMBEDDED_INDEX_HTML
+            .replace("__CV_DEMO_MODE__", "true" if DEMO_MODE else "false")
+            .replace("__CV_THEME_STYLE__", theme_style)
+            .replace("__CV_CONFIG_SCRIPT__", config_script)
+            .replace("__CV_NOMBRE__", nombre_html))
     return HTMLResponse(html)
 
 
@@ -4679,13 +4817,34 @@ def _trim_history(history: List[ChatTurn]) -> List[ChatTurn]:
     return history
 
 
-def _gemini_chat_body(history: List[ChatTurn], message: str) -> Dict[str, Any]:
+def _cart_note(cart) -> str:
+    """Línea dinámica con lo que YA está en el pedido. Se anexa al system prompt por request
+    (no toca el SYSTEM_PROMPT estático) para que la mesera no re-recomiende ni re-agregue lo cargado."""
+    if not cart:
+        return ""
+    parts = []
+    for it in cart:
+        if not isinstance(it, dict):
+            continue
+        name = (it.get("name") or "").strip()
+        if not name:
+            continue
+        qty = it.get("qty") or 1
+        parts.append(f"{qty}× {name}")
+    if not parts:
+        return ""
+    return ("\n\n--- LO QUE EL CLIENTE YA TIENE EN EL PEDIDO ---\n" + ", ".join(parts) +
+            "\nNo recomiendes ni agregues de nuevo lo que ya está acá, salvo que el cliente pida MÁS "
+            "explícitamente. Si ya está pedido, avanzá al siguiente paso (bebida, postre, etc.).")
+
+
+def _gemini_chat_body(history: List[ChatTurn], message: str, sys_extra: str = "") -> Dict[str, Any]:
     contents = []
     for t in history:
         contents.append({"role": t.role, "parts": [{"text": t.text}]})
     contents.append({"role": "user", "parts": [{"text": message}]})
     return {
-        "system_instruction": {"parts": [{"text": SYSTEM_PROMPT}]},
+        "system_instruction": {"parts": [{"text": SYSTEM_PROMPT + sys_extra}]},
         "contents": contents,
         "generationConfig": {
             "temperature": 0.8,
@@ -4695,24 +4854,24 @@ def _gemini_chat_body(history: List[ChatTurn], message: str) -> Dict[str, Any]:
     }
 
 
-def _openai_messages(history: List[ChatTurn], message: str) -> List[Dict[str, str]]:
-    msgs = [{"role": "system", "content": SYSTEM_PROMPT}]
+def _openai_messages(history: List[ChatTurn], message: str, sys_extra: str = "") -> List[Dict[str, str]]:
+    msgs = [{"role": "system", "content": SYSTEM_PROMPT + sys_extra}]
     for t in history:
         msgs.append({"role": "assistant" if t.role == "model" else "user", "content": t.text})
     msgs.append({"role": "user", "content": message})
     return msgs
 
 
-def _brain_request(prov: str, model: str, history: List[ChatTurn], message: str):
+def _brain_request(prov: str, model: str, history: List[ChatTurn], message: str, sys_extra: str = ""):
     """(url, headers, body) para una llamada NO streaming al proveedor dado."""
     if prov == "openrouter":
         return (OPENROUTER_URL,
                 {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "Content-Type": "application/json"},
-                {"model": model, "messages": _openai_messages(history, message),
+                {"model": model, "messages": _openai_messages(history, message, sys_extra),
                  "temperature": 0.8, "max_tokens": 2048})
     return (f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_API_KEY}",
             {"Content-Type": "application/json"},
-            _gemini_chat_body(history, message))
+            _gemini_chat_body(history, message, sys_extra))
 
 
 def _brain_extract(prov: str, data: dict) -> str:
@@ -4737,10 +4896,11 @@ async def _post_with_retry(client: httpx.AsyncClient, url: str, body: dict, head
 @app.post("/chat")
 async def chat(req: ChatRequest):
     history = _trim_history(req.history)
+    sys_extra = _cart_note(req.cart)
     last_status = None
     async with httpx.AsyncClient(timeout=30.0) as client:
         for prov, model in BRAIN_CHAIN_PARSED:
-            url, headers, body = _brain_request(prov, model, history, req.message)
+            url, headers, body = _brain_request(prov, model, history, req.message, sys_extra)
             try:
                 r = await _post_with_retry(client, url, body, headers)
             except Exception:
@@ -4758,19 +4918,19 @@ async def chat(req: ChatRequest):
     return {"reply": MESERA_BUSY_MSG, "brain": "busy", "last_status": last_status}
 
 
-async def _brain_stream_once(client, prov, model, history, message):
+async def _brain_stream_once(client, prov, model, history, message, sys_extra: str = ""):
     """Async-gen que emite texto a medida. Lanza _BrainUnavailable si no logra arrancar
     (para que la cadena rote al siguiente cerebro). Reintenta 429/503 antes del 1er chunk."""
     if prov == "openrouter":
         url = OPENROUTER_URL
         headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "Content-Type": "application/json"}
-        body = {"model": model, "messages": _openai_messages(history, message),
+        body = {"model": model, "messages": _openai_messages(history, message, sys_extra),
                 "temperature": 0.8, "max_tokens": 2048, "stream": True}
         is_openai = True
     else:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:streamGenerateContent?alt=sse&key={GEMINI_API_KEY}"
         headers = {"Content-Type": "application/json"}
-        body = _gemini_chat_body(history, message)
+        body = _gemini_chat_body(history, message, sys_extra)
         is_openai = False
 
     delay = 0.6
@@ -4807,13 +4967,14 @@ async def _brain_stream_once(client, prov, model, history, message):
 async def chat_stream(req: ChatRequest):
     """Stream SSE con cadena de cerebros: si el primero no arranca, rota al siguiente."""
     history = _trim_history(req.history)
+    sys_extra = _cart_note(req.cart)
 
     async def event_gen():
         async with httpx.AsyncClient(timeout=60.0) as client:
             for prov, model in BRAIN_CHAIN_PARSED:
                 produced = False
                 try:
-                    async for piece in _brain_stream_once(client, prov, model, history, req.message):
+                    async for piece in _brain_stream_once(client, prov, model, history, req.message, sys_extra):
                         produced = True
                         yield f"event: chunk\ndata: {json.dumps({'text': piece})}\n\n"
                 except Exception:
