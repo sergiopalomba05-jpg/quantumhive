@@ -2364,6 +2364,11 @@ body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
   60%  { transform: scale(1.25) rotate(6deg); }
   100% { transform: scale(1) rotate(0); }
 }
+/* Firma sutil de la empresa al pie del splash */
+.splash-brand { position: relative; z-index: 2; margin-top: clamp(14px, 3vh, 22px); text-align: center;
+  line-height: 1.7; font-size: 8.5px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.4; }
+.splash-brand b { display: block; color: var(--gold); letter-spacing: 0.34em; font-weight: 700;
+  font-size: 10px; opacity: 0.92; margin-bottom: 3px; }
 </style>
 __CV_THEME_STYLE__
 </head>
@@ -2398,6 +2403,10 @@ __CV_CONFIG_SCRIPT__
     <span>Tu mozo virtual es una <b>guía informativa</b> y puede equivocarse. Ante cualquier
     <b>alergia, intolerancia o condición médica</b>, confirmá siempre con el personal del
     restaurante antes de pedir. La composición final de cada plato es responsabilidad del restaurante.</span>
+  </div>
+  <div class="splash-brand">
+    <b>QuantumHive</b>
+    Multi-Agent Business Infrastructure · Powered by Artificial Intelligence
   </div>
 </div>
 
