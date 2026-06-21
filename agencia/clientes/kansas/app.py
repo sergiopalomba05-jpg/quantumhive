@@ -57,9 +57,9 @@ try:
 except ValueError:
     MINIMAX_SPEED = 1.2
 try:
-    MINIMAX_VOL = float(os.environ.get("MINIMAX_VOL", "1.6"))       # 1.0 normal · sube el volumen (hasta 10)
+    MINIMAX_VOL = float(os.environ.get("MINIMAX_VOL", "5"))         # 1.0 normal · sube el volumen (hasta 10)
 except ValueError:
-    MINIMAX_VOL = 1.6
+    MINIMAX_VOL = 5.0
 DEMO_MODE = os.environ.get("DEMO_MODE", "").strip().lower() in ("1", "true", "yes", "si", "sí")
 
 # Supabase — opcional. Si no están seteadas, /feedback no persiste pero NO rompe.
