@@ -3355,7 +3355,7 @@ function cvParseChips(raw) {
   return null;
 }
 // Render de los atajos: por defecto, o las sugerencias contextuales de la mesera
-function cvSetChips(arr) {
+function cvSetChips(arr, noMore) {
   const left = document.querySelector('#quickActions .quick-col.left');
   const right = document.querySelector('#quickActions .quick-col.right');
   if (!left || !right) return;
@@ -3368,7 +3368,7 @@ function cvSetChips(arr) {
   // Si ofrece 2+ opciones y ninguna es ya un "otra/más opciones", sumamos un chip "Más opciones"
   // para que el cliente pida otra ronda sin tipear.
   let ctx = useDefault ? null : arr.slice(0, 4);
-  if (ctx && ctx.length >= 2 && !ctx.some(c => /opci[oó]n/i.test(String(c)))) {
+  if (ctx && !noMore && ctx.length >= 2 && !ctx.some(c => /opci[oó]n/i.test(String(c)))) {
     ctx = ctx.slice(0, 3); ctx.push('Más opciones');
   }
   const items = useDefault ? CV_DEFAULT_CHIPS : ctx;
@@ -4117,10 +4117,14 @@ function cartCount(){ return state.cart.reduce((a, i) => a + i.qty, 0); }
 function cartTotal(){ return state.cart.reduce((a, i) => a + (i.price || 0) * i.qty, 0); }
 function findCart(id){ return state.cart.find(i => i.id === id); }
 // Tras agregar un plato A MANO durante un flujo guiado, la mesera retoma la charla (no se queda
-// colgada con las opciones viejas). Mensaje fijo → respuesta cacheada ($0 tras la 1ª vez).
+// colgada con las opciones viejas). Frase FIJA por voz (audio cacheado → $0, sin LLM) + chips del
+// próximo paso. Determinístico y seguro: no depende del contexto, no toca el carrito.
 function cvManualFollowup(){
   if (!state.hasContextChips || state.isStreaming) return;
-  converse('¿Qué más me recomendás?', true, true);
+  setSolState('speaking');
+  cvSetChips(['Algo para tomar', 'Un postre', 'Así está bien'], true);
+  playAudioForText('¡Buena elección! ¿Seguimos con algo para tomar o un postre?', ++state.cancelToken)
+    .then(() => setSolState('idle')).catch(() => setSolState('idle'));
 }
 function addToCart(item){
   const ex = findCart(item.id);
