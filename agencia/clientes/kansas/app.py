@@ -22,8 +22,8 @@ from typing import Optional, List, Dict, Any
 from html import escape as _esc
 
 import httpx
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import FileResponse, Response, StreamingResponse, JSONResponse, HTMLResponse
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import Response, StreamingResponse, JSONResponse, HTMLResponse
 from pydantic import BaseModel
 
 # ============================================================================
@@ -88,6 +88,10 @@ except ValueError:
 # → el Plan Básico NO recuerda nada. Aislada por restaurant_id.
 MEMORIA        = os.environ.get("MEMORIA", "").strip().lower() in ("1", "true", "yes", "si", "sí")
 CLIENTES_TABLE = os.environ.get("CLIENTES_TABLE", "clientes").strip()
+# Métricas de la demo: registra eventos de interacción (entrada, plato, chat, pedido) en la tabla
+# eventos. Default off. Aislado por restaurant_id. Tolerante (nunca frena ni rompe la app).
+METRICAS       = os.environ.get("METRICAS", "").strip().lower() in ("1", "true", "yes", "si", "sí")
+EVENTOS_TABLE  = os.environ.get("EVENTOS_TABLE", "eventos").strip()
 
 # Canal INTERNO del pedido al mozo (opcional). Si está configurado, /order
 # manda el pedido por Telegram sin que el comensal salga de la app.
@@ -2364,7 +2368,7 @@ body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
 __CV_THEME_STYLE__
 </head>
 <body>
-<script>window.CV_DEMO_MODE = __CV_DEMO_MODE__; window.CV_MEMORIA = __CV_MEMORIA__;</script>
+<script>window.CV_DEMO_MODE = __CV_DEMO_MODE__; window.CV_MEMORIA = __CV_MEMORIA__; window.CV_METRICAS = __CV_METRICAS__;</script>
 __CV_CONFIG_SCRIPT__
 
 <!-- ==================== SPLASH ==================== -->
@@ -2777,6 +2781,7 @@ async function enterApp(tier) {
 // Bienvenida con memoria Premium: reconoce al cliente que vuelve (saludo personalizado con su perfil)
 // o le pregunta el nombre la 1ª vez; sin memoria, saluda genérico como siempre.
 async function cvWelcome(){
+  cvEvento('entrada');
   if (cvMemoriaActiva()) {
     try {
       const r = await fetch('/cliente?device_id=' + encodeURIComponent(cvDeviceId()));
@@ -3516,6 +3521,15 @@ function cvMemoriaActiva(){
   return !!window.CV_MEMORIA && (!window.CV_DEMO_MODE || window.CV_TIER === 'premium');
 }
 
+// Métricas de la demo: registra un evento de interacción (fire-and-forget, no frena la UX).
+function cvEvento(tipo, detalle){
+  if (!window.CV_METRICAS) return;
+  try {
+    fetch('/evento', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tipo: tipo, device_id: cvDeviceId(), detalle: detalle || null }) });
+  } catch(e){}
+}
+
 async function converse(userText, withVoice, guided) {
   if (!userText) return;
   state.isStreaming = true;
@@ -3531,6 +3545,7 @@ async function converse(userText, withVoice, guided) {
   // registrar turn del usuario + mostrar su burbuja
   state.history.push({ role: 'user', text: userText });
   addUserBubble(userText);
+  cvEvento('chat', { guiado: !!guided });   // métrica: botón guiado vs texto/voz libre
 
   setSolState('thinking');
   startBotBubble();
@@ -4197,6 +4212,7 @@ function addToCart(item){
   saveCart();
   refreshCartUI();
   showToast('Agregado al pedido: ' + item.name);
+  cvEvento('plato', { name: item.name });
   cvManualFollowup();
 }
 function changeQty(id, d){
@@ -4316,6 +4332,7 @@ function realizarPedido(){
   if (!mesa){ showToast('Decinos tu número de mesa'); $('#orderTable').focus(); return; }
   state.table = mesa; try { localStorage.setItem('cv_table', mesa); } catch(e){}
   updateTableChip();
+  cvEvento('pedido', { items: state.cart.length, total: cartTotal() || null });
   // El pedido viaja INTERNO al backend — el comensal NO sale de la app.
   enviarPedidoInterno();
   // Sol se despide por voz (ahora SÍ se escucha, porque seguimos dentro de la app)
@@ -4387,6 +4404,7 @@ function showMozo(){
 }
 function mozoDone(){
   closeMozoCardDom();
+  cvEvento('pedido', { items: state.cart.length, total: cartTotal() || null });
   cvGuardarMemoriaPedido();
   solFarewell();                 // la mesera se despide también por esta vía
   navSwap('order', 'rating', closeOrderDom, openRatingDom);
@@ -4546,7 +4564,7 @@ refreshCartUI();
 # System prompt builder — convierte menu.json en instrucciones para Sol
 # ============================================================================
 def _format_price(p: Optional[int], symbol: str = "$") -> str:
-    """Formatea precio en palabras para que ElevenLabs lo lea bien.
+    """Formatea precio en palabras para que la voz lo lea bien.
     Evita que diga 'dólar veintisiete punto cero cero' — dice '27 mil pesos'.
     """
     if p is None:
@@ -4790,6 +4808,12 @@ class ClienteRequest(BaseModel):
     bump_visita: bool = False
 
 
+class EventoRequest(BaseModel):
+    tipo: str
+    device_id: Optional[str] = None
+    detalle: Optional[Dict[str, Any]] = None
+
+
 class TTSRequest(BaseModel):
     text: str
 
@@ -4838,6 +4862,7 @@ async def root():
     html = (EMBEDDED_INDEX_HTML
             .replace("__CV_DEMO_MODE__", "true" if DEMO_MODE else "false")
             .replace("__CV_MEMORIA__", "true" if MEMORIA else "false")
+            .replace("__CV_METRICAS__", "true" if METRICAS else "false")
             .replace("__CV_THEME_STYLE__", theme_style)
             .replace("__CV_CONFIG_SCRIPT__", config_script)
             .replace("__CV_NOMBRE__", nombre_html))
@@ -5273,6 +5298,30 @@ async def post_cliente(req: ClienteRequest):
     async with httpx.AsyncClient(timeout=15.0) as client:
         await _memoria_upsert(client, req.device_id, nombre=req.nombre,
                               ultimo_pedido=req.ultimo_pedido, gustos=req.gustos, bump=req.bump_visita)
+    return {"ok": True, "stored": True}
+
+
+# ----------------------------------------------------------------------------
+# Métricas de la demo: el front registra eventos de interacción (fire-and-forget). Tolerante.
+def _metricas_on() -> bool:
+    return bool(METRICAS and SUPABASE_URL and SUPABASE_KEY)
+
+
+@app.post("/evento")
+async def post_evento(req: EventoRequest):
+    if not (_metricas_on() and (req.tipo or "").strip()):
+        return {"ok": True, "stored": False}
+    row = {"restaurant_id": RESTAURANT_ID, "device_id": req.device_id,
+           "tipo": req.tipo[:40], "detalle": req.detalle}
+    try:
+        async with httpx.AsyncClient(timeout=8.0) as client:
+            await client.post(
+                f"{SUPABASE_URL}/rest/v1/{EVENTOS_TABLE}",
+                headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}",
+                         "Content-Type": "application/json", "Prefer": "return=minimal"},
+                json=row)
+    except Exception:
+        pass
     return {"ok": True, "stored": True}
 
 
