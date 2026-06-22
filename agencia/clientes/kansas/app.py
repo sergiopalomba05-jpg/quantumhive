@@ -4633,7 +4633,7 @@ Reglas de esa línea (clave):
 - VINOS/ESPUMANTES: si el cliente aclara copa o botella ("la BOTELLA de Baron B"), cargalo con ese "variant". Si NO aclara ("agregá el Baron B"), NO lo cargues todavía: repreguntá hablando "¿lo querés por copa o por botella?" y recién cuando conteste lo agregás con el "variant" correcto.
 - Si solo agregás, dejá "remove" vacío (y al revés). "clear": true vacía todo el pedido (solo si el cliente dice "borrá todo" / "empecemos de nuevo").
 - GUARNICIONES INCLUIDAS: muchos platos YA vienen con papas fritas, ensalada o puré (lo dice su descripción). Cuando agregás uno de esos platos, NO agregues también la guarnición suelta del Acompañamiento: ya está incluida. Solo agregás un Acompañamiento aparte si el cliente pide EXPRESAMENTE una porción extra ("agregame unas papas aparte"). Podés nombrar la guarnición al describir el plato, pero no la cargues como ítem separado.
-- NO REPITAS lo que ya cargaste: en "add" va SOLO lo nuevo de este pedido. Fijate el historial — si algo ya lo agregaste antes en esta charla, NO lo vuelvas a poner en #PEDIDO# (el sistema lo sumaría de nuevo). Solo lo agregás otra vez si el cliente pide EXPRESAMENTE más cantidad ("sumá otra gaseosa").
+- NO REPITAS lo que ya cargaste: en "add" va SOLO lo nuevo. Mirá la lista del pedido — si algo YA está, NO lo vuelvas a poner en #PEDIDO# (el sistema lo duplicaría) y tampoco lo vuelvas a OFRECER. Si el cliente pide agregar algo que ya tiene, NO lo dupliques en silencio: primero avisá hablando "Ya tenés un café, ¿querés otro más o seguimos?" (con chips ["Sí, otro","No, sigamos"]) y recién si confirma que quiere MÁS lo sumás.
 - Si el cliente NO te pidió tocar el pedido (es solo charla o una pregunta), NO pongas la línea #PEDIDO#.
 - Siempre que cargues algo, confirmáselo hablando con naturalidad ("Listo, te sumé una limonada y dos tiras de pollo, ¿algo más?"). El cambio real lo hace la línea técnica, así que cuando confirmás un cambio, la línea SIEMPRE tiene que estar.
 - Si te piden "armame el pedido con lo que me recomendaste", meté en "add" lo que vos recomendaste recién.
@@ -4923,8 +4923,13 @@ def _cart_note(cart) -> str:
     if not parts:
         return ""
     return ("\n\n--- LO QUE EL CLIENTE YA TIENE EN EL PEDIDO ---\n" + ", ".join(parts) +
-            "\nNo recomiendes ni agregues de nuevo lo que ya está acá, salvo que el cliente pida MÁS "
-            "explícitamente. Si ya está pedido, avanzá al siguiente paso (bebida, postre, etc.).")
+            "\nReglas con esto:\n"
+            "• NUNCA ofrezcas ni preguntes si agregar algo que YA está en esta lista (si ya tiene un "
+            "café, NO le preguntes '¿te agrego un café?').\n"
+            "• Si el cliente igual pide agregar algo que YA tiene, NO lo dupliques en silencio: primero "
+            "avisá 'Ya tenés un café en el pedido, ¿querés otro más o seguimos?' con chips "
+            "[\"Sí, otro\",\"No, sigamos\"]. Recién si confirma que quiere MÁS, lo sumás.\n"
+            "• Avanzá al siguiente paso (bebida, postre, cerrar el pedido) en vez de repetir lo cargado.")
 
 
 def _gemini_chat_body(history: List[ChatTurn], message: str, sys_extra: str = "") -> Dict[str, Any]:
