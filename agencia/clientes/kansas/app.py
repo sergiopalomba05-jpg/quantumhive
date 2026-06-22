@@ -4034,6 +4034,7 @@ async function onRecorderStop() {
     const data = await r.json();
     const text = (data.text || '').trim();
     if (!text) {
+      showToast(data.busy ? 'Estoy muy ocupada, esperá un segundo y volvé a intentarlo' : 'No te escuché bien, ¿lo repetís?');
       setSolState('idle');
       endBotBubble();
       return;
@@ -5571,7 +5572,8 @@ async def stt(req: STTRequest):
                 {"inline_data": {"mime_type": req.mime_type, "data": req.audio_base64}}
             ]
         }],
-        "generationConfig": {"temperature": 0.0, "maxOutputTokens": 256}
+        "generationConfig": {"temperature": 0.0, "maxOutputTokens": 256,
+                             "thinkingConfig": {"thinkingBudget": 0}}
     }
 
     async with httpx.AsyncClient(timeout=30.0) as client:
