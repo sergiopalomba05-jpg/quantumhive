@@ -50,7 +50,7 @@ MAX_HISTORY_TURNS  = int(os.environ.get("MAX_HISTORY_TURNS", "8"))  # 8 ≈ 4 in
 
 # MiniMax T2A v2 — MINIMAX_API_KEY va SOLO en env vars del Space, nunca al repo.
 MINIMAX_API_KEY = os.environ.get("MINIMAX_API_KEY", "").strip()
-MINIMAX_VOICE   = os.environ.get("MINIMAX_VOICE", "Spanish_UpsetGirl").strip()
+MINIMAX_VOICE   = os.environ.get("MINIMAX_VOICE", "Spanish_FrankLady").strip()
 MINIMAX_MODEL   = os.environ.get("MINIMAX_MODEL", "speech-02-turbo").strip()  # turbo = menor latencia
 MINIMAX_API_BASE = os.environ.get("MINIMAX_API_BASE", "https://api.minimax.io").strip().rstrip("/")
 try:
@@ -2167,27 +2167,6 @@ body.keyboard-open .carta-section:last-child { margin-bottom: 20px; }
   0%, 100% { transform: scale(1);    box-shadow: 0 0 0 0 rgba(201,168,106,0.65); }
   50%      { transform: scale(1.12); box-shadow: 0 0 0 7px rgba(201,168,106,0); }
 }
-/* Botón flotante "Agregar al pedido" — sigue al spotlight mientras la mesera habla */
-.add-float {
-  position: fixed; left: 50%; bottom: 198px; z-index: 50;
-  transform: translateX(-50%) translateY(10px);
-  display: none; align-items: center; gap: 8px;
-  max-width: 88vw; padding: 12px 22px; border-radius: 999px; border: none;
-  background: linear-gradient(180deg, var(--gold), var(--gold-dk));
-  color: #2A1B0E; font-family: 'Manrope', sans-serif;
-  font-size: 13px; font-weight: 800; letter-spacing: 0.01em;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  box-shadow: 0 16px 36px -12px rgba(201,168,106,0.75);
-  opacity: 0; transition: opacity 220ms ease, transform 220ms ease;
-}
-.add-float::before { content: '＋'; font-size: 15px; font-weight: 700; }
-.add-float.show { display: inline-flex; opacity: 1; transform: translateX(-50%) translateY(0); animation: addFloatIn 360ms cubic-bezier(.34,1.56,.64,1); }
-.add-float:active { transform: translateX(-50%) scale(0.96); }
-@keyframes addFloatIn {
-  0%   { opacity: 0; transform: translateX(-50%) translateY(16px) scale(0.96); }
-  100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
-}
-body.keyboard-open .add-float { display: none; }
 
 /* Chips de acción rápida flanqueando el orbe */
 .quick-actions {
@@ -2495,8 +2474,6 @@ __CV_CONFIG_SCRIPT__
   </div>
 </div>
 
-<!-- Botón flotante "Agregar al pedido" — sigue al spotlight mientras la mesera habla -->
-<button class="add-float" id="addFloat" aria-label="Agregar al pedido"></button>
 
 <!-- ==================== BARRA "VER MI PEDIDO" ==================== -->
 <button class="cart-bar" id="cartBar" aria-label="Ver mi pedido">
@@ -3349,7 +3326,6 @@ function cvSpotlightClear() {
   if (state.dishIndex) for (const d of state.dishIndex) d.el.classList.remove('guided', 'spotlight-current');
   state.spotlightEntry = null;
   cvClearSpotTimers();
-  cvUpdateAddFloat(null);
 }
 // ACUMULA: cada plato nombrado queda resaltado. Solo el actual pulsa y es seguido.
 function cvSpotlight(entry) {
@@ -3359,12 +3335,10 @@ function cvSpotlight(entry) {
   entry.el.classList.add('guided');           // resaltado persistente (no se apaga)
   entry.el.classList.add('spotlight-current'); // marca del que está nombrando ahora
   try { entry.el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
-  cvUpdateAddFloat(entry);
 }
-// Fin del turno: corta el pulso del actual y oculta el botón, pero deja todo resaltado.
+// Fin del turno: corta el pulso del actual, pero deja todo lo nombrado resaltado.
 function cvSpotlightSettle() {
   if (state.spotlightEntry) state.spotlightEntry.el.classList.remove('spotlight-current');
-  cvUpdateAddFloat(null);
 }
 // Programa el spotlight de una frase: cada plato en su fracción del audio.
 function cvScheduleSpotlight(dishes, cat, totalMs, token) {
@@ -3381,20 +3355,6 @@ function cvScheduleSpotlight(dishes, cat, totalMs, token) {
     state.spotTimers.push(setTimeout(() => { if (token === state.cancelToken) cvSpotlight(h.entry); }, delay));
   });
 }
-// Botón flotante "Agregar al pedido" que sigue al spotlight (solo platos de precio único)
-function cvUpdateAddFloat(entry) {
-  const btn = $('#addFloat');
-  if (!btn) return;
-  if (entry && entry.price != null) {
-    btn.textContent = 'Agregar al pedido · ' + entry.name;
-    btn._entry = entry;
-    btn.classList.add('show');
-  } else {
-    btn.classList.remove('show');
-    btn._entry = null;
-  }
-}
-
 // ============================================================
 // Pedido por voz — la mesera carga/saca/arma el pedido a pedido del cliente
 // Emite una línea técnica invisible:  #PEDIDO# {"add":[...],"remove":[...],"clear":false}
@@ -4527,14 +4487,6 @@ $('#confirmYes').addEventListener('click', () => { const cb = _confirmCb; cvClos
 $('#confirmNo').addEventListener('click', cvCloseConfirm);
 $('#confirmModal').addEventListener('click', (e) => { if (e.target.id === 'confirmModal') cvCloseConfirm(); });
 
-// Botón flotante "Agregar al pedido": idempotente — si el plato YA está, avisa y NO lo duplica.
-// Para sumar más unidades está el stepper "− N +" en la tarjeta del plato.
-$('#addFloat').addEventListener('click', () => {
-  const btn = $('#addFloat'), e = btn && btn._entry;
-  if (!e) return;
-  if (findCart(e.id)) { showToast('Ya lo tenés en el pedido'); return; }
-  addToCart({ id: e.id, name: e.name, price: e.price });
-});
 $('#cartBar').addEventListener('click', () => navOpen('order', openOrderDom));
 $('#orderClose').addEventListener('click', () => navCloseUI('order'));
 $('#orderOverlay').addEventListener('click', () => navCloseUI('order'));
