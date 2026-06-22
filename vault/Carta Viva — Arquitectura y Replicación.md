@@ -135,6 +135,10 @@ alter table public.respuestas_cache enable row level security;
 - **Autoguiado dirigido (valor Premium):** que el restaurante elija desde un panel a qué platos empuja
   la mesera (ej. los de más margen o los que quiere mover). Técnico: un campo de config "platos a
   priorizar" que se inyecta al prompt. Factible.
+- **Reseñas directas en Google Maps (valor Premium):** el cliente contento deja la reseña en Google
+  desde la carta (ya existe el CTA `#ctaGoogle` + `CV_LINKS.googleReviewUrl`) → más reseñas reales =
+  mejor reputación/SEO del restaurante. Opcional por cliente Premium. Nota: cuidar las políticas de
+  Google sobre "review gating" (no condicionar la invitación solo a quienes califican alto).
 
 ---
 *Vivo: actualizar cuando se tome una decisión de arquitectura o se resuelva un bug de fondo.*
