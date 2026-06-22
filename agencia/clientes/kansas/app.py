@@ -2787,7 +2787,7 @@ async function enterApp(tier) {
   await loadMenu();
 
   // Saludo (con memoria Premium reconoce al que vuelve / pregunta el nombre al nuevo)
-  setTimeout(() => cvWelcome(), 700);
+  setTimeout(() => cvWelcome(), 150);
 }
 
 // Bienvenida con memoria Premium: reconoce al cliente que vuelve (saludo personalizado con su perfil)
@@ -4635,12 +4635,6 @@ Vos: "Arranquemos por la carne. Tengo tres que vuelan: una bien jugosa y tierna,
 Cliente: "¿y cuánto está eso?"
 Vos: "La entrada está dieciocho mil pesos, la limonada seis mil ochocientos y el postre diecisiete mil. Buen plan completo. ¿Te lo armo así?"
 
-Cliente: "estoy entre dos platos, no me decido"
-Vos: "Los dos son de lo mejor de la casa. Uno viene a la leña, bien contundente; el otro es más liviano. Si venís con hambre de verdad, el contundente sin dudar. ¿Te paso los precios o elegís primero y después vemos?"
-
-Cliente: "¿qué vino va con la carne?"
-Vos: "Un tinto, de una. Tengo el de la casa por copa o por botella, los dos andan bárbaro. Y guardate lugar para un postre, que cierra la noche de diez."
-
 Fijate el patrón: UNA recomendación por turno (dos o tres opciones máximo de UNA sola categoría), esperás que el cliente elija o agregue antes de pasar al siguiente paso de la comanda, y los precios solo cuando el cliente los pide o cuando dudás que esté decidido — ahí los ofrecés, no los imponés.
 
 REGLAS DURAS:
@@ -4735,7 +4729,9 @@ Vos: "¡Hecho! Te sumé una gaseosa y dos porciones de la entrada. ¿Te tiro alg
         lines.append(f"\n[{section.get('name', section.get('id', ''))}]")
         for it in section.get("items", []):
             name = it.get("name", "")
-            desc = it.get("description", "")
+            desc = (it.get("description", "") or "").strip()
+            if len(desc) > 90:                       # recorte SOLO para el prompt (la carta visual no cambia)
+                desc = desc[:88].rsplit(" ", 1)[0] + "…"
             price = _format_price(it.get("price"), symbol)
             line = f"  · {name} — {price}"
             if desc:
@@ -5403,6 +5399,62 @@ async def tts(req: TTSRequest):
             await _tts_cache_put(client, key, audio)
     return Response(content=audio, media_type="audio/mpeg",
                     headers={"X-TTS-Cache": "miss" if use_cache else "off"})
+
+
+# ----------------------------------------------------------------------------
+# Pre-warming: al arrancar deja listo el saludo (audio) y las respuestas de los chips por defecto
+# (texto), para que el PRIMER cliente ya los reciba al toque (no solo los que repiten).
+async def _brain_once(client: httpx.AsyncClient, message: str) -> str:
+    """Una respuesta completa del cerebro (sin stream). Devuelve '' si ningún cerebro respondió."""
+    for prov, model in BRAIN_CHAIN_PARSED:
+        url, headers, body = _brain_request(prov, model, [], message, "")
+        try:
+            r = await _post_with_retry(client, url, body, headers)
+        except Exception:
+            continue
+        if r.status_code == 200:
+            try:
+                reply = _brain_extract(prov, r.json())
+            except Exception:
+                reply = ""
+            if reply:
+                return reply
+    return ""
+
+
+@app.on_event("startup")
+async def _prewarm():
+    async def _warm():
+        try:
+            data = json.loads(EMBEDDED_MENU_JSON)
+            saludo = ((data.get("assistant") or {}).get("greeting") or "").strip()
+            chips = [c.get("text", "") for c in (CARTA_CONFIG.get("chips") or []) if c.get("text")]
+            async with httpx.AsyncClient(timeout=60.0) as client:
+                # audio del saludo genérico (se reproduce entero → su hash coincide con el de /tts)
+                if saludo and MINIMAX_API_KEY and _tts_cache_enabled():
+                    st = _normalize_for_tts(saludo)
+                    k = _tts_cache_key(st)
+                    try:
+                        if not await _tts_cache_get(client, k):
+                            await _tts_cache_put(client, k, await _minimax_synth(client, st))
+                    except Exception:
+                        pass
+                # texto de las respuestas de los chips por defecto (saca el LLM en la 1ª vez)
+                if _resp_cache_on():
+                    for msg in chips:
+                        try:
+                            key = _resp_cache_key(msg)
+                            if await _resp_cache_get(client, key):
+                                continue
+                            reply = await _brain_once(client, msg)
+                            if reply and "#PEDIDO#" not in reply:
+                                await _resp_cache_put(client, key, msg, reply)
+                        except Exception:
+                            pass
+            print("[prewarm] listo")
+        except Exception as e:  # nunca romper el arranque por el pre-warming
+            print(f"[prewarm] {type(e).__name__}: {e}")
+    asyncio.create_task(_warm())
 
 
 # ----------------------------------------------------------------------------
