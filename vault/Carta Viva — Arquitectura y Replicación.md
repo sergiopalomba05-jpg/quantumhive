@@ -126,6 +126,15 @@ alter table public.respuestas_cache enable row level security;
 - Guardado de gustos (`#PERFIL#`) en la memoria.
 - Context caching **explícito** de Gemini (solo con tráfico constante; tiene costo por hora).
 - Base multi-inquilino a escala (miles de cartas) y pasarela de pago.
+- **Voz por plan:** MiniMax (barato) para Básico, **ElevenLabs** (mejor calidad) para Premium. El motor
+  TTS es pluggable; el caché de voz abarata mucho ElevenLabs (solo paga las frases nuevas). Re-agregar
+  cuando haya crédito.
+- **Caché con variantes rotativas:** en vez de devolver SIEMPRE las mismas 3 recomendaciones a un chip,
+  guardar N variantes por pregunta y rotar entre ellas → más variedad sin gastar de más (las primeras
+  N personas "entrenan" las variantes; después rota entre cacheadas). Trade-off caché ↔ variedad.
+- **Autoguiado dirigido (valor Premium):** que el restaurante elija desde un panel a qué platos empuja
+  la mesera (ej. los de más margen o los que quiere mover). Técnico: un campo de config "platos a
+  priorizar" que se inyecta al prompt. Factible.
 
 ---
 *Vivo: actualizar cuando se tome una decisión de arquitectura o se resuelva un bug de fondo.*

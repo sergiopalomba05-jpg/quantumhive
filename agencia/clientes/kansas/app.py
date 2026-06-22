@@ -3361,7 +3361,8 @@ function cvScheduleSpotlight(dishes, cat, totalMs, token) {
 // ============================================================
 const CV_DIR = '#PEDIDO#';
 const CV_CHIPS = '#CHIPS#';
-const CV_SENTINELS = [CV_DIR, CV_CHIPS];
+const CV_CUENTA = '#CUENTA#';
+const CV_SENTINELS = [CV_DIR, CV_CHIPS, CV_CUENTA];
 // saca las directivas técnicas (y un prefijo parcial al final) del texto hablado/visible
 function cvStripDirective(t) {
   let cut = t.length;
@@ -3645,6 +3646,7 @@ async function converse(userText, withVoice, guided) {
   producerDone = true;
   const finalVisible = cvStripDirective(fullReply).trim();
   const order = cvApplyOrderDirective(fullReply);   // aplicar add/remove/clear al carrito real
+  const wantsCheckout = fullReply.indexOf(CV_CUENTA) >= 0;   // el cliente quiere cerrar / la cuenta
   let chips = cvParseChips(fullReply);              // sugerencias que propone la mesera
   // FALLBACK del lado del cliente: si el modelo NO emitió #CHIPS# pero recomendó platos, sintetizar
   // botones para que SIEMPRE haya algo para tocar (no depender de que el modelo se acuerde).
@@ -3678,7 +3680,9 @@ async function converse(userText, withVoice, guided) {
   state.isStreaming = false;
   setSolState('idle');
   endBotBubble();
-  cvSpotlightSettle();      // corta el pulso y oculta el botón; deja todo lo nombrado resaltado
+  cvSpotlightSettle();      // corta el pulso; deja todo lo nombrado resaltado
+  // El cliente pidió cerrar / la cuenta → abrir la ventana del pedido para que lo confirme y lo mande.
+  if (wantsCheckout && state.cart.length) navOpen('order', openOrderDom);
 }
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
@@ -4567,6 +4571,8 @@ def build_system_prompt() -> str:
     # Identidad y personalidad — la mesera
     lines.append(f"""Sos la mesera de {restaurant.get('name', 'el restaurante')}. Trabajás acá hace años, conocés la carta de memoria y sabés leer a cada cliente.
 
+IDIOMA (REGLA ABSOLUTA, ANTES QUE TODO): hablás SIEMPRE en español rioplatense argentino. JAMÁS escribís una sola palabra en portugués ni en ningún otro idioma, aunque el cliente te hable en portugués o en otro idioma. Ante cualquier duda, es español argentino.
+
 CÓMO RESPONDÉS — REGLA DE ORO:
 Directa, concreta y vendedora. Recomendás con seguridad y guiás la venta DE A UN PASO: recomendás UNA cosa a la vez (un plato o una categoría), dejás que el cliente la elija o la agregue, y RECIÉN AHÍ ofrecés el siguiente paso (bebida, postre). Nunca amontonás plato + bebida + postre en una sola respuesta. Prohibido arrancar con "mmm", "a ver" o repetir la pregunta del cliente.
 
@@ -4646,7 +4652,14 @@ Ejemplo del FORMATO (los nombres van EXACTOS como figuran en tu carta; los de ac
 Cliente: "agregame una gaseosa y dos porciones de la entrada"
 Vos: "¡Hecho! Te sumé una gaseosa y dos porciones de la entrada. ¿Te tiro algún postre para cerrar?
 #PEDIDO# {"add":[{"name":"Gaseosa","qty":1},{"name":"Entrada","qty":2}],"remove":[],"clear":false}
-#CHIPS# ["Un postre rico","¿Y para tomar?","Algo más liviano"]\"""")
+#CHIPS# ["Un postre rico","¿Y para tomar?","Algo más liviano"]
+
+CERRAR EL PEDIDO — otra línea técnica invisible:
+Cuando el cliente diga que ya está, que es todo, "cerrá el pedido", "la cuenta", "nada más", "listo",
+además de despedirte cálido y corto, agregá al final esta línea sola (NUNCA la leas en voz alta):
+#CUENTA#
+Eso le abre la ventana del pedido para que lo confirme y lo mande al mozo. Ponela SOLO cuando el cliente
+quiere cerrar, no en cada respuesta.\"""")
     lines.append("")
 
     # Reglas finas
