@@ -69,3 +69,6 @@ venv/
 # Memoria local del bot (SQLite) — no al repo
 agencia/clientes/*/cata.db
 agencia/clientes/*/*.db
+
+# PWA del catálogo: config local con la key publishable — no al repo
+agencia/productos/catalogo-pwa/config.js
