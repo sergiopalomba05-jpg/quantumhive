@@ -2568,6 +2568,14 @@ __CV_CONFIG_SCRIPT__
       <label>¿Algo para mejorar? (opcional)</label>
       <input id="ratingComment" placeholder="Escribí tu comentario o queja" autocomplete="off">
     </div>
+
+    <div class="rate-block" id="demoFeedback" hidden
+      style="margin-top:6px;padding:14px;border-radius:14px;background:rgba(201,168,106,0.10);border:1px solid rgba(201,168,106,0.35);">
+      <div class="rate-label" style="color:var(--gold);">De parte de QuantumHive 👁</div>
+      <p style="font-size:13px;line-height:1.5;opacity:0.85;margin:4px 0 8px;">Estás probando una demo. Tu opinión nos ayuda a mejorar a la mesera: ¿qué función le sumarías, qué te gustó y qué te incomodó o cambiarías? Cada comentario entrena un mejor producto.</p>
+      <textarea id="demoSugerencia" rows="3" placeholder="Contanos lo que se te ocurra para mejorarla…" autocomplete="off"
+        style="width:100%;padding:11px 13px;border:1px solid rgba(0,0,0,.16);border-radius:12px;font-size:15px;font-family:inherit;background:var(--paper,#fff);color:inherit;box-sizing:border-box;resize:vertical;"></textarea>
+    </div>
   </div>
   <div class="sheet-foot">
     <button class="btn-primary" id="ratingSend">Enviar</button>
@@ -4417,6 +4425,8 @@ function openRatingDom(){
   document.getElementById('ctaGoogle').hidden = true;
   document.getElementById('ctaQh').hidden = true;
   $('#ratingComment').value = '';
+  const _dfb = $('#demoFeedback'); if (_dfb) _dfb.hidden = !window.CV_DEMO_MODE;   // cartel solo en demo
+  const _ds = $('#demoSugerencia'); if (_ds) _ds.value = '';
   $('#ratingSend').disabled = false;
   $('#ratingOverlay').classList.add('open');
   $('#ratingSheet').classList.add('open');
@@ -4433,12 +4443,14 @@ function paintStars(target, v){
 }
 function maybeShowCta(id, url){ const el = document.getElementById(id); if (el) el.hidden = !url; }
 async function enviarValoracion(){
-  if (!_ratings.mesera && !_ratings.restaurante && !_ratings.quantumhive){ showToast('Tocá las estrellas para valorar'); return; }
+  const _sug = (($('#demoSugerencia') && $('#demoSugerencia').value) || '').trim();
+  if (!_ratings.mesera && !_ratings.restaurante && !_ratings.quantumhive && !_sug){ showToast('Tocá las estrellas o dejanos tu comentario'); return; }
   const payload = {
     stars_mesera: _ratings.mesera || null,
     stars_restaurante: _ratings.restaurante || null,
     stars_quantumhive: _ratings.quantumhive || null,
     comment: ($('#ratingComment').value || '').trim() || null,
+    sugerencia: (($('#demoSugerencia') && $('#demoSugerencia').value) || '').trim() || null,
     table: state.table || null,
     order_items: state.cart.map(i => ({ name: i.name, qty: i.qty, price: (i.price === undefined ? null : i.price) })),
   };
@@ -4829,6 +4841,7 @@ class FeedbackRequest(BaseModel):
     stars_quantumhive: Optional[int] = None   # nota a la experiencia QuantumHive
     stars: Optional[int] = None               # compat con clientes viejos (= mesera)
     comment: Optional[str] = None
+    sugerencia: Optional[str] = None          # feedback de producto (demo): qué agregar/mejorar
     table: Optional[str] = None
     order_items: Optional[List[Dict[str, Any]]] = None
 
@@ -5549,6 +5562,7 @@ async def feedback(req: FeedbackRequest):
         "stars_restaurante": _clamp(req.stars_restaurante),
         "stars_quantumhive": _clamp(req.stars_quantumhive),
         "comment": (req.comment or None),
+        "sugerencia": (req.sugerencia or None),
         "order_items": req.order_items,
     }
 
