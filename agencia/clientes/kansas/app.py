@@ -58,9 +58,9 @@ try:
 except ValueError:
     MINIMAX_SPEED = 1.2
 try:
-    MINIMAX_VOL = float(os.environ.get("MINIMAX_VOL", "5"))         # 1.0 normal · sube el volumen (hasta 10)
+    MINIMAX_VOL = float(os.environ.get("MINIMAX_VOL", "3.5"))       # 1.0 normal · subí/bajá si satura (hasta 10)
 except ValueError:
-    MINIMAX_VOL = 5.0
+    MINIMAX_VOL = 3.5
 DEMO_MODE = os.environ.get("DEMO_MODE", "").strip().lower() in ("1", "true", "yes", "si", "sí")
 
 # Supabase — opcional. Si no están seteadas, /feedback no persiste pero NO rompe.
@@ -4361,14 +4361,17 @@ function enviarPedidoInterno(){
   try {
     fetch('/order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
   } catch(e){}
-  // Memoria Premium: guardar el último pedido + sumar visita (reconocerlo la próxima).
-  if (cvMemoriaActiva()) {
-    try {
-      fetch('/cliente', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ device_id: cvDeviceId(), nombre: state.nombre || undefined,
-          ultimo_pedido: state.cart.map(i => ({ name: i.name, qty: i.qty })), bump_visita: true }) });
-    } catch(e){}
-  }
+  cvGuardarMemoriaPedido();
+}
+
+// Guarda el último pedido + suma visita en la memoria (Premium). Se llama al cerrar por cualquier vía.
+function cvGuardarMemoriaPedido(){
+  if (!cvMemoriaActiva()) return;
+  try {
+    fetch('/cliente', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ device_id: cvDeviceId(), nombre: state.nombre || undefined,
+        ultimo_pedido: state.cart.map(i => ({ name: i.name, qty: i.qty })), bump_visita: true }) });
+  } catch(e){}
 }
 
 // Despedida cálida de la mesera al cerrar el pedido (cierre de experiencia).
@@ -4411,6 +4414,8 @@ function showMozo(){
 }
 function mozoDone(){
   closeMozoCardDom();
+  cvGuardarMemoriaPedido();
+  solFarewell();                 // la mesera se despide también por esta vía
   navSwap('order', 'rating', closeOrderDom, openRatingDom);
 }
 
