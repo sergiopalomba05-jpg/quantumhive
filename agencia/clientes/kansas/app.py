@@ -15,6 +15,7 @@ import json
 import base64
 import asyncio
 import hashlib
+import random
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, List, Dict, Any
@@ -77,6 +78,12 @@ TTS_CACHE_BUCKET = os.environ.get("TTS_CACHE_BUCKET", "tts-cache").strip()
 # del LLM se guarda una vez y se reproduce $0. Solo aplica a mensajes "guided" (no a preguntas libres).
 RESPUESTAS_CACHE = os.environ.get("RESPUESTAS_CACHE", "1").strip().lower() in ("1", "true", "yes", "si", "sí")
 RESPUESTAS_TABLE = os.environ.get("RESPUESTAS_TABLE", "respuestas_cache").strip()
+# Variantes rotativas: cuántas respuestas distintas se guardan por pregunta guiada. La mesera rota
+# entre ellas (no repite siempre lo mismo) y todas quedan cacheadas → variedad sin gastar de más.
+try:
+    RESPUESTAS_VARIANTES = max(1, int(os.environ.get("RESPUESTAS_VARIANTES", "3")))
+except ValueError:
+    RESPUESTAS_VARIANTES = 3
 # Memoria de clientes (Plan Premium): reconoce al comensal que vuelve (por device_id). Default OFF
 # → el Plan Básico NO recuerda nada. Aislada por restaurant_id.
 MEMORIA        = os.environ.get("MEMORIA", "").strip().lower() in ("1", "true", "yes", "si", "sí")
@@ -5199,7 +5206,12 @@ async def chat_stream(req: ChatRequest):
             sys_extra = base_extra + mem_note
             # Caché del flujo guiado: SOLO sin perfil personalizado (básico/anónimo). Con memoria la
             # respuesta es personalizada (lleva el nombre) y no se comparte entre clientes.
-            cache_key = _resp_cache_key(req.message) if (req.guided and _resp_cache_on() and not mem_note) else None
+            # Variantes rotativas: elige un "slot" al azar → la mesera no repite siempre la misma
+            # recomendación, y cada variante queda cacheada (variedad sin gastar de más).
+            cache_key = None
+            if req.guided and _resp_cache_on() and not mem_note:
+                slot = random.randint(0, RESPUESTAS_VARIANTES - 1)
+                cache_key = _resp_cache_key(f"{req.message}#v{slot}")
             # Flujo guiado ya cacheado → reproducir tal cual, sin LLM
             if cache_key:
                 cached = await _resp_cache_get(client, cache_key)
@@ -5416,15 +5428,16 @@ async def _prewarm():
                 # texto de las respuestas de los chips por defecto (saca el LLM en la 1ª vez)
                 if _resp_cache_on():
                     for msg in chips:
-                        try:
-                            key = _resp_cache_key(msg)
-                            if await _resp_cache_get(client, key):
-                                continue
-                            reply = await _brain_once(client, msg)
-                            if reply and "#PEDIDO#" not in reply:
-                                await _resp_cache_put(client, key, msg, reply)
-                        except Exception:
-                            pass
+                        for slot in range(RESPUESTAS_VARIANTES):   # pre-generar las N variantes
+                            try:
+                                key = _resp_cache_key(f"{msg}#v{slot}")
+                                if await _resp_cache_get(client, key):
+                                    continue
+                                reply = await _brain_once(client, msg)
+                                if reply and "#PEDIDO#" not in reply:
+                                    await _resp_cache_put(client, key, msg, reply)
+                            except Exception:
+                                pass
             print("[prewarm] listo")
         except Exception as e:  # nunca romper el arranque por el pre-warming
             print(f"[prewarm] {type(e).__name__}: {e}")
