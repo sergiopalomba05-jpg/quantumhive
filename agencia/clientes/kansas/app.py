@@ -45,7 +45,13 @@ MESERA_BUSY_MSG     = os.environ.get("MESERA_BUSY_MSG",
 #   grande/uso   → "gemini:gemini-2.5-flash, openrouter:openai/gpt-4o-mini"
 #   demo gratis  → "gemini:gemini-2.5-flash, openrouter:deepseek/deepseek-chat-v3:free"
 BRAIN_CHAIN        = os.environ.get("BRAIN_CHAIN", "").strip()
+# Cerebros gratis con failover. Si BRAIN_CHAIN está vacío, se arma solo con los que tengan key
+# (orden: groq → gemini → openrouter). Si uno se queda sin cuota o falla, rota al siguiente.
+GROQ_API_KEY       = os.environ.get("GROQ_API_KEY", "").strip()
+GROQ_MODEL         = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile").strip()
+GROQ_URL           = "https://api.groq.com/openai/v1/chat/completions"
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "").strip()
+OPENROUTER_MODEL   = os.environ.get("OPENROUTER_MODEL", "meta-llama/llama-3.3-70b-instruct:free").strip()
 OPENROUTER_URL     = "https://openrouter.ai/api/v1/chat/completions"
 MAX_HISTORY_TURNS  = int(os.environ.get("MAX_HISTORY_TURNS", "8"))  # 8 ≈ 4 intercambios (anti bola de nieve de tokens)
 
@@ -84,6 +90,10 @@ try:
     RESPUESTAS_VARIANTES = max(1, int(os.environ.get("RESPUESTAS_VARIANTES", "3")))
 except ValueError:
     RESPUESTAS_VARIANTES = 3
+# Pre-warming OFF por defecto: al arrancar dispara llamadas al LLM que pueden saturar la cuota por
+# minuto de Gemini (free) y dejar a los clientes sin respuesta. Prenderlo (PREWARM=1) solo para
+# "entrenar" el caché una vez; corre espaciado para no agotar la cuota.
+PREWARM = os.environ.get("PREWARM", "").strip().lower() in ("1", "true", "yes", "si", "sí")
 # Memoria de clientes (Plan Premium): reconoce al comensal que vuelve (por device_id). Default OFF
 # → el Plan Básico NO recuerda nada. Aislada por restaurant_id.
 MEMORIA        = os.environ.get("MEMORIA", "").strip().lower() in ("1", "true", "yes", "si", "sí")
@@ -4911,6 +4921,7 @@ async def health():
         "gemini_key_set": bool(GEMINI_API_KEY),
         "gemini_model": GEMINI_MODEL,
         "brain_chain": [f"{p}:{m}" for p, m in BRAIN_CHAIN_PARSED],
+        "groq_key_set": bool(GROQ_API_KEY),
         "openrouter_key_set": bool(OPENROUTER_API_KEY),
         "minimax_key_set": bool(MINIMAX_API_KEY),
         "tts_voice": MINIMAX_VOICE,
@@ -4930,7 +4941,15 @@ async def health():
 # sobre el texto, así que da igual qué cerebro responda.
 # ----------------------------------------------------------------------------
 def _parse_brain_chain() -> List[tuple]:
-    raw = BRAIN_CHAIN or f"gemini:{GEMINI_MODEL}"
+    # Si no hay BRAIN_CHAIN explícito, se arma solo con los proveedores que tengan key configurada
+    # (orden por defecto: groq → gemini → openrouter). Rota al siguiente si uno falla o se agota.
+    raw = BRAIN_CHAIN.strip()
+    if not raw:
+        defaults = []
+        if GROQ_API_KEY:       defaults.append(f"groq:{GROQ_MODEL}")
+        if GEMINI_API_KEY:     defaults.append(f"gemini:{GEMINI_MODEL}")
+        if OPENROUTER_API_KEY: defaults.append(f"openrouter:{OPENROUTER_MODEL}")
+        raw = ",".join(defaults) or f"gemini:{GEMINI_MODEL}"
     chain: List[tuple] = []
     for entry in raw.split(","):
         entry = entry.strip()
@@ -4938,15 +4957,20 @@ def _parse_brain_chain() -> List[tuple]:
             continue
         prov, _, model = entry.partition(":")
         prov = prov.strip().lower()
-        model = model.strip() or GEMINI_MODEL
-        if prov not in ("gemini", "openrouter"):
-            prov = "gemini"
-        # saltar entradas sin su key (no rompen la cadena, simplemente no se usan)
-        if prov == "openrouter" and not OPENROUTER_API_KEY:
-            continue
-        if prov == "gemini" and not GEMINI_API_KEY:
-            continue
-        chain.append((prov, model))
+        model = model.strip()
+        # cada proveedor solo entra si tiene su key (no rompe la cadena, simplemente se saltea)
+        if prov == "groq":
+            if not GROQ_API_KEY:
+                continue
+            chain.append(("groq", model or GROQ_MODEL))
+        elif prov == "openrouter":
+            if not OPENROUTER_API_KEY:
+                continue
+            chain.append(("openrouter", model or OPENROUTER_MODEL))
+        else:  # gemini (default)
+            if not GEMINI_API_KEY:
+                continue
+            chain.append(("gemini", model or GEMINI_MODEL))
     if not chain:
         chain.append(("gemini", GEMINI_MODEL))
     return chain
@@ -5020,9 +5044,11 @@ def _openai_messages(history: List[ChatTurn], message: str, sys_extra: str = "")
 
 def _brain_request(prov: str, model: str, history: List[ChatTurn], message: str, sys_extra: str = ""):
     """(url, headers, body) para una llamada NO streaming al proveedor dado."""
-    if prov == "openrouter":
-        return (OPENROUTER_URL,
-                {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "Content-Type": "application/json"},
+    if prov in ("openrouter", "groq"):
+        url = GROQ_URL if prov == "groq" else OPENROUTER_URL
+        key = GROQ_API_KEY if prov == "groq" else OPENROUTER_API_KEY
+        return (url,
+                {"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
                 {"model": model, "messages": _openai_messages(history, message, sys_extra),
                  "temperature": 0.8, "max_tokens": 2048})
     return (f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_API_KEY}",
@@ -5031,7 +5057,7 @@ def _brain_request(prov: str, model: str, history: List[ChatTurn], message: str,
 
 
 def _brain_extract(prov: str, data: dict) -> str:
-    if prov == "openrouter":
+    if prov in ("openrouter", "groq"):
         return data["choices"][0]["message"]["content"]
     return data["candidates"][0]["content"]["parts"][0]["text"]
 
@@ -5203,9 +5229,10 @@ async def chat(req: ChatRequest):
 async def _brain_stream_once(client, prov, model, history, message, sys_extra: str = ""):
     """Async-gen que emite texto a medida. Lanza _BrainUnavailable si no logra arrancar
     (para que la cadena rote al siguiente cerebro). Reintenta 429/503 antes del 1er chunk."""
-    if prov == "openrouter":
-        url = OPENROUTER_URL
-        headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "Content-Type": "application/json"}
+    if prov in ("openrouter", "groq"):
+        url = GROQ_URL if prov == "groq" else OPENROUTER_URL
+        key = GROQ_API_KEY if prov == "groq" else OPENROUTER_API_KEY
+        headers = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
         body = {"model": model, "messages": _openai_messages(history, message, sys_extra),
                 "temperature": 0.8, "max_tokens": 2048, "stream": True}
         is_openai = True
@@ -5489,6 +5516,8 @@ async def _brain_once(client: httpx.AsyncClient, message: str) -> str:
 
 @app.on_event("startup")
 async def _prewarm():
+    if not PREWARM:        # OFF por defecto: no gastar cuota al arrancar
+        return
     async def _warm():
         try:
             data = json.loads(EMBEDDED_MENU_JSON)
@@ -5515,6 +5544,7 @@ async def _prewarm():
                                 reply = await _brain_once(client, msg)
                                 if reply and "#PEDIDO#" not in reply:
                                     await _resp_cache_put(client, key, msg, reply)
+                                await asyncio.sleep(4)   # espaciar: no saturar la cuota por minuto
                             except Exception:
                                 pass
             print("[prewarm] listo")
