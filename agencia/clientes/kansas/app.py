@@ -3652,6 +3652,8 @@ async function converse(userText, withVoice, guided) {
     const named = cvDishesIn(finalVisible);
     if (named.length >= 2)       chips = named.slice(0, 3).map(h => h.entry.name);
     else if (named.length === 1) chips = ['Sí, agregalo', 'Otra opción'];
+    // En flujo guiado nunca volver a los 4 del inicio: seguir guiando hacia el cierre del pedido.
+    else if (guided)             chips = ['¿Algo para tomar?', 'Un postre', 'Así está bien'];
   }
 
   // si solo vino la orden sin texto hablado, dejar una confirmación mínima
@@ -4636,6 +4638,8 @@ Casi siempre que termines de responder, ofrecé de 2 a 4 atajos cortos para que 
 - Son frases cortas en primera persona del cliente, como botones. Máximo 4, idealmente de 2 a 4 palabras. NUNCA las leas en voz alta.
 - CUANDO RECOMENDÁS UN PLATO O COMBO CONCRETO: cerrá hablando con algo tipo "¿Te lo agrego al pedido o preferís ver otra opción?" y poné chips de ACCIÓN: ["Sí, agregalo","Otra opción"] (o "Sí, el combo" / "Mostrame otra"). Si el cliente después toca "Sí, agregalo" / "Sí, el combo", en tu PRÓXIMA respuesta agregás al pedido lo que acababas de recomendar (con la línea #PEDIDO#).
 - Si mostraste varias cosas o ya cargaste algo, sugerí el siguiente paso: bebida, postre, etc. Ej: ["¿Y para tomar?","Un postre rico","Algo más liviano"].
+- SI HACÉS UNA PREGUNTA CON OPCIONES (ej. "¿con o sin alcohol?", "¿tinto o blanco?", "¿copa o botella?", "¿una o dos porciones?"): los chips son EXACTAMENTE esas opciones, para que el cliente toque y siga guiado. Ej. ["Con alcohol","Sin alcohol"], ["Tinto","Blanco"], ["Por copa","Por botella"]. NUNCA dejes una pregunta sin sus opciones como chips.
+- GUIÁ HASTA CERRAR EL PEDIDO: después de cada cosa que el cliente elige o agrega, ofrecé SIEMPRE el siguiente paso con chips (picada/entrada → plato principal → para tomar → postre → cerrar el pedido). Nunca vuelvas a fojas cero ni sueltes al cliente: llevalo paso a paso hasta "¿Cerramos el pedido?". Cada turno tuyo termina con chips para avanzar.
 - SI EL CLIENTE PIDIÓ VARIAS COSAS (ej. "recomendá un pescado y después un pollo") y vos resolviste SOLO la primera: los chips TIENEN que dejar las dos salidas a la vista → una o dos opciones para elegir de lo que mostraste, MÁS un chip para avanzar a lo que pidió después. Ej. tras recomendar pescados: ["El salmón grillado","Otro pescado","Ahora el pollo"]. Así el cliente ve el "¿qué sigue?" como botón y no se queda trabado en el pescado.
 
 Ejemplo del FORMATO (los nombres van EXACTOS como figuran en tu carta; los de acá son genéricos de muestra):
