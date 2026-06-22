@@ -91,6 +91,17 @@ footer{text-align:center;color:var(--text-dim);font-size:.8rem;padding:36px 0 28
 footer b{color:var(--gold)}
 .hidden{display:none!important}
 .loading{text-align:center;color:var(--gold);padding:50px 0;font-family:'Rajdhani',sans-serif;letter-spacing:.1em}
+
+/* Chat asistente */
+.chat{display:flex;flex-direction:column;height:min(70vh,560px);border:1px solid var(--edge-soft);border-radius:16px;background:linear-gradient(160deg,var(--panel),var(--panel-2));overflow:hidden}
+.chat-log{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:88%;padding:10px 14px;border-radius:14px;font-size:.92rem;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
+.msg.user{align-self:flex-end;background:linear-gradient(150deg,var(--gold),var(--gold-deep));color:#1a1505}
+.msg.bot{align-self:flex-start;background:var(--panel-2);border:1px solid var(--edge-soft);color:var(--text)}
+.msg.bot em{color:var(--gold-bright);font-style:normal}
+.chat-input{display:flex;gap:8px;padding:12px;border-top:1px solid var(--edge-soft)}
+.chat-input input{flex:1;background:var(--bg-2);border:1px solid var(--edge-soft);border-radius:12px;padding:11px 14px;color:var(--text);font-family:inherit;font-size:1rem;outline:none}
+.chat-input button{background:linear-gradient(150deg,var(--gold-lt),var(--gold) 60%,var(--gold-deep));border:none;border-radius:12px;width:48px;font-size:1.1rem;color:#1a1505;cursor:pointer}
 </style>
 </head>
 <body>
@@ -113,11 +124,23 @@ footer b{color:var(--gold)}
     <div class="tabs">
       <button class="tab active" data-view="objetivo">Por objetivo</button>
       <button class="tab" data-view="stack">Stack definitivo</button>
+      <button class="tab" data-view="asistente">Asistente</button>
     </div>
   </div>
 
   <main id="view-objetivo"><div class="loading">Cargando catálogo…</div></main>
   <main id="view-stack" class="hidden"></main>
+  <main id="view-asistente" class="hidden">
+    <div class="chat">
+      <div id="chat-log" class="chat-log">
+        <div class="msg bot">Soy el asistente de QuantumHive. Preguntame qué usar para lo que quieras crear — por ejemplo <em>"¿qué uso para una web 3D?"</em> o <em>"explicame n8n y cómo lo aplico"</em>.</div>
+      </div>
+      <form id="chat-form" class="chat-input">
+        <input id="chat-q" type="text" placeholder="Escribí tu pregunta…" autocomplete="off">
+        <button type="submit" aria-label="Enviar">➤</button>
+      </form>
+    </div>
+  </main>
 
   <footer>Motor: <b>QuantumHive</b> · catálogo vivo mantenido por Hermes · datos en Supabase</footer>
 </div>
@@ -210,8 +233,9 @@ document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{
   document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
   t.classList.add("active");
   const v=t.dataset.view;
-  document.getElementById("view-objetivo").classList.toggle("hidden", v!=="objetivo");
-  document.getElementById("view-stack").classList.toggle("hidden", v!=="stack");
+  ["objetivo","stack","asistente"].forEach(name=>{
+    document.getElementById("view-"+name).classList.toggle("hidden", v!==name);
+  });
   filter();
 }));
 
@@ -234,6 +258,31 @@ function filter(){
   });
 }
 document.getElementById("q").addEventListener("input", filter);
+
+// Chat asistente (Edge Function = cerebro de Hermes)
+const chatMsgs = [];
+const chatLog = document.getElementById("chat-log");
+function addMsg(role, text){
+  const d=document.createElement("div");
+  d.className="msg "+(role==="user"?"user":"bot");
+  d.textContent=text;
+  chatLog.appendChild(d); chatLog.scrollTop=chatLog.scrollHeight;
+  return d;
+}
+document.getElementById("chat-form").addEventListener("submit", async e=>{
+  e.preventDefault();
+  const inp=document.getElementById("chat-q");
+  const q=inp.value.trim(); if(!q) return;
+  inp.value=""; addMsg("user", q); chatMsgs.push({role:"user", content:q});
+  const thinking=addMsg("bot","…");
+  try{
+    const url=(CFG.SUPABASE_URL||"").replace(/\/$/,"")+"/functions/v1/asistente";
+    const r=await fetch(url,{method:"POST",headers:{...HEADERS,"Content-Type":"application/json"},body:JSON.stringify({messages:chatMsgs})});
+    const j=await r.json();
+    const reply=j.reply||("Error: "+(j.error||r.status));
+    thinking.textContent=reply; chatMsgs.push({role:"assistant", content:reply});
+  }catch(err){ thinking.textContent="Error de conexión: "+err.message; }
+});
 
 // PWA
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}
