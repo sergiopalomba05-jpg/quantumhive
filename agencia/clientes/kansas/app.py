@@ -68,6 +68,25 @@ try:
     MINIMAX_VOL = float(os.environ.get("MINIMAX_VOL", "3.5"))       # 1.0 normal · subí/bajá si satura (hasta 10)
 except ValueError:
     MINIMAX_VOL = 3.5
+
+# VOZ PLUGGABLE — cadena de proveedores TTS con fallback (misma idea que BRAIN_CHAIN).
+# TTS_CHAIN: orden de prioridad "minimax,elevenlabs,cartesia". Se prueba el primero; si tira
+# error de cuota/servidor/red (Exception), rota al siguiente. Vacío = se arma solo con los
+# proveedores que tengan su key (orden por defecto: minimax → elevenlabs → cartesia).
+# Cada proveedor trae su propia voz/modelo por su env (no se mezclan). El TTS_CACHE aplica a todos.
+TTS_CHAIN           = os.environ.get("TTS_CHAIN", "").strip()
+# ElevenLabs — ELEVENLABS_API_KEY va SOLO en env vars del Space, nunca al repo.
+ELEVENLABS_API_KEY  = os.environ.get("ELEVENLABS_API_KEY", "").strip()
+ELEVENLABS_VOICE    = os.environ.get("ELEVENLABS_VOICE", "EXAVITQu4vr4xnSDxMaL").strip()  # voz multilingüe por defecto
+ELEVENLABS_MODEL    = os.environ.get("ELEVENLABS_MODEL", "eleven_multilingual_v2").strip()
+ELEVENLABS_API_BASE = os.environ.get("ELEVENLABS_API_BASE", "https://api.elevenlabs.io").strip().rstrip("/")
+# Cartesia — CARTESIA_API_KEY va SOLO en env vars del Space, nunca al repo.
+CARTESIA_API_KEY    = os.environ.get("CARTESIA_API_KEY", "").strip()
+CARTESIA_VOICE      = os.environ.get("CARTESIA_VOICE", "").strip()   # voice_id de Cartesia (obligatorio si se usa)
+CARTESIA_MODEL      = os.environ.get("CARTESIA_MODEL", "sonic-2").strip()
+CARTESIA_API_BASE   = os.environ.get("CARTESIA_API_BASE", "https://api.cartesia.ai").strip().rstrip("/")
+CARTESIA_VERSION    = os.environ.get("CARTESIA_VERSION", "2024-11-13").strip()  # header obligatorio; override por env
+
 DEMO_MODE = os.environ.get("DEMO_MODE", "").strip().lower() in ("1", "true", "yes", "si", "sí")
 
 # Supabase — opcional. Si no están seteadas, /feedback no persiste pero NO rompe.
@@ -2336,6 +2355,9 @@ body.keyboard-open .cart-bar { display: none; }
 /* Teclado abierto: subir el modal y achicar el sheet para que el campo se vea */
 body.keyboard-open .modal-overlay { align-items: flex-start; padding-top: 16px; }
 body.keyboard-open .sheet { max-height: calc(100dvh - var(--kb, 0px) - 14px); }
+/* Calificaciones + teclado: el cuadro de comentario quedaba tapado por el teclado.
+   Anclamos el sheet ARRIBA de la pantalla mientras se escribe, así el campo se ve siempre. */
+body.keyboard-open #ratingSheet { top: 8px; bottom: auto; }
 .modal-card {
   width: 100%; max-width: 340px; background: linear-gradient(180deg, #201712, #14100D);
   border: 1px solid rgba(201,168,106,0.25); border-radius: 20px; padding: 26px 22px;
@@ -2590,7 +2612,7 @@ __CV_CONFIG_SCRIPT__
     <h3 style="color:var(--gold);">De parte de QuantumHive 👁</h3>
     <p>¡Gracias! Una última: estás probando una demo. ¿Qué función le sumarías a la mesera, qué te gustó o qué te incomodó? Tu opinión nos ayuda a entrenar un mejor producto.</p>
     <textarea id="demoSugerencia" rows="3" placeholder="Contanos lo que se te ocurra para mejorarla…" autocomplete="off"
-      style="width:100%;margin-top:4px;padding:11px 13px;border:1px solid rgba(0,0,0,.16);border-radius:12px;font-size:15px;font-family:inherit;background:var(--paper,#fff);color:inherit;box-sizing:border-box;resize:vertical;"></textarea>
+      style="width:100%;margin-top:4px;padding:11px 13px;border:1px solid rgba(0,0,0,.16);border-radius:12px;font-size:15px;font-family:inherit;background:var(--paper,#fff);color:#2A1F18;-webkit-text-fill-color:#2A1F18;box-sizing:border-box;resize:vertical;"></textarea>
     <div class="modal-actions">
       <button class="leave" id="demoFbSkip">Ahora no</button>
       <button class="stay" id="demoFbSend">Enviar</button>
@@ -2641,7 +2663,7 @@ __CV_CONFIG_SCRIPT__
     <h3>¿Cómo te llamás?</h3>
     <p>Así te reconozco la próxima vez y te recomiendo mejor. Es opcional — lo guardamos solo para vos.</p>
     <input id="nameInput" type="text" maxlength="40" placeholder="Tu nombre" autocomplete="given-name"
-      style="width:100%;margin:8px 0 4px;padding:13px 14px;border:1px solid rgba(0,0,0,.16);border-radius:12px;font-size:16px;background:var(--paper,#fff);color:inherit;box-sizing:border-box;">
+      style="width:100%;margin:8px 0 4px;padding:13px 14px;border:1px solid rgba(0,0,0,.16);border-radius:12px;font-size:16px;background:var(--paper,#fff);color:#2A1F18;-webkit-text-fill-color:#2A1F18;box-sizing:border-box;">
     <div class="modal-actions">
       <button class="leave" id="nameSkip">Ahora no</button>
       <button class="stay" id="nameSave">Listo</button>
@@ -4515,13 +4537,12 @@ function quickAsk(text){
 }
 function toggleQuickActions(){
   const qa = $('#quickActions'); if (!qa) return;
-  const orb = $('#orbFloat');
-  const orbState = orb ? orb.dataset.state : 'idle';
-  // Tarjeta/nav abiertos SIEMPRE tapan los chips. Hablar/pensar (orbe!=idle) o streaming los tapan
-  // SOLO si son los 4 por defecto: los chips de contexto (acción/elección) quedan visibles para tocar.
+  // Tarjeta/nav abiertos SIEMPRE tapan los chips.
+  // Antes: cualquier estado del orbe != idle (incluido el saludo "speaking") ocultaba los 4 chips
+  // por defecto → no aparecían al iniciar, y si el saludo se colgaba quedaban ocultos para siempre.
+  // Ahora SOLO los oculta una conversación REAL en curso (isStreaming); los de contexto, nunca.
   const hardBusy = NAV.stack.length > 0 || NAV.cardOpen;
-  const softBusy = state.isStreaming || (orbState && orbState !== 'idle');
-  const busy = hardBusy || (softBusy && !state.hasContextChips);
+  const busy = hardBusy || (state.isStreaming && !state.hasContextChips);
   qa.classList.toggle('hidden', !!busy);
 }
 
@@ -4925,6 +4946,10 @@ async def health():
         "groq_key_set": bool(GROQ_API_KEY),
         "openrouter_key_set": bool(OPENROUTER_API_KEY),
         "minimax_key_set": bool(MINIMAX_API_KEY),
+        "elevenlabs_key_set": bool(ELEVENLABS_API_KEY),
+        "cartesia_key_set": bool(CARTESIA_API_KEY),
+        "tts_chain": TTS_CHAIN_PARSED,
+        "tts_primary": TTS_CHAIN_PARSED[0] if TTS_CHAIN_PARSED else None,
         "tts_voice": MINIMAX_VOICE,
         "tts_model": MINIMAX_MODEL,
         "minimax_speed": MINIMAX_SPEED,
@@ -5413,8 +5438,19 @@ def _tts_cache_enabled() -> bool:
     return bool(TTS_CACHE and SUPABASE_URL and SUPABASE_KEY)
 
 
+def _tts_primary_identity() -> str:
+    """Identidad de la voz PRINCIPAL (1er proveedor de la cadena) para el hash del caché.
+    Si cambia el proveedor/voz principal por env, el caché se invalida solo y regenera."""
+    prov = TTS_CHAIN_PARSED[0] if TTS_CHAIN_PARSED else "minimax"
+    if prov == "elevenlabs":
+        return f"elevenlabs|{ELEVENLABS_MODEL}|{ELEVENLABS_VOICE}"
+    if prov == "cartesia":
+        return f"cartesia|{CARTESIA_MODEL}|{CARTESIA_VOICE}"
+    return f"minimax|{MINIMAX_MODEL}|{MINIMAX_VOICE}|{MINIMAX_SPEED}"
+
+
 def _tts_cache_key(text: str) -> str:
-    raw = f"{RESTAURANT_ID}|{MINIMAX_MODEL}|{MINIMAX_VOICE}|{MINIMAX_SPEED}|{text}"
+    raw = f"{RESTAURANT_ID}|{_tts_primary_identity()}|{text}"
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
@@ -5468,30 +5504,112 @@ async def _minimax_synth(client: httpx.AsyncClient, text: str) -> bytes:
     return bytes.fromhex(hex_audio)
 
 
+async def _elevenlabs_synth(client: httpx.AsyncClient, text: str) -> bytes:
+    """Genera el MP3 con ElevenLabs. Devuelve audio/mpeg directo (no hace falta decodificar)."""
+    r = await client.post(
+        f"{ELEVENLABS_API_BASE}/v1/text-to-speech/{ELEVENLABS_VOICE}",
+        params={"output_format": "mp3_44100_128"},
+        headers={"xi-api-key": ELEVENLABS_API_KEY, "Content-Type": "application/json", "Accept": "audio/mpeg"},
+        json={"text": text, "model_id": ELEVENLABS_MODEL,
+              "voice_settings": {"stability": 0.5, "similarity_boost": 0.75}},
+        timeout=30.0,
+    )
+    if r.status_code != 200:
+        raise HTTPException(r.status_code, f"ElevenLabs TTS error: {r.text[:400]}")
+    if not r.content:
+        raise HTTPException(502, "ElevenLabs sin audio")
+    return r.content
+
+
+async def _cartesia_synth(client: httpx.AsyncClient, text: str) -> bytes:
+    """Genera el MP3 con Cartesia (endpoint /tts/bytes). Requiere CARTESIA_VOICE (voice_id)."""
+    if not CARTESIA_VOICE:
+        raise HTTPException(500, "CARTESIA_VOICE no está configurada (voice_id de Cartesia)")
+    r = await client.post(
+        f"{CARTESIA_API_BASE}/tts/bytes",
+        headers={"X-API-Key": CARTESIA_API_KEY, "Cartesia-Version": CARTESIA_VERSION,
+                 "Content-Type": "application/json"},
+        json={"model_id": CARTESIA_MODEL, "transcript": text, "language": "es",
+              "voice": {"mode": "id", "id": CARTESIA_VOICE},
+              "output_format": {"container": "mp3", "sample_rate": 44100, "bit_rate": 128000}},
+        timeout=30.0,
+    )
+    if r.status_code != 200:
+        raise HTTPException(r.status_code, f"Cartesia TTS error: {r.text[:400]}")
+    if not r.content:
+        raise HTTPException(502, "Cartesia sin audio")
+    return r.content
+
+
+# Cadena de proveedores TTS (igual que BRAIN_CHAIN). Orden por TTS_CHAIN o, si está vacío, los que
+# tengan key (minimax → elevenlabs → cartesia). Cada proveedor solo entra si tiene su key configurada.
+def _parse_tts_chain() -> List[str]:
+    has = {"minimax": bool(MINIMAX_API_KEY),
+           "elevenlabs": bool(ELEVENLABS_API_KEY),
+           "cartesia": bool(CARTESIA_API_KEY)}
+    order: List[str] = []
+    raw = TTS_CHAIN.strip()
+    if raw:
+        for entry in raw.split(","):
+            prov = entry.strip().lower().split(":")[0].strip()  # admite "minimax:voz" → toma el proveedor
+            if prov in has and prov not in order:
+                order.append(prov)
+    chain = [p for p in order if has.get(p)]
+    if chain:
+        return chain
+    # Sin TTS_CHAIN (o el explícito quedó sin keys válidas) → automático: cualquiera con key,
+    # en orden minimax → elevenlabs → cartesia (no dejar la voz muerta por un typo en TTS_CHAIN).
+    return [p for p in ("minimax", "elevenlabs", "cartesia") if has.get(p)]
+
+
+TTS_CHAIN_PARSED = _parse_tts_chain()
+
+
+async def _tts_synth_one(client: httpx.AsyncClient, prov: str, text: str) -> bytes:
+    if prov == "elevenlabs":
+        return await _elevenlabs_synth(client, text)
+    if prov == "cartesia":
+        return await _cartesia_synth(client, text)
+    return await _minimax_synth(client, text)
+
+
+async def _tts_synth_chain(client: httpx.AsyncClient, text: str) -> tuple:
+    """Sintetiza con la cadena: primero el proveedor principal; ante Exception (cuota/servidor/red),
+    try/except y rota al siguiente. Devuelve (audio_bytes, proveedor_usado). Lanza si ninguno responde."""
+    last_err = None
+    for prov in TTS_CHAIN_PARSED:
+        try:
+            return await _tts_synth_one(client, prov, text), prov
+        except Exception as e:  # cuota/servidor/red → probar el siguiente proveedor de voz
+            last_err = e
+            continue
+    raise HTTPException(502, f"TTS sin proveedor disponible: {last_err}")
+
+
 @app.post("/tts")
 async def tts(req: TTSRequest):
     text = (req.text or "").strip()
     if not text:
         raise HTTPException(400, "Texto vacío")
     text = _normalize_for_tts(text)
-    if not MINIMAX_API_KEY:
-        raise HTTPException(500, "MINIMAX_API_KEY no está configurada en el Space")
+    if not TTS_CHAIN_PARSED:
+        raise HTTPException(500, "Ningún proveedor de TTS configurado (MINIMAX/ELEVENLABS/CARTESIA)")
 
     use_cache = _tts_cache_enabled()
     key = _tts_cache_key(text) if use_cache else ""
     async with httpx.AsyncClient() as client:
-        # 1) ¿está cacheada? → $0, instantáneo
+        # 1) ¿está cacheada? → $0, instantáneo (cualquier proveedor; el caché aplica a todos)
         if use_cache:
             cached = await _tts_cache_get(client, key)
             if cached:
                 return Response(content=cached, media_type="audio/mpeg", headers={"X-TTS-Cache": "hit"})
-        # 2) generar con MiniMax
-        audio = await _minimax_synth(client, text)
+        # 2) generar con la cadena de proveedores: principal → fallback ante cuota/error
+        audio, used = await _tts_synth_chain(client, text)
         # 3) guardar en el caché para la próxima (no frena la respuesta si falla)
         if use_cache:
             await _tts_cache_put(client, key, audio)
     return Response(content=audio, media_type="audio/mpeg",
-                    headers={"X-TTS-Cache": "miss" if use_cache else "off"})
+                    headers={"X-TTS-Cache": "miss" if use_cache else "off", "X-TTS-Provider": used})
 
 
 # ----------------------------------------------------------------------------
@@ -5526,12 +5644,13 @@ async def _prewarm():
             chips = [c.get("text", "") for c in (CARTA_CONFIG.get("chips") or []) if c.get("text")]
             async with httpx.AsyncClient(timeout=60.0) as client:
                 # audio del saludo genérico (se reproduce entero → su hash coincide con el de /tts)
-                if saludo and MINIMAX_API_KEY and _tts_cache_enabled():
+                if saludo and TTS_CHAIN_PARSED and _tts_cache_enabled():
                     st = _normalize_for_tts(saludo)
                     k = _tts_cache_key(st)
                     try:
                         if not await _tts_cache_get(client, k):
-                            await _tts_cache_put(client, k, await _minimax_synth(client, st))
+                            audio, _ = await _tts_synth_chain(client, st)
+                            await _tts_cache_put(client, k, audio)
                     except Exception:
                         pass
                 # texto de las respuestas de los chips por defecto (saca el LLM en la 1ª vez)
