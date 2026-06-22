@@ -18,7 +18,10 @@ lógica: se edita un bloque y se setean variables.
 
 1. **Copiá esta carpeta** a una nueva (o nuevo Space) — `agencia/clientes/<cliente>/`.
 2. **Editá `CARTA_CONFIG`** en `app.py` (nombre, colores `--accent`, chips, links de reseñas) y el
-   **menú** (`EMBEDDED_MENU_JSON`: platos, precios, saludo). Es el único lugar a tocar.
+   **menú** (`EMBEDDED_MENU_JSON`: platos, precios, `greeting`). Es el único lugar a tocar. Para
+   ajustar el **tono** de la mesera a cada local, sumá `"personalidad"` dentro de `assistant` en el
+   menú (ej. parrilla: *"cálida y casera, de parrilla de barrio"*; cervecería: *"casual y joven"*;
+   sushi: *"sobria y elegante"*). Si no lo ponés, usa un tono cálido porteño por defecto.
 3. **Seteá las variables** (ver `.env.ejemplo`): `RESTAURANT_ID` único, `GEMINI_API_KEY`,
    `MINIMAX_API_KEY` (la `sk-cp` del plan de créditos), `SUPABASE_URL` + `SUPABASE_SERVICE_KEY`.
 4. **Caché de voz (Supabase Storage):** creá un bucket **`tts-cache`** (privado) en el proyecto

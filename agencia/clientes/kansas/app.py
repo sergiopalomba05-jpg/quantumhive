@@ -2793,7 +2793,7 @@ async function enterApp(tier) {
 // Bienvenida con memoria Premium: reconoce al cliente que vuelve (saludo personalizado con su perfil)
 // o le pregunta el nombre la 1ª vez; sin memoria, saluda genérico como siempre.
 async function cvWelcome(){
-  if (window.CV_MEMORIA) {
+  if (cvMemoriaActiva()) {
     try {
       const r = await fetch('/cliente?device_id=' + encodeURIComponent(cvDeviceId()));
       const c = await r.json();
@@ -3542,6 +3542,12 @@ function cvDeviceId(){
   } catch(e){ return ''; }
 }
 
+// ¿La memoria está activa para este cliente? En producción depende del env (CV_MEMORIA).
+// En la demo, SOLO el plan Premium recuerda (el Básico no), para mostrar la diferencia en vivo.
+function cvMemoriaActiva(){
+  return !!window.CV_MEMORIA && (!window.CV_DEMO_MODE || window.CV_TIER === 'premium');
+}
+
 async function converse(userText, withVoice, guided) {
   if (!userText) return;
   state.isStreaming = true;
@@ -3621,7 +3627,7 @@ async function converse(userText, withVoice, guided) {
         history: state.history.slice(0, -1),
         cart: state.cart.map(i => ({ name: i.name, qty: i.qty })),   // lo que ya está en el pedido
         guided: !!guided,                                            // chip/flujo guiado → cacheable ($0)
-        device_id: cvDeviceId(),                                     // memoria Premium (reconocer al volver)
+        device_id: cvMemoriaActiva() ? cvDeviceId() : undefined,     // memoria Premium (reconocer al volver)
       })
     });
     if (!resp.ok) throw new Error('Server ' + resp.status);
@@ -4356,7 +4362,7 @@ function enviarPedidoInterno(){
     fetch('/order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
   } catch(e){}
   // Memoria Premium: guardar el último pedido + sumar visita (reconocerlo la próxima).
-  if (window.CV_MEMORIA) {
+  if (cvMemoriaActiva()) {
     try {
       fetch('/cliente', { method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ device_id: cvDeviceId(), nombre: state.nombre || undefined,
@@ -4612,23 +4618,23 @@ SOBRE LOS PRECIOS — LEÉS AL CLIENTE:
 No cantás precios de entrada: recomendás por el plato, no por el número. Después de recomendar, si el cliente parece indeciso o está comparando opciones, le ofrecés con naturalidad: "¿te paso los precios o preferís elegir primero?". Si el cliente pregunta precios directamente, se los das al toque y se los seguís dando en el resto de la charla (ese cliente mira el bolsillo). Si nunca pregunta, no los mencionás (ese cliente elige por gusto). Te adaptás al perfil.
 Cuando digas un precio, SIEMPRE en palabras: "veintisiete mil pesos", jamás "$27.000".
 
-Ejemplos exactos de tu estilo:
+Ejemplos del ESTILO y el tono (los platos de acá son genéricos, SOLO para mostrarte CÓMO hablás — NO son tu carta; vos nombrás SIEMPRE los platos reales de la carta de abajo):
 
 Cliente: "recomendame algo rápido y rico"
-Vos: "Las Tiras de Pollo Crocante: pollo crocante con salsa honey mustard, salen rápido y no fallan nunca. ¿Te las agrego o querés ver otra opción?"
+Vos: "Te tiro la entrada que más sale: rápida, sabrosa y no falla nunca. ¿Te la agrego o querés ver otra opción?"
 
 Cliente: "recomendame una carne y un vino"
-Vos: "Arranquemos por la carne. El Ojo de Bife 400gr es jugoso y tierno, un golazo; si te va algo con más carácter, el Bife a las Especias 400gr; y para los de buen diente, las Costillas BBQ 500gr. ¿Cuál te tiento?"
+Vos: "Arranquemos por la carne. Tengo tres que vuelan: una bien jugosa y tierna, otra con más carácter, y una contundente para los de buen diente. ¿Cuál te tiento?"
 (NO nombrás el vino todavía: esperás a que elija la carne. Recién en tu PRÓXIMA respuesta, cuando ya la eligió, le ofrecés el vino.)
 
 Cliente: "¿y cuánto está eso?"
-Vos: "Los tenders están dieciocho mil pesos, la limonada seis mil ochocientos y el cheesecake diecisiete mil. Buen plan completo. ¿Te lo armo así?"
+Vos: "La entrada está dieciocho mil pesos, la limonada seis mil ochocientos y el postre diecisiete mil. Buen plan completo. ¿Te lo armo así?"
 
-Cliente: "estoy entre el lomo y el salmón, no me decido"
-Vos: "Los dos son de lo mejor de la casa. El Filet Mignon viene a la leña con papa rellena, bien contundente; el Salmón Grillado es más liviano, con papas fritas. Si venís con hambre de verdad, lomo sin dudar. ¿Te paso los precios o elegís primero y después vemos?"
+Cliente: "estoy entre dos platos, no me decido"
+Vos: "Los dos son de lo mejor de la casa. Uno viene a la leña, bien contundente; el otro es más liviano. Si venís con hambre de verdad, el contundente sin dudar. ¿Te paso los precios o elegís primero y después vemos?"
 
-Cliente: "¿qué vino va con el lomo?"
-Vos: "Un Malbec, de una. El Saint Felicien por botella es el clásico que nunca falla, y por copa el Trapiche Reserva anda bárbaro. Y guardate lugar para el Sundae de Chocolate Caliente de postre, que cierra la noche de diez."
+Cliente: "¿qué vino va con la carne?"
+Vos: "Un tinto, de una. Tengo el de la casa por copa o por botella, los dos andan bárbaro. Y guardate lugar para un postre, que cierra la noche de diez."
 
 Fijate el patrón: UNA recomendación por turno (dos o tres opciones máximo de UNA sola categoría), esperás que el cliente elija o agregue antes de pasar al siguiente paso de la comanda, y los precios solo cuando el cliente los pide o cuando dudás que esté decidido — ahí los ofrecés, no los imponés.
 
@@ -4646,6 +4652,14 @@ REGLAS DURAS:
 
 Tu carta completa con todos los precios está abajo (para cuando te los pidan).""")
     lines.append("")
+
+    # Tono/personalidad por carta (opcional): adapta el registro al tipo de local (parrilla casera,
+    # cervecería casual/joven, sushi sobrio…). Si no se define, queda el tono cálido/porteño de arriba.
+    personalidad = (assistant.get("personalidad") or "").strip()
+    if personalidad:
+        lines.append("TONO PROPIO DE ESTE RESTAURANTE (mantené todo lo de arriba, pero adaptá tu registro a esto):")
+        lines.append(personalidad)
+        lines.append("")
 
     # Cargar / modificar el pedido (directiva técnica invisible)
     lines.append("""ARMAR Y MODIFICAR EL PEDIDO — MUY IMPORTANTE:
@@ -4673,10 +4687,10 @@ Casi siempre que termines de responder, ofrecé de 2 a 4 atajos cortos para que 
 - Si mostraste varias cosas o ya cargaste algo, sugerí el siguiente paso: bebida, postre, etc. Ej: ["¿Y para tomar?","Un postre rico","Algo más liviano"].
 - SI EL CLIENTE PIDIÓ VARIAS COSAS (ej. "recomendá un pescado y después un pollo") y vos resolviste SOLO la primera: los chips TIENEN que dejar las dos salidas a la vista → una o dos opciones para elegir de lo que mostraste, MÁS un chip para avanzar a lo que pidió después. Ej. tras recomendar pescados: ["El salmón grillado","Otro pescado","Ahora el pollo"]. Así el cliente ve el "¿qué sigue?" como botón y no se queda trabado en el pescado.
 
-Ejemplo (las dos últimas líneas el cliente NO las ve ni las escucha):
-Cliente: "agregame una gaseosa y dos tiras de pollo"
-Vos: "¡Hecho! Te sumé una Coca-Cola y dos porciones de Tiras de Pollo Crocante. ¿Te tiro algún postre para cerrar?
-#PEDIDO# {"add":[{"name":"Coca-Cola","qty":1},{"name":"Tiras de Pollo Crocante","qty":2}],"remove":[],"clear":false}
+Ejemplo del FORMATO (los nombres van EXACTOS como figuran en tu carta; los de acá son genéricos de muestra):
+Cliente: "agregame una gaseosa y dos porciones de la entrada"
+Vos: "¡Hecho! Te sumé una gaseosa y dos porciones de la entrada. ¿Te tiro algún postre para cerrar?
+#PEDIDO# {"add":[{"name":"Gaseosa","qty":1},{"name":"Entrada","qty":2}],"remove":[],"clear":false}
 #CHIPS# ["Un postre rico","¿Y para tomar?","Algo más liviano"]\"""")
     lines.append("")
 
