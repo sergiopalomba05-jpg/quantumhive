@@ -2568,19 +2568,25 @@ __CV_CONFIG_SCRIPT__
       <label>¿Algo para mejorar? (opcional)</label>
       <input id="ratingComment" placeholder="Escribí tu comentario o queja" autocomplete="off">
     </div>
-
-    <div class="rate-block" id="demoFeedback" hidden
-      style="margin-top:6px;padding:14px;border-radius:14px;background:rgba(201,168,106,0.10);border:1px solid rgba(201,168,106,0.35);">
-      <div class="rate-label" style="color:var(--gold);">De parte de QuantumHive 👁</div>
-      <p style="font-size:13px;line-height:1.5;opacity:0.85;margin:4px 0 8px;">Estás probando una demo. Tu opinión nos ayuda a mejorar a la mesera: ¿qué función le sumarías, qué te gustó y qué te incomodó o cambiarías? Cada comentario entrena un mejor producto.</p>
-      <textarea id="demoSugerencia" rows="3" placeholder="Contanos lo que se te ocurra para mejorarla…" autocomplete="off"
-        style="width:100%;padding:11px 13px;border:1px solid rgba(0,0,0,.16);border-radius:12px;font-size:15px;font-family:inherit;background:var(--paper,#fff);color:inherit;box-sizing:border-box;resize:vertical;"></textarea>
-    </div>
   </div>
   <div class="sheet-foot">
     <button class="btn-primary" id="ratingSend">Enviar</button>
   </div>
 </section>
+
+<!-- ============ CARTEL QUANTUMHIVE — feedback de producto (SOLO demo, 2º paso) ============ -->
+<div class="modal-overlay" id="demoFbModal">
+  <div class="modal-card" style="text-align:left;">
+    <h3 style="color:var(--gold);">De parte de QuantumHive 👁</h3>
+    <p>¡Gracias! Una última: estás probando una demo. ¿Qué función le sumarías a la mesera, qué te gustó o qué te incomodó? Tu opinión nos ayuda a entrenar un mejor producto.</p>
+    <textarea id="demoSugerencia" rows="3" placeholder="Contanos lo que se te ocurra para mejorarla…" autocomplete="off"
+      style="width:100%;margin-top:4px;padding:11px 13px;border:1px solid rgba(0,0,0,.16);border-radius:12px;font-size:15px;font-family:inherit;background:var(--paper,#fff);color:inherit;box-sizing:border-box;resize:vertical;"></textarea>
+    <div class="modal-actions">
+      <button class="leave" id="demoFbSkip">Ahora no</button>
+      <button class="stay" id="demoFbSend">Enviar</button>
+    </div>
+  </div>
+</div>
 
 <!-- ==================== MODAL DE MESA ==================== -->
 <div class="modal-overlay" id="tableModal">
@@ -4425,8 +4431,6 @@ function openRatingDom(){
   document.getElementById('ctaGoogle').hidden = true;
   document.getElementById('ctaQh').hidden = true;
   $('#ratingComment').value = '';
-  const _dfb = $('#demoFeedback'); if (_dfb) _dfb.hidden = !window.CV_DEMO_MODE;   // cartel solo en demo
-  const _ds = $('#demoSugerencia'); if (_ds) _ds.value = '';
   $('#ratingSend').disabled = false;
   $('#ratingOverlay').classList.add('open');
   $('#ratingSheet').classList.add('open');
@@ -4443,14 +4447,12 @@ function paintStars(target, v){
 }
 function maybeShowCta(id, url){ const el = document.getElementById(id); if (el) el.hidden = !url; }
 async function enviarValoracion(){
-  const _sug = (($('#demoSugerencia') && $('#demoSugerencia').value) || '').trim();
-  if (!_ratings.mesera && !_ratings.restaurante && !_ratings.quantumhive && !_sug){ showToast('Tocá las estrellas o dejanos tu comentario'); return; }
+  if (!_ratings.mesera && !_ratings.restaurante && !_ratings.quantumhive){ showToast('Tocá las estrellas para valorar'); return; }
   const payload = {
     stars_mesera: _ratings.mesera || null,
     stars_restaurante: _ratings.restaurante || null,
     stars_quantumhive: _ratings.quantumhive || null,
     comment: ($('#ratingComment').value || '').trim() || null,
-    sugerencia: (($('#demoSugerencia') && $('#demoSugerencia').value) || '').trim() || null,
     table: state.table || null,
     order_items: state.cart.map(i => ({ name: i.name, qty: i.qty, price: (i.price === undefined ? null : i.price) })),
   };
@@ -4466,6 +4468,8 @@ async function enviarValoracion(){
   showToast('¡Gracias por tu valoración! 🙏', 3500);
   state.cart = []; saveCart(); refreshCartUI();
   navCloseUI('rating');
+  // En demo, tras valorar aparece el 2º cartel (QuantumHive) pidiendo feedback del producto.
+  if (window.CV_DEMO_MODE) setTimeout(() => { const m = $('#demoFbModal'); if (m) m.classList.add('open'); }, 400);
 }
 
 // ---------- Mesa ----------
@@ -4539,6 +4543,19 @@ $('#mozoDone').addEventListener('click', mozoDone);
 $('#ratingClose').addEventListener('click', () => navCloseUI('rating'));
 $('#ratingOverlay').addEventListener('click', () => navCloseUI('rating'));
 $('#ratingSend').addEventListener('click', enviarValoracion);
+// 2º cartel (solo demo): feedback de producto para QuantumHive.
+(function(){
+  const send = document.getElementById('demoFbSend'), skip = document.getElementById('demoFbSkip');
+  const close = () => { const m = $('#demoFbModal'); if (m) m.classList.remove('open'); };
+  if (send) send.addEventListener('click', () => {
+    const s = (($('#demoSugerencia') && $('#demoSugerencia').value) || '').trim();
+    if (s) { try { fetch('/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sugerencia: s, table: state.table || null }) }); } catch(e){} }
+    close();
+    showToast('¡Gracias por ayudarnos a mejorar! 🙏', 3000);
+  });
+  if (skip) skip.addEventListener('click', close);
+})();
 document.querySelectorAll('#ratingSheet .stars').forEach(group => {
   const target = group.dataset.target;
   group.querySelectorAll('.star').forEach(s => s.addEventListener('click', () => {
