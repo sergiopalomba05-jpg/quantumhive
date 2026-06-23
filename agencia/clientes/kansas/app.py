@@ -59,15 +59,21 @@ MESERA_BUSY_MSG     = os.environ.get("MESERA_BUSY_MSG",
 #   demo gratis  → "gemini:gemini-2.5-flash, openrouter:deepseek/deepseek-chat-v3:free"
 BRAIN_CHAIN        = os.environ.get("BRAIN_CHAIN", "").strip()
 # Cerebros gratis con ROUND-ROBIN + failover. Si BRAIN_CHAIN está vacío, se arma solo con los que
-# tengan key (orden base: groq → gemini[todas sus keys] → openrouter). Cada request ARRANCA en el
-# siguiente carril (reparte la carga para no quemar el cupo por minuto de uno) y, si ese falla, cae
-# por el resto (failover). Beta gratis; en producción se mete una key paga y listo.
+# tengan key (orden base: groq → gemini[todas sus keys] → openrouter → huggingface). Cada request
+# ARRANCA en el siguiente carril (reparte la carga para no quemar el cupo por minuto de uno) y, si
+# ese falla, cae por el resto (failover). Beta gratis; en producción se mete una key paga y listo.
 GROQ_API_KEY       = os.environ.get("GROQ_API_KEY", "").strip()
 GROQ_MODEL         = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile").strip()
 GROQ_URL           = "https://api.groq.com/openai/v1/chat/completions"
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "").strip()
 OPENROUTER_MODEL   = os.environ.get("OPENROUTER_MODEL", "meta-llama/llama-3.3-70b-instruct:free").strip()
 OPENROUTER_URL     = "https://openrouter.ai/api/v1/chat/completions"
+# HuggingFace como cerebro vía su router compatible con OpenAI (mismo formato que Groq/OpenRouter).
+HF_TOKEN           = os.environ.get("HF_TOKEN", "").strip()
+HF_MODEL           = os.environ.get("HF_MODEL", "meta-llama/Llama-3.3-70B-Instruct").strip()
+HF_URL             = os.environ.get("HF_URL", "https://router.huggingface.co/v1/chat/completions").strip()
+# Proveedores que hablan el dialecto OpenAI (Bearer + /chat/completions): URL por nombre. Gemini va aparte.
+_OPENAI_URLS       = {"groq": GROQ_URL, "openrouter": OPENROUTER_URL, "huggingface": HF_URL}
 MAX_HISTORY_TURNS  = int(os.environ.get("MAX_HISTORY_TURNS", "8"))  # 8 ≈ 4 intercambios (anti bola de nieve de tokens)
 
 # MiniMax T2A v2 — MINIMAX_API_KEY va SOLO en env vars del Space, nunca al repo.
@@ -4962,6 +4968,7 @@ async def health():
         "brain_chain": [f"{p}:{m}" for p, m, _k in BRAIN_CHAIN_PARSED],  # sin keys (repo público)
         "groq_key_set": bool(GROQ_API_KEY),
         "openrouter_key_set": bool(OPENROUTER_API_KEY),
+        "hf_key_set": bool(HF_TOKEN),
         "minimax_key_set": bool(MINIMAX_API_KEY),
         "elevenlabs_key_set": bool(ELEVENLABS_API_KEY),
         "cartesia_key_set": bool(CARTESIA_API_KEY),
@@ -5006,12 +5013,16 @@ def _parse_brain_chain() -> List[tuple]:
             elif prov == "openrouter":
                 if OPENROUTER_API_KEY:
                     chain.append(("openrouter", model or OPENROUTER_MODEL, OPENROUTER_API_KEY))
+            elif prov in ("huggingface", "hf"):
+                if HF_TOKEN:
+                    chain.append(("huggingface", model or HF_MODEL, HF_TOKEN))
             else:  # gemini → un carril por cada key
                 chain.extend(gem_lanes(model))
     else:
         if GROQ_API_KEY:       chain.append(("groq", GROQ_MODEL, GROQ_API_KEY))
         chain.extend(gem_lanes(GEMINI_MODEL))
         if OPENROUTER_API_KEY: chain.append(("openrouter", OPENROUTER_MODEL, OPENROUTER_API_KEY))
+        if HF_TOKEN:           chain.append(("huggingface", HF_MODEL, HF_TOKEN))
     if not chain and GEMINI_KEYS:
         chain.append(("gemini", GEMINI_MODEL, GEMINI_KEYS[0]))
     return chain
@@ -5114,9 +5125,8 @@ def _openai_messages(history: List[ChatTurn], message: str, sys_extra: str = "")
 
 def _brain_request(prov: str, model: str, key: str, history: List[ChatTurn], message: str, sys_extra: str = ""):
     """(url, headers, body) para una llamada NO streaming al carril dado (prov/model/key)."""
-    if prov in ("openrouter", "groq"):
-        url = GROQ_URL if prov == "groq" else OPENROUTER_URL
-        return (url,
+    if prov in _OPENAI_URLS:
+        return (_OPENAI_URLS[prov],
                 {"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
                 {"model": model, "messages": _openai_messages(history, message, sys_extra),
                  "temperature": 0.8, "max_tokens": 2048})
@@ -5126,7 +5136,7 @@ def _brain_request(prov: str, model: str, key: str, history: List[ChatTurn], mes
 
 
 def _brain_extract(prov: str, data: dict) -> str:
-    if prov in ("openrouter", "groq"):
+    if prov in _OPENAI_URLS:
         return data["choices"][0]["message"]["content"]
     return data["candidates"][0]["content"]["parts"][0]["text"]
 
@@ -5298,8 +5308,8 @@ async def chat(req: ChatRequest):
 async def _brain_stream_once(client, prov, model, key, history, message, sys_extra: str = ""):
     """Async-gen que emite texto a medida. Lanza _BrainUnavailable si no logra arrancar
     (para que la cadena rote al siguiente carril). Reintenta 429/503 antes del 1er chunk."""
-    if prov in ("openrouter", "groq"):
-        url = GROQ_URL if prov == "groq" else OPENROUTER_URL
+    if prov in _OPENAI_URLS:
+        url = _OPENAI_URLS[prov]
         headers = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
         body = {"model": model, "messages": _openai_messages(history, message, sys_extra),
                 "temperature": 0.8, "max_tokens": 2048, "stream": True}
