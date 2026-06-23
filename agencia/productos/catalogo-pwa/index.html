@@ -102,6 +102,14 @@ footer b{color:var(--gold)}
 .chat-input{display:flex;gap:8px;padding:12px;border-top:1px solid var(--edge-soft)}
 .chat-input input{flex:1;background:var(--bg-2);border:1px solid var(--edge-soft);border-radius:12px;padding:11px 14px;color:var(--text);font-family:inherit;font-size:1rem;outline:none}
 .chat-input button{background:linear-gradient(150deg,var(--gold-lt),var(--gold) 60%,var(--gold-deep));border:none;border-radius:12px;width:48px;font-size:1.1rem;color:#1a1505;cursor:pointer}
+.detalle{color:var(--text-dim);font-size:.8rem;border-top:1px dashed var(--edge-soft);margin-top:6px;padding-top:6px}
+.btn-contenido{margin-top:10px;width:100%;background:linear-gradient(150deg,rgba(201,168,76,.18),rgba(201,168,76,.05));border:1px solid var(--edge);color:var(--gold-bright);border-radius:10px;padding:8px;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:.06em;cursor:pointer;font-size:.82rem}
+.btn-contenido:hover{background:rgba(201,168,76,.24)}
+.modal{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)}
+.modal-box{background:linear-gradient(160deg,var(--panel),var(--panel-2));border:1px solid var(--edge);border-radius:16px;max-width:680px;width:100%;max-height:84vh;overflow-y:auto;padding:22px;position:relative}
+.modal-close{position:absolute;top:10px;right:14px;background:none;border:none;color:var(--text-soft);font-size:1.4rem;cursor:pointer;line-height:1}
+.modal-box h3{font-family:'Cinzel',serif;color:var(--gold-bright);margin-bottom:12px;padding-right:26px}
+.modal-body{white-space:pre-wrap;color:var(--text);font-size:.92rem;line-height:1.55}
 </style>
 </head>
 <body>
@@ -143,6 +151,13 @@ footer b{color:var(--gold)}
   </main>
 
   <footer>Motor: <b>QuantumHive</b> · catálogo vivo mantenido por Hermes · datos en Supabase</footer>
+  <div id="modal" class="modal hidden">
+    <div class="modal-box">
+      <button id="modal-close" class="modal-close" aria-label="Cerrar">✕</button>
+      <h3 id="modal-title"></h3>
+      <div id="modal-body" class="modal-body"></div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -165,10 +180,12 @@ function repoLink(u){
   return `<span class="repo-txt">${esc(u)}</span>`;
 }
 function toolCard(h){
-  return `<div class="card" data-text="${esc((h.nombre+' '+(h.para_que||'')).toLowerCase())}">
+  return `<div class="card" data-text="${esc((h.nombre+' '+(h.para_que||'')+' '+(h.detalle||'')).toLowerCase())}">
     <div class="name">${esc(h.nombre)} ${badge(h.estado)}</div>
     ${h.para_que?`<div class="pq">${esc(h.para_que)}</div>`:""}
+    ${h.detalle?`<div class="pq detalle">${esc(h.detalle)}</div>`:""}
     ${repoLink(h.repo_url)}
+    ${h.id?`<button class="btn-contenido" data-id="${esc(h.id)}" data-nombre="${esc(h.nombre)}">✨ Crear contenido</button>`:""}
   </div>`;
 }
 
@@ -177,7 +194,7 @@ async function load(){
   const [divs, subs, maps, stack] = await Promise.all([
     api("divisiones?select=*&order=orden"),
     api("subdivisiones?select=*&order=orden"),
-    api("herramienta_subdivision?select=subdivision_id,herramientas(nombre,repo_url,para_que,estado)"),
+    api("herramienta_subdivision?select=subdivision_id,herramientas(id,nombre,repo_url,para_que,estado,detalle)"),
     api("stack_categorias?select=clave,categoria,estrategia,fase,orden,stack_items(herramienta,repo_url,estado,nota,fase)&order=orden")
   ]);
   DATA = {divs, subs, maps, stack};
@@ -282,6 +299,23 @@ document.getElementById("chat-form").addEventListener("submit", async e=>{
     const reply=j.reply||("Error: "+(j.error||r.status));
     thinking.textContent=reply; chatMsgs.push({role:"assistant", content:reply});
   }catch(err){ thinking.textContent="Error de conexión: "+err.message; }
+});
+
+// Crear contenido (modal)
+const modal=document.getElementById("modal"), modalTitle=document.getElementById("modal-title"), modalBody=document.getElementById("modal-body");
+document.getElementById("modal-close").addEventListener("click",()=>modal.classList.add("hidden"));
+modal.addEventListener("click",e=>{ if(e.target===modal) modal.classList.add("hidden"); });
+document.addEventListener("click", async e=>{
+  const btn=e.target.closest(".btn-contenido"); if(!btn) return;
+  modalTitle.textContent="Contenido: "+btn.dataset.nombre;
+  modalBody.textContent="Generando guion y prompt…";
+  modal.classList.remove("hidden");
+  try{
+    const url=(CFG.SUPABASE_URL||"").replace(/\/$/,"")+"/functions/v1/crear-contenido";
+    const r=await fetch(url,{method:"POST",headers:{...HEADERS,"Content-Type":"application/json"},body:JSON.stringify({herramienta_id:btn.dataset.id})});
+    const j=await r.json();
+    modalBody.textContent=j.contenido||("Error: "+(j.error||r.status));
+  }catch(err){ modalBody.textContent="Error de conexión: "+err.message; }
 });
 
 // PWA

@@ -21,7 +21,8 @@ por OBJETIVO (qué querés crear) y subdivisiones (cada parte del proceso).
 Reglas:
 - Recomendá SIEMPRE desde el catálogo primero; priorizá las de estado 'usar' y los ganadores del stack.
 - Si el catálogo no tiene algo para la tarea, decílo y sugerí buscar/sumar una herramienta (no inventes nombres ni URLs).
-- Cuando te piden "qué uso para crear X", mapealo a la división/subdivisión y listá las herramientas con para qué sirve cada una.`;
+- Cuando te piden "qué uso para crear X", mapealo a la división/subdivisión y listá las herramientas con para qué sirve cada una.
+- Si te falta info de una herramienta o te piden algo que no está en el catálogo, USÁ la búsqueda web y aclará que esa parte es info de la web.`;
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -68,6 +69,7 @@ Deno.serve(async (req) => {
     const body = {
       systemInstruction: { parts: [{ text: system }] },
       contents,
+      tools: [{ google_search: {} }],
       generationConfig: { temperature: 0.6 },
     };
     const r = await fetch(

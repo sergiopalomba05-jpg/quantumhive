@@ -80,6 +80,19 @@ def cmd_estado(a):
     print(json.dumps(row, ensure_ascii=False, indent=2))
 
 
+def cmd_enriquecer(a):
+    row = _req("PATCH", "herramientas", {"id": f"eq.{a.id}"},
+               {"detalle": a.detalle}, "return=representation")
+    print(json.dumps(row, ensure_ascii=False, indent=2))
+
+
+def cmd_contenido(a):
+    body = {"herramienta_id": a.herramienta_id, "guion": a.guion,
+            "descripcion_visual": a.visual, "formato": a.formato, "notas": a.notas}
+    row = _req("POST", "contenido_herramienta", body=body, prefer="return=representation")
+    print(json.dumps(row, ensure_ascii=False, indent=2))
+
+
 def main():
     p = argparse.ArgumentParser(description="CRUD del catálogo QuantumHive en Supabase.")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -88,9 +101,15 @@ def main():
     g = sub.add_parser("guardar"); g.add_argument("--json", required=True)
     m = sub.add_parser("mapear"); m.add_argument("--herramienta-id", dest="herramienta_id", required=True); m.add_argument("--subdivision", required=True)
     e = sub.add_parser("estado"); e.add_argument("--id", required=True); e.add_argument("--estado", required=True)
+    en = sub.add_parser("enriquecer"); en.add_argument("--id", required=True); en.add_argument("--detalle", required=True)
+    c = sub.add_parser("contenido")
+    c.add_argument("--herramienta-id", dest="herramienta_id", required=True)
+    c.add_argument("--guion", default=""); c.add_argument("--visual", default="")
+    c.add_argument("--formato", default=""); c.add_argument("--notas", default="")
     a = p.parse_args()
     {"taxonomia": cmd_taxonomia, "buscar": cmd_buscar, "guardar": cmd_guardar,
-     "mapear": cmd_mapear, "estado": cmd_estado}[a.cmd](a)
+     "mapear": cmd_mapear, "estado": cmd_estado,
+     "enriquecer": cmd_enriquecer, "contenido": cmd_contenido}[a.cmd](a)
 
 
 if __name__ == "__main__":
