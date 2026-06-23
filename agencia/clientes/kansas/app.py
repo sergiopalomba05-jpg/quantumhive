@@ -5286,22 +5286,28 @@ async def chat(req: ChatRequest):
     async with httpx.AsyncClient(timeout=30.0) as client:
         if MEMORIA and req.device_id:
             sys_extra += _memoria_note(await _memoria_get(client, req.device_id))
-        for prov, model, key in _brain_order():
-            url, headers, body = _brain_request(prov, model, key, history, req.message, sys_extra)
-            try:
-                r = await _post_with_retry(client, url, body, headers)
-            except Exception:
-                last_status = -1
-                continue
-            if r.status_code == 200:
+        # 2 pasadas: si TODA la cadena falla (típico del arranque en frío del Space, cuando el
+        # contenedor recién despierta y la red de salida todavía no está lista) esperamos un toque y
+        # reintentamos antes de rendirnos con el "estoy ocupada".
+        for attempt in range(2):
+            for prov, model, key in _brain_order():
+                url, headers, body = _brain_request(prov, model, key, history, req.message, sys_extra)
                 try:
-                    reply = _brain_extract(prov, r.json())
-                except (KeyError, IndexError, ValueError):
-                    reply = ""
-                if reply:
-                    return {"reply": reply, "brain": f"{prov}:{model}"}
-            last_status = r.status_code
-            # no-200 o respuesta vacía → probar el siguiente carril de la cadena
+                    r = await _post_with_retry(client, url, body, headers)
+                except Exception:
+                    last_status = -1
+                    continue
+                if r.status_code == 200:
+                    try:
+                        reply = _brain_extract(prov, r.json())
+                    except (KeyError, IndexError, ValueError):
+                        reply = ""
+                    if reply:
+                        return {"reply": reply, "brain": f"{prov}:{model}"}
+                last_status = r.status_code
+                # no-200 o respuesta vacía → probar el siguiente carril de la cadena
+            if attempt == 0:
+                await asyncio.sleep(2.0)   # arranque en frío: esperar a que caliente y reintentar
     return {"reply": MESERA_BUSY_MSG, "brain": "busy", "last_status": last_status}
 
 
@@ -5379,29 +5385,36 @@ async def chat_stream(req: ChatRequest):
                     yield f"event: chunk\ndata: {json.dumps({'text': cached})}\n\n"
                     yield "event: done\ndata: {}\n\n"
                     return
-            collected = []   # para cachear la respuesta si es guiada y nueva
-            for prov, model, key in _brain_order():
-                produced = False
-                try:
-                    async for piece in _brain_stream_once(client, prov, model, key, history, req.message, sys_extra):
-                        produced = True
-                        collected.append(piece)
-                        yield f"event: chunk\ndata: {json.dumps({'text': piece})}\n\n"
-                except Exception:
-                    # _BrainUnavailable (no arrancó) o corte a mitad
-                    if produced:
-                        # ya emitimos texto: cerramos limpio (no se puede rotar a mitad)
+            # 2 pasadas: si NINGÚN carril arranca (típico del arranque en frío del Space, contenedor
+            # recién despierto con la red de salida fría) esperamos un toque y reintentamos toda la
+            # cadena antes de mandar el "estoy ocupada". Solo reintenta si no se emitió NADA.
+            for attempt in range(2):
+                collected = []   # para cachear la respuesta si es guiada y nueva
+                for prov, model, key in _brain_order():
+                    produced = False
+                    try:
+                        async for piece in _brain_stream_once(client, prov, model, key, history, req.message, sys_extra):
+                            produced = True
+                            collected.append(piece)
+                            yield f"event: chunk\ndata: {json.dumps({'text': piece})}\n\n"
+                    except Exception:
+                        # _BrainUnavailable (no arrancó) o corte a mitad
+                        if produced:
+                            # ya emitimos texto: cerramos limpio (no se puede rotar a mitad)
+                            yield "event: done\ndata: {}\n\n"
+                            if cache_key:
+                                await _resp_cache_put(client, cache_key, req.message, "".join(collected))
+                            return
+                        continue  # no arrancó: probar el siguiente cerebro de la cadena
+                    else:
                         yield "event: done\ndata: {}\n\n"
                         if cache_key:
                             await _resp_cache_put(client, cache_key, req.message, "".join(collected))
                         return
-                    continue  # no arrancó: probar el siguiente cerebro de la cadena
-                else:
-                    yield "event: done\ndata: {}\n\n"
-                    if cache_key:
-                        await _resp_cache_put(client, cache_key, req.message, "".join(collected))
-                    return
-            # ningún cerebro arrancó: la mesera responde con gracia
+                # ningún carril arrancó en esta pasada
+                if attempt == 0:
+                    await asyncio.sleep(2.0)   # arranque en frío: esperar a que caliente y reintentar
+            # tras 2 pasadas, nada: la mesera responde con gracia
             yield f"event: chunk\ndata: {json.dumps({'text': MESERA_BUSY_MSG})}\n\n"
             yield "event: done\ndata: {}\n\n"
 
