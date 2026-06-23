@@ -29,8 +29,21 @@ from pydantic import BaseModel
 # ============================================================================
 # Configuración — todo desde env vars (las setea el Space)
 # ============================================================================
-GEMINI_API_KEY     = os.environ.get("GEMINI_API_KEY", "").strip()
 GEMINI_MODEL        = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash").strip()
+# Gemini admite VARIAS keys (free tier) para repartir el límite por minuto: GEMINI_API_KEY (compat)
+# + GEMINI_KEY_1, GEMINI_KEY_2, … GEMINI_KEY_8. Cada key es un "carril" propio; el cerebro rota entre
+# todos en round-robin (ver _brain_order) → con N keys multiplicás por N el cupo por minuto antes de
+# que se sature. Beta gratis; en producción se reemplaza por una paga.
+def _collect_gemini_keys() -> List[str]:
+    names = ["GEMINI_API_KEY"] + [f"GEMINI_KEY_{i}" for i in range(1, 9)]
+    keys: List[str] = []
+    for n in names:
+        v = os.environ.get(n, "").strip()
+        if v and v not in keys:
+            keys.append(v)
+    return keys
+GEMINI_KEYS        = _collect_gemini_keys()
+GEMINI_API_KEY     = GEMINI_KEYS[0] if GEMINI_KEYS else ""   # compat: 1ª key para usos directos (/stt)
 # Resiliencia del cerebro: ante 429 (cupo/ráfaga llena) o 503 (Gemini caído un toque)
 # reintenta con backoff; si igual no llega, la mesera contesta con gracia y NO rompe.
 GEMINI_MAX_RETRIES  = int(os.environ.get("GEMINI_MAX_RETRIES", "2"))
@@ -45,8 +58,10 @@ MESERA_BUSY_MSG     = os.environ.get("MESERA_BUSY_MSG",
 #   grande/uso   → "gemini:gemini-2.5-flash, openrouter:openai/gpt-4o-mini"
 #   demo gratis  → "gemini:gemini-2.5-flash, openrouter:deepseek/deepseek-chat-v3:free"
 BRAIN_CHAIN        = os.environ.get("BRAIN_CHAIN", "").strip()
-# Cerebros gratis con failover. Si BRAIN_CHAIN está vacío, se arma solo con los que tengan key
-# (orden: groq → gemini → openrouter). Si uno se queda sin cuota o falla, rota al siguiente.
+# Cerebros gratis con ROUND-ROBIN + failover. Si BRAIN_CHAIN está vacío, se arma solo con los que
+# tengan key (orden base: groq → gemini[todas sus keys] → openrouter). Cada request ARRANCA en el
+# siguiente carril (reparte la carga para no quemar el cupo por minuto de uno) y, si ese falla, cae
+# por el resto (failover). Beta gratis; en producción se mete una key paga y listo.
 GROQ_API_KEY       = os.environ.get("GROQ_API_KEY", "").strip()
 GROQ_MODEL         = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile").strip()
 GROQ_URL           = "https://api.groq.com/openai/v1/chat/completions"
@@ -4941,8 +4956,10 @@ async def health():
     return {
         "ok": True,
         "gemini_key_set": bool(GEMINI_API_KEY),
+        "gemini_keys": len(GEMINI_KEYS),       # cuántas keys de Gemini se rotan (GEMINI_API_KEY + GEMINI_KEY_n)
         "gemini_model": GEMINI_MODEL,
-        "brain_chain": [f"{p}:{m}" for p, m in BRAIN_CHAIN_PARSED],
+        "brain_lanes": len(BRAIN_CHAIN_PARSED),  # carriles totales del round-robin (1 por key/proveedor)
+        "brain_chain": [f"{p}:{m}" for p, m, _k in BRAIN_CHAIN_PARSED],  # sin keys (repo público)
         "groq_key_set": bool(GROQ_API_KEY),
         "openrouter_key_set": bool(OPENROUTER_API_KEY),
         "minimax_key_set": bool(MINIMAX_API_KEY),
@@ -4967,42 +4984,69 @@ async def health():
 # sobre el texto, así que da igual qué cerebro responda.
 # ----------------------------------------------------------------------------
 def _parse_brain_chain() -> List[tuple]:
-    # Si no hay BRAIN_CHAIN explícito, se arma solo con los proveedores que tengan key configurada
-    # (orden por defecto: groq → gemini → openrouter). Rota al siguiente si uno falla o se agota.
+    """Cadena de cerebros como (prov, model, key). Gemini se EXPANDE a todas sus keys (GEMINI_KEY_1,
+    _2, …): cada una es un carril propio para el round-robin. Si BRAIN_CHAIN está vacío se arma solo
+    con los proveedores que tengan key (orden base: groq → gemini[todas] → openrouter)."""
+    def gem_lanes(model: str) -> List[tuple]:
+        return [("gemini", model or GEMINI_MODEL, k) for k in GEMINI_KEYS]
     raw = BRAIN_CHAIN.strip()
-    if not raw:
-        defaults = []
-        if GROQ_API_KEY:       defaults.append(f"groq:{GROQ_MODEL}")
-        if GEMINI_API_KEY:     defaults.append(f"gemini:{GEMINI_MODEL}")
-        if OPENROUTER_API_KEY: defaults.append(f"openrouter:{OPENROUTER_MODEL}")
-        raw = ",".join(defaults) or f"gemini:{GEMINI_MODEL}"
     chain: List[tuple] = []
-    for entry in raw.split(","):
-        entry = entry.strip()
-        if not entry:
-            continue
-        prov, _, model = entry.partition(":")
-        prov = prov.strip().lower()
-        model = model.strip()
-        # cada proveedor solo entra si tiene su key (no rompe la cadena, simplemente se saltea)
-        if prov == "groq":
-            if not GROQ_API_KEY:
+    if raw:
+        for entry in raw.split(","):
+            entry = entry.strip()
+            if not entry:
                 continue
-            chain.append(("groq", model or GROQ_MODEL))
-        elif prov == "openrouter":
-            if not OPENROUTER_API_KEY:
-                continue
-            chain.append(("openrouter", model or OPENROUTER_MODEL))
-        else:  # gemini (default)
-            if not GEMINI_API_KEY:
-                continue
-            chain.append(("gemini", model or GEMINI_MODEL))
-    if not chain:
-        chain.append(("gemini", GEMINI_MODEL))
+            prov, _, model = entry.partition(":")
+            prov = prov.strip().lower()
+            model = model.strip()
+            # cada proveedor solo entra si tiene su key (no rompe la cadena, simplemente se saltea)
+            if prov == "groq":
+                if GROQ_API_KEY:
+                    chain.append(("groq", model or GROQ_MODEL, GROQ_API_KEY))
+            elif prov == "openrouter":
+                if OPENROUTER_API_KEY:
+                    chain.append(("openrouter", model or OPENROUTER_MODEL, OPENROUTER_API_KEY))
+            else:  # gemini → un carril por cada key
+                chain.extend(gem_lanes(model))
+    else:
+        if GROQ_API_KEY:       chain.append(("groq", GROQ_MODEL, GROQ_API_KEY))
+        chain.extend(gem_lanes(GEMINI_MODEL))
+        if OPENROUTER_API_KEY: chain.append(("openrouter", OPENROUTER_MODEL, OPENROUTER_API_KEY))
+    if not chain and GEMINI_KEYS:
+        chain.append(("gemini", GEMINI_MODEL, GEMINI_KEYS[0]))
     return chain
 
 
 BRAIN_CHAIN_PARSED = _parse_brain_chain()
+
+# Round-robin: puntero que avanza un carril por request. Reparte la carga entre todas las keys/
+# proveedores ANTES de toparse con el límite por minuto (en vez de quemar uno hasta el 429 y recién
+# ahí rotar). Si el carril elegido igual falla, la llamada cae por el resto de la cadena (failover).
+_brain_rr = 0
+
+
+def _brain_order() -> List[tuple]:
+    """La cadena rotada para ESTE request: arranca en el siguiente carril y sigue con el resto."""
+    global _brain_rr
+    n = len(BRAIN_CHAIN_PARSED)
+    if n <= 1:
+        return list(BRAIN_CHAIN_PARSED)
+    i = _brain_rr % n
+    _brain_rr = (_brain_rr + 1) % n
+    return BRAIN_CHAIN_PARSED[i:] + BRAIN_CHAIN_PARSED[:i]
+
+
+# Rotación independiente de las keys de Gemini para /stt (la transcripción también pega a Gemini).
+_gemini_stt_rr = 0
+
+
+def _next_gemini_key() -> str:
+    global _gemini_stt_rr
+    if not GEMINI_KEYS:
+        return ""
+    k = GEMINI_KEYS[_gemini_stt_rr % len(GEMINI_KEYS)]
+    _gemini_stt_rr += 1
+    return k
 
 
 class _BrainUnavailable(Exception):
@@ -5068,16 +5112,15 @@ def _openai_messages(history: List[ChatTurn], message: str, sys_extra: str = "")
     return msgs
 
 
-def _brain_request(prov: str, model: str, history: List[ChatTurn], message: str, sys_extra: str = ""):
-    """(url, headers, body) para una llamada NO streaming al proveedor dado."""
+def _brain_request(prov: str, model: str, key: str, history: List[ChatTurn], message: str, sys_extra: str = ""):
+    """(url, headers, body) para una llamada NO streaming al carril dado (prov/model/key)."""
     if prov in ("openrouter", "groq"):
         url = GROQ_URL if prov == "groq" else OPENROUTER_URL
-        key = GROQ_API_KEY if prov == "groq" else OPENROUTER_API_KEY
         return (url,
                 {"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
                 {"model": model, "messages": _openai_messages(history, message, sys_extra),
                  "temperature": 0.8, "max_tokens": 2048})
-    return (f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_API_KEY}",
+    return (f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}",
             {"Content-Type": "application/json"},
             _gemini_chat_body(history, message, sys_extra))
 
@@ -5233,8 +5276,8 @@ async def chat(req: ChatRequest):
     async with httpx.AsyncClient(timeout=30.0) as client:
         if MEMORIA and req.device_id:
             sys_extra += _memoria_note(await _memoria_get(client, req.device_id))
-        for prov, model in BRAIN_CHAIN_PARSED:
-            url, headers, body = _brain_request(prov, model, history, req.message, sys_extra)
+        for prov, model, key in _brain_order():
+            url, headers, body = _brain_request(prov, model, key, history, req.message, sys_extra)
             try:
                 r = await _post_with_retry(client, url, body, headers)
             except Exception:
@@ -5248,22 +5291,21 @@ async def chat(req: ChatRequest):
                 if reply:
                     return {"reply": reply, "brain": f"{prov}:{model}"}
             last_status = r.status_code
-            # no-200 o respuesta vacía → probar el siguiente cerebro de la cadena
+            # no-200 o respuesta vacía → probar el siguiente carril de la cadena
     return {"reply": MESERA_BUSY_MSG, "brain": "busy", "last_status": last_status}
 
 
-async def _brain_stream_once(client, prov, model, history, message, sys_extra: str = ""):
+async def _brain_stream_once(client, prov, model, key, history, message, sys_extra: str = ""):
     """Async-gen que emite texto a medida. Lanza _BrainUnavailable si no logra arrancar
-    (para que la cadena rote al siguiente cerebro). Reintenta 429/503 antes del 1er chunk."""
+    (para que la cadena rote al siguiente carril). Reintenta 429/503 antes del 1er chunk."""
     if prov in ("openrouter", "groq"):
         url = GROQ_URL if prov == "groq" else OPENROUTER_URL
-        key = GROQ_API_KEY if prov == "groq" else OPENROUTER_API_KEY
         headers = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
         body = {"model": model, "messages": _openai_messages(history, message, sys_extra),
                 "temperature": 0.8, "max_tokens": 2048, "stream": True}
         is_openai = True
     else:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:streamGenerateContent?alt=sse&key={GEMINI_API_KEY}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:streamGenerateContent?alt=sse&key={key}"
         headers = {"Content-Type": "application/json"}
         body = _gemini_chat_body(history, message, sys_extra)
         is_openai = False
@@ -5328,10 +5370,10 @@ async def chat_stream(req: ChatRequest):
                     yield "event: done\ndata: {}\n\n"
                     return
             collected = []   # para cachear la respuesta si es guiada y nueva
-            for prov, model in BRAIN_CHAIN_PARSED:
+            for prov, model, key in _brain_order():
                 produced = False
                 try:
-                    async for piece in _brain_stream_once(client, prov, model, history, req.message, sys_extra):
+                    async for piece in _brain_stream_once(client, prov, model, key, history, req.message, sys_extra):
                         produced = True
                         collected.append(piece)
                         yield f"event: chunk\ndata: {json.dumps({'text': piece})}\n\n"
@@ -5617,8 +5659,8 @@ async def tts(req: TTSRequest):
 # (texto), para que el PRIMER cliente ya los reciba al toque (no solo los que repiten).
 async def _brain_once(client: httpx.AsyncClient, message: str) -> str:
     """Una respuesta completa del cerebro (sin stream). Devuelve '' si ningún cerebro respondió."""
-    for prov, model in BRAIN_CHAIN_PARSED:
-        url, headers, body = _brain_request(prov, model, [], message, "")
+    for prov, model, key in _brain_order():
+        url, headers, body = _brain_request(prov, model, key, [], message, "")
         try:
             r = await _post_with_retry(client, url, body, headers)
         except Exception:
@@ -5677,8 +5719,8 @@ async def _prewarm():
 @app.post("/stt")
 async def stt(req: STTRequest):
     """Transcribe audio con Gemini. Más confiable que Web Speech API en iOS."""
-    if not GEMINI_API_KEY:
-        raise HTTPException(500, "GEMINI_API_KEY no está configurada en el Space")
+    if not GEMINI_KEYS:
+        raise HTTPException(500, "No hay ninguna key de Gemini configurada en el Space (GEMINI_API_KEY / GEMINI_KEY_n)")
     if not req.audio_base64:
         raise HTTPException(400, "Audio vacío")
 
@@ -5696,7 +5738,7 @@ async def stt(req: STTRequest):
     }
 
     async with httpx.AsyncClient(timeout=30.0) as client:
-        r = await _post_with_retry(client, f"{GEMINI_GENERATE}?key={GEMINI_API_KEY}", body,
+        r = await _post_with_retry(client, f"{GEMINI_GENERATE}?key={_next_gemini_key()}", body,
                                    {"Content-Type": "application/json"})
         if r.status_code == 429:
             # cupo/ráfaga: no rompemos; el front lo trata como "no te entendí" y reintenta
