@@ -3070,6 +3070,7 @@ function renderCarta() {
         price_botella: (it.price_botella != null ? it.price_botella : null),
         isSide: /acompanam/.test(sec.id),   // guarnición suelta (papas, puré, etc.)
         norm: _dnorm,
+        descNorm: cvNorm(it.description || ''),   // descripción normalizada (para no saltar a lo que se describe)
         tokens: cvDishToks(_dnorm),
       });
     }
@@ -3361,6 +3362,13 @@ function cvDishesIn(text) {
   let kept = hits.filter(h => !hits.some(o => o !== h && o.entry.norm.length > h.entry.norm.length && o.entry.norm.includes(h.entry.norm)));
   // si hay un plato principal nombrado, NO encender las guarniciones (papas/ensalada ya vienen incluidas)
   if (kept.some(h => !h.entry.isSide)) kept = kept.filter(h => !h.entry.isSide);
+  // supresión por DESCRIPCIÓN: si un plato matcheado aparece DENTRO de la descripción de OTRO plato
+  // matcheado, lo están describiendo, no recomendando → no lo encendemos. (Ej. "pechuga de pollo
+  // grillada" dentro de la descripción del "Pollo de la Casa" no salta a "Pechuga de Pollo Grillada".)
+  if (kept.length > 1) {
+    kept = kept.filter(h => !kept.some(o => o !== h && o.entry.descNorm &&
+      (' ' + o.entry.descNorm + ' ').indexOf(' ' + h.entry.norm + ' ') >= 0));
+  }
   kept.sort((a, b) => a.pos - b.pos);
   const L = Math.max(1, norm.length);
   return kept.map(h => ({ entry: h.entry, frac: h.pos / L }));
@@ -3551,13 +3559,18 @@ function cvApplyOrderDirective(raw) {
     const e = cvResolveOrderItem(nm, variant);
     if (e && findCart(e.id)) { cvCartRemove(e, typeof r === 'object' ? r.qty : 0); res.changed = true; }
   }
+  const _dupes = [];
   for (const a of (obj.add || [])) {
     const nm = typeof a === 'string' ? a : (a && a.name);
     if (!nm) continue;
     const qty = (typeof a === 'object' && a.qty) ? a.qty : 1;
     const variant = (typeof a === 'object' && a.variant) ? a.variant : '';
     const e = cvResolveOrderItem(nm, variant);
-    if (e) { cvCartAdd(e, qty); res.added.push(qty > 1 ? (qty + '× ' + e.name) : e.name); res.lastEl = e.el; res.changed = true; }
+    if (!e) continue;
+    // FILTRO ANTI-DUPLICADO determinístico: si el ítem YA está en el pedido, NO lo sumamos en
+    // silencio (el LLM a veces re-agrega lo que apenas se nombra, ej. "café"); lo confirmamos.
+    if (findCart(e.id)) { _dupes.push({ e: e, qty: qty }); continue; }
+    cvCartAdd(e, qty); res.added.push(qty > 1 ? (qty + '× ' + e.name) : e.name); res.lastEl = e.el; res.changed = true;
   }
   if (res.changed) {
     saveCart();
@@ -3566,6 +3579,15 @@ function cvApplyOrderDirective(raw) {
   }
   if (res.added.length) showToast('Agregado al pedido: ' + res.added.join(', '));
   if (res.lastEl) { try { res.lastEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }
+  // Ítems que YA estaban en el pedido: en vez de duplicar, preguntamos (de a uno; lo común es uno).
+  if (_dupes.length) {
+    const d = _dupes[0];
+    cvConfirm('Ya tenés ' + d.e.name + ' en el pedido. ¿Sumo otro?', function(){
+      cvCartAdd(d.e, d.qty); saveCart(); refreshCartUI();
+      if (typeof renderOrderItems === 'function') renderOrderItems();
+      showToast('Agregado al pedido: ' + d.e.name);
+    });
+  }
   return res;
 }
 
@@ -3648,8 +3670,16 @@ async function converse(userText, withVoice, guided) {
 
   // Corta el buffer en frases y encola (con sus platos). En modo texto, sin audio,
   // resalta el plato de la frase al toque.
+  let turnAnchor = null;   // plato principal ya recomendado en este turno (para no re-saltar a su descripción)
   function enqueueSentence(s) {
-    const dishes = cvDishesIn(s);
+    let dishes = cvDishesIn(s);
+    // No re-saltar a platos que son parte de la DESCRIPCIÓN del plato ya recomendado en este turno:
+    // en frases siguientes, "papas fritas" / "pechuga de pollo" describen el plato, no son otro plato.
+    if (turnAnchor && turnAnchor.descNorm) {
+      const pad = ' ' + turnAnchor.descNorm + ' ';
+      dishes = dishes.filter(h => h.entry === turnAnchor || pad.indexOf(' ' + h.entry.norm + ' ') < 0);
+    }
+    if (dishes.length) turnAnchor = dishes[dishes.length - 1].entry;
     const cat = dishes.length ? null : cvCategoryIn(s);
     if (withVoice) {
       ttsQueue.push({ audio: synthesize(s), dishes, cat });
@@ -3732,10 +3762,19 @@ async function converse(userText, withVoice, guided) {
     showToast('No pude conectar. ¿Las claves del Space están bien?');
   }
 
+  // Cancelado a mitad (el cliente apretó "Agregar" mientras la mesera recomendaba, o arrancó otro
+  // turno): salimos LIMPIO, sin aplicar la directiva parcial ni pisar los chips/estado del que tomó
+  // el control. (No tocamos isStreaming: lo maneja quien canceló.) Sin esto, la cola del turno viejo
+  // clobbereaba el followup del agregado y se quedaba "frenada" esperando una elección ya hecha.
+  if (myToken !== state.cancelToken) { producerDone = true; return; }
+
   producerDone = true;
   const finalVisible = cvStripDirective(fullReply).trim();
   const order = cvApplyOrderDirective(fullReply);   // aplicar add/remove/clear al carrito real
-  const wantsCheckout = fullReply.indexOf(CV_CUENTA) >= 0;   // el cliente quiere cerrar / la cuenta
+  // Checkout: por la directiva #CUENTA# del LLM, O por intención clara del cliente (texto/voz) —
+  // así "cerrá el pedido / la cuenta / mostrame el pedido" abre la ventana aunque el LLM no la emita.
+  const _closeIntent = /la cuenta|cerr[aá]|finaliz|nada m[aá]s|eso es todo|(mostr|ver|abr)[a-z]* (el |mi )?pedido/.test((userText || '').toLowerCase());
+  const wantsCheckout = (fullReply.indexOf(CV_CUENTA) >= 0) || _closeIntent;   // el cliente quiere cerrar / la cuenta
   let chips = cvParseChips(fullReply);              // sugerencias que propone la mesera
   // FALLBACK del lado del cliente: si el modelo NO emitió #CHIPS# pero recomendó platos, sintetizar
   // botones para que SIEMPRE haya algo para tocar (no depender de que el modelo se acuerde).
@@ -4281,6 +4320,12 @@ function addToCart(item){
   refreshCartUI();
   showToast('Agregado al pedido: ' + item.name);
   cvEvento('plato', { name: item.name });
+  // Si la mesera estaba recomendando/hablando, el cliente YA eligió: la frenamos y retomamos con el
+  // siguiente paso (no la dejamos seguir ofreciendo lo que el cliente acaba de elegir).
+  if (state.isStreaming || state.currentAudio || state.currentSpeech) {
+    stopSpeaking();
+    state.isStreaming = false;
+  }
   cvManualFollowup();
 }
 function changeQty(id, d){
@@ -4689,6 +4734,7 @@ PROHIBIDO ABSOLUTO: si decís que algo lo ven "después", "más tarde" o "ahora 
 SOBRE LOS PRECIOS — LEÉS AL CLIENTE:
 No cantás precios de entrada: recomendás por el plato, no por el número. Después de recomendar, si el cliente parece indeciso o está comparando opciones, le ofrecés con naturalidad: "¿te paso los precios o preferís elegir primero?". Si el cliente pregunta precios directamente, se los das al toque y se los seguís dando en el resto de la charla (ese cliente mira el bolsillo). Si nunca pregunta, no los mencionás (ese cliente elige por gusto). Te adaptás al perfil.
 Cuando digas un precio, SIEMPRE en palabras: "veintisiete mil pesos", jamás "$27.000".
+NUNCA digas el TOTAL del pedido ni sumes precios de memoria (te equivocás con la cuenta): el total exacto lo muestra la app sola en la ventana del pedido. Podés decir el precio SUELTO de cada cosa si te lo piden, pero el total no lo calcules ni lo cantes vos — si te preguntan cuánto da todo, decí algo como "te lo muestro en pantalla con el total exacto".
 
 Ejemplos del ESTILO y el tono (los platos de acá son genéricos, SOLO para mostrarte CÓMO hablás — NO son tu carta; vos nombrás SIEMPRE los platos reales de la carta de abajo):
 
@@ -4855,6 +4901,8 @@ quiere cerrar, no en cada respuesta.\"""")
     lines.append("")
     lines.append("--- RECORDATORIOS FINALES ---")
     lines.append("• Acordate: sos la mesera. Conversás como tal. Si la pregunta es chiquita, respondés corto; si te piden recomendación, te jugás y describís con apetito.")
+    lines.append("• IDIOMA: TODO en español rioplatense argentino. NI UNA palabra en portugués (ni 'você', 'obrigada', 'comida deliciosa' a la portuguesa, nada). Si algo te sale en portugués, corregilo a castellano ANTES de mandar la respuesta.")
+    lines.append("• El TOTAL del pedido NO lo decís ni lo sumás vos (te equivocás): la app lo muestra exacto en pantalla.")
 
     return "\n".join(lines)
 
@@ -5030,21 +5078,26 @@ def _parse_brain_chain() -> List[tuple]:
 
 BRAIN_CHAIN_PARSED = _parse_brain_chain()
 
-# Round-robin: puntero que avanza un carril por request. Reparte la carga entre todas las keys/
-# proveedores ANTES de toparse con el límite por minuto (en vez de quemar uno hasta el 429 y recién
-# ahí rotar). Si el carril elegido igual falla, la llamada cae por el resto de la cadena (failover).
+# Round-robin: puntero que avanza un carril por request. Reparte la carga entre las keys/proveedores
+# ANTES de toparse con el límite por minuto (en vez de quemar uno hasta el 429 y recién ahí rotar).
+# Si el carril elegido igual falla, la llamada cae por el resto de la cadena (failover).
 _brain_rr = 0
+# Carriles LENTOS / con cola (HF router, OpenRouter free): nunca arrancan el turno (sumaban ~30s de
+# latencia cuando el round-robin caía ahí); quedan SOLO como respaldo al final, tras los rápidos.
+_SLOW_PROVS = {"openrouter", "huggingface"}
 
 
 def _brain_order() -> List[tuple]:
-    """La cadena rotada para ESTE request: arranca en el siguiente carril y sigue con el resto."""
+    """La cadena para ESTE request: round-robin entre los carriles RÁPIDOS (groq + claves Gemini) para
+    repartir carga y arrancar siempre veloz; los lentos (HF/OpenRouter) van al final como failover."""
     global _brain_rr
-    n = len(BRAIN_CHAIN_PARSED)
-    if n <= 1:
-        return list(BRAIN_CHAIN_PARSED)
-    i = _brain_rr % n
-    _brain_rr = (_brain_rr + 1) % n
-    return BRAIN_CHAIN_PARSED[i:] + BRAIN_CHAIN_PARSED[:i]
+    fast = [c for c in BRAIN_CHAIN_PARSED if c[0] not in _SLOW_PROVS]
+    slow = [c for c in BRAIN_CHAIN_PARSED if c[0] in _SLOW_PROVS]
+    if len(fast) <= 1:
+        return fast + slow
+    i = _brain_rr % len(fast)
+    _brain_rr = (_brain_rr + 1) % len(fast)
+    return fast[i:] + fast[:i] + slow
 
 
 # Rotación independiente de las keys de Gemini para /stt (la transcripción también pega a Gemini).
@@ -5246,9 +5299,14 @@ def _memoria_note(perfil: Optional[Dict[str, Any]]) -> str:
         g = ", ".join([str(x) for x in gustos][:6])
         if g:
             parts.append(f"Gustos/notas: {g}.")
-    parts.append("Saludá con calidez como a un conocido y VARIÁ qué mencionás cada vez (a veces el nombre, "
-                 "a veces un gusto, a veces las visitas, a veces lo último que pidió); NO repitas siempre lo "
-                 "mismo ni lo enumeres todo junto. Que se sienta natural y cálido, no robótico.")
+    if nombre:
+        parts.append(f"Saludalo con calidez como a un conocido y SIEMPRE nombralo por su nombre en el saludo "
+                     f"(ej. \"¡Hola, {nombre}! Qué bueno verte de nuevo\"). Variá QUÉ MÁS mencionás cada vez "
+                     "(a veces un gusto, a veces las visitas, a veces lo último que pidió); no lo enumeres "
+                     "todo junto ni suene robótico.")
+    else:
+        parts.append("Saludá con calidez como a un conocido y variá qué mencionás cada vez (un gusto, las "
+                     "visitas, lo último que pidió); no lo enumeres todo junto ni suene robótico.")
     return "\n".join(parts)
 
 
@@ -5364,7 +5422,11 @@ async def chat_stream(req: ChatRequest):
     base_extra = _cart_note(req.cart)
 
     async def event_gen():
-        async with httpx.AsyncClient(timeout=60.0) as client:
+        # Timeout corto de PRIMER TOKEN: si un carril (HF router / OpenRouter free) no arranca a
+        # responder en ~12s, se abandona y rota al siguiente (antes el timeout de 60s lo dejaba colgado
+        # ~30s y la mesera "pensaba" un montón). En streaming, los chunks siguientes llegan seguidos,
+        # así que el read=12 no corta una respuesta que ya está fluyendo.
+        async with httpx.AsyncClient(timeout=httpx.Timeout(connect=6.0, read=12.0, write=10.0, pool=6.0)) as client:
             # Memoria (Premium): inyectar el perfil del cliente que vuelve al prompt
             mem_note = ""
             if MEMORIA and req.device_id:
@@ -5483,6 +5545,10 @@ _TTS_UNIT_PATTERNS = [
     (re.compile(r'(\d+)\s*(?:cc|cm3)\b', re.IGNORECASE), r'\1 centímetros cúbicos'),
     (re.compile(r'(\d+)\s*ml\b', re.IGNORECASE), r'\1 mililitros'),
     (re.compile(r'(\d+)\s*lts?\b', re.IGNORECASE), r'\1 litros'),
+    # Pronunciación: MiniMax se come la "e" final de "bife" (suena "bif"). El acento fuerza la vocal.
+    # Solo afecta el AUDIO; en pantalla sigue diciendo "Bife".
+    (re.compile(r'\bbifes\b', re.IGNORECASE), 'bifés'),
+    (re.compile(r'\bbife\b', re.IGNORECASE), 'bifé'),
 ]
 
 
