@@ -77,6 +77,12 @@ HF_URL             = os.environ.get("HF_URL", "https://router.huggingface.co/v1/
 DEEPINFRA_API_KEY  = os.environ.get("DEEPINFRA_API_KEY", "").strip()
 DEEPINFRA_MODEL    = os.environ.get("DEEPINFRA_MODEL", "Qwen/Qwen2.5-72B-Instruct").strip()
 DEEPINFRA_URL      = os.environ.get("DEEPINFRA_URL", "https://api.deepinfra.com/v1/openai/chat/completions").strip()
+# VOZ en DeepInfra (Kokoro-82M): ~150ms y $0.62/1M caracteres (≈ gratis) → reemplaza a MiniMax (misma
+# infra que el cerebro, un solo proveedor). Reusa DEEPINFRA_API_KEY. Probado: el que clona (Chatterbox)
+# es 7-10s = inusable; Kokoro vuela. Voz española neutra (la clonación argentina = futuro, F5 self-host).
+DEEPINFRA_TTS_MODEL = os.environ.get("DEEPINFRA_TTS_MODEL", "hexgrad/Kokoro-82M").strip()
+DEEPINFRA_TTS_VOICE = os.environ.get("DEEPINFRA_TTS_VOICE", "ef_dora").strip()   # voz española femenina (mesera)
+DEEPINFRA_TTS_URL   = os.environ.get("DEEPINFRA_TTS_URL", "https://api.deepinfra.com/v1/inference").strip().rstrip("/")
 # Proveedores que hablan el dialecto OpenAI (Bearer + /chat/completions): URL por nombre. Gemini va aparte.
 _OPENAI_URLS       = {"groq": GROQ_URL, "openrouter": OPENROUTER_URL, "huggingface": HF_URL, "deepinfra": DEEPINFRA_URL}
 MAX_HISTORY_TURNS  = int(os.environ.get("MAX_HISTORY_TURNS", "6"))  # 6 = 3 intercambios (ahorro de tokens; alcanza para el carrito)
@@ -5645,6 +5651,8 @@ def _tts_primary_identity() -> str:
     """Identidad de la voz PRINCIPAL (1er proveedor de la cadena) para el hash del caché.
     Si cambia el proveedor/voz principal por env, el caché se invalida solo y regenera."""
     prov = TTS_CHAIN_PARSED[0] if TTS_CHAIN_PARSED else "minimax"
+    if prov == "deepinfra":
+        return f"deepinfra|{DEEPINFRA_TTS_MODEL}|{DEEPINFRA_TTS_VOICE}"
     if prov == "elevenlabs":
         return f"elevenlabs|{ELEVENLABS_MODEL}|{ELEVENLABS_VOICE}"
     if prov == "cartesia":
@@ -5744,10 +5752,28 @@ async def _cartesia_synth(client: httpx.AsyncClient, text: str) -> bytes:
     return r.content
 
 
-# Cadena de proveedores TTS (igual que BRAIN_CHAIN). Orden por TTS_CHAIN o, si está vacío, los que
-# tengan key (minimax → elevenlabs → cartesia). Cada proveedor solo entra si tiene su key configurada.
+async def _deepinfra_tts_synth(client: httpx.AsyncClient, text: str) -> bytes:
+    """Genera el MP3 con Kokoro-82M en DeepInfra (~150ms, baratísimo). DeepInfra devuelve el audio como
+    data-URI base64 dentro del JSON → lo decodificamos a bytes mp3."""
+    r = await client.post(
+        f"{DEEPINFRA_TTS_URL}/{DEEPINFRA_TTS_MODEL}",
+        headers={"Authorization": f"Bearer {DEEPINFRA_API_KEY}", "Content-Type": "application/json"},
+        json={"text": text, "preset_voice": DEEPINFRA_TTS_VOICE, "output_format": "mp3"},
+        timeout=30.0,
+    )
+    if r.status_code != 200:
+        raise HTTPException(r.status_code, f"DeepInfra TTS error: {r.text[:400]}")
+    audio = (r.json() or {}).get("audio") or ""
+    if "," not in audio:
+        raise HTTPException(502, f"DeepInfra TTS sin audio: {audio[:120]}")
+    return base64.b64decode(audio.split(",", 1)[1])
+
+
+# Cadena de proveedores TTS (igual que BRAIN_CHAIN). Orden por TTS_CHAIN o, si está vacío, los que tengan
+# key (deepinfra PRINCIPAL → minimax → elevenlabs → cartesia). Cada proveedor entra si tiene su key.
 def _parse_tts_chain() -> List[str]:
-    has = {"minimax": bool(MINIMAX_API_KEY),
+    has = {"deepinfra": bool(DEEPINFRA_API_KEY),
+           "minimax": bool(MINIMAX_API_KEY),
            "elevenlabs": bool(ELEVENLABS_API_KEY),
            "cartesia": bool(CARTESIA_API_KEY)}
     order: List[str] = []
@@ -5760,15 +5786,17 @@ def _parse_tts_chain() -> List[str]:
     chain = [p for p in order if has.get(p)]
     if chain:
         return chain
-    # Sin TTS_CHAIN (o el explícito quedó sin keys válidas) → automático: cualquiera con key,
-    # en orden minimax → elevenlabs → cartesia (no dejar la voz muerta por un typo en TTS_CHAIN).
-    return [p for p in ("minimax", "elevenlabs", "cartesia") if has.get(p)]
+    # Sin TTS_CHAIN (o el explícito quedó sin keys válidas) → automático: DeepInfra (Kokoro) PRINCIPAL,
+    # MiniMax/otros solo de failover (no dejar la voz muerta por un typo en TTS_CHAIN).
+    return [p for p in ("deepinfra", "minimax", "elevenlabs", "cartesia") if has.get(p)]
 
 
 TTS_CHAIN_PARSED = _parse_tts_chain()
 
 
 async def _tts_synth_one(client: httpx.AsyncClient, prov: str, text: str) -> bytes:
+    if prov == "deepinfra":
+        return await _deepinfra_tts_synth(client, text)
     if prov == "elevenlabs":
         return await _elevenlabs_synth(client, text)
     if prov == "cartesia":
