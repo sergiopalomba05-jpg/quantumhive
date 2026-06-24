@@ -72,8 +72,13 @@ OPENROUTER_URL     = "https://openrouter.ai/api/v1/chat/completions"
 HF_TOKEN           = os.environ.get("HF_TOKEN", "").strip()
 HF_MODEL           = os.environ.get("HF_MODEL", "meta-llama/Llama-3.3-70B-Instruct").strip()
 HF_URL             = os.environ.get("HF_URL", "https://router.huggingface.co/v1/chat/completions").strip()
+# DeepInfra (PAGA) — motor PRINCIPAL: sin techo diario ni límite por minuto apretado de las gratis →
+# contesta siempre (mata el "estoy con mucha gente"). OpenAI-compatible. La key va SOLO a env vars del Space.
+DEEPINFRA_API_KEY  = os.environ.get("DEEPINFRA_API_KEY", "").strip()
+DEEPINFRA_MODEL    = os.environ.get("DEEPINFRA_MODEL", "Qwen/Qwen2.5-72B-Instruct").strip()
+DEEPINFRA_URL      = os.environ.get("DEEPINFRA_URL", "https://api.deepinfra.com/v1/openai/chat/completions").strip()
 # Proveedores que hablan el dialecto OpenAI (Bearer + /chat/completions): URL por nombre. Gemini va aparte.
-_OPENAI_URLS       = {"groq": GROQ_URL, "openrouter": OPENROUTER_URL, "huggingface": HF_URL}
+_OPENAI_URLS       = {"groq": GROQ_URL, "openrouter": OPENROUTER_URL, "huggingface": HF_URL, "deepinfra": DEEPINFRA_URL}
 MAX_HISTORY_TURNS  = int(os.environ.get("MAX_HISTORY_TURNS", "8"))  # 8 ≈ 4 intercambios (anti bola de nieve de tokens)
 
 # MiniMax T2A v2 — MINIMAX_API_KEY va SOLO en env vars del Space, nunca al repo.
@@ -5005,15 +5010,17 @@ async def menu():
     return Response(content=EMBEDDED_MENU_JSON, media_type="application/json")
 
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])   # HEAD: el ping de UptimeRobot ya no da 405
 async def health():
     return {
         "ok": True,
         "gemini_key_set": bool(GEMINI_API_KEY),
         "gemini_keys": len(GEMINI_KEYS),       # cuántas keys de Gemini se rotan (GEMINI_API_KEY + GEMINI_KEY_n)
         "gemini_model": GEMINI_MODEL,
-        "brain_lanes": len(BRAIN_CHAIN_PARSED),  # carriles totales del round-robin (1 por key/proveedor)
+        "brain_lanes": len(BRAIN_CHAIN_PARSED),  # carriles totales (1 por key/proveedor)
         "brain_chain": [f"{p}:{m}" for p, m, _k in BRAIN_CHAIN_PARSED],  # sin keys (repo público)
+        "brain_primary": ("deepinfra:" + DEEPINFRA_MODEL) if DEEPINFRA_API_KEY else ((BRAIN_CHAIN_PARSED[0][0] + ":" + BRAIN_CHAIN_PARSED[0][1]) if BRAIN_CHAIN_PARSED else None),
+        "deepinfra_key_set": bool(DEEPINFRA_API_KEY),
         "groq_key_set": bool(GROQ_API_KEY),
         "openrouter_key_set": bool(OPENROUTER_API_KEY),
         "hf_key_set": bool(HF_TOKEN),
@@ -5055,7 +5062,10 @@ def _parse_brain_chain() -> List[tuple]:
             prov = prov.strip().lower()
             model = model.strip()
             # cada proveedor solo entra si tiene su key (no rompe la cadena, simplemente se saltea)
-            if prov == "groq":
+            if prov == "deepinfra":
+                if DEEPINFRA_API_KEY:
+                    chain.append(("deepinfra", model or DEEPINFRA_MODEL, DEEPINFRA_API_KEY))
+            elif prov == "groq":
                 if GROQ_API_KEY:
                     chain.append(("groq", model or GROQ_MODEL, GROQ_API_KEY))
             elif prov == "openrouter":
@@ -5067,6 +5077,7 @@ def _parse_brain_chain() -> List[tuple]:
             else:  # gemini → un carril por cada key
                 chain.extend(gem_lanes(model))
     else:
+        if DEEPINFRA_API_KEY:  chain.append(("deepinfra", DEEPINFRA_MODEL, DEEPINFRA_API_KEY))  # PRINCIPAL (pago)
         if GROQ_API_KEY:       chain.append(("groq", GROQ_MODEL, GROQ_API_KEY))
         chain.extend(gem_lanes(GEMINI_MODEL))
         if OPENROUTER_API_KEY: chain.append(("openrouter", OPENROUTER_MODEL, OPENROUTER_API_KEY))
@@ -5082,22 +5093,26 @@ BRAIN_CHAIN_PARSED = _parse_brain_chain()
 # ANTES de toparse con el límite por minuto (en vez de quemar uno hasta el 429 y recién ahí rotar).
 # Si el carril elegido igual falla, la llamada cae por el resto de la cadena (failover).
 _brain_rr = 0
+# Motor(es) PRINCIPAL(es) pago(s) (DeepInfra): arrancan SIEMPRE primero y fijos (no rotan) → confiables.
+_PRIMARY_PROVS = {"deepinfra"}
 # Carriles LENTOS / con cola (HF router, OpenRouter free): nunca arrancan el turno (sumaban ~30s de
 # latencia cuando el round-robin caía ahí); quedan SOLO como respaldo al final, tras los rápidos.
 _SLOW_PROVS = {"openrouter", "huggingface"}
 
 
 def _brain_order() -> List[tuple]:
-    """La cadena para ESTE request: round-robin entre los carriles RÁPIDOS (groq + claves Gemini) para
-    repartir carga y arrancar siempre veloz; los lentos (HF/OpenRouter) van al final como failover."""
+    """Orden para ESTE request: el motor PRINCIPAL pago (DeepInfra) SIEMPRE primero; después round-robin
+    entre las rápidas gratis (Groq/Gemini) para repartir carga; al final las lentas gratis (HF/OpenRouter)
+    como último respaldo. Así DeepInfra atiende casi todo y las gratis son red de seguridad."""
     global _brain_rr
-    fast = [c for c in BRAIN_CHAIN_PARSED if c[0] not in _SLOW_PROVS]
+    primary = [c for c in BRAIN_CHAIN_PARSED if c[0] in _PRIMARY_PROVS]
+    fast = [c for c in BRAIN_CHAIN_PARSED if c[0] not in _PRIMARY_PROVS and c[0] not in _SLOW_PROVS]
     slow = [c for c in BRAIN_CHAIN_PARSED if c[0] in _SLOW_PROVS]
     if len(fast) <= 1:
-        return fast + slow
+        return primary + fast + slow
     i = _brain_rr % len(fast)
     _brain_rr = (_brain_rr + 1) % len(fast)
-    return fast[i:] + fast[:i] + slow
+    return primary + fast[i:] + fast[:i] + slow
 
 
 # Rotación independiente de las keys de Gemini para /stt (la transcripción también pega a Gemini).
