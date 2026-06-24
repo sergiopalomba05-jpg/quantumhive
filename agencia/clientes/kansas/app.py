@@ -85,7 +85,7 @@ DEEPINFRA_TTS_VOICE = os.environ.get("DEEPINFRA_TTS_VOICE", "ef_dora").strip()  
 DEEPINFRA_TTS_URL   = os.environ.get("DEEPINFRA_TTS_URL", "https://api.deepinfra.com/v1/inference").strip().rstrip("/")
 # Proveedores que hablan el dialecto OpenAI (Bearer + /chat/completions): URL por nombre. Gemini va aparte.
 _OPENAI_URLS       = {"groq": GROQ_URL, "openrouter": OPENROUTER_URL, "huggingface": HF_URL, "deepinfra": DEEPINFRA_URL}
-MAX_HISTORY_TURNS  = int(os.environ.get("MAX_HISTORY_TURNS", "6"))  # 6 = 3 intercambios (ahorro de tokens; alcanza para el carrito)
+MAX_HISTORY_TURNS  = int(os.environ.get("MAX_HISTORY_TURNS", "8"))  # 8 ≈ 4 intercambios (contexto para que mantenga la charla)
 
 # MiniMax T2A v2 — MINIMAX_API_KEY va SOLO en env vars del Space, nunca al repo.
 MINIMAX_API_KEY = os.environ.get("MINIMAX_API_KEY", "").strip()
@@ -4349,7 +4349,7 @@ function cvNextStep(item){
   if (/bebida|cerveza|cocktail|mocktail|champagne|vino|sec-tes/.test(sec))
     return { say: '¡Listo! ¿Cerramos con un postre?', chips: ['Un postre', 'Cerrar el pedido'] };
   if (/carne|pescado|ave|pasta|hamburg|acompanam|kids/.test(sec))
-    return { say: '¡Excelente! ¿Te sumo algo para tomar?', chips: ['Algo con alcohol', 'Algo sin alcohol', 'Un postre'] };
+    return { say: '¡Excelente elección! ¿Te sumo algo para tomar? Decime, ¿lo querés con alcohol o sin alcohol?', chips: ['Con alcohol', 'Sin alcohol', 'Un postre'] };
   if (/entrada|flatbread|ensalad/.test(sec))
     return { say: '¡Buena! ¿Vamos al plato principal?', chips: ['Un plato principal', 'Una carne', 'Un pescado'] };
   return { say: '¡Buena elección! ¿Seguimos?', chips: ['Algo para tomar', 'Un postre', 'Cerrar el pedido'] };
@@ -4869,12 +4869,11 @@ quiere cerrar, no en cada respuesta.\"""")
 
     # Plato a resaltar (#FOCO#) + cerrar-vs-agregar + bebida con/sin alcohol
     lines.append('''PLATO QUE RESALTÁS EN LA CARTA — otra línea técnica invisible:
-Cuando recomendás o nombrás platos CONCRETOS, agregá al final esta línea con SOLO el/los plato(s) que
-estás RECOMENDANDO (no los que nombrás al describir, comparar o como guarnición):
+Cuando recomendás platos CONCRETOS, agregá al final esta línea con el/los plato(s) que RECOMENDÁS —
+PODÉS PONER 2 O 3 si ofreciste varias opciones (¡seguí recomendando varios platos con ganas, como
+siempre!); NO incluyas los que solo nombrás al describir o como guarnición:
 #FOCO# ["Nombre EXACTO de la carta", ...]
 - Nombres EXACTOS como figuran en la carta de abajo. Es INVISIBLE: NUNCA la leas en voz alta.
-- Cuando recomendás UN plato, NO nombres OTROS platos de la carta en esa misma respuesta (si no, el
-  sistema podría resaltar el plato equivocado).
 - Si en ese turno no recomendás ningún plato puntual, no pongas #FOCO#.
 
 CERRAR vs AGREGAR (clave): si el cliente dice "así está bien", "listo", "nada más", "eso es todo" o toca
@@ -4920,8 +4919,8 @@ ese turno. Cuando ofrezcas "algo para tomar", SIEMPRE preguntá primero CON o SI
         for it in section.get("items", []):
             name = it.get("name", "")
             desc = (it.get("description", "") or "").strip()
-            if len(desc) > 52:                       # recorte SOLO para el prompt (ahorro de tokens; la carta visual no cambia)
-                desc = desc[:50].rsplit(" ", 1)[0] + "…"
+            if len(desc) > 90:                       # recorte SOLO para el prompt (la carta visual no cambia)
+                desc = desc[:88].rsplit(" ", 1)[0] + "…"
             price = _format_price(it.get("price"), symbol)
             line = f"  · {name} — {price}"
             if desc:
