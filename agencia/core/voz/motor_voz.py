@@ -130,11 +130,13 @@ class MotorVoz:
         if hasattr(wav, "dim") and wav.dim() == 1:
             wav = wav.unsqueeze(0)              # [samples] → [1, samples]
 
-        # tensor → WAV en memoria → ffmpeg por pipes → MP3 en memoria (cero escritura a disco)
+        # tensor → WAV en memoria → ffmpeg por pipes → MP3 en memoria (cero escritura a disco).
+        # loudnorm: normaliza el volumen a un nivel fuerte y CONSTANTE (~-16 LUFS, pico -1.5 dB) sin
+        # importar qué tan bajo venga la voz clonada → se escucha parejo y alto en cualquier ambiente.
         buf = io.BytesIO()
         ta.save(buf, wav.cpu(), self.model.sr, format="wav")
         proc = subprocess.run(
-            ["ffmpeg", "-i", "pipe:0", "-f", "mp3", "-b:a", "128k", "pipe:1"],
+            ["ffmpeg", "-i", "pipe:0", "-af", "loudnorm=I=-16:TP=-1.5:LRA=11", "-f", "mp3", "-b:a", "128k", "pipe:1"],
             input=buf.getvalue(), stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         )
         if proc.returncode != 0 or not proc.stdout:
