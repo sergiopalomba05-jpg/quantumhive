@@ -78,13 +78,14 @@ DEEPINFRA_API_KEY  = os.environ.get("DEEPINFRA_API_KEY", "").strip()
 DEEPINFRA_MODEL    = os.environ.get("DEEPINFRA_MODEL", "Qwen/Qwen2.5-72B-Instruct").strip()
 DEEPINFRA_URL      = os.environ.get("DEEPINFRA_URL", "https://api.deepinfra.com/v1/openai/chat/completions").strip()
 # VOZ en DeepInfra (Kokoro-82M): ~150ms y $0.62/1M caracteres (≈ gratis) → reemplaza a MiniMax (misma
-# infra que el cerebro, un solo proveedor). Reusa DEEPINFRA_API_KEY. Voz española neutra por defecto.
+# infra que el cerebro, un solo proveedor). Reusa DEEPINFRA_API_KEY. Probado: el que clona (Chatterbox)
+# es 7-10s = inusable; Kokoro vuela. Voz española neutra (la clonación argentina = futuro, F5 self-host).
 DEEPINFRA_TTS_MODEL = os.environ.get("DEEPINFRA_TTS_MODEL", "hexgrad/Kokoro-82M").strip()
 DEEPINFRA_TTS_VOICE = os.environ.get("DEEPINFRA_TTS_VOICE", "ef_dora").strip()   # voz española femenina (mesera)
 DEEPINFRA_TTS_URL   = os.environ.get("DEEPINFRA_TTS_URL", "https://api.deepinfra.com/v1/inference").strip().rstrip("/")
 # Proveedores que hablan el dialecto OpenAI (Bearer + /chat/completions): URL por nombre. Gemini va aparte.
 _OPENAI_URLS       = {"groq": GROQ_URL, "openrouter": OPENROUTER_URL, "huggingface": HF_URL, "deepinfra": DEEPINFRA_URL}
-MAX_HISTORY_TURNS  = int(os.environ.get("MAX_HISTORY_TURNS", "8"))  # 8 ≈ 4 intercambios (anti bola de nieve de tokens)
+MAX_HISTORY_TURNS  = int(os.environ.get("MAX_HISTORY_TURNS", "8"))  # 8 ≈ 4 intercambios (contexto para que mantenga la charla)
 
 # MiniMax T2A v2 — MINIMAX_API_KEY va SOLO en env vars del Space, nunca al repo.
 MINIMAX_API_KEY = os.environ.get("MINIMAX_API_KEY", "").strip()
@@ -1429,19 +1430,20 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
   align-items: center;
   justify-content: flex-start;
   gap: 9px;
-  padding: 10px 16px;
-  background: rgba(24,18,16,0.85);
-  border: 1px solid rgba(201,168,106,0.30);
+  padding: 11px 16px;
+  background: var(--paper);                 /* BLANCO/claro: resalta sobre la topbar oscura → invita a tocar */
+  border: 1px solid var(--gold);
   border-radius: 999px;
-  color: var(--bone-soft);
-  font-size: 13.5px;
+  color: #2A1F18;                           /* texto oscuro para que se lea fuerte */
+  font-size: 14px; font-weight: 600;
   cursor: pointer;
   transition: all 200ms ease;
   white-space: nowrap;
   overflow: hidden;
+  box-shadow: 0 4px 14px -6px rgba(0,0,0,0.5);
 }
-.chat-trigger:hover { border-color: var(--gold); color: var(--bone); }
-.chat-trigger svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--gold); }
+.chat-trigger:hover { border-color: var(--accent); background: #fff; }
+.chat-trigger svg { width: 17px; height: 17px; flex-shrink: 0; color: var(--accent); }
 .chat-trigger span { overflow: hidden; text-overflow: ellipsis; }
 .chat-trigger .ct-short { display: none; }   /* en desktop se ve el texto largo */
 
@@ -1481,15 +1483,15 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 /* Botón "☰ Menú" en el header (a la izquierda) */
 .menu-btn {
   flex-shrink: 0;
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800;
-  padding: 8px 14px; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800;
+  padding: 10px 17px; border-radius: 999px;
   color: var(--paper); cursor: pointer; white-space: nowrap;
   background: linear-gradient(180deg, var(--accent), var(--accent-dk));
   box-shadow: 0 4px 12px -3px rgba(139,28,43,0.55);
   transition: all 180ms ease;
 }
-.menu-btn .mt-ic { font-size: 13px; line-height: 1; }
+.menu-btn .mt-ic { font-size: 15px; line-height: 1; }
 .menu-btn.open { background: linear-gradient(180deg, var(--gold-dk), #8a6e3e); }
 
 /* Menú desplegable — índice de secciones */
@@ -2248,17 +2250,17 @@ body.keyboard-open .carta-section:last-child { margin-bottom: 20px; }
 .quick-col { display: flex; flex-direction: column; gap: 9px; width: 38%; max-width: 168px; pointer-events: auto; }
 .quick-col.right { align-items: flex-end; }
 .quick-chip {
-  display: inline-flex; align-items: center; gap: 7px;
-  padding: 9px 12px; border-radius: 15px;
-  border: 1px solid rgba(201,168,106,0.28);
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 15px; border-radius: 17px;
+  border: 1px solid rgba(201,168,106,0.32);
   background: rgba(24,18,16,0.92); backdrop-filter: blur(6px);
-  color: var(--paper); font-size: 11px; line-height: 1.15; font-weight: 600;
+  color: var(--paper); font-size: 13px; line-height: 1.2; font-weight: 600;
   text-align: left; box-shadow: 0 8px 22px -12px rgba(0,0,0,0.7);
   transition: all 180ms ease;
 }
 .quick-chip:hover { border-color: var(--gold); transform: translateY(-2px); }
 .quick-chip:active { transform: scale(0.96); }
-.quick-chip .qi { font-size: 15px; flex-shrink: 0; }
+.quick-chip .qi { font-size: 17px; flex-shrink: 0; }
 .quick-actions.hidden { opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity 240ms ease, transform 240ms ease; }
 body.keyboard-open .quick-actions { display: none; }   /* en el chat, los 4 por defecto se ocultan */
 /* ...pero los chips de CONTEXTO (acción/elección) quedan visibles, subidos arriba del teclado,
@@ -3459,7 +3461,8 @@ function cvScheduleSpotlight(dishes, cat, totalMs, token) {
 const CV_DIR = '#PEDIDO#';
 const CV_CHIPS = '#CHIPS#';
 const CV_CUENTA = '#CUENTA#';
-const CV_SENTINELS = [CV_DIR, CV_CHIPS, CV_CUENTA];
+const CV_FOCO = '#FOCO#';
+const CV_SENTINELS = [CV_DIR, CV_CHIPS, CV_CUENTA, CV_FOCO];   // #FOCO# ya no se emite; queda en la lista solo para borrarlo del texto si una respuesta cacheada vieja lo trae
 // saca las directivas técnicas (y un prefijo parcial al final) del texto hablado/visible
 function cvStripDirective(t) {
   let cut = t.length;
@@ -4313,14 +4316,27 @@ function stopSpeaking(){
 function cartCount(){ return state.cart.reduce((a, i) => a + i.qty, 0); }
 function cartTotal(){ return state.cart.reduce((a, i) => a + (i.price || 0) * i.qty, 0); }
 function findCart(id){ return state.cart.find(i => i.id === id); }
-// Tras agregar un plato A MANO durante un flujo guiado, la mesera retoma la charla (no se queda
-// colgada con las opciones viejas). Frase FIJA por voz (audio cacheado → $0, sin LLM) + chips del
-// próximo paso. Determinístico y seguro: no depende del contexto, no toca el carrito.
-function cvManualFollowup(){
+// Tras agregar un plato A MANO, la mesera retoma con el SIGUIENTE PASO del pedido según la CATEGORÍA
+// de lo que se agregó (entrada→principal→bebida→postre→cerrar). Determinístico, $0 (voz cacheada), no
+// toca el carrito. Antes decía una frase fija que salteaba el plato principal y bucleaba en el postre.
+function cvNextStep(item){
+  const sec = (((item && item.id) || '').split('|')[0] || '');   // ej "sec-carnes", "sec-postres"
+  if (/postre/.test(sec))
+    return { say: '¡Perfecto! ¿Algo más o cerramos el pedido?', chips: ['Cerrar el pedido', 'Algo más'] };
+  if (/bebida|cerveza|cocktail|mocktail|champagne|vino|sec-tes/.test(sec))
+    return { say: '¡Listo! ¿Cerramos con un postre?', chips: ['Un postre', 'Cerrar el pedido'] };
+  if (/carne|pescado|ave|pasta|hamburg|acompanam|kids/.test(sec))
+    return { say: '¡Excelente elección! ¿Te sumo algo para tomar? Decime, ¿lo querés con alcohol o sin alcohol?', chips: ['Con alcohol', 'Sin alcohol', 'Un postre'] };
+  if (/entrada|flatbread|ensalad/.test(sec))
+    return { say: '¡Buena! ¿Vamos al plato principal?', chips: ['Un plato principal', 'Una carne', 'Un pescado'] };
+  return { say: '¡Buena elección! ¿Seguimos?', chips: ['Algo para tomar', 'Un postre', 'Cerrar el pedido'] };
+}
+function cvManualFollowup(item){
   if (!state.hasContextChips || state.isStreaming) return;
+  const next = cvNextStep(item);
   setSolState('speaking');
-  cvSetChips(['Algo para tomar', 'Un postre', 'Así está bien'], true);
-  playAudioForText('¡Buena elección! ¿Seguimos con algo para tomar o un postre?', ++state.cancelToken)
+  cvSetChips(next.chips, true);
+  playAudioForText(next.say, ++state.cancelToken)
     .then(() => setSolState('idle')).catch(() => setSolState('idle'));
 }
 function addToCart(item){
@@ -4336,7 +4352,7 @@ function addToCart(item){
     stopSpeaking();
     state.isStreaming = false;
   }
-  cvManualFollowup();
+  cvManualFollowup(item);
 }
 function changeQty(id, d){
   const it = findCart(id);
@@ -4489,7 +4505,7 @@ function cvGuardarMemoriaPedido(){
 
 // Despedida cálida de la mesera al cerrar el pedido (cierre de experiencia).
 function solFarewell(){
-  const text = '¡Excelente elección! Ya le mandé tu comanda a los mozos. Disfrutá la comida.';
+  const text = '¡Excelente, un gusto haberte atendido! Que disfrutes la comida.';
   try {
     setSolState('speaking');
     playAudioForText(text, ++state.cancelToken)
@@ -4576,6 +4592,9 @@ async function enviarValoracion(){
   $('#ratingSend').disabled = true;
   showToast('¡Gracias por tu valoración! 🙏', 3500);
   state.cart = []; saveCart(); refreshCartUI();
+  // Circuito terminado → el próximo cliente arranca LIMPIO: chips a los 4 por defecto, sin historial,
+  // sin spotlight viejo (antes quedaban los últimos chips usados).
+  state.history = []; cvSpotlightClear(); cvSetChips(null);
   navCloseUI('rating');
   // En demo, tras valorar aparece el 2º cartel (QuantumHive) pidiendo feedback del producto.
   if (window.CV_DEMO_MODE) setTimeout(() => { const m = $('#demoFbModal'); if (m) m.classList.add('open'); }, 400);
@@ -4823,6 +4842,13 @@ además de despedirte cálido y corto, agregá al final esta línea sola (NUNCA 
 #CUENTA#
 Eso le abre la ventana del pedido para que lo confirme y lo mande al mozo. Ponela SOLO cuando el cliente
 quiere cerrar, no en cada respuesta.\"""")
+    lines.append("")
+
+    # cerrar-vs-agregar + bebida con/sin alcohol
+    lines.append('''CERRAR vs AGREGAR (clave): si el cliente dice "así está bien", "listo", "nada más", "eso es todo" o toca
+un chip así, eso significa CERRAR el pedido → poné #CUENTA# y NO agregues ni recomiendes nada nuevo en
+ese turno. Cuando ofrezcas "algo para tomar", SIEMPRE preguntá primero CON o SIN alcohol, con chips
+["Con alcohol","Sin alcohol"], antes de tirar opciones.''')
     lines.append("")
 
     # Reglas finas
