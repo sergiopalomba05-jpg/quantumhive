@@ -2,30 +2,30 @@
 Motor de Voz de QuantumHive — TTS propio MULTI-VOZ (clonación) en GPU serverless (Modal).
 
 QUÉ ES
-  Un servicio CENTRAL que aloja muchas voces clonadas y las sirve a TODAS las cartas y bots
-  (demos, clientes, distintos rubros). Una sola GPU con scale-to-zero atiende todas las voces:
-  el modelo se carga una vez y cada pedido trae su `voice_id`. Sumar una voz nueva = registrar
-  su audio de referencia (NO otra GPU). El costo se reparte entre todos los clientes.
+  Servicio CENTRAL que aloja muchas voces clonadas y las sirve a TODAS las cartas y bots. Una sola
+  GPU con scale-to-zero atiende todas las voces: el modelo se carga una vez y cada pedido trae su
+  `voice_id`. Sumar una voz = registrar su audio de referencia (NO otra GPU).
 
 MODELO
   Chatterbox Multilingual (Resemble AI) — licencia MIT (uso COMERCIAL permitido), clonación
-  zero-shot, soporta español. El acento (rioplatense) sale del AUDIO DE REFERENCIA de cada voz,
-  no del modelo.
+  zero-shot, soporta español. El acento (rioplatense) sale del AUDIO DE REFERENCIA de cada voz.
 
-ENDPOINTS (HTTP, todos requieren el campo `token`)
+ENDPOINTS (HTTP)
   POST /clone   {token, voice_id, audio_b64}        → guarda el audio de referencia de esa voz
   POST /tts     {token, texto, voice_id, idioma?}   → MP3 hablado con esa voz
-  GET  /health                                       → estado
+  GET  /health                                       → estado (CPU, no levanta la GPU)
 
-DEPLOY (ver README.md)
-  pip install modal && modal setup
-  modal secret create qh-motor-voz-token MOTOR_VOZ_TOKEN=<un-token-tuyo-largo>
-  modal deploy motor_voz.py
-  → Modal te da las URLs públicas de cada endpoint.
+OPTIMIZACIONES DE PRODUCCIÓN
+  1) Pesos pre-descargados en el BUILD (no en el cold start de GPU → arranque rápido y barato).
+  2) Concurrencia: 1 síntesis por GPU (@modal.concurrent) + techo de GPUs (max_containers).
+  3) WAV→MP3 todo en memoria (sin tocar disco).
+  4) /health en CPU aparte → un ataque/escaneo NO levanta la GPU.
 
-NOTA: el repo es público → NUNCA hardcodear el token acá. Va como Secret de Modal (env).
+DEPLOY (ver README.md): modal setup → modal deploy motor_voz.py
+NOTA: repo público → el token va SOLO como Secret de Modal (env), nunca acá.
 """
 import base64
+import io
 import os
 import subprocess
 import tempfile
@@ -34,30 +34,33 @@ import modal
 
 app = modal.App("quantumhive-motor-voz")
 
-# --- Imagen del contenedor: Chatterbox (MIT) + audio + web ---
+
+def _descargar_modelo():
+    """Corre en el BUILD de la imagen (CPU, barato): baja los pesos de Chatterbox y los deja fijos en
+    la imagen, así el cold start de GPU no paga el tiempo de descarga."""
+    from chatterbox.mtl_tts import ChatterboxMultilingualTTS
+    ChatterboxMultilingualTTS.from_pretrained(device="cpu")
+
+
+# --- Imagen: Chatterbox (MIT) + audio. Los pesos quedan inyectados (run_function) → cold start veloz ---
 image = (
     modal.Image.debian_slim(python_version="3.11")
     .apt_install("ffmpeg")
     .pip_install("chatterbox-tts", "fastapi[standard]", "soundfile", "numpy")
+    .run_function(_descargar_modelo)
 )
 
-# --- Volúmenes persistentes ---
-# qh-voces: audios de referencia de cada voz (multi-voz). qh-hf-cache: caché del modelo (HuggingFace),
-# para que el cold start no re-descargue los pesos cada vez.
+# Audios de referencia de cada voz (multi-voz). Ya NO hace falta cache de HF: el modelo va en la imagen.
 voces_vol = modal.Volume.from_name("qh-voces", create_if_missing=True)
-hf_vol = modal.Volume.from_name("qh-hf-cache", create_if_missing=True)
 VOCES_DIR = "/voces"
-HF_DIR = "/root/.cache/huggingface"
 
 
 def _check_token(req_token) -> bool:
-    """El token va en cada request y se compara contra el Secret de Modal (anti-abuso del endpoint)."""
     expected = os.environ.get("MOTOR_VOZ_TOKEN", "")
     return bool(expected) and req_token == expected
 
 
 def _ref_path(voice_id) -> str:
-    """Ruta del audio de referencia de una voz. Sanitiza el id (evita path traversal)."""
     safe = "".join(c for c in (voice_id or "") if c.isalnum() or c in "-_")
     return os.path.join(VOCES_DIR, f"{safe}.wav") if safe else ""
 
@@ -65,22 +68,24 @@ def _ref_path(voice_id) -> str:
 @app.cls(
     gpu="T4",                      # 16 GB: alcanza para Chatterbox. Subir a "L4"/"A10G" si va lento.
     image=image,
-    volumes={VOCES_DIR: voces_vol, HF_DIR: hf_vol},
+    volumes={VOCES_DIR: voces_vol},
     secrets=[modal.Secret.from_name("qh-motor-voz-token")],
     scaledown_window=300,          # baja a CERO tras 5 min sin uso → no paga idle
     timeout=120,
+    max_containers=10,             # techo de GPUs en paralelo (no se dispara el gasto en picos)
 )
+@modal.concurrent(max_inputs=1)    # 1 síntesis por GPU; si llega otra a la vez, Modal abre otra GPU (evita OOM)
 class MotorVoz:
     @modal.enter()
     def load(self):
-        # Se ejecuta UNA vez por contenedor (en el cold start): carga el modelo a la GPU.
+        # Una vez por contenedor. Los pesos ya están en la imagen → carga a GPU casi instantánea.
         from chatterbox.mtl_tts import ChatterboxMultilingualTTS
         self.model = ChatterboxMultilingualTTS.from_pretrained(device="cuda")
         os.makedirs(VOCES_DIR, exist_ok=True)
 
     @modal.fastapi_endpoint(method="POST")
     def clone(self, data: dict):
-        """Registra/actualiza el audio de referencia de una voz. Lo normaliza a WAV mono 24 kHz."""
+        """Registra/actualiza el audio de referencia de una voz (lo normaliza a WAV mono 24 kHz)."""
         from fastapi import HTTPException
         if not _check_token(data.get("token", "")):
             raise HTTPException(401, "token invalido")
@@ -98,12 +103,12 @@ class MotorVoz:
                            check=True, capture_output=True)
         finally:
             os.unlink(src)
-        voces_vol.commit()         # persistir para que otras réplicas la vean
+        voces_vol.commit()
         return {"ok": True, "voice_id": voice_id}
 
     @modal.fastapi_endpoint(method="POST")
     def tts(self, data: dict):
-        """Genera el audio (MP3) de `texto` con la voz `voice_id` ya registrada."""
+        """Genera el MP3 de `texto` con la voz `voice_id`. WAV→MP3 todo en memoria (sin tocar disco)."""
         from fastapi import HTTPException, Response
         if not _check_token(data.get("token", "")):
             raise HTTPException(401, "token invalido")
@@ -123,23 +128,23 @@ class MotorVoz:
         import torchaudio as ta
         wav = self.model.generate(texto, **kwargs)
         if hasattr(wav, "dim") and wav.dim() == 1:
-            wav = wav.unsqueeze(0)              # [samples] → [1, samples] para torchaudio
+            wav = wav.unsqueeze(0)              # [samples] → [1, samples]
 
-        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as wf:
-            wavpath = wf.name
-        mp3path = wavpath[:-4] + ".mp3"
-        try:
-            ta.save(wavpath, wav, self.model.sr)
-            subprocess.run(["ffmpeg", "-y", "-i", wavpath, "-b:a", "128k", mp3path],
-                           check=True, capture_output=True)
-            with open(mp3path, "rb") as mf:
-                mp3 = mf.read()
-        finally:
-            for p in (wavpath, mp3path):
-                if os.path.exists(p):
-                    os.unlink(p)
-        return Response(content=mp3, media_type="audio/mpeg")
+        # tensor → WAV en memoria → ffmpeg por pipes → MP3 en memoria (cero escritura a disco)
+        buf = io.BytesIO()
+        ta.save(buf, wav.cpu(), self.model.sr, format="wav")
+        proc = subprocess.run(
+            ["ffmpeg", "-i", "pipe:0", "-f", "mp3", "-b:a", "128k", "pipe:1"],
+            input=buf.getvalue(), stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        )
+        if proc.returncode != 0 or not proc.stdout:
+            raise HTTPException(502, "fallo al convertir el audio a MP3")
+        return Response(content=proc.stdout, media_type="audio/mpeg")
 
-    @modal.fastapi_endpoint(method="GET")
-    def health(self):
-        return {"ok": True, "modelo": "chatterbox-multilingual", "voces_dir": VOCES_DIR}
+
+# /health en CPU (función SEPARADA, sin GPU): un escaneo/DDoS a esta URL NUNCA levanta la GPU → no
+# gasta crédito. GET público para que los monitores (UptimeRobot, Modal) lo puedan chequear.
+@app.function(image=modal.Image.debian_slim(python_version="3.11").pip_install("fastapi[standard]"))
+@modal.fastapi_endpoint(method="GET")
+def health():
+    return {"ok": True, "modelo": "chatterbox-multilingual"}
