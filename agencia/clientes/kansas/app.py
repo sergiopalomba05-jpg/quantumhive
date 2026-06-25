@@ -3473,16 +3473,29 @@ const CV_FOCO = '#FOCO#';
 const CV_NOTA = '#NOTA#';
 const CV_SENTINELS = [CV_DIR, CV_CHIPS, CV_CUENTA, CV_FOCO, CV_NOTA];   // #FOCO# ya no se emite (queda por si el caché viejo lo trae); #NOTA# guarda preferencias del cliente (memoria) y se borra del texto hablado
 // saca las directivas técnicas (y un prefijo parcial al final) del texto hablado/visible
+// Saca el markdown que a veces mete el modelo (negritas **, listas 1./-, títulos #, `código`) para que
+// la voz NO diga "asterisco asterisco" ni el texto salga enumerado. Genérico, sirve para cualquier carta.
+function cvCleanMarkdown(t) {
+  if (!t) return t;
+  return t
+    .replace(/\*+/g, '')                         // asteriscos (negrita/itálica) → la voz los leía
+    .replace(/`+/g, '')                           // backticks de código
+    .replace(/~~/g, '')                           // tachado
+    .replace(/^[ \t]{0,3}#{1,6}[ \t]+/gm, '')     // títulos ##
+    .replace(/^[ \t]*\d+[.)][ \t]+/gm, '')        // listas "1. " / "2) "
+    .replace(/^[ \t]*[-•][ \t]+/gm, '')           // viñetas - •
+    .replace(/[ \t]{2,}/g, ' ');                  // espacios dobles que queden
+}
 function cvStripDirective(t) {
   let cut = t.length;
   for (const s of CV_SENTINELS) { const i = t.indexOf(s); if (i >= 0 && i < cut) cut = i; }
-  if (cut < t.length) return t.slice(0, cut);
+  if (cut < t.length) return cvCleanMarkdown(t.slice(0, cut));
   for (const s of CV_SENTINELS) {     // evita "hablar" un #PED o #CH a medio llegar
     for (let k = s.length - 1; k > 0; k--) {
-      if (t.endsWith(s.slice(0, k))) return t.slice(0, t.length - k);
+      if (t.endsWith(s.slice(0, k))) return cvCleanMarkdown(t.slice(0, t.length - k));
     }
   }
-  return t;
+  return cvCleanMarkdown(t);
 }
 // Sugerencias de seguimiento que propone la mesera:  #CHIPS# ["...","..."]
 function cvParseChips(raw) {
@@ -4838,6 +4851,7 @@ REGLAS DURAS:
 - Precios siempre en palabras cuando los digas.
 - Los pesos y medidas decilos en palabras completas ("quinientos gramos"), nunca "gr" ni "500gr".
 - Nunca emojis.
+- NUNCA uses markdown: nada de asteriscos (*) ni negritas, ni almohadillas (#), ni listas numeradas (1. 2. 3.) o con guiones. Escribís en prosa natural, hablado, como una persona — la voz lee TODO lo que pongas (un "**" lo diría como "asterisco asterisco").
 - Hablás de vos (tenés, querés, podés), porteña natural y amable.
 - Si piden TODA la carta: "la tenés completa en pantalla — decime de qué tenés ganas y te tiro la posta".
 - UNA categoría por turno SIEMPRE: si dijiste "después vemos X", X no aparece hasta el próximo turno. Esperás la elección del cliente antes de avanzar — no te adelantes nunca.
