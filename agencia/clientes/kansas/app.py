@@ -3083,6 +3083,7 @@ function renderCarta() {
         isSide: /acompanam/.test(sec.id),   // guarnición suelta (papas, puré, etc.)
         norm: _dnorm,
         descNorm: cvNorm(it.description || ''),   // descripción normalizada (para no saltar a lo que se describe)
+        descTokens: cvSig(cvNorm(it.description || '')),   // tokens de la descripción: si el NOMBRE de otro plato cae acá, es descripción, no recomendación
         tokens: cvDishToks(_dnorm),
       });
     }
@@ -3378,12 +3379,15 @@ function cvDishesIn(text) {
   let kept = hits.filter(h => !hits.some(o => o !== h && o.entry.norm.length > h.entry.norm.length && o.entry.norm.includes(h.entry.norm)));
   // si hay un plato principal nombrado, NO encender las guarniciones (papas/ensalada ya vienen incluidas)
   if (kept.some(h => !h.entry.isSide)) kept = kept.filter(h => !h.entry.isSide);
-  // supresión por DESCRIPCIÓN: si un plato matcheado aparece DENTRO de la descripción de OTRO plato
-  // matcheado, lo están describiendo, no recomendando → no lo encendemos. (Ej. "pechuga de pollo
-  // grillada" dentro de la descripción del "Pollo de la Casa" no salta a "Pechuga de Pollo Grillada".)
+  // supresión por DESCRIPCIÓN: si el NOMBRE de un plato (B) cae DENTRO de la descripción de OTRO plato
+  // (A) nombrado ANTES, lo están describiendo, no recomendando → no lo encendemos. Compara por TOKENS
+  // (no texto exacto) para tolerar sufijos del nombre: "Bife de Chorizo 400gr" (tokens bife+chorizo) se
+  // reconoce en la descripción "bife de chorizo grillado a la leña..." del "Bife a las Especias".
+  // General para todas las cartas (no depende de nombres puntuales).
   if (kept.length > 1) {
-    kept = kept.filter(h => !kept.some(o => o !== h && o.entry.descNorm &&
-      (' ' + o.entry.descNorm + ' ').indexOf(' ' + h.entry.norm + ' ') >= 0));
+    kept = kept.filter(h => !kept.some(o => o !== h && o.pos < h.pos &&
+      o.entry.descTokens && o.entry.descTokens.length &&
+      cvTokSeqMatch(o.entry.descTokens, h.entry.tokens) >= 0));
   }
   kept.sort((a, b) => a.pos - b.pos);
   const L = Math.max(1, norm.length);
@@ -3701,11 +3705,11 @@ async function converse(userText, withVoice, guided) {
       if (anchors.length) dishes = anchors;
     }
     // (2) ENTRE frases: no re-saltar a un plato que DESCRIBE/COMPARA con el ya recomendado en el turno
-    // (está en su descripción de la carta, o viene tras un marcador comparativo).
+    // (su nombre cae en la descripción del ancla —por tokens—, o viene tras un marcador comparativo).
     if (turnAnchor) {
-      const pad = turnAnchor.descNorm ? ' ' + turnAnchor.descNorm + ' ' : '';
-      dishes = dishes.filter(h => h.entry === turnAnchor ||
-        (!(pad && pad.indexOf(' ' + h.entry.norm + ' ') >= 0) && !cmp(h)));
+      const inAnchorDesc = (h) => turnAnchor.descTokens && turnAnchor.descTokens.length &&
+        cvTokSeqMatch(turnAnchor.descTokens, h.entry.tokens) >= 0;
+      dishes = dishes.filter(h => h.entry === turnAnchor || (!inAnchorDesc(h) && !cmp(h)));
     }
     if (dishes.length) turnAnchor = dishes[0].entry;   // ancla = el PRIMER plato (el recomendado, no el comparado)
     const cat = dishes.length ? null : cvCategoryIn(s);
