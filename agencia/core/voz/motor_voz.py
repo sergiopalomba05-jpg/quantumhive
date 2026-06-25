@@ -54,6 +54,11 @@ image = (
 voces_vol = modal.Volume.from_name("qh-voces", create_if_missing=True)
 VOCES_DIR = "/voces"
 
+# Expresividad de Chatterbox: 0.5/0.5 = neutro/PLANO; 0.7/0.3 = MODULADO, con personalidad (énfasis y
+# pausas naturales, suena humano). Tuneable por env (VOZ_EXAGGERATION / VOZ_CFG). Rango seguro 0.5-0.8.
+VOZ_EXAGGERATION = float(os.environ.get("VOZ_EXAGGERATION", "0.7"))
+VOZ_CFG          = float(os.environ.get("VOZ_CFG", "0.3"))
+
 
 def _check_token(req_token) -> bool:
     expected = os.environ.get("MOTOR_VOZ_TOKEN", "")
@@ -121,12 +126,18 @@ class MotorVoz:
         ref = _ref_path(voice_id)
         if ref and not os.path.exists(ref):
             voces_vol.reload()     # por si otra réplica la clonó recién
-        kwargs = {"language_id": idioma}
+        # exaggeration/cfg_weight → la voz MODULA (no plana). Sin esto habla todo seguido y sin personalidad.
+        kwargs = {"language_id": idioma, "exaggeration": VOZ_EXAGGERATION, "cfg_weight": VOZ_CFG}
         if ref and os.path.exists(ref):
             kwargs["audio_prompt_path"] = ref   # clonación con la voz registrada
 
         import torchaudio as ta
-        wav = self.model.generate(texto, **kwargs)
+        try:
+            wav = self.model.generate(texto, **kwargs)
+        except TypeError:
+            # por si esta versión del modelo no acepta exaggeration/cfg_weight → reintentar sin ellos
+            kwargs.pop("exaggeration", None); kwargs.pop("cfg_weight", None)
+            wav = self.model.generate(texto, **kwargs)
         if hasattr(wav, "dim") and wav.dim() == 1:
             wav = wav.unsqueeze(0)              # [samples] → [1, samples]
 
@@ -142,7 +153,7 @@ class MotorVoz:
         ta.save(buf, wav, self.model.sr, format="wav")
         proc = subprocess.run(
             ["ffmpeg", "-i", "pipe:0",
-             "-af", "acompressor=threshold=-20dB:ratio=4:attack=5:release=60:makeup=6,alimiter=limit=0.97",
+             "-af", "acompressor=threshold=-22dB:ratio=2.5:attack=8:release=80:makeup=3,alimiter=limit=0.97",
              "-f", "mp3", "-b:a", "128k", "pipe:1"],
             input=buf.getvalue(), stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         )
