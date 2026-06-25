@@ -3697,20 +3697,32 @@ async function converse(userText, withVoice, guided) {
   // y el spotlight se programa cuando ESA frase empieza a sonar.
   const playerPromise = withVoice ? (async () => {
     let i = 0;
+    // Pre-fabrica el <audio> de un item apenas su URL está lista, así el play() entre frases es
+    // instantáneo y no queda un hueco (antes el Audio se creaba recién al terminar el anterior → se
+    // entrecortaba). Resuelve a un <audio> precargado, a un {speak} (voz del navegador) o a null.
+    const prep = (idx) => {
+      const it = ttsQueue[idx];
+      if (!it || it._ready) return;
+      it._ready = Promise.resolve(it.audio).then(u => {
+        if (typeof u === 'string') { const a = new Audio(); a.preload = 'auto'; a.src = u; return a; }
+        return u;
+      }).catch(() => null);
+    };
     while (true) {
       if (myToken !== state.cancelToken) break; // cancelado por nuevo turn
       if (i >= ttsQueue.length) {
         if (producerDone) break;
-        await sleep(60); continue;
+        await sleep(40); continue;
       }
+      prep(i); prep(i + 1);                       // este y el siguiente, listos por adelantado
       const item = ttsQueue[i++];
       try {
-        const url = await item.audio;
-        if (myToken !== state.cancelToken || !url) {
-          if (typeof url === 'string') URL.revokeObjectURL(url);
+        const ready = await item._ready;
+        if (myToken !== state.cancelToken || !ready) {
+          if (ready && ready.src) { try { URL.revokeObjectURL(ready.src); } catch (e) {} }
           continue;
         }
-        await playAudioUrl(url, myToken, item);
+        await playAudioUrl(ready, myToken, item);
       } catch (e) { /* sigue */ }
     }
   })() : Promise.resolve();
@@ -3880,11 +3892,19 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 // ============================================================
 async function synthesize(text) {
   try {
-    const r = await fetch('/tts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text })
-    });
+    // Timeout: si el TTS del server cuelga, abortamos a los 9s y cae a la voz del navegador.
+    // Sin esto, una frase colgada trababa toda la cola (la voz "se tildaba").
+    const ctrl = new AbortController();
+    const to = setTimeout(() => ctrl.abort(), 9000);
+    let r;
+    try {
+      r = await fetch('/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+        signal: ctrl.signal,
+      });
+    } finally { clearTimeout(to); }
     if (!r.ok) {
       console.warn('TTS', r.status);
       return { speak: text };   // el server no pudo → que hable el navegador del celu
@@ -3966,14 +3986,15 @@ function speakBrowser(text, myToken, item) {
   });
 }
 
-async function playAudioUrl(url, myToken, item) {
+async function playAudioUrl(src, myToken, item) {
   // motor "browser": no hay archivo de audio, la voz la pone el dispositivo
-  if (url && typeof url === 'object' && url.speak !== undefined) {
-    return speakBrowser(url.speak, myToken, item);
+  if (src && typeof src === 'object' && src.speak !== undefined) {
+    return speakBrowser(src.speak, myToken, item);
   }
   return new Promise((resolve) => {
-    if (myToken !== state.cancelToken) { URL.revokeObjectURL(url); resolve(); return; }
-    const a = new Audio(url);
+    // `src` puede venir ya como <audio> precargado (reproducción sin hueco) o como URL string (compat).
+    const a = (typeof Audio !== 'undefined' && src instanceof Audio) ? src : new Audio(src);
+    if (myToken !== state.cancelToken) { try { URL.revokeObjectURL(a.src); } catch(e) {} resolve(); return; }
     state.currentAudio = a;
     let settled = false, scheduled = false;
     // cuando ESTA frase empieza a sonar, programar el spotlight de sus platos
@@ -3984,7 +4005,7 @@ async function playAudioUrl(url, myToken, item) {
     };
     const finish = () => {
       if (settled) return; settled = true;
-      try { URL.revokeObjectURL(url); } catch(e) {}
+      try { URL.revokeObjectURL(a.src); } catch(e) {}
       if (state.currentAudio === a) state.currentAudio = null;
       resolve();
     };
