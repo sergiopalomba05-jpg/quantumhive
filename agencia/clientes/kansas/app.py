@@ -3347,6 +3347,10 @@ function cvTokSeqMatch(R, D) {
   }
   return -1;
 }
+// Marcadores de COMPARACIÓN/DESCRIPCIÓN: si un plato viene justo después de uno de estos, la mesera lo
+// está comparando con otro plato (no recomendándolo) → el spotlight no debe saltar ahí. Genérico, por
+// patrón lingüístico (no depende de nombres de platos), sirve para cualquier carta.
+const CV_COMPARE_RE = /\b(como|parecid[oa]|similar|estilo|tipo|igual que|a base de|que (?:el|la|los|las|un|una))\s+(?:el |la |los |las |un |una |al |de |del )*$/;
 // Platos nombrados en `text`, ordenados por aparición, con fracción de posición (0..1).
 function cvDishesIn(text) {
   if (!state.dishIndex || !state.dishIndex.length) return [];
@@ -3683,21 +3687,32 @@ async function converse(userText, withVoice, guided) {
 
   // Corta el buffer en frases y encola (con sus platos). En modo texto, sin audio,
   // resalta el plato de la frase al toque.
-  let turnAnchor = null;   // plato principal ya recomendado en este turno (para no re-saltar a su descripción)
+  let turnAnchor = null;   // plato recomendado del turno: el spotlight se queda en él y no salta a comparaciones
   function enqueueSentence(s) {
+    const sNorm = cvNorm(s);
+    const L = Math.max(1, sNorm.length);
+    const cmp = (h) => { const p = Math.round(h.frac * L); return CV_COMPARE_RE.test(sNorm.slice(Math.max(0, p - 22), p)); };
     let dishes = cvDishesIn(s);
-    // No re-saltar a platos que son parte de la DESCRIPCIÓN del plato ya recomendado en este turno:
-    // en frases siguientes, "papas fritas" / "pechuga de pollo" describen el plato, no son otro plato.
-    if (turnAnchor && turnAnchor.descNorm) {
-      const pad = ' ' + turnAnchor.descNorm + ' ';
-      dishes = dishes.filter(h => h.entry === turnAnchor || pad.indexOf(' ' + h.entry.norm + ' ') < 0);
+    // (1) DENTRO de la frase: si hay varios platos y alguno viene tras un marcador comparativo
+    // ("como un bife de chorizo"), lo están comparando, no recomendando → lo descartamos, siempre que
+    // quede al menos un plato "ancla" sin ese marcador.
+    if (dishes.length > 1) {
+      const anchors = dishes.filter(h => !cmp(h));
+      if (anchors.length) dishes = anchors;
     }
-    if (dishes.length) turnAnchor = dishes[dishes.length - 1].entry;
+    // (2) ENTRE frases: no re-saltar a un plato que DESCRIBE/COMPARA con el ya recomendado en el turno
+    // (está en su descripción de la carta, o viene tras un marcador comparativo).
+    if (turnAnchor) {
+      const pad = turnAnchor.descNorm ? ' ' + turnAnchor.descNorm + ' ' : '';
+      dishes = dishes.filter(h => h.entry === turnAnchor ||
+        (!(pad && pad.indexOf(' ' + h.entry.norm + ' ') >= 0) && !cmp(h)));
+    }
+    if (dishes.length) turnAnchor = dishes[0].entry;   // ancla = el PRIMER plato (el recomendado, no el comparado)
     const cat = dishes.length ? null : cvCategoryIn(s);
     if (withVoice) {
       ttsQueue.push({ audio: synthesize(s), dishes, cat });
     } else {
-      if (dishes.length) cvSpotlight(dishes[dishes.length - 1].entry);
+      if (dishes.length) cvSpotlight(dishes[0].entry);
       else if (cat) cvScrollToSection(cat);
     }
   }
@@ -4332,11 +4347,15 @@ function cvNextStep(item){
   return { say: '¡Buena elección! ¿Seguimos?', chips: ['Algo para tomar', 'Un postre', 'Cerrar el pedido'] };
 }
 function cvManualFollowup(item){
-  if (!state.hasContextChips || state.isStreaming) return;
+  if (state.isStreaming) return;
   const next = cvNextStep(item);
+  // Reacciona SIEMPRE al agregar a mano. Si el cliente eligió de la carta sin una charla previa, la
+  // mesera lo nota (por su nombre) y arranca igual el ciclo de chips — antes quedaba callada.
+  const say = state.hasContextChips ? next.say
+    : ('¡Buena elección! Veo que sumaste ' + ((item && item.name) || 'eso') + '. ' + next.say);
   setSolState('speaking');
   cvSetChips(next.chips, true);
-  playAudioForText(next.say, ++state.cancelToken)
+  playAudioForText(say, ++state.cancelToken)
     .then(() => setSolState('idle')).catch(() => setSolState('idle'));
 }
 function addToCart(item){
@@ -4626,7 +4645,13 @@ function closeExitModal(){ $('#exitModal').classList.remove('open'); }
 // para no servirle a otro cliente la respuesta del contexto equivocado.
 const CV_NO_CACHE = new Set(['más opciones', 'sí, agregalo', 'otra opción']);
 function quickAsk(text){
-  if (state.isStreaming) return;
+  if (!text) return;
+  // Si la mesera está respondiendo o hablando, el cliente quiere otra cosa: la frenamos y atendemos lo
+  // nuevo (antes el toque se ignoraba mientras hablaba → parecía que no hacía caso).
+  if (state.isStreaming || state.currentAudio || state.currentSpeech) {
+    stopSpeaking();
+    state.isStreaming = false;
+  }
   const cacheable = !CV_NO_CACHE.has((text || '').trim().toLowerCase());
   converse(text, true, cacheable);   // chip guiado con voz; cacheable salvo los de acción contextual
 }
@@ -4755,9 +4780,9 @@ def build_system_prompt() -> str:
 IDIOMA (REGLA ABSOLUTA, ANTES QUE TODO): hablás SIEMPRE en español rioplatense argentino. JAMÁS escribís una sola palabra en portugués ni en ningún otro idioma, aunque el cliente te hable en portugués o en otro idioma. Ante cualquier duda, es español argentino.
 
 CÓMO RESPONDÉS — REGLA DE ORO:
-Directa, concreta y vendedora. Recomendás con seguridad y guiás la venta DE A UN PASO: recomendás UNA cosa a la vez (un plato o una categoría), dejás que el cliente la elija o la agregue, y RECIÉN AHÍ ofrecés el siguiente paso (bebida, postre). Nunca amontonás plato + bebida + postre en una sola respuesta. Prohibido arrancar con "mmm", "a ver" o repetir la pregunta del cliente.
+Directa, concreta y vendedora. Recomendás con seguridad y guiás la venta DE A UN PASO: te enfocás en UNA categoría por turno (la entrada, o la carne, o la bebida...), y dentro de esa categoría SIEMPRE tirás 2 o 3 opciones con una pincelada apetitosa de cada una — NUNCA una sola (salvo que el cliente pida algo muy puntual, ej. "el ojo de bife"). Dejás que el cliente la elija o la agregue, y RECIÉN AHÍ ofrecés el siguiente paso (bebida, postre). Nunca amontonás plato + bebida + postre en una sola respuesta. Prohibido arrancar con "mmm", "a ver" o repetir la pregunta del cliente.
 
-SI TE PIDEN VARIAS COSAS JUNTAS (ej. "recomendame una carne y un vino", o "un postre y el menú infantil"): resolvés EN ORDEN, de a una. Primero la carne: tirás dos o tres opciones y esperás a que el cliente elija o la agregue (cerrás con algo tipo "¿cuál te tiento?"), SIN nombrar el vino todavía. Recién cuando ya eligió la carne, en tu PRÓXIMA respuesta pasás al vino. Una cosa por turno.
+SI TE PIDEN VARIAS COSAS JUNTAS (ej. "recomendame una carne y un vino", o "un postre y el menú infantil"): resolvés EN ORDEN, de a una. Primero la carne: tirás dos o tres opciones y esperás a que el cliente elija o la agregue (cerrás con algo tipo "¿cuál preferís?" o "¿te apetece alguna?"), SIN nombrar el vino todavía. Recién cuando ya eligió la carne, en tu PRÓXIMA respuesta pasás al vino. Una cosa por turno.
 PROHIBIDO ABSOLUTO: si decís que algo lo ven "después", "más tarde" o "ahora vemos lo otro" (ej. "después vemos el menú infantil para tu hijo"), entonces en ESE turno NO lo desarrollás, NO lo describís y NO tirás sus opciones — lo dejás de verdad para tu PRÓXIMA respuesta, recién cuando el cliente cerró lo primero. Decir "después vemos X" y en el mismo turno desarrollar X es el error más grave: NO lo hagas. Lo que queda pendiente lo dejás como chip para que el cliente lo toque cuando quiera avanzar.
 
 SOBRE LOS PRECIOS — LEÉS AL CLIENTE:
@@ -4768,16 +4793,16 @@ NUNCA digas el TOTAL del pedido ni sumes precios de memoria (te equivocás con l
 Ejemplos del ESTILO y el tono (los platos de acá son genéricos, SOLO para mostrarte CÓMO hablás — NO son tu carta; vos nombrás SIEMPRE los platos reales de la carta de abajo):
 
 Cliente: "recomendame algo rápido y rico"
-Vos: "Te tiro la entrada que más sale: rápida, sabrosa y no falla nunca. ¿Te la agrego o querés ver otra opción?"
+Vos: "Te tiro tres que salen al toque y no fallan: una bien clásica, otra para picar y compartir, y una más contundente. ¿Cuál te suena, o querés que te cuente alguna?"
 
 Cliente: "recomendame una carne y un vino"
-Vos: "Arranquemos por la carne. Tengo tres que vuelan: una bien jugosa y tierna, otra con más carácter, y una contundente para los de buen diente. ¿Cuál te tiento?"
+Vos: "Arranquemos por la carne. Tengo tres que vuelan: una bien jugosa y tierna, otra con más carácter, y una contundente para los de buen diente. ¿Cuál preferís, o querés que te dé más opciones?"
 (NO nombrás el vino todavía: esperás a que elija la carne. Recién en tu PRÓXIMA respuesta, cuando ya la eligió, le ofrecés el vino.)
 
 Cliente: "¿y cuánto está eso?"
 Vos: "La entrada está dieciocho mil pesos, la limonada seis mil ochocientos y el postre diecisiete mil. Buen plan completo. ¿Te lo armo así?"
 
-Fijate el patrón: UNA recomendación por turno (dos o tres opciones máximo de UNA sola categoría), esperás que el cliente elija o agregue antes de pasar al siguiente paso de la comanda, y los precios solo cuando el cliente los pide o cuando dudás que esté decidido — ahí los ofrecés, no los imponés.
+Fijate el patrón: UNA categoría por turno, pero SIEMPRE 2 o 3 opciones de esa categoría (nunca una sola), esperás que el cliente elija o agregue antes de pasar al siguiente paso de la comanda, y los precios solo cuando el cliente los pide o cuando dudás que esté decidido — ahí los ofrecés, no los imponés.
 
 REGLAS DURAS:
 - Nunca decís que sos una IA o un bot. Sos la mesera.
@@ -4825,6 +4850,7 @@ Casi siempre que termines de responder, ofrecé de 2 a 4 atajos cortos para que 
 #CHIPS# ["texto corto 1","texto corto 2","texto corto 3"]
 - Son frases cortas en primera persona del cliente, como botones. Máximo 4, idealmente de 2 a 4 palabras. NUNCA las leas en voz alta.
 - CUANDO RECOMENDÁS UN PLATO O COMBO CONCRETO: cerrá hablando con algo tipo "¿Te lo agrego al pedido o preferís ver otra opción?" y poné chips de ACCIÓN: ["Sí, agregalo","Otra opción"] (o "Sí, el combo" / "Mostrame otra"). Si el cliente después toca "Sí, agregalo" / "Sí, el combo", en tu PRÓXIMA respuesta agregás al pedido lo que acababas de recomendar (con la línea #PEDIDO#).
+- CUANDO OFRECÉS VARIAS OPCIONES (2 o 3 platos de una categoría — el caso normal): los chips son ESAS opciones para elegir + un "Más opciones", ej. ["El ojo de bife","El bife de chorizo","Más opciones"]. Si el cliente toca "Más opciones" / "Mostrame otra", en tu PRÓXIMA respuesta mostrá platos DISTINTOS de los que ya nombraste (no repitas ninguno) y poné ESOS nuevos como chips — nunca devuelvas el mismo set de chips dos veces seguidas.
 - Si mostraste varias cosas o ya cargaste algo, sugerí el siguiente paso: bebida, postre, etc. Ej: ["¿Y para tomar?","Un postre rico","Algo más liviano"].
 - SI HACÉS UNA PREGUNTA CON OPCIONES (ej. "¿con o sin alcohol?", "¿tinto o blanco?", "¿copa o botella?", "¿una o dos porciones?"): los chips son EXACTAMENTE esas opciones, para que el cliente toque y siga guiado. Ej. ["Con alcohol","Sin alcohol"], ["Tinto","Blanco"], ["Por copa","Por botella"]. NUNCA dejes una pregunta sin sus opciones como chips.
 - GUIÁ HASTA CERRAR EL PEDIDO: después de cada cosa que el cliente elige o agrega, ofrecé SIEMPRE el siguiente paso con chips (picada/entrada → plato principal → para tomar → postre → cerrar el pedido). Nunca vuelvas a fojas cero ni sueltes al cliente: llevalo paso a paso hasta "¿Cerramos el pedido?". Cada turno tuyo termina con chips para avanzar.
@@ -4838,17 +4864,27 @@ Vos: "¡Hecho! Te sumé una gaseosa y dos porciones de la entrada. ¿Te tiro alg
 
 CERRAR EL PEDIDO — otra línea técnica invisible:
 Cuando el cliente diga que ya está, que es todo, "cerrá el pedido", "la cuenta", "nada más", "listo",
-además de despedirte cálido y corto, agregá al final esta línea sola (NUNCA la leas en voz alta):
+RECITÁ el pedido completo con calidez (ej. "¡Buenísimo! Te queda entonces: dos empanadas, un ojo de bife y
+una limonada. Ya te lo confirmo en pantalla.") y agregá al final esta línea sola (NUNCA la leas en voz alta):
 #CUENTA#
+AL RECITAR: nombrá EXACTAMENTE los ítems y cantidades que figuran en "LO QUE EL CLIENTE YA TIENE EN EL
+PEDIDO" (te lo paso más abajo) — NUNCA inventes, agregues ni nombres algo que no esté en esa lista.
 Eso le abre la ventana del pedido para que lo confirme y lo mande al mozo. Ponela SOLO cuando el cliente
 quiere cerrar, no en cada respuesta.\"""")
     lines.append("")
 
-    # cerrar-vs-agregar + bebida con/sin alcohol
+    # cerrar-vs-agregar + bebida guiada por tipo
     lines.append('''CERRAR vs AGREGAR (clave): si el cliente dice "así está bien", "listo", "nada más", "eso es todo" o toca
 un chip así, eso significa CERRAR el pedido → poné #CUENTA# y NO agregues ni recomiendes nada nuevo en
-ese turno. Cuando ofrezcas "algo para tomar", SIEMPRE preguntá primero CON o SIN alcohol, con chips
-["Con alcohol","Sin alcohol"], antes de tirar opciones.''')
+ese turno.
+
+BEBIDA — GUIÁ POR PASOS (no saltes directo a una sección): cuando ofrezcas algo para tomar, primero
+preguntá CON o SIN alcohol, con chips ["Con alcohol","Sin alcohol"]. Cuando el cliente elija con o sin
+alcohol, si tu carta tiene VARIAS secciones de ese tipo (con alcohol suele haber cervezas, vinos,
+espumantes, tragos; sin alcohol: gaseosas, jugos, aguas), preguntá PRIMERO qué tipo prefiere, con chips de
+esas secciones REALES de tu carta (ej. ["Una cerveza","Un vino","Un trago"]), y RECIÉN cuando elige el
+tipo le tirás 2 o 3 opciones de ESA sección. Si de ese tipo hay una sola opción en la carta, ofrecésela
+directo. NUNCA mezcles con alcohol y sin alcohol en la misma tanda.''')
     lines.append("")
 
     # Reglas finas
@@ -5195,7 +5231,9 @@ def _cart_note(cart) -> str:
             "• Si el cliente igual pide agregar algo que YA tiene, NO lo dupliques en silencio: primero "
             "avisá 'Ya tenés un café en el pedido, ¿querés otro más o seguimos?' con chips "
             "[\"Sí, otro\",\"No, sigamos\"]. Recién si confirma que quiere MÁS, lo sumás.\n"
-            "• Avanzá al siguiente paso (bebida, postre, cerrar el pedido) en vez de repetir lo cargado.")
+            "• Avanzá al siguiente paso (bebida, postre, cerrar el pedido) en vez de repetir lo cargado.\n"
+            "• Si el cliente CIERRA el pedido o pide la cuenta, recitá EXACTAMENTE esta lista (estos ítems y "
+            "cantidades), sin agregar, sacar ni inventar nada que no esté acá.")
 
 
 def _gemini_chat_body(history: List[ChatTurn], message: str, sys_extra: str = "") -> Dict[str, Any]:
