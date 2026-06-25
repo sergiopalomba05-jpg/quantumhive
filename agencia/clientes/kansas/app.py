@@ -83,6 +83,11 @@ DEEPINFRA_URL      = os.environ.get("DEEPINFRA_URL", "https://api.deepinfra.com/
 DEEPINFRA_TTS_MODEL = os.environ.get("DEEPINFRA_TTS_MODEL", "hexgrad/Kokoro-82M").strip()
 DEEPINFRA_TTS_VOICE = os.environ.get("DEEPINFRA_TTS_VOICE", "ef_dora").strip()   # voz española femenina (mesera)
 DEEPINFRA_TTS_URL   = os.environ.get("DEEPINFRA_TTS_URL", "https://api.deepinfra.com/v1/inference").strip().rstrip("/")
+# Motor de Voz propio de QuantumHive (Chatterbox en Modal, voz clonada argentina + volumen normalizado).
+# Si VOZTTS_URL está seteada, es la voz PRINCIPAL de la carta; si falla, cae a DeepInfra/Kokoro.
+VOZTTS_URL   = os.environ.get("VOZTTS_URL", "").strip().rstrip("/")
+VOZTTS_TOKEN = os.environ.get("VOZTTS_TOKEN", "").strip()
+VOZTTS_VOICE = os.environ.get("VOZTTS_VOICE", "mesera-arg").strip()   # id de la voz del cliente en el motor
 # Proveedores que hablan el dialecto OpenAI (Bearer + /chat/completions): URL por nombre. Gemini va aparte.
 _OPENAI_URLS       = {"groq": GROQ_URL, "openrouter": OPENROUTER_URL, "huggingface": HF_URL, "deepinfra": DEEPINFRA_URL}
 MAX_HISTORY_TURNS  = int(os.environ.get("MAX_HISTORY_TURNS", "8"))  # 8 ≈ 4 intercambios (contexto para que mantenga la charla)
@@ -5745,6 +5750,8 @@ def _tts_primary_identity() -> str:
     """Identidad de la voz PRINCIPAL (1er proveedor de la cadena) para el hash del caché.
     Si cambia el proveedor/voz principal por env, el caché se invalida solo y regenera."""
     prov = TTS_CHAIN_PARSED[0] if TTS_CHAIN_PARSED else "minimax"
+    if prov == "voztts":
+        return f"voztts|{VOZTTS_URL}|{VOZTTS_VOICE}"
     if prov == "deepinfra":
         return f"deepinfra|{DEEPINFRA_TTS_MODEL}|{DEEPINFRA_TTS_VOICE}"
     if prov == "elevenlabs":
@@ -5846,6 +5853,22 @@ async def _cartesia_synth(client: httpx.AsyncClient, text: str) -> bytes:
     return r.content
 
 
+async def _voztts_synth(client: httpx.AsyncClient, text: str) -> bytes:
+    """Motor de Voz propio de QuantumHive (Chatterbox en Modal): voz clonada argentina con volumen
+    normalizado. Devuelve los bytes del MP3 directo. Timeout amplio por el cold start de la GPU."""
+    r = await client.post(
+        VOZTTS_URL,
+        headers={"Content-Type": "application/json"},
+        json={"token": VOZTTS_TOKEN, "texto": text, "voice_id": VOZTTS_VOICE, "idioma": "es"},
+        timeout=60.0,
+    )
+    if r.status_code != 200:
+        raise HTTPException(r.status_code, f"VozTTS error: {r.text[:300]}")
+    if not r.content:
+        raise HTTPException(502, "VozTTS sin audio")
+    return r.content
+
+
 async def _deepinfra_tts_synth(client: httpx.AsyncClient, text: str) -> bytes:
     """Genera el MP3 con Kokoro-82M en DeepInfra (~150ms, baratísimo). DeepInfra devuelve el audio como
     data-URI base64 dentro del JSON → lo decodificamos a bytes mp3."""
@@ -5866,7 +5889,8 @@ async def _deepinfra_tts_synth(client: httpx.AsyncClient, text: str) -> bytes:
 # Cadena de proveedores TTS (igual que BRAIN_CHAIN). Orden por TTS_CHAIN o, si está vacío, los que tengan
 # key (deepinfra PRINCIPAL → minimax → elevenlabs → cartesia). Cada proveedor entra si tiene su key.
 def _parse_tts_chain() -> List[str]:
-    has = {"deepinfra": bool(DEEPINFRA_API_KEY),
+    has = {"voztts": bool(VOZTTS_URL),
+           "deepinfra": bool(DEEPINFRA_API_KEY),
            "minimax": bool(MINIMAX_API_KEY),
            "elevenlabs": bool(ELEVENLABS_API_KEY),
            "cartesia": bool(CARTESIA_API_KEY)}
@@ -5880,15 +5904,17 @@ def _parse_tts_chain() -> List[str]:
     chain = [p for p in order if has.get(p)]
     if chain:
         return chain
-    # Sin TTS_CHAIN (o el explícito quedó sin keys válidas) → automático: DeepInfra (Kokoro) PRINCIPAL,
-    # MiniMax/otros solo de failover (no dejar la voz muerta por un typo en TTS_CHAIN).
-    return [p for p in ("deepinfra", "minimax", "elevenlabs", "cartesia") if has.get(p)]
+    # Sin TTS_CHAIN (o el explícito quedó sin keys válidas) → automático: Motor propio (voztts) PRINCIPAL
+    # si está configurado; DeepInfra/Kokoro y MiniMax de failover (no dejar la voz muerta).
+    return [p for p in ("voztts", "deepinfra", "minimax", "elevenlabs", "cartesia") if has.get(p)]
 
 
 TTS_CHAIN_PARSED = _parse_tts_chain()
 
 
 async def _tts_synth_one(client: httpx.AsyncClient, prov: str, text: str) -> bytes:
+    if prov == "voztts":
+        return await _voztts_synth(client, text)
     if prov == "deepinfra":
         return await _deepinfra_tts_synth(client, text)
     if prov == "elevenlabs":
