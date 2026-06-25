@@ -3892,8 +3892,8 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 // ============================================================
 async function synthesize(text) {
   try {
-    // Timeout: si el TTS del server cuelga, abortamos a los 9s y cae a la voz del navegador.
-    // Sin esto, una frase colgada trababa toda la cola (la voz "se tildaba").
+    // Timeout: si el TTS del server cuelga, abortamos a los 9s y SALTAMOS la frase (sin esto, una frase
+    // colgada trababa toda la cola → "se tildaba"). NO caemos a la voz del navegador: da líos en iPhone.
     const ctrl = new AbortController();
     const to = setTimeout(() => ctrl.abort(), 9000);
     let r;
@@ -3907,11 +3907,12 @@ async function synthesize(text) {
     } finally { clearTimeout(to); }
     if (!r.ok) {
       console.warn('TTS', r.status);
-      return { speak: text };   // el server no pudo → que hable el navegador del celu
+      return null;   // el server no pudo → saltamos la frase. NO usamos la voz del navegador (iPhone).
     }
     const ct = r.headers.get('content-type') || '';
     if (ct.includes('application/json')) {
-      // motor "browser" (o fallback): la voz la pone el navegador del cliente
+      // El server pidió motor "browser" EXPLÍCITO (env TTS_ENGINE=browser). El default es deepinfra/Kokoro;
+      // si no querés NUNCA la voz del navegador, dejá TTS_ENGINE en deepinfra en el Space.
       const j = await r.json();
       return { speak: (j && j.text) ? j.text : text };
     }
@@ -3919,7 +3920,7 @@ async function synthesize(text) {
     return URL.createObjectURL(blob);
   } catch (e) {
     console.warn('TTS err', e);
-    return { speak: text };   // sin red / error → fallback al navegador
+    return null;   // timeout / sin red → saltamos la frase. NO voz del navegador (iPhone).
   }
 }
 
