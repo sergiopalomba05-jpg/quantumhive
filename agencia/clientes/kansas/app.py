@@ -3470,7 +3470,8 @@ const CV_DIR = '#PEDIDO#';
 const CV_CHIPS = '#CHIPS#';
 const CV_CUENTA = '#CUENTA#';
 const CV_FOCO = '#FOCO#';
-const CV_SENTINELS = [CV_DIR, CV_CHIPS, CV_CUENTA, CV_FOCO];   // #FOCO# ya no se emite; queda en la lista solo para borrarlo del texto si una respuesta cacheada vieja lo trae
+const CV_NOTA = '#NOTA#';
+const CV_SENTINELS = [CV_DIR, CV_CHIPS, CV_CUENTA, CV_FOCO, CV_NOTA];   // #FOCO# ya no se emite (queda por si el caché viejo lo trae); #NOTA# guarda preferencias del cliente (memoria) y se borra del texto hablado
 // saca las directivas técnicas (y un prefijo parcial al final) del texto hablado/visible
 function cvStripDirective(t) {
   let cut = t.length;
@@ -3492,6 +3493,18 @@ function cvParseChips(raw) {
   try {
     const arr = JSON.parse(m[0]);
     if (Array.isArray(arr)) return arr.filter(x => typeof x === 'string' && x.trim()).slice(0, 4);
+  } catch (e) {}
+  return null;
+}
+// Preferencia/restricción que el cliente menciona: #NOTA# ["diabético — ...", ...] → se guarda en su perfil (memoria).
+function cvParseNota(raw) {
+  const i = raw.indexOf(CV_NOTA);
+  if (i < 0) return null;
+  const m = raw.slice(i + CV_NOTA.length).match(/\[[\s\S]*?\]/);
+  if (!m) return null;
+  try {
+    const arr = JSON.parse(m[0]);
+    if (Array.isArray(arr)) return arr.filter(x => typeof x === 'string' && x.trim()).slice(0, 5);
   } catch (e) {}
   return null;
 }
@@ -3803,6 +3816,8 @@ async function converse(userText, withVoice, guided) {
   producerDone = true;
   const finalVisible = cvStripDirective(fullReply).trim();
   const order = cvApplyOrderDirective(fullReply);   // aplicar add/remove/clear al carrito real
+  const notas = cvParseNota(fullReply);             // preferencias/restricciones nuevas → guardar en el perfil (memoria)
+  if (notas) cvGuardarGustos(notas);
   // Checkout: por la directiva #CUENTA# del LLM, O por intención clara del cliente (texto/voz) —
   // así "cerrá el pedido / la cuenta / mostrame el pedido" abre la ventana aunque el LLM no la emita.
   const _closeIntent = /la cuenta|cerr[aá]|finaliz|nada m[aá]s|eso es todo|(mostr|ver|abr)[a-z]* (el |mi )?pedido/.test((userText || '').toLowerCase());
@@ -4525,6 +4540,15 @@ function cvGuardarMemoriaPedido(){
         ultimo_pedido: state.cart.map(i => ({ name: i.name, qty: i.qty })), bump_visita: true }) });
   } catch(e){}
 }
+// Guarda una preferencia/restricción que el cliente dijo (#NOTA#) en su perfil. El backend hace MERGE
+// (acumula sin duplicar), así que mandamos solo lo nuevo. Premium; si la memoria está off, no hace nada.
+function cvGuardarGustos(notas){
+  if (!cvMemoriaActiva() || !notas || !notas.length) return;
+  try {
+    fetch('/cliente', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ device_id: cvDeviceId(), gustos: notas }) });
+  } catch(e){}
+}
 
 // Despedida cálida de la mesera al cerrar el pedido (cierre de experiencia).
 function solFarewell(){
@@ -4889,6 +4913,21 @@ espumantes, tragos; sin alcohol: gaseosas, jugos, aguas), preguntá PRIMERO qué
 esas secciones REALES de tu carta (ej. ["Una cerveza","Un vino","Un trago"]), y RECIÉN cuando elige el
 tipo le tirás 2 o 3 opciones de ESA sección. Si de ese tipo hay una sola opción en la carta, ofrecésela
 directo. NUNCA mezcles con alcohol y sin alcohol en la misma tanda.''')
+    lines.append("")
+
+    # Preferencias/restricciones del cliente (#NOTA#) — memoria
+    lines.append('''PREFERENCIAS DEL CLIENTE (#NOTA#) — otra línea técnica invisible:
+Si el cliente menciona algo que conviene RECORDAR para no errarle —una restricción ("soy diabético",
+"soy celíaco", "soy alérgico al maní", "soy vegetariano/vegano", "no como cerdo") o un gusto fuerte
+("me encanta el picante", "odio el cilantro")— agregá al final esta línea invisible:
+#NOTA# ["diabético — evitar azúcar y postres dulces"]
+- Anotá lo IMPORTANTE en pocas palabras, con la implicancia si la tiene. Es INVISIBLE: NUNCA la leas.
+- Y RESPETALA YA en este mismo turno: a un diabético no le ofrecés postres azucarados, a un celíaco no le
+  ofrecés algo con TACC, a un vegetariano no le ofrecés carne, etc.
+- Solo cuando el cliente DICE una preferencia/restricción nueva; si no, no pongas #NOTA#.
+
+NUNCA inventes datos del cliente (su nombre, lo que pidió antes, sus gustos) que no figuren explícitamente
+más abajo. Si no sabés algo del cliente, no lo adivines.''')
     lines.append("")
 
     # Reglas finas
@@ -5382,11 +5421,13 @@ def _memoria_note(perfil: Optional[Dict[str, Any]]) -> str:
     if ultimo:
         nombres = ", ".join([(i.get("name") if isinstance(i, dict) else str(i)) for i in ultimo][:5])
         if nombres:
-            parts.append(f"La última vez pidió: {nombres}.")
+            parts.append(f"La última vez pidió: {nombres}. (Si te pregunta qué pidió la vez pasada, repetí "
+                         "EXACTAMENTE esto; nunca inventes ni cambies ítems.)")
     if gustos:
         g = ", ".join([str(x) for x in gustos][:6])
         if g:
-            parts.append(f"Gustos/notas: {g}.")
+            parts.append(f"Preferencias/restricciones del cliente (RESPETALAS: no le ofrezcas lo que no "
+                         f"puede o no quiere — ej. a un diabético nada de azúcar/postres dulces): {g}.")
     if nombre:
         parts.append(f"Saludalo con calidez como a un conocido y SIEMPRE nombralo por su nombre en el saludo "
                      f"(ej. \"¡Hola, {nombre}! Qué bueno verte de nuevo\"). Variá QUÉ MÁS mencionás cada vez "
@@ -5409,10 +5450,17 @@ async def _memoria_upsert(client: httpx.AsyncClient, device_id: str, nombre=None
             row["nombre"] = str(nombre)[:80]
         if ultimo_pedido is not None:
             row["ultimo_pedido"] = ultimo_pedido
+        prev = await _memoria_get(client, device_id) if (gustos is not None or bump) else None
         if gustos is not None:
-            row["gustos"] = gustos
+            # MERGE: acumular gustos/notas del cliente sin duplicar (no pisar lo que ya sabíamos de él).
+            merged = list((prev or {}).get("gustos") or [])
+            seen = {str(x).strip().lower() for x in merged}
+            for g in gustos:
+                gs = str(g).strip()[:120]
+                if gs and gs.lower() not in seen:
+                    merged.append(gs); seen.add(gs.lower())
+            row["gustos"] = merged[:12]
         if bump:
-            prev = await _memoria_get(client, device_id)
             row["visitas"] = ((prev or {}).get("visitas") or 0) + 1
         await client.post(
             f"{SUPABASE_URL}/rest/v1/{CLIENTES_TABLE}",
