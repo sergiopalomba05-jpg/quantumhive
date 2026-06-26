@@ -5845,11 +5845,11 @@ async def _cartesia_synth(client: httpx.AsyncClient, text: str) -> bytes:
         raise HTTPException(500, "CARTESIA_VOICE no está configurada (voice_id de Cartesia)")
     r = await client.post(
         f"{CARTESIA_API_BASE}/tts/bytes",
-        headers={"X-API-Key": CARTESIA_API_KEY, "Cartesia-Version": CARTESIA_VERSION,
+        headers={"Authorization": f"Bearer {CARTESIA_API_KEY}", "Cartesia-Version": CARTESIA_VERSION,
                  "Content-Type": "application/json"},
         json={"model_id": CARTESIA_MODEL, "transcript": text, "language": "es",
               "voice": {"mode": "id", "id": CARTESIA_VOICE},
-              "output_format": {"container": "mp3", "sample_rate": 44100, "bit_rate": 128000}},
+              "output_format": {"container": "mp3", "sample_rate": 24000, "bit_rate": 128000}},
         timeout=30.0,
     )
     if r.status_code != 200:
