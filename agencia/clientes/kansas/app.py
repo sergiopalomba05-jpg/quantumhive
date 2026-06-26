@@ -4838,6 +4838,60 @@ def _format_price(p: Optional[int], symbol: str = "$") -> str:
     return f"{p} pesos"
 
 
+# ============================================================================
+# GUIÓN DEL AUTOGUIADO (determinístico) — base del cache pregrabado plato-por-plato.
+# El autoguiado NO improvisa: cada plato dice SIEMPRE el mismo texto, así su MP3 se pregraba UNA vez
+# y después es $0/instantáneo, con la pronunciación ya revisada. Es la MISMA fuente para /guion (lo
+# que pide el front) y /pregrabar (lo que se cachea) → el texto, y por ende la key del cache,
+# coinciden exacto, y el front siempre pega cache hit.
+# ============================================================================
+def _texto_tts_plato(it: dict, symbol: str = "$") -> str:
+    """Lo que la mesera DICE de un plato en el autoguiado: nombre, descripción y precio. Si el item
+    trae 'tts', se usa ese texto tal cual (override para corregir pronunciación puntual de un plato
+    sin tocar la descripción que se ve en pantalla)."""
+    override = (it.get("tts") or "").strip()
+    if override:
+        return override
+    name = (it.get("name") or "").strip().rstrip(".")
+    desc = (it.get("description") or "").strip().rstrip(".")
+    precio = _format_price(it.get("price"), symbol)
+    partes = [p for p in (name, desc) if p]
+    partes.append(precio)
+    return ". ".join(partes) + "."
+
+
+def build_guion_autoguiado() -> dict:
+    """Guión determinístico del autoguiado, derivado del menú embebido. Por plato:
+      dish_id   → id del item (para resaltarlo en la carta SIN detección frágil)
+      chip      → nombre visible (el botón)
+      texto_tts → lo que dice la mesera (lo que se pregraba y lo que el front pide a /tts)
+    Única fuente: /guion se lo da al front y /pregrabar genera su audio con el MISMO texto."""
+    data = json.loads(EMBEDDED_MENU_JSON)
+    symbol = (data.get("restaurant") or {}).get("currency_symbol", "$")
+    categorias = []
+    for grupo in ("menu", "drinks"):
+        for section in data.get(grupo, []):
+            platos = []
+            for it in section.get("items", []):
+                did = (it.get("id") or "").strip()
+                nombre = (it.get("name") or "").strip()
+                if not did or not nombre:
+                    continue   # sin id no se puede resaltar de forma determinística
+                platos.append({
+                    "dish_id": did,
+                    "chip": nombre,
+                    "texto_tts": _texto_tts_plato(it, symbol),
+                })
+            if platos:
+                categorias.append({
+                    "id": (section.get("id") or "").strip(),
+                    "nombre": (section.get("name") or "").strip(),
+                    "grupo": grupo,
+                    "platos": platos,
+                })
+    return {"restaurant_id": RESTAURANT_ID, "categorias": categorias}
+
+
 def build_system_prompt() -> str:
     """Carga menu.json y arma el system prompt completo para Sol."""
     data = json.loads(EMBEDDED_MENU_JSON)
@@ -5985,6 +6039,61 @@ async def warm():
             pass
     asyncio.create_task(_go())
     return {"warmed": True}
+
+
+@app.get("/guion")
+async def guion():
+    """Guión determinístico del autoguiado (categorías → platos con dish_id, chip y texto_tts).
+    El front lo usa para el autoguiado atómico: tocar un chip de plato → /tts(texto_tts) (cache hit)
+    + resaltar su dish_id en la carta."""
+    return build_guion_autoguiado()
+
+
+@app.post("/pregrabar")
+async def pregrabar(force: bool = False, token: str = ""):
+    """Pre-genera y cachea el MP3 de CADA texto del autoguiado (saludo + cada plato) en UNA pasada
+    por carta. Después los clientes lo reciben $0 e instantáneo (cache hit). Idempotente: salta lo ya
+    cacheado (force=1 regenera, p. ej. tras ajustar la pronunciación). Reusa la MISMA
+    normalización/key/cadena que /tts → el cache coincide exacto con el runtime."""
+    admin = os.environ.get("ADMIN_TOKEN", "").strip()
+    if admin and token != admin:
+        raise HTTPException(401, "token inválido")
+    if not _tts_cache_enabled():
+        raise HTTPException(500, "Cache TTS no configurado (TTS_CACHE + SUPABASE_URL + SUPABASE_SERVICE_KEY)")
+    if not TTS_CHAIN_PARSED:
+        raise HTTPException(500, "Sin proveedor de TTS configurado")
+
+    data = json.loads(EMBEDDED_MENU_JSON)
+    saludo = ((data.get("assistant") or {}).get("greeting") or "").strip()
+    textos = [saludo] if saludo else []
+    for cat in build_guion_autoguiado()["categorias"]:
+        for p in cat["platos"]:
+            textos.append(p["texto_tts"])
+    vistos, unicos = set(), []
+    for t in textos:                          # dedupe conservando orden
+        if t and t not in vistos:
+            vistos.add(t); unicos.append(t)
+
+    stats = {"total": len(unicos), "generados": 0, "ya_estaban": 0, "errores": 0}
+    sem = asyncio.Semaphore(4)                 # concurrencia moderada: rápido sin saturar Cartesia
+
+    async def _uno(client: httpx.AsyncClient, t: str):
+        st = _normalize_for_tts(t)
+        k = _tts_cache_key(st)
+        async with sem:
+            try:
+                if not force and await _tts_cache_get(client, k):
+                    stats["ya_estaban"] += 1
+                    return
+                audio, _ = await _tts_synth_chain(client, st)
+                await _tts_cache_put(client, k, audio)
+                stats["generados"] += 1
+            except Exception:
+                stats["errores"] += 1
+
+    async with httpx.AsyncClient(timeout=60.0) as client:
+        await asyncio.gather(*[_uno(client, t) for t in unicos])
+    return {"ok": True, **stats}
 
 
 # ----------------------------------------------------------------------------
