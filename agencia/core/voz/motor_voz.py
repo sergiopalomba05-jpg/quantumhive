@@ -123,11 +123,15 @@ class MotorVoz:
         if not texto:
             raise HTTPException(400, "falta texto")
 
+        # Expresividad POR PEDIDO (para tunear en vivo sin re-deployar); si no viene, default por env.
+        exag = float(data.get("exaggeration", VOZ_EXAGGERATION))
+        cfg = float(data.get("cfg_weight", VOZ_CFG))
+
         ref = _ref_path(voice_id)
         if ref and not os.path.exists(ref):
             voces_vol.reload()     # por si otra réplica la clonó recién
         # exaggeration/cfg_weight → la voz MODULA (no plana). Sin esto habla todo seguido y sin personalidad.
-        kwargs = {"language_id": idioma, "exaggeration": VOZ_EXAGGERATION, "cfg_weight": VOZ_CFG}
+        kwargs = {"language_id": idioma, "exaggeration": exag, "cfg_weight": cfg}
         if ref and os.path.exists(ref):
             kwargs["audio_prompt_path"] = ref   # clonación con la voz registrada
 
