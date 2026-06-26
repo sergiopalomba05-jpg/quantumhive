@@ -6075,21 +6075,27 @@ async def pregrabar(force: bool = False, token: str = ""):
             vistos.add(t); unicos.append(t)
 
     stats = {"total": len(unicos), "generados": 0, "ya_estaban": 0, "errores": 0}
-    sem = asyncio.Semaphore(4)                 # concurrencia moderada: rápido sin saturar Cartesia
+    sem = asyncio.Semaphore(2)                 # baja concurrencia: el free tier de Cartesia limita ráfagas (429)
 
     async def _uno(client: httpx.AsyncClient, t: str):
         st = _normalize_for_tts(t)
         k = _tts_cache_key(st)
         async with sem:
-            try:
-                if not force and await _tts_cache_get(client, k):
-                    stats["ya_estaban"] += 1
+            if not force and await _tts_cache_get(client, k):
+                stats["ya_estaban"] += 1
+                return
+            last = None
+            for intento in range(4):           # reintenta ante rate limit con backoff creciente
+                try:
+                    audio, _ = await _tts_synth_chain(client, st)
+                    await _tts_cache_put(client, k, audio)
+                    stats["generados"] += 1
                     return
-                audio, _ = await _tts_synth_chain(client, st)
-                await _tts_cache_put(client, k, audio)
-                stats["generados"] += 1
-            except Exception:
-                stats["errores"] += 1
+                except Exception as e:
+                    last = e
+                    await asyncio.sleep(1.5 * (intento + 1))
+            stats["errores"] += 1
+            stats["ejemplo_error"] = str(last)[:160]
 
     async with httpx.AsyncClient(timeout=60.0) as client:
         await asyncio.gather(*[_uno(client, t) for t in unicos])
