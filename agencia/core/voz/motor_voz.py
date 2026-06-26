@@ -75,18 +75,25 @@ def _ref_path(voice_id) -> str:
     image=image,
     volumes={VOCES_DIR: voces_vol},
     secrets=[modal.Secret.from_name("qh-motor-voz-token")],
-    scaledown_window=300,          # baja a CERO tras 5 min sin uso → no paga idle
-    timeout=120,
-    max_containers=10,             # techo de GPUs en paralelo (no se dispara el gasto en picos)
+    enable_memory_snapshot=True,                          # snapshot CPU+GPU → cold start ~2s (no 60s)
+    experimental_options={"enable_gpu_snapshot": True},   # congela el modelo ya caliente en la GPU
+    scaledown_window=300,          # sigue durmiendo tras 5 min (scale-to-zero, barato); el snapshot
+    timeout=120,                   # hace que DESPERTAR sea casi instantáneo (no hay que tenerlo prendido)
+    max_containers=10,             # techo de GPUs en paralelo
 )
 @modal.concurrent(max_inputs=1)    # 1 síntesis por GPU; si llega otra a la vez, Modal abre otra GPU (evita OOM)
 class MotorVoz:
-    @modal.enter()
+    @modal.enter(snap=True)
     def load(self):
-        # Una vez por contenedor. Los pesos ya están en la imagen → carga a GPU casi instantánea.
+        # Corre ANTES del snapshot: carga el modelo a la GPU y lo CALIENTA con una generación dummy →
+        # ese estado caliente queda congelado, y cada cold start arranca de ahí en ~2s (no 60s).
         from chatterbox.mtl_tts import ChatterboxMultilingualTTS
         self.model = ChatterboxMultilingualTTS.from_pretrained(device="cuda")
         os.makedirs(VOCES_DIR, exist_ok=True)
+        try:
+            self.model.generate("Hola, ya te atiendo.", language_id="es")   # warm-up para el snapshot
+        except Exception:
+            pass
 
     @modal.fastapi_endpoint(method="POST")
     def clone(self, data: dict):
