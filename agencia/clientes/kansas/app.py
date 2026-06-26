@@ -2828,6 +2828,9 @@ function fmtPrice(n) {
 // ============================================================
 async function enterApp(tier) {
   window.CV_TIER = tier || null;   // demo: "premium" | "basic" | null (server lo mapea a una voz)
+  // Pre-warm: despertar el Motor de Voz YA (el cliente tarda unos segundos en leer/pedir) → para cuando
+  // habla, la GPU ya está caliente y la voz NO se corta ni entrecorta. Fire-and-forget, no traba nada.
+  fetch('/warm').catch(() => {});
   // Unlock audio en iOS
   try {
     state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -3897,10 +3900,11 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 // ============================================================
 async function synthesize(text) {
   try {
-    // Timeout: si el TTS del server cuelga, abortamos a los 9s y SALTAMOS la frase (sin esto, una frase
-    // colgada trababa toda la cola → "se tildaba"). NO caemos a la voz del navegador: da líos en iPhone.
+    // Timeout: si el TTS del server cuelga, abortamos y SALTAMOS la frase (sin esto, una frase colgada
+    // trababa toda la cola → "se tildaba"). NO caemos a la voz del navegador (líos en iPhone). 25s para
+    // dar margen al cold start del motor propio mientras el pre-warm (al entrar) lo despierta.
     const ctrl = new AbortController();
-    const to = setTimeout(() => ctrl.abort(), 9000);
+    const to = setTimeout(() => ctrl.abort(), 25000);
     let r;
     try {
       r = await fetch('/tts', {
@@ -5961,6 +5965,23 @@ async def tts(req: TTSRequest):
             await _tts_cache_put(client, key, audio)
     return Response(content=audio, media_type="audio/mpeg",
                     headers={"X-TTS-Cache": "miss" if use_cache else "off", "X-TTS-Provider": used})
+
+
+@app.get("/warm")
+async def warm():
+    """Despierta el Motor de Voz (cold start) cuando un cliente ENTRA a la carta, así la primera
+    respuesta no se corta ni entrecorta. Fire-and-forget: dispara una síntesis mínima y contesta al toque."""
+    if not VOZTTS_URL:
+        return {"warmed": False, "reason": "sin motor propio"}
+
+    async def _go():
+        try:
+            async with httpx.AsyncClient(timeout=90.0) as client:
+                await _voztts_synth(client, "Hola, ya te atiendo.")
+        except Exception:
+            pass
+    asyncio.create_task(_go())
+    return {"warmed": True}
 
 
 # ----------------------------------------------------------------------------
