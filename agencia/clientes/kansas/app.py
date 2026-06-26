@@ -87,7 +87,9 @@ DEEPINFRA_TTS_URL   = os.environ.get("DEEPINFRA_TTS_URL", "https://api.deepinfra
 # Si VOZTTS_URL está seteada, es la voz PRINCIPAL de la carta; si falla, cae a DeepInfra/Kokoro.
 VOZTTS_URL   = os.environ.get("VOZTTS_URL", "").strip().rstrip("/")
 VOZTTS_TOKEN = os.environ.get("VOZTTS_TOKEN", "").strip()
-VOZTTS_VOICE = os.environ.get("VOZTTS_VOICE", "mesera-arg").strip()   # id de la voz del cliente en el motor
+VOZTTS_VOICE = os.environ.get("VOZTTS_VOICE", "mesera-arg").strip()
+VOZTTS_EXAG  = float(os.environ.get("VOZTTS_EXAG", "0.85"))   # expresividad/personalidad de la voz (modula)
+VOZTTS_CFG   = float(os.environ.get("VOZTTS_CFG", "0.3"))   # id de la voz del cliente en el motor
 # Proveedores que hablan el dialecto OpenAI (Bearer + /chat/completions): URL por nombre. Gemini va aparte.
 _OPENAI_URLS       = {"groq": GROQ_URL, "openrouter": OPENROUTER_URL, "huggingface": HF_URL, "deepinfra": DEEPINFRA_URL}
 MAX_HISTORY_TURNS  = int(os.environ.get("MAX_HISTORY_TURNS", "8"))  # 8 ≈ 4 intercambios (contexto para que mantenga la charla)
@@ -5863,7 +5865,8 @@ async def _voztts_synth(client: httpx.AsyncClient, text: str) -> bytes:
     r = await client.post(
         VOZTTS_URL,
         headers={"Content-Type": "application/json"},
-        json={"token": VOZTTS_TOKEN, "texto": text, "voice_id": VOZTTS_VOICE, "idioma": "es"},
+        json={"token": VOZTTS_TOKEN, "texto": text, "voice_id": VOZTTS_VOICE, "idioma": "es",
+              "exaggeration": VOZTTS_EXAG, "cfg_weight": VOZTTS_CFG},
         timeout=60.0,
     )
     if r.status_code != 200:
