@@ -1,0 +1,18 @@
+{
+  "archivo": "quantumhive_isotipo_v01_transparente.png",
+  "modo": "RGBA",
+  "tamano": [
+    1254,
+    1254
+  ],
+  "alpha_min": 0,
+  "alpha_max": 255,
+  "alpha_en_esquinas": {
+    "0,0": 0,
+    "arriba_derecha": 0,
+    "abajo_izquierda": 0,
+    "abajo_derecha": 0
+  },
+  "pixeles_transparentes": 967947,
+  "pixeles_visibles": 604569
+}
