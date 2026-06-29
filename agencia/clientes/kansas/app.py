@@ -125,6 +125,9 @@ CARTESIA_VOICE      = os.environ.get("CARTESIA_VOICE", "").strip()   # voice_id 
 CARTESIA_MODEL      = os.environ.get("CARTESIA_MODEL", "sonic-2").strip()
 CARTESIA_API_BASE   = os.environ.get("CARTESIA_API_BASE", "https://api.cartesia.ai").strip().rstrip("/")
 CARTESIA_VERSION    = os.environ.get("CARTESIA_VERSION", "2024-11-13").strip()  # header obligatorio; override por env
+# Voces compatibles para LEER cache ya existente. Sirve al migrar de cuenta/key/voice_id sin regrabar todo.
+# La primera que aparezca se prueba primero. CARTESIA_VOICE siempre se agrega al final para generar lo nuevo.
+CARTESIA_CACHE_READ_VOICES = os.environ.get("CARTESIA_CACHE_READ_VOICES", "").strip()
 
 DEMO_MODE = os.environ.get("DEMO_MODE", "").strip().lower() in ("1", "true", "yes", "si", "sí")
 
@@ -5941,9 +5944,40 @@ def _tts_primary_identity() -> str:
     return f"minimax|{MINIMAX_MODEL}|{MINIMAX_VOICE}|{MINIMAX_SPEED}"
 
 
-def _tts_cache_key(text: str) -> str:
-    raw = f"{RESTAURANT_ID}|{_tts_primary_identity()}|{text}"
+def _tts_cache_read_identities() -> List[str]:
+    """Identidades compatibles para LEER cache. No cambian el proveedor de generación: solo permiten
+    reutilizar MP3 ya guardados cuando una voz fue clonada/migrada a otro voice_id o cuenta."""
+    current = _tts_primary_identity()
+    prov = TTS_CHAIN_PARSED[0] if TTS_CHAIN_PARSED else "minimax"
+    if prov != "cartesia":
+        return [current]
+    voices = []
+    for raw in CARTESIA_CACHE_READ_VOICES.split(","):
+        v = raw.strip()
+        if v and v not in voices:
+            voices.append(v)
+    if CARTESIA_VOICE and CARTESIA_VOICE not in voices:
+        voices.append(CARTESIA_VOICE)
+    identities = [f"cartesia|{CARTESIA_MODEL}|{v}" for v in voices]
+    return identities or [current]
+
+
+def _tts_cache_key_for_identity(text: str, identity: str) -> str:
+    raw = f"{RESTAURANT_ID}|{identity}|{text}"
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+
+def _tts_cache_key(text: str) -> str:
+    return _tts_cache_key_for_identity(text, _tts_primary_identity())
+
+
+def _tts_cache_keys_for_read(text: str) -> List[str]:
+    keys, seen = [], set()
+    for identity in _tts_cache_read_identities():
+        k = _tts_cache_key_for_identity(text, identity)
+        if k not in seen:
+            keys.append(k); seen.add(k)
+    return keys
 
 
 def _tts_cache_url(key: str) -> str:
@@ -6132,9 +6166,10 @@ async def tts(req: TTSRequest):
     async with httpx.AsyncClient() as client:
         # 1) ¿está cacheada? → $0, instantáneo (cualquier proveedor; el caché aplica a todos)
         if use_cache:
-            cached = await _tts_cache_get(client, key)
-            if cached:
-                return Response(content=cached, media_type="audio/mpeg", headers={"X-TTS-Cache": "hit"})
+            for cache_key in _tts_cache_keys_for_read(text):
+                cached = await _tts_cache_get(client, cache_key)
+                if cached:
+                    return Response(content=cached, media_type="audio/mpeg", headers={"X-TTS-Cache": "hit"})
         # 2) generar con la cadena de proveedores: principal → fallback ante cuota/error
         audio, used = await _tts_synth_chain(client, text)
         # 3) guardar en el caché para la próxima (no frena la respuesta si falla)
@@ -6204,9 +6239,11 @@ async def pregrabar(force: bool = False, token: str = ""):
         st = _normalize_for_tts(t)
         k = _tts_cache_key(st)
         async with sem:
-            if not force and await _tts_cache_get(client, k):
-                stats["ya_estaban"] += 1
-                return
+            if not force:
+                for cache_key in _tts_cache_keys_for_read(st):
+                    if await _tts_cache_get(client, cache_key):
+                        stats["ya_estaban"] += 1
+                        return
             last = None
             for intento in range(4):           # reintenta ante rate limit con backoff creciente
                 try:
