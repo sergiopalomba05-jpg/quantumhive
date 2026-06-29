@@ -2718,6 +2718,7 @@ __CV_CONFIG_SCRIPT__
 const state = {
   history: [],            // [{role, text}]
   menu: null,
+  guidedFlows: {},        // flujos pregrabados de los chips principales: no llaman al LLM
   isStreaming: false,
   currentAudio: null,
   recorder: null, recChunks: [], recStream: null,
@@ -2934,6 +2935,11 @@ async function loadMenu() {
   try {
     const r = await fetch('/menu.json');
     state.menu = await r.json();
+    try {
+      const g = await fetch('/guion');
+      const guion = await g.json();
+      state.guidedFlows = (guion && guion.flujos) || {};
+    } catch (e) { state.guidedFlows = {}; }
     renderCarta();
   } catch (e) {
     console.error('No se pudo cargar menu.json', e);
@@ -3087,6 +3093,7 @@ function renderCarta() {
         leftEl: left,
         addBtn: addBtnEl,
         name: it.name,
+        dish_id: it.id || '',
         price: (typeof it.price === 'number' ? it.price : null),
         price_copa: (it.price_copa != null ? it.price_copa : null),
         price_botella: (it.price_botella != null ? it.price_botella : null),
@@ -4035,6 +4042,48 @@ async function playAudioForText(text, myToken) {
   if (url && myToken === state.cancelToken) await playAudioUrl(url, myToken);
 }
 
+async function runGuidedFlow(text) {
+  const flow = state.guidedFlows && state.guidedFlows[text];
+  if (!flow || !Array.isArray(flow.items) || !flow.items.length) return false;
+
+  state.isStreaming = true;
+  const myToken = ++state.cancelToken;
+  stopCurrentAudio();
+  cvSpotlightClear();
+  cvSetChips(null);
+  state.history.push({ role: 'user', text });
+  addUserBubble(text);
+  cvEvento('chat', { guiado: true, pregrabado: true });
+  setSolState('speaking');
+  startBotBubble();
+
+  const visible = flow.items.map(it => it.texto_tts || '').filter(Boolean).join(' ');
+  updateBotBubble(visible);
+  if (visible) {
+    state.history.push({ role: 'model', text: visible });
+    if (state.history.length > 8) state.history = state.history.slice(-8);
+  }
+
+  for (const it of flow.items) {
+    if (myToken !== state.cancelToken) break;
+    const phrase = (it.texto_tts || '').trim();
+    if (!phrase) continue;
+    const entry = it.dish_id && state.dishIndex ? state.dishIndex.find(d => d.dish_id === it.dish_id) : null;
+    const item = { dishes: entry ? [{ entry, frac: 0 }] : [], cat: null };
+    const url = await synthesize(phrase);
+    if (url && myToken === state.cancelToken) await playAudioUrl(url, myToken, item);
+  }
+
+  if (myToken === state.cancelToken) {
+    cvSetChips(flow.chips || null);
+    cvSpotlightSettle();
+    setSolState('idle');
+    endBotBubble();
+    state.isStreaming = false;
+  }
+  return true;
+}
+
 function stopCurrentAudio() {
   if (state.currentAudio) {
     try { state.currentAudio.pause(); } catch(e) {}
@@ -4718,7 +4767,7 @@ function closeExitModal(){ $('#exitModal').classList.remove('open'); }
 // Chips de acción que dependen del contexto previo (qué se ofreció recién): NO se cachean,
 // para no servirle a otro cliente la respuesta del contexto equivocado.
 const CV_NO_CACHE = new Set(['más opciones', 'sí, agregalo', 'otra opción']);
-function quickAsk(text){
+async function quickAsk(text){
   if (!text) return;
   // Si la mesera está respondiendo o hablando, el cliente quiere otra cosa: la frenamos y atendemos lo
   // nuevo (antes el toque se ignoraba mientras hablaba → parecía que no hacía caso).
@@ -4726,6 +4775,7 @@ function quickAsk(text){
     stopSpeaking();
     state.isStreaming = false;
   }
+  if (await runGuidedFlow(text)) return;
   const cacheable = !CV_NO_CACHE.has((text || '').trim().toLowerCase());
   converse(text, true, cacheable);   // chip guiado con voz; cacheable salvo los de acción contextual
 }
@@ -4860,12 +4910,7 @@ def _texto_tts_plato(it: dict, symbol: str = "$") -> str:
     return ". ".join(partes) + "."
 
 
-def build_guion_autoguiado() -> dict:
-    """Guión determinístico del autoguiado, derivado del menú embebido. Por plato:
-      dish_id   → id del item (para resaltarlo en la carta SIN detección frágil)
-      chip      → nombre visible (el botón)
-      texto_tts → lo que dice la mesera (lo que se pregraba y lo que el front pide a /tts)
-    Única fuente: /guion se lo da al front y /pregrabar genera su audio con el MISMO texto."""
+def _build_categorias_autoguiado() -> List[Dict[str, Any]]:
     data = json.loads(EMBEDDED_MENU_JSON)
     symbol = (data.get("restaurant") or {}).get("currency_symbol", "$")
     categorias = []
@@ -4889,7 +4934,82 @@ def build_guion_autoguiado() -> dict:
                     "grupo": grupo,
                     "platos": platos,
                 })
-    return {"restaurant_id": RESTAURANT_ID, "categorias": categorias}
+    return categorias
+
+
+def _platos_por_id(categorias: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
+    out: Dict[str, Dict[str, Any]] = {}
+    for cat in categorias:
+        for p in cat.get("platos", []):
+            did = (p.get("dish_id") or "").strip()
+            if did:
+                out[did] = p
+    return out
+
+
+def build_flujos_guiados() -> dict:
+    """Flujos determinísticos de los 4 chips principales. No llaman al LLM: son playlists de
+    frases puente + platos existentes, todas pregrabables por /pregrabar."""
+    platos = _platos_por_id(_build_categorias_autoguiado())
+
+    def puente(texto: str) -> Dict[str, str]:
+        return {"tipo": "puente", "texto_tts": texto}
+
+    def plato(dish_id: str) -> Dict[str, str]:
+        p = platos[dish_id]
+        return {"tipo": "plato", "dish_id": dish_id, "chip": p["chip"], "texto_tts": p["texto_tts"]}
+
+    return {
+        "¿Cuál es la especialidad de la casa?": {
+            "items": [
+                puente("Te recomiendo dos bien de la casa."),
+                plato("bbq_ribs"),
+                puente("Y si querés algo bien jugoso a la leña, mirá este."),
+                plato("rib_eye"),
+                puente("¿Cuál te tienta más?"),
+            ],
+            "chips": ["Costillas BBQ 500gr", "Ojo de Bife 400gr", "¿Algo para tomar?", "Más opciones"],
+        },
+        "¿Qué tenés para picar?": {
+            "items": [
+                puente("Para picar, iría por estas opciones."),
+                plato("spinach_dip"),
+                puente("Otra que funciona muy bien para compartir es esta."),
+                plato("kansas_rolls"),
+                puente("¿Te agrego alguna?"),
+            ],
+            "chips": ["Dip de Espinaca y Queso", "Arrolladitos de Pollo y Verduras", "Mini Nachos", "Más opciones"],
+        },
+        "Recomendame un vino": {
+            "items": [
+                puente("Para acompañar la comida, te marco estas opciones."),
+                plato("baron_b"),
+                puente("Y si preferís blanco, este va muy bien."),
+                plato("santa_julia_sauv"),
+                puente("¿Querés que te muestre otra bebida?"),
+            ],
+            "chips": ["Baron B Cuvée Spéciale", "Santa Julia Sauvignon Blanc", "Con alcohol", "Sin alcohol"],
+        },
+        "¿Qué postre me recomendás?": {
+            "items": [
+                puente("Para cerrar, te recomiendo estos postres."),
+                plato("kansas_cheesecake"),
+                puente("Y si querés algo más goloso, este es tremendo."),
+                plato("going_bananas"),
+                puente("¿Con cuál cerramos?"),
+            ],
+            "chips": ["Cheesecake de la Casa", "Banana Split", "Café", "Así está bien"],
+        },
+    }
+
+
+def build_guion_autoguiado() -> dict:
+    """Guión determinístico del autoguiado, derivado del menú embebido. Por plato:
+      dish_id   → id del item (para resaltarlo en la carta SIN detección frágil)
+      chip      → nombre visible (el botón)
+      texto_tts → lo que dice la mesera (lo que se pregraba y lo que el front pide a /tts)
+    Única fuente: /guion se lo da al front y /pregrabar genera su audio con el MISMO texto."""
+    return {"restaurant_id": RESTAURANT_ID, "categorias": _build_categorias_autoguiado(), "flujos": build_flujos_guiados()}
 
 
 def build_system_prompt() -> str:
@@ -6069,6 +6189,9 @@ async def pregrabar(force: bool = False, token: str = ""):
     for cat in build_guion_autoguiado()["categorias"]:
         for p in cat["platos"]:
             textos.append(p["texto_tts"])
+    for flujo in build_guion_autoguiado().get("flujos", {}).values():
+        for item in flujo.get("items", []):
+            textos.append(item["texto_tts"])
     vistos, unicos = set(), []
     for t in textos:                          # dedupe conservando orden
         if t and t not in vistos:
