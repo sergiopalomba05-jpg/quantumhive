@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Propuesta Cata Home · QuantumHive</title><style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800;900&family=Montserrat:wght@300;400;500;600;700&display=swap');
+:root{--gold:#d4af37;--gold2:#f2d57e;--goldsoft:#bfa24a;--cream:#EDEAE3;--line:rgba(212,175,55,.22);}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:#070605;color:#eee;font-family:'Montserrat',sans-serif;line-height:1.65;position:relative;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'><path d='M28 0L56 16v33L28 65 0 49V16z M28 65l28 16v33L28 130 0 114V81z' fill='none' stroke='%23d4af37' stroke-opacity='0.07' stroke-width='1'/></svg>");background-size:84px 150px;}
+body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 20% 8%,rgba(212,175,55,.14),transparent 42%),radial-gradient(ellipse at 85% 30%,rgba(212,175,55,.07),transparent 45%),radial-gradient(ellipse at 50% 100%,rgba(212,175,55,.10),transparent 55%);}
+.wrap{max-width:920px;margin:0 auto;padding:0 26px;position:relative;z-index:2}
+section{padding:64px 0;border-bottom:1px solid rgba(212,175,55,.08);position:relative;z-index:2}
+h1,h2,h3{font-family:'Playfair Display',serif;letter-spacing:.5px}
+.gold{color:var(--gold)} .hl{color:var(--gold2);font-weight:600}
+.goldgrad{background:linear-gradient(90deg,#bfa24a,#f2d57e,#d4af37);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tag{display:inline-block;border:1px solid var(--gold);color:var(--gold2);font-size:11px;letter-spacing:3px;font-weight:600;padding:8px 18px;border-radius:30px;text-transform:uppercase}
+.hero{min-height:92vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 26px;position:relative;z-index:2}
+.hexrow{display:flex;gap:14px;justify-content:center;margin-bottom:26px}
+.hexrow i{width:16px;height:18px;background:var(--goldsoft);opacity:.55;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+.hero h1{font-size:clamp(42px,8vw,86px);font-weight:900;line-height:.98;margin:18px 0}
+.hero .sub{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(18px,3vw,26px);color:#cdbf8e;margin-top:10px}
+.hero .for{margin-top:40px;font-size:13px;letter-spacing:4px;color:#8a8a8a;text-transform:uppercase}
+.hero .client{font-family:'Playfair Display',serif;font-size:30px;color:var(--cream);margin-top:6px}
+.crest{width:150px;height:150px;border-radius:50%;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;background:var(--cream);box-shadow:0 0 50px rgba(212,175,55,.4);margin-bottom:16px;overflow:hidden}
+.crest img{width:78%;height:auto}
+.crest .ph{font-family:'Playfair Display',serif;color:#111;font-weight:700;font-size:13px;text-align:center;padding:6px;line-height:1.3}
+.qhtag{font-size:10px;letter-spacing:3px;color:var(--gold2);margin-bottom:14px}
+h2.title{font-size:clamp(28px,5vw,46px);font-weight:800;margin-bottom:8px;color:#fff}
+.kicker{font-size:12px;letter-spacing:4px;color:var(--gold);text-transform:uppercase;font-weight:600;margin-bottom:14px;display:block}
+.lead{font-size:18px;color:#c9c9c9;max-width:780px}
+p{color:#bdbdbd;margin-top:14px;font-size:15.5px}
+.card{background:linear-gradient(160deg,rgba(22,20,16,.92),rgba(11,10,9,.92));border:1px solid var(--line);border-radius:16px;padding:28px;margin-top:18px}
+.card h3{color:var(--gold2);font-size:20px;margin-bottom:6px}
+.grid{display:grid;gap:18px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:720px){.g2,.g3{grid-template-columns:1fr}}
+.icon{font-size:30px;display:block;margin-bottom:10px}
+.mod{display:flex;gap:20px;align-items:flex-start;background:linear-gradient(120deg,rgba(212,175,55,.07),rgba(0,0,0,.2));border-left:3px solid var(--gold);border-radius:0 14px 14px 0;padding:26px;margin-top:22px}
+.mod .mi{font-size:38px;flex-shrink:0}
+.mod h3{font-size:22px;color:#fff;font-family:'Playfair Display'}
+.pill{display:inline-block;font-size:11px;letter-spacing:1px;background:rgba(212,175,55,.15);color:var(--gold2);border:1px solid var(--line);padding:4px 12px;border-radius:20px;margin:4px 4px 0 0}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:24px}
+.cmp>div{padding:26px}.cmp .old{background:rgba(12,11,10,.9)}
+.cmp .new{background:linear-gradient(160deg,rgba(212,175,55,.12),rgba(212,175,55,.02))}
+.cmp h4{font-family:'Playfair Display';font-size:18px;margin-bottom:14px}
+.cmp .old h4{color:#888}.cmp .new h4{color:var(--gold2)}
+.cmp ul{list-style:none}.cmp li{padding:7px 0;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05)}
+.cmp .old li{color:#7c7c7c}.cmp .new li{color:#e4e4e4}
+.cmp .old li::before{content:"X ";color:#6b4a4a}.cmp .new li::before{content:"✦ ";color:var(--gold)}
+@media(max-width:720px){.cmp{grid-template-columns:1fr}}
+.quote{font-family:'Playfair Display';font-style:italic;font-size:22px;color:var(--cream);border-left:3px solid var(--gold);padding:6px 0 6px 22px;margin-top:24px;line-height:1.4}
+.step{display:flex;gap:18px;align-items:flex-start;padding:18px 0;border-bottom:1px solid rgba(212,175,55,.08)}
+.step .d{font-family:'Playfair Display';font-weight:800;color:var(--gold);font-size:13px;letter-spacing:1px;flex-shrink:0;width:80px;border:1px solid var(--line);border-radius:8px;text-align:center;padding:8px 4px}
+.foot{text-align:center;padding:70px 26px;position:relative;z-index:2}
+.foot .qh{font-family:'Playfair Display';font-size:26px;color:var(--gold2);letter-spacing:3px}
+.foot small{color:#777;letter-spacing:3px;font-size:11px}
+.note{background:rgba(212,175,55,.08);border:1px dashed var(--line);border-radius:12px;padding:18px;margin-top:18px;font-size:14px;color:#d8cfa8}
+.check li{list-style:none;padding:8px 0;color:#d4d4d4;font-size:15px}.check li::before{content:"✓ ";color:var(--gold);font-weight:700}
+.metricbar{display:flex;gap:14px;flex-wrap:wrap;margin-top:18px}
+.metricbar div{flex:1;min-width:130px;background:linear-gradient(160deg,rgba(22,20,16,.92),rgba(11,10,9,.92));border:1px solid var(--line);border-radius:12px;padding:16px;text-align:center}
+.metricbar b{font-family:'Playfair Display';font-size:26px;color:var(--gold2);display:block}
+.metricbar span{font-size:12px;color:#999;letter-spacing:1px}
+.data{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+@media(max-width:720px){.data{grid-template-columns:1fr}}
+.data .d{background:linear-gradient(160deg,rgba(22,20,16,.95),rgba(11,10,9,.95));border:1px solid var(--line);border-radius:14px;padding:20px;text-align:center}
+.data .d b{font-family:'Playfair Display';font-size:32px;color:var(--gold2);display:block;line-height:1}
+.data .d span{font-size:12px;color:#9a9a9a;letter-spacing:1px;display:block;margin-top:8px}
+.price{background:linear-gradient(165deg,rgba(30,26,18,.96),rgba(10,9,7,.98));border:1.5px solid var(--gold);border-radius:20px;padding:38px;margin-top:26px;text-align:center;box-shadow:0 0 50px rgba(212,175,55,.15)}
+.price .big{font-family:'Playfair Display';font-size:clamp(34px,6vw,52px);color:var(--gold2);font-weight:800;line-height:1}
+.price .lbl{font-size:12px;letter-spacing:3px;color:#9a9a9a;text-transform:uppercase;margin-top:6px}
+.price .row{display:flex;justify-content:center;gap:50px;flex-wrap:wrap;margin:10px 0 4px}
+.price .div{height:1px;background:var(--line);margin:26px 0}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:22px}
+@media(max-width:620px){.vs{grid-template-columns:1fr}}
+.vs>div{padding:22px}
+.vs .a{background:rgba(12,11,10,.9)}.vs .b{background:linear-gradient(160deg,rgba(212,175,55,.12),transparent)}
+.vs h5{font-size:12px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.vs .a h5{color:#888}.vs .b h5{color:var(--gold2)}
+.vs .n{font-family:'Playfair Display';font-size:26px;color:#fff}
+.vs .a .n{color:#9a9a9a;text-decoration:line-through}
+
+@media(max-width:560px){
+  .cmp{grid-template-columns:1fr}
+  .cmp>div{padding:20px}
+  .wrap{padding-left:18px;padding-right:18px}
+  .mod{flex-direction:column;gap:10px;padding:20px}
+  .mod .mi{font-size:32px}
+  .mod h3{font-size:20px}
+  .title{font-size:25px;line-height:1.15}
+  .hero .big,.big{font-size:30px}
+  .lead{font-size:15px}
+  .price .big{font-size:32px}
+  .row{flex-wrap:wrap;gap:2px}
+  .metricbar{flex-wrap:wrap;gap:14px}
+  .metricbar .data{flex:1 1 40%}
+  .crest,.ph{max-width:90vw}
+}
+@media(max-width:380px){
+  .title{font-size:22px}
+  .hero h1,.kicker{letter-spacing:1px}
+}
+
+@media(max-width:560px){
+  .row{justify-content:space-between}
+  .row>span:last-child{white-space:nowrap;padding-left:10px}
+}</style><style id="claude-agent-animation-styles">
+      @keyframes claude-pulse {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; }
+      }
+      #claude-agent-glow-border-inner {
+        animation: claude-pulse 2s ease-in-out infinite;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #claude-agent-glow-border-inner {
+          animation: none;
+        }
+      }
+    </style></head><body>
+<div class="hero">
+ <div class="crest"><!-- LOGO: reemplazar por <img src="catahome-logo.png"> --><div class="ph">[ Pegá acá el<br>logo de<br>CATA HOME ]</div></div>
+ <div class="qhtag">QUANTUM HIVE × CATA HOME</div>
+ <div class="hexrow"><i></i><i></i><i></i></div>
+ <span class="tag">Propuesta a medida con tecnología de última generación</span>
+ <h1 class="goldgrad">Ecosistema de IA<br>para Cata Home</h1>
+ <div class="sub">Atención, ventas y métricas de contenido — automatizados con inteligencia propia.</div>
+ <div class="for">Preparado exclusivamente para</div>
+ <div class="client">Cata Home</div>
+ <div class="for" style="margin-top:30px">Por QuantumHive · Multi-Agent Business Infrastructure</div>
+</div>
+<section><div class="wrap">
+ <span class="kicker">Lo primero que tenés que saber</span>
+ <h2 class="title">Esto no es un software genérico. Es <span class="gold">tuyo</span>.</h2>
+ <p class="lead">Hoy en el mercado hay chatbots de molde y páginas de métricas genéricas: las mismas para una ferretería, un gimnasio o una marca de deco. Funcionan para todos a medias y para nadie del todo. Lo que voy a desarrollar para Cata Home es lo contrario: un sistema <b class="gold">creado desde cero por mí</b>, entrenado con tu marca, tu catálogo, tu forma de hablar y los datos reales de tu negocio.</p>
+ <div class="grid g3" style="margin-top:26px">
+  <div class="card"><span class="icon">🧩</span><h3>A tu medida</h3><p>Cada flujo, cada respuesta y cada informe está diseñado para Cata Home. No se parece a nada que tenga la competencia.</p></div>
+  <div class="card"><span class="icon">🔐</span><h3>Con tus datos, privados</h3><p>Tu información vive en tu propio entorno, encriptada. No se mezcla con la de nadie ni alimenta plataformas públicas.</p></div>
+  <div class="card"><span class="icon">⬡</span><h3>Hecho por QuantumHive</h3><p>Lo desarrollo, lo mantengo y lo hago evolucionar yo. No revendo una herramienta de otro: la construyo.</p></div>
+ </div>
+</div></section>
+<section><div class="wrap">
+ <span class="kicker">Diagnóstico</span>
+ <h2 class="title">Investigué a fondo Cata Home</h2>
+ <p class="lead">Antes de proponerte nada, <b class="hl">desplegué mi software multiagéntico de investigación para estudiar tu Instagram y tu Tienda Nube</b>: varios agentes trabajando en paralelo que recorrieron tu perfil, leyeron tus publicaciones, analizaron el contenido visual de tus reels y midieron el comportamiento real de tu audiencia. Esto es lo que arrojó el análisis.</p>
+ <div class="data">
+  <div class="d"><b>21,2K</b><span>SEGUIDORES · COMUNIDAD CONSOLIDADA</span></div>
+  <div class="d"><b>105K</b><span>REPRODUCCIONES EN TU REEL MÁS VISTO</span></div>
+  <div class="d"><b>+35K</b><span>VISTAS EN VARIOS REELS DE ALTO ALCANCE</span></div>
+ </div>
+ <div class="note">Estos son datos visibles desde afuera. <b>Las métricas finas y completas —alcance real, guardados, conversión a venta, horarios óptimos— se ven internamente con el software</b>, una vez conectado a tu cuenta. Ahí es donde el análisis se vuelve verdaderamente potente.</div>
+ <div class="grid g2" style="margin-top:24px">
+  <div class="card"><h3>Qué contenido te funciona (dato real)</h3><p>El análisis detectó un patrón claro: tu contenido <b class="hl">casero y humano —vos y Paula a cámara, con humor—</b> rinde muy por encima de la foto de producto sola. El reel de la <b class="hl">temática del Mundial</b>, con tono personal y llamado a la acción, fue de los de mejor desempeño (cientos de likes, +100 comentarios y decenas de veces compartido), muy por encima del promedio. La gente conecta con las personas detrás de Cata Home, no con el flat-lay.</p></div>
+  <div class="card"><h3>Tu esencia de marca</h3><p>"Cada mesa, un encuentro". Cata Home no vende objetos: vende momentos. Vajilla y textiles que transforman un ambiente, una estética cálida y cuidada, y un relato emocional alrededor del hogar. Una marca con alma, que el sistema aprendió para poder hablar con tu misma voz.</p></div>
+  <div class="card"><h3>Tu motor de venta actual</h3><p>El análisis confirmó que ya trabajás por WhatsApp y por disparadores conversacionales ("respondé <i>Argentina</i> y te mando info"). Tenés 3 cuotas sin interés, 20% off por transferencia, envío gratis +$250.000 y pick-up en Olivos/Florida. Hay un embudo, pero hoy lo sostenés a pulmón.</p></div>
+  <div class="card"><h3>La temática que más atrae</h3><p>El contenido con narrativa (la promo del Mundial cruzada con el ritual del hogar) y los disparadores de interacción —comentarios, etiquetar, compartir— son los que más tracción generan. Ese es el camino que el sistema va a potenciar con datos, no con intuición.</p></div>
+ </div>
+ <p style="margin-top:20px">Conclusión del diagnóstico: <b class="gold">ya hacés manualmente todo lo que se puede automatizar</b>, y estás dejando datos valiosos sin explotar. Por eso diseñé este ecosistema de módulos conectados.</p>
+</div></section>
+<section><div class="wrap">
+ <span class="kicker">La solución</span>
+ <h2 class="title">El Ecosistema: 4 módulos, <span class="gold">un mismo cerebro</span></h2>
+ <p class="lead">No son herramientas sueltas. Es un solo sistema inteligente donde la atención, las ventas, las redes y las métricas se alimentan entre sí. Y lo más importante: <b class="hl">este cerebro es la base sobre la que todo va a crecer</b>. Lo que armo hoy es el cimiento; a partir de acá, cada nueva capacidad que sumo se construye sobre esta misma inteligencia, que cada vez sabe más de tu negocio.</p>
+ <div class="mod"><div class="mi">🤖</div><div>
+  <h3>Módulo 1 — Agente de IA humanizado</h3>
+  <p>No es un chatbot. Un chatbot responde de forma mecánica y fría, con opciones rígidas. Esto es un <b>Agente de IA humanizado</b>: <b class="hl">multimodal y con memoria</b>, que conversa con naturalidad, entiende el contexto y atiende con la voz y la calidez de Cata Home, las 24 horas. Reconoce a cada cliente, recomienda productos, calcula si llega al envío gratis y deriva a una persona cuando hace falta.</p>
+  <p>Al ser multimodal, <b class="hl">ve imágenes y videos, y responde con voz si el cliente le manda un audio</b>. Más aún: <b class="hl">el cliente le puede mandar la foto de un producto que le gustó</b> —de cualquier lado— y el Agente busca en la base de datos un producto parecido que ofrezca Cata Home y se lo recomienda al instante. Y esa voz puede ser <b class="hl">clonada: la tuya o la de Paula</b>, si quieren que el Agente suene como alguien de la casa.</p>
+  <span class="pill">Agente IA humanizado</span><span class="pill">Multimodal · voz · visión</span><span class="pill">Búsqueda por foto</span><span class="pill">Memoria por cliente</span><span class="pill">24/7</span>
+ </div></div>
+ <div class="mod"><div class="mi">🛒</div><div>
+  <h3>Módulo 2 — Agente que recupera carritos abandonados</h3>
+  <p>El mismo Agente detecta los carritos que quedan sin cerrar en tu Tienda Nube. Cuando un cliente arranca la compra y deja sus datos de contacto pero no la termina, el sistema lo reengancha por WhatsApp con tus propios ganchos (3 cuotas, 20% por transferencia, envío gratis, promos por tiempo limitado). Gracias a la <b class="hl">memoria del sistema</b>, recuerda a cada cliente —qué miró, qué compró— y permite lanzar <b class="hl">campañas segmentadas</b> en cada promo o lanzamiento. Recuperás ventas que hoy se pierden en silencio.</p>
+  <span class="pill">Reenganche automático</span><span class="pill">Memoria de clientes</span><span class="pill">Campañas de promos</span>
+ </div></div>
+ <div class="mod"><div class="mi">📱</div><div>
+  <h3>Módulo 3 — Automatización de respuestas en Instagram</h3>
+  <p>Tu mejor contenido ya genera cientos de comentarios. Hoy esa gente queda sin respuesta o la atendés a mano una por una. El sistema <b class="hl">detecta palabras clave en los comentarios</b> (como "info", "precio" o el nombre de un producto) y responde automáticamente —por comentario y por mensaje privado— sumando a esa persona al embudo de venta. Convierte el engagement viral de tus reels en conversaciones reales, sin que se te escape nadie.</p>
+  <span class="pill">Palabras clave en comentarios</span><span class="pill">Respuesta automática</span><span class="pill">Captura de leads</span>
+ </div></div>
+ <div class="mod"><div class="mi">📊</div><div>
+  <h3>Módulo 4 — Software de métricas semanales</h3>
+  <p>Un sistema propio que cada semana lee tu Instagram y tu Tienda Nube, los cruza, y te entrega un <b>informe accionable</b>: qué contenido subir según lo que el algoritmo premia <i>en tu cuenta puntual</i>, qué productos traccionan y qué clientes reactivar. No es un panel genérico: es inteligencia construida sobre TUS datos, que mejora semana a semana.</p>
+  <span class="pill">Instagram + Tienda Nube</span><span class="pill">Informe semanal</span><span class="pill">Recomendaciones reales</span>
+ </div></div>
+</div></section>
+<section><div class="wrap">
+ <span class="kicker">La tecnología que aplico</span>
+ <h2 class="title">Por qué una base de datos <span class="gold">vectorial</span> cambia el juego</h2>
+ <p class="lead">Acá está el diferencial técnico. La mayoría de los sistemas usan una base de datos común. Yo aplico una base de datos vectorial —tecnología de última generación, la misma que usan los sistemas de IA más avanzados del mundo—.</p>
+ <div class="cmp">
+  <div class="old"><h4>Base de datos común</h4><ul>
+   <li>Guarda datos en filas y columnas, como una planilla</li>
+   <li>Solo encuentra coincidencias exactas ("buscar taza verde")</li>
+   <li>No entiende significado ni contexto</li>
+   <li>No relaciona ideas parecidas entre sí</li>
+   <li>Sirve para listar, no para razonar</li>
+  </ul></div>
+  <div class="new"><h4>Base de datos vectorial (la que uso)</h4><ul>
+   <li>Guarda el <b>significado</b> de cada dato, no solo el texto</li>
+   <li>Entiende por similitud: relaciona conceptos parecidos</li>
+   <li>Reconoce una foto y encuentra el producto más parecido</li>
+   <li>Cruza el perfil de un cliente con el producto ideal para él</li>
+   <li>Le da memoria real y criterio al sistema</li>
+  </ul></div>
+ </div>
+ <div class="note"><b>Explicación simple:</b> una base de datos común es un fichero que <b>guarda</b>. Una base vectorial <b>entiende y razona</b>. Es lo que permite que el Agente recuerde a cada cliente como una persona, reconozca una foto de producto y que las métricas no solo te muestren números, sino que te digan <b>qué hacer con ellos</b>. Esta tecnología, aplicada a tu negocio puntual, es lo que ningún software genérico del mercado ofrece.</div>
+ <p style="margin-top:18px">Sobre esa base trabaja un motor de <b class="gold">IA multimodal de última generación</b> (procesa texto, imágenes, audio y video a la vez), que es el que lee tu contenido, interpreta las métricas y redacta los informes y las respuestas con criterio humano.</p>
+</div></section>
+<section><div class="wrap">
+ <span class="kicker">Demo previa</span>
+ <h2 class="title">Probás el Agente antes que nadie</h2>
+ <p class="lead">Te entrego el <b class="hl">Agente</b> ya cargado con el contenido real de Cata Home, en un entorno de prueba <b class="hl">(Telegram)</b>. Lo probás, lo afinás a tu gusto y lo dejás con la personalidad exacta que querés.</p>
+ <p>Recién cuando estás 100% conforme, lo llevo a tu <b class="hl">WhatsApp oficial a través de la API de Meta</b> —la integración profesional y verificada de WhatsApp Business—. No es conectar un número cualquiera: es un proceso técnico de homologación con Meta que deja al Agente operando de forma oficial, estable y a escala. De la parte compleja me encargo yo; vos solo lo ves funcionando.</p>
+</div></section>
+<section><div class="wrap">
+ <span class="kicker">Acceso seguro</span>
+ <h2 class="title">Vos no manejás nada técnico. Y nunca pido tus contraseñas.</h2>
+ <p class="lead">Para las métricas, el software necesita poder leer tu Instagram profesional y tu Tienda Nube. El proceso es simple y seguro, y lo hacés en pocos pasos guiados:</p>
+ <ul class="check" style="margin-top:18px">
+  <li>Desde tus propias cuentas, le das acceso de <b>solo lectura</b> al software para que pueda analizar tus métricas.</li>
+  <li>Nunca me pasás usuarios ni contraseñas: vos mantenés el control total.</li>
+  <li>Yo me encargo de toda la configuración técnica: vos no tocás nada.</li>
+  <li>Si algún día querés cortar ese acceso, lo hacés vos en segundos.</li>
+  <li>Tus datos viven encriptados en tu propio entorno. Privados, nunca públicos.</li>
+ </ul>
+ <div class="note">Es lo mejor de los dos mundos: la <b>comodidad de que yo haga todo</b> y te entregue el informe masticado cada semana, con la <b>seguridad de no entregar credenciales</b>. Así trabajan los sistemas serios.</div>
+</div></section>
+<section><div class="wrap">
+ <span class="kicker">Puesta en marcha</span>
+ <h2 class="title">Cómo lo implemento</h2>
+ <div class="step"><div class="d">PASO 1</div><div><h3 style="color:#fff;font-size:18px">Configuración del Agente</h3><p>Plasmo el alma de Cata Home directamente en el Agente: tu tono, tus productos estrella, tus promos, tu forma de tratar al cliente y la voz que quieras usar. Lo dejás con tu personalidad.</p></div></div>
+ <div class="step"><div class="d">PASO 2</div><div><h3 style="color:#fff;font-size:18px">Prueba y ajuste (Telegram)</h3><p>Lo probás en el entorno de demo, lo afinás a tu gusto y lo aprobás antes de salir a producción.</p></div></div>
+ <div class="step"><div class="d">PASO 3</div><div><h3 style="color:#fff;font-size:18px">Conexión segura</h3><p>Le das acceso de lectura a tu Instagram y tu Tienda Nube. Yo conecto todo y monto el cerebro vectorial.</p></div></div>
+ <div class="step"><div class="d">PASO 4</div><div><h3 style="color:#fff;font-size:18px">Go live + primer informe</h3><p>Agente en WhatsApp oficial vía API de Meta, recuperación de carritos y automatización de Instagram activas, y tu primer informe semanal de métricas en la mano.</p></div></div>
+</div></section>
+<section class="wrap">
+  <div class="kicker">INVERSIÓN</div>
+  <h2 class="title">Un precio, todo el <span class="gold">ecosistema</span></h2>
+  <p class="lead">No es un servicio suelto: es una infraestructura completa de IA multiagéntica, hecha a medida de Cata Home y con tus datos. Te muestro abajo lo que cuesta armar esto por separado en el mercado argentino, para que veas por qué este combo vale lo que vale.</p>
+
+  <div class="cmp">
+    <div class="g2">
+      <div class="card">
+        <div class="lbl">Si lo armás por separado (precios reales de mercado)</div>
+        <div class="row"><span>Plataforma de bot / chatbot mensual</span><span class="old">$150.000 – $200.000</span></div>
+        <div class="div"></div>
+        <div class="row"><span>Community manager que responda y publique</span><span class="old">$400.000 – $800.000</span></div>
+        <div class="div"></div>
+        <div class="row"><span>Persona dedicada a atención (medio sueldo)</span><span class="old">~$570.000</span></div>
+        <div class="div"></div>
+        <div class="row"><span><b>Total aproximado por mes</b></span><span class="old"><b>+$1.100.000</b></span></div>
+        <p class="n">Y aún así seguirían siendo herramientas genéricas, sin memoria, sin tus datos y sin nadie atendiendo de noche.</p>
+      </div>
+      <div class="card b">
+        <div class="lbl">Lo que te propongo (todo integrado, un mismo cerebro)</div>
+        <div class="price">
+          <div class="big"><span class="gold">USD 3.000</span></div>
+          <div class="lbl">Setup inicial · desarrollo a medida del ecosistema completo (los 4 módulos)</div>
+        </div>
+        <div class="div"></div>
+        <div class="price">
+          <div class="big"><span class="gold">USD 600<span style="font-size:.45em"> /mes</span></span></div>
+          <div class="lbl">Mantenimiento, infraestructura, mejoras y evolución continua del cerebro</div>
+        </div>
+        <p class="n">Menos de medio sueldo, trabajando 24/7, sin vacaciones, sin licencias y sin olvidarse nunca una respuesta.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>Por qué este número está justificado.</b> No estás pagando un chatbot armado en una plataforma pública: estás pagando software desarrollado por mí, a medida, con tu información cargada en una base de datos vectorial, conectado a tu Tienda Nube y a tu Instagram, con un agente humanizado multimodal que ve, escucha y recuerda. En el mercado, un desarrollo a medida así arranca en USD 1.500 y trepa fácil a USD 15.000–25.000. Este combo deja todo el ecosistema funcionando por una fracción de eso, y es la base sobre la que después construimos el crecimiento.
+  </div>
+
+  <div class="metricbar">
+    <div class="data"><div class="big gold">24/7</div><div class="lbl">Atención sin pausas</div></div>
+    <div class="data"><div class="big gold">4</div><div class="lbl">Módulos, un cerebro</div></div>
+    <div class="data"><div class="big gold">0</div><div class="lbl">Carritos perdidos sin reenganche</div></div>
+    <div class="data"><div class="big gold">100%</div><div class="lbl">A medida de Cata Home</div></div>
+  </div>
+
+  <div class="foot">
+    <div class="qh">QuantumHive</div>
+    <p class="lead" style="text-align:center;margin:14px auto 0;max-width:640px">Con esto Cata Home queda un paso adelante de todo el rubro deco, y es el inicio para la expansión a futuro.</p>
+    <p class="qhtag" style="text-align:center;margin-top:18px">MULTI-AGENT BUSINESS INFRASTRUCTURE · POWERED BY ARTIFICIAL INTELLIGENCE</p>
+  </div>
+</section><div id="claude-agent-glow-border" style="position: fixed; inset: 0px; pointer-events: none; z-index: 2147483646; opacity: 1; transition: opacity 0.3s ease-in-out;"><div id="claude-agent-glow-border-inner" style="position: absolute; inset: 0px; will-change: opacity; box-shadow: rgba(217, 119, 87, 0.7) 0px 0px 15px inset, rgba(217, 119, 87, 0.5) 0px 0px 25px inset, rgba(217, 119, 87, 0.2) 0px 0px 35px inset;"></div></div><div id="claude-agent-stop-container" style="position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); justify-content: center; align-items: center; pointer-events: none; z-index: 2147483647;"><button id="claude-agent-stop-button" style="position: relative; transform: translateY(0px); padding: 12px 16px; background: rgb(250, 249, 245); color: rgb(20, 20, 19); border: 0.5px solid rgba(31, 30, 29, 0.4); border-radius: 12px; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; box-shadow: rgba(217, 119, 87, 0.24) 0px 40px 80px, rgba(217, 119, 87, 0.24) 0px 4px 14px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); opacity: 1; user-select: none; pointer-events: auto; white-space: nowrap; margin: 0px auto;">
+      <svg width="16" height="16" viewBox="0 0 256 256" fill="currentColor" style="margin-right: 12px; vertical-align: middle;">
+        <path d="M128,20A108,108,0,1,0,236,128,108.12,108.12,0,0,0,128,20Zm0,192a84,84,0,1,1,84-84A84.09,84.09,0,0,1,128,212Zm40-112v56a12,12,0,0,1-12,12H100a12,12,0,0,1-12-12V100a12,12,0,0,1,12-12h56A12,12,0,0,1,168,100Z"></path>
+      </svg>
+      <span style="vertical-align: middle;">Stop Claude</span>
+    </button></div><div id="claude-phantom-cursor" aria-hidden="true" style="position: fixed; top: 0px; left: 0px; pointer-events: none; z-index: 2147483646; transform: translate3d(368px, 354px, 0px); transition: transform 180ms cubic-bezier(0.2, 0, 0, 1); will-change: transform;"><svg id="claude-phantom-cursor-plain" width="20" height="26" viewBox="0 0 20 26" style="position: absolute; top: 0px; left: 0px; overflow: visible;"><path d="M0 0 L0 18 L4.5 14 L7.5 21.5 L11 20 L8 13 L14 13 Z" stroke="white" stroke-width="3" stroke-linejoin="round" fill="white"></path><path d="M0 0 L0 18 L4.5 14 L7.5 21.5 L11 20 L8 13 L14 13 Z" fill="#111"></path></svg><svg id="claude-phantom-cursor-styled" width="20" height="26" viewBox="0 0 20 26" style="position: absolute; top: 0px; left: 0px; overflow: visible; filter: drop-shadow(rgba(217, 119, 87, 0.9) 0px 0px 4px) drop-shadow(rgba(217, 119, 87, 0.45) 0px 0px 10px);"><path d="M0 0 L0 18 L4.5 14 L7.5 21.5 L11 20 L8 13 L14 13 Z" stroke="#D97757" stroke-width="3" stroke-linejoin="round" fill="#D97757"></path><path d="M0 0 L0 18 L4.5 14 L7.5 21.5 L11 20 L8 13 L14 13 Z" fill="#FAF9F5"></path></svg></div></body></html>

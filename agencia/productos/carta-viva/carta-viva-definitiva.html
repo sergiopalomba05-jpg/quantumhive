@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="theme-color" content="#0A0A0F">
 <title>Carta QR Viva — QuantumHive</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -739,17 +739,17 @@ td strong{color:var(--text)}
 
 </div>
 
-<!-- ===== AGENTE COLMENA · chat IA (voz + texto) ===== -->
+<!-- ===== ASISTENTE Carta QR · chat IA (voz + texto) ===== -->
 <button id="qa-launch" class="qa-launch" aria-label="Abrir asistente">
   <span class="qa-launch-ic">💬</span><span class="qa-launch-tx">¿Dudas? Preguntame</span>
 </button>
 
-<div id="qa-panel" class="qa-panel" role="dialog" aria-label="Asistente Colmena" aria-hidden="true">
+<div id="qa-panel" class="qa-panel" role="dialog" aria-label="Asistente Carta QR Viva" aria-hidden="true">
   <div class="qa-head">
     <div class="qa-head-id">
       <span class="qa-dot"></span>
       <div>
-        <div class="qa-name">Colmena · Asistente IA</div>
+        <div class="qa-name">Tu guía</div>
         <div class="qa-sub">Te explico Carta QR Viva en 1 minuto</div>
       </div>
     </div>
@@ -778,7 +778,7 @@ td strong{color:var(--text)}
 .qa-launch-ic{font-size:18px;filter:drop-shadow(0 0 6px rgba(201,168,76,.6))}
 .qa-launch:hover{filter:brightness(1.08)}
 @media(max-width:480px){.qa-launch-tx{display:none}.qa-launch{padding:13px}}
-.qa-panel{position:fixed;left:14px;bottom:14px;z-index:71;width:min(92vw,380px);height:min(74vh,560px);display:none;flex-direction:column;overflow:hidden;border-radius:18px;border:1px solid var(--edge);background:linear-gradient(170deg,#11131a,#0a0b10);box-shadow:0 24px 70px rgba(0,0,0,.7),0 0 0 1px rgba(201,168,76,.12)}
+.qa-panel{position:fixed;left:14px;top:14px;z-index:71;width:min(92vw,380px);height:min(560px,calc(100dvh - 28px));display:none;flex-direction:column;overflow:hidden;border-radius:18px;border:1px solid var(--edge);background:linear-gradient(170deg,#11131a,#0a0b10);box-shadow:0 24px 70px rgba(0,0,0,.7),0 0 0 1px rgba(201,168,76,.12)}
 .qa-panel.open{display:flex}
 .qa-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 14px;border-bottom:1px solid var(--edge-soft);background:linear-gradient(90deg,rgba(201,168,76,.12),transparent)}
 .qa-head-id{display:flex;align-items:center;gap:10px}
@@ -820,7 +820,7 @@ td strong{color:var(--text)}
   function el(cls,txt){var d=document.createElement('div');d.className='qa-msg '+cls;d.textContent=txt;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;}
   function addMe(t){el('me',t);}
   function addBot(t){el('bot',t);if(voiceOn)speak(t);}
-  function open(){panel.classList.add('open');panel.setAttribute('aria-hidden','false');launch.style.display='none';if(!greeted){greeted=true;addBot('¡Hola! 👋 Soy Colmena. Te ayudo con Carta QR Viva: preguntame lo que quieras o tocá una opción de abajo.');}input.focus();}
+  function open(){panel.classList.add('open');panel.setAttribute('aria-hidden','false');launch.style.display='none';if(!greeted){greeted=true;addBot('¡Hola! 👋 Soy tu guía para resolverte las dudas sobre Carta QR Viva: preguntame lo que quieras o tocá una opción de abajo.');}input.focus();}
   function close(){panel.classList.remove('open');panel.setAttribute('aria-hidden','true');launch.style.display='';stopSpeak();}
   launch.addEventListener('click',open);closeBtn.addEventListener('click',close);
   function send(text){

@@ -46,6 +46,10 @@ capacitor.config.json
 
 # OpenCode
 .opencode/plugin/
+.codex/
+
+# Temporales locales de subida/sincronizacion
+.tmp.driveupload/
 
 # Harness de tests (staging keys + captura de esquema vivo)
 directimport/db/.env
@@ -57,8 +61,18 @@ directimport/db/.ultimo_backup.txt
 # Temporales con secretos (tokens, passwords) — JAMÁS al repo
 directimport/db/*.tmp
 
-# graphify (output generado del grafo de conocimiento) — no al repo
-graphify-out/
+# graphify: trackear el mapa util para trabajar desde GitHub; ignorar cache/localpaths generados
+graphify-out/*
+!graphify-out/.graphify_labels.json
+!graphify-out/GRAPH_REPORT.md
+!graphify-out/cost.json
+!graphify-out/graph.html
+!graphify-out/graph.json
+!graphify-out/manifest.json
+graphify-out/.graphify_python
+graphify-out/.graphify_root
+graphify-out/20*/
+graphify-out/cache/
 
 # Python
 .venv/
