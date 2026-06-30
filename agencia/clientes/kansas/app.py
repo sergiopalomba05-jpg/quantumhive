@@ -2722,6 +2722,7 @@ const state = {
   history: [],            // [{role, text}]
   menu: null,
   guidedFlows: {},        // flujos pregrabados de los chips principales: no llaman al LLM
+  guidedDishes: {},       // chips de plato -> texto_tts pregrabado del guion
   isStreaming: false,
   currentAudio: null,
   recorder: null, recChunks: [], recStream: null,
@@ -2942,7 +2943,13 @@ async function loadMenu() {
       const g = await fetch('/guion');
       const guion = await g.json();
       state.guidedFlows = (guion && guion.flujos) || {};
-    } catch (e) { state.guidedFlows = {}; }
+      state.guidedDishes = {};
+      for (const cat of (guion.categorias || [])) {
+        for (const p of (cat.platos || [])) {
+          if (p.chip && p.texto_tts) state.guidedDishes[p.chip] = p;
+        }
+      }
+    } catch (e) { state.guidedFlows = {}; state.guidedDishes = {}; }
     renderCarta();
   } catch (e) {
     console.error('No se pudo cargar menu.json', e);
@@ -4087,6 +4094,39 @@ async function runGuidedFlow(text) {
   return true;
 }
 
+async function runGuidedDish(text) {
+  const dish = state.guidedDishes && state.guidedDishes[text];
+  const phrase = dish && (dish.texto_tts || '').trim();
+  if (!phrase) return false;
+
+  state.isStreaming = true;
+  const myToken = ++state.cancelToken;
+  stopCurrentAudio();
+  cvSpotlightClear();
+  cvSetChips(null);
+  state.history.push({ role: 'user', text });
+  addUserBubble(text);
+  cvEvento('chat', { guiado: true, pregrabado: true, plato: true });
+  setSolState('speaking');
+  startBotBubble();
+  updateBotBubble(phrase);
+  state.history.push({ role: 'model', text: phrase });
+  if (state.history.length > 8) state.history = state.history.slice(-8);
+
+  const entry = dish.dish_id && state.dishIndex ? state.dishIndex.find(d => d.dish_id === dish.dish_id) : null;
+  const item = { dishes: entry ? [{ entry, frac: 0 }] : [], cat: null };
+  const url = await synthesize(phrase);
+  if (url && myToken === state.cancelToken) await playAudioUrl(url, myToken, item);
+
+  if (myToken === state.cancelToken) {
+    cvSpotlightSettle();
+    setSolState('idle');
+    endBotBubble();
+    state.isStreaming = false;
+  }
+  return true;
+}
+
 function stopCurrentAudio() {
   if (state.currentAudio) {
     try { state.currentAudio.pause(); } catch(e) {}
@@ -4779,6 +4819,7 @@ async function quickAsk(text){
     state.isStreaming = false;
   }
   if (await runGuidedFlow(text)) return;
+  if (await runGuidedDish(text)) return;
   const cacheable = !CV_NO_CACHE.has((text || '').trim().toLowerCase());
   converse(text, true, cacheable);   // chip guiado con voz; cacheable salvo los de acción contextual
 }
@@ -6298,7 +6339,12 @@ async def _prewarm():
                     st = _normalize_for_tts(saludo)
                     k = _tts_cache_key(st)
                     try:
-                        if not await _tts_cache_get(client, k):
+                        exists = False
+                        for cache_key in _tts_cache_keys_for_read(st):
+                            if await _tts_cache_get(client, cache_key):
+                                exists = True
+                                break
+                        if not exists:
                             audio, _ = await _tts_synth_chain(client, st)
                             await _tts_cache_put(client, k, audio)
                     except Exception:

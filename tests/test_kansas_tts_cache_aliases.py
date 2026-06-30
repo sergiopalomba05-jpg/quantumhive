@@ -34,6 +34,16 @@ class KansasTtsCacheAliasesTest(unittest.TestCase):
             pregrabar_body.index("audio, _ = await _tts_synth_chain(client, st)"),
         )
 
+    def test_prewarm_checks_read_aliases_before_generating_greeting(self):
+        src = source()
+        prewarm_start = src.index("async def _prewarm")
+        prewarm_body = src[prewarm_start:]
+        self.assertIn("for cache_key in _tts_cache_keys_for_read(st):", prewarm_body)
+        self.assertLess(
+            prewarm_body.index("for cache_key in _tts_cache_keys_for_read(st):"),
+            prewarm_body.index("audio, _ = await _tts_synth_chain(client, st)"),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

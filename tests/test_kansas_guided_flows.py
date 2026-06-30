@@ -31,11 +31,20 @@ class KansasGuidedFlowsTest(unittest.TestCase):
         src = source()
         self.assertIn("state.guidedFlows", src)
         self.assertIn("async function runGuidedFlow", src)
+        self.assertIn("async function runGuidedDish", src)
         quick_start = src.index("function quickAsk(text)")
         quick_end = src.index("function toggleQuickActions", quick_start)
         quick_body = src[quick_start:quick_end]
         self.assertIn("runGuidedFlow(text)", quick_body)
+        self.assertIn("runGuidedDish(text)", quick_body)
         self.assertLess(quick_body.index("runGuidedFlow(text)"), quick_body.index("converse(text, true"))
+        self.assertLess(quick_body.index("runGuidedDish(text)"), quick_body.index("converse(text, true"))
+
+    def test_guion_dishes_are_flattened_for_direct_chip_audio(self):
+        src = source()
+        self.assertIn("state.guidedDishes", src)
+        self.assertIn("for (const cat of (guion.categorias || []))", src)
+        self.assertIn("state.guidedDishes[p.chip] = p", src)
 
 
 if __name__ == "__main__":
