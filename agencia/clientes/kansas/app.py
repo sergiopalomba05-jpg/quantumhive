@@ -2723,6 +2723,10 @@ const state = {
   menu: null,
   guidedFlows: {},        // flujos pregrabados de los chips principales: no llaman al LLM
   guidedDishes: {},       // chips de plato -> texto_tts pregrabado del guion
+  guidedDishById: {},
+  guidedCategories: {},
+  guidedMorePool: [],
+  guidedMoreOffset: 0,
   isStreaming: false,
   currentAudio: null,
   recorder: null, recChunks: [], recStream: null,
@@ -2882,7 +2886,7 @@ async function cvWelcome(){
       const c = await r.json();
       if (c && c.conocido) {                 // ya te conoce → saludo personalizado (usa su perfil)
         if (c.nombre) state.nombre = c.nombre;
-        converse('Hola', true, false);
+        cvGreetKnown(c);
         return;
       }
     } catch(e){}
@@ -2895,6 +2899,20 @@ function cvGreetGeneric(){
   const greeting = state.menu?.assistant?.greeting
     || ('¡Bienvenidos a ' + ((window.CV_CONFIG && window.CV_CONFIG.nombre) || 'nuestra mesa') + '!');
   state.history.push({ role: 'model', text: greeting });
+  setSolState('speaking');
+  playAudioForText(greeting, ++state.cancelToken)
+    .then(() => { setSolState('idle'); endBotBubble(); })
+    .catch(() => { setSolState('idle'); endBotBubble(); });
+}
+function cvGreetKnown(c){
+  const nombre = ((c && c.nombre) || state.nombre || '').trim();
+  const ultimo = Array.isArray(c && c.ultimo_pedido) && c.ultimo_pedido.length ? c.ultimo_pedido[0] : null;
+  const ultimoNombre = (ultimo && (ultimo.name || ultimo.nombre)) || '';
+  const greeting = nombre
+    ? ('Hola ' + nombre + ', qué bueno verte de nuevo. ' + (ultimoNombre ? ('La última vez pediste ' + ultimoNombre + '. ¿Querés repetir o vamos con algo distinto?') : '¿Vamos con algo rico hoy?'))
+    : 'Qué bueno verte de nuevo. ¿Vamos con algo rico hoy?';
+  state.history.push({ role: 'model', text: greeting });
+  cvSetChips(null);
   setSolState('speaking');
   playAudioForText(greeting, ++state.cancelToken)
     .then(() => { setSolState('idle'); endBotBubble(); })
@@ -2944,12 +2962,17 @@ async function loadMenu() {
       const guion = await g.json();
       state.guidedFlows = (guion && guion.flujos) || {};
       state.guidedDishes = {};
+      state.guidedDishById = {};
+      state.guidedCategories = {};
       for (const cat of (guion.categorias || [])) {
+        state.guidedCategories[cat.id] = cat;
         for (const p of (cat.platos || [])) {
+          p._catId = cat.id;
           if (p.chip && p.texto_tts) state.guidedDishes[p.chip] = p;
+          if (p.dish_id) state.guidedDishById[p.dish_id] = p;
         }
       }
-    } catch (e) { state.guidedFlows = {}; state.guidedDishes = {}; }
+    } catch (e) { state.guidedFlows = {}; state.guidedDishes = {}; state.guidedDishById = {}; state.guidedCategories = {}; }
     renderCarta();
   } catch (e) {
     console.error('No se pudo cargar menu.json', e);
@@ -3104,6 +3127,7 @@ function renderCarta() {
         addBtn: addBtnEl,
         name: it.name,
         dish_id: it.id || '',
+        sectionId: sec.id,
         price: (typeof it.price === 'number' ? it.price : null),
         price_copa: (it.price_copa != null ? it.price_copa : null),
         price_botella: (it.price_botella != null ? it.price_botella : null),
@@ -3567,12 +3591,13 @@ function cvSetChips(arr, noMore) {
   }
   const items = useDefault ? CV_DEFAULT_CHIPS : ctx;
   items.forEach((it, i) => {
-    const ask = useDefault ? it.text : it;
-    const label = useDefault ? it.label : it;
-    const icon = useDefault ? it.icon : '💬';
+    const structured = it && typeof it === 'object' && !useDefault;
+    const ask = useDefault ? it.text : (structured ? it : String(it));
+    const label = useDefault ? it.label : (structured ? (it.label || it.text || '') : String(it));
+    const icon = useDefault ? it.icon : (structured ? (it.icon || '💬') : '💬');
     const b = document.createElement('button');
     b.className = 'quick-chip';
-    b.dataset.ask = ask;
+    b.dataset.ask = label;
     b.innerHTML = '<span class="qi">' + icon + '</span>' + label;
     b.addEventListener('click', () => quickAsk(ask));
     (i < Math.ceil(items.length / 2) ? left : right).appendChild(b);
@@ -3695,6 +3720,7 @@ function cvEvento(tipo, detalle){
 
 async function converse(userText, withVoice, guided) {
   if (!userText) return;
+  if (!guided && await runGuidedIntent(userText, withVoice)) return;
   state.isStreaming = true;
 
   // cancelar cualquier audio que esté reproduciéndose
@@ -3756,27 +3782,8 @@ async function converse(userText, withVoice, guided) {
 
   // Corta el buffer en frases y encola (con sus platos). En modo texto, sin audio,
   // resalta el plato de la frase al toque.
-  let turnAnchor = null;   // plato recomendado del turno: el spotlight se queda en él y no salta a comparaciones
   function enqueueSentence(s) {
-    const sNorm = cvNorm(s);
-    const L = Math.max(1, sNorm.length);
-    const cmp = (h) => { const p = Math.round(h.frac * L); return CV_COMPARE_RE.test(sNorm.slice(Math.max(0, p - 22), p)); };
-    let dishes = cvDishesIn(s);
-    // (1) DENTRO de la frase: si hay varios platos y alguno viene tras un marcador comparativo
-    // ("como un bife de chorizo"), lo están comparando, no recomendando → lo descartamos, siempre que
-    // quede al menos un plato "ancla" sin ese marcador.
-    if (dishes.length > 1) {
-      const anchors = dishes.filter(h => !cmp(h));
-      if (anchors.length) dishes = anchors;
-    }
-    // (2) ENTRE frases: no re-saltar a un plato que DESCRIBE/COMPARA con el ya recomendado en el turno
-    // (su nombre cae en la descripción del ancla —por tokens—, o viene tras un marcador comparativo).
-    if (turnAnchor) {
-      const inAnchorDesc = (h) => turnAnchor.descTokens && turnAnchor.descTokens.length &&
-        cvTokSeqMatch(turnAnchor.descTokens, h.entry.tokens) >= 0;
-      dishes = dishes.filter(h => h.entry === turnAnchor || (!inAnchorDesc(h) && !cmp(h)));
-    }
-    if (dishes.length) turnAnchor = dishes[0].entry;   // ancla = el PRIMER plato (el recomendado, no el comparado)
+    let dishes = [];
     const cat = dishes.length ? null : cvCategoryIn(s);
     if (withVoice) {
       ttsQueue.push({ audio: synthesize(s), dishes, cat });
@@ -3875,14 +3882,10 @@ async function converse(userText, withVoice, guided) {
   const _closeIntent = /la cuenta|cerr[aá]|finaliz|nada m[aá]s|eso es todo|(mostr|ver|abr)[a-z]* (el |mi )?pedido/.test((userText || '').toLowerCase());
   const wantsCheckout = (fullReply.indexOf(CV_CUENTA) >= 0) || _closeIntent;   // el cliente quiere cerrar / la cuenta
   let chips = cvParseChips(fullReply);              // sugerencias que propone la mesera
-  // FALLBACK del lado del cliente: si el modelo NO emitió #CHIPS# pero recomendó platos, sintetizar
-  // botones para que SIEMPRE haya algo para tocar (no depender de que el modelo se acuerde).
+  // Fallback neutro: no derivar chips desde descripciones, porque eso confunde ingredientes con platos.
   if (!chips || !chips.length) {
-    const named = cvDishesIn(finalVisible);
-    if (named.length >= 2)       chips = named.slice(0, 3).map(h => h.entry.name);
-    else if (named.length === 1) chips = ['Sí, agregalo', 'Otra opción'];
     // En flujo guiado nunca volver a los 4 del inicio: seguir guiando hacia el cierre del pedido.
-    else if (guided)             chips = ['¿Algo para tomar?', 'Un postre', 'Así está bien'];
+    if (guided) chips = ['¿Algo para tomar?', 'Un postre', 'Así está bien'];
   }
 
   // si solo vino la orden sin texto hablado, dejar una confirmación mínima
@@ -4052,17 +4055,161 @@ async function playAudioForText(text, myToken) {
   if (url && myToken === state.cancelToken) await playAudioUrl(url, myToken);
 }
 
+function guidedDishEntry(dishId) {
+  return dishId && state.dishIndex ? state.dishIndex.find(d => d.dish_id === dishId) : null;
+}
+
+function guidedChipForDish(p) {
+  return { label: p.chip, action: 'add_dish', dish_id: p.dish_id };
+}
+
+function guidedChipForText(label) {
+  const dish = state.guidedDishes && state.guidedDishes[label];
+  if (dish) return guidedChipForDish(dish);
+  if (cvNorm(label) === 'mas opciones') return { label: 'Más opciones', action: 'more_options' };
+  return label;
+}
+
+function setGuidedMoreContext(flow) {
+  const dishIds = (flow.items || []).map(it => it.dish_id).filter(Boolean);
+  const first = dishIds.length ? state.guidedDishById[dishIds[0]] : null;
+  const cat = first && first._catId ? state.guidedCategories[first._catId] : null;
+  state.guidedMorePool = cat && Array.isArray(cat.platos) ? cat.platos.filter(p => !dishIds.includes(p.dish_id)) : [];
+  state.guidedMoreOffset = 0;
+}
+
+function chipsForGuidedDishes(dishes) {
+  const chips = (dishes || []).map(guidedChipForDish);
+  if (state.guidedMorePool && state.guidedMoreOffset < state.guidedMorePool.length) {
+    chips.push({ label: 'Más opciones', action: 'more_options' });
+  }
+  return chips;
+}
+
+async function playGuidedDishBatch(userText, dishes) {
+  if (!dishes || !dishes.length) return false;
+  state.isStreaming = true;
+  const myToken = ++state.cancelToken;
+  stopCurrentAudio();
+  cvSpotlightClear();
+  cvSetChips(null);
+  state.history.push({ role: 'user', text: userText });
+  addUserBubble(userText);
+  cvEvento('chat', { guiado: true, pregrabado: true, batch: true });
+  setSolState('speaking');
+  startBotBubble();
+
+  const visible = dishes.map(d => d.texto_tts || '').filter(Boolean).join(' ');
+  updateBotBubble(visible);
+  if (visible) {
+    state.history.push({ role: 'model', text: visible });
+    if (state.history.length > 8) state.history = state.history.slice(-8);
+  }
+
+  for (const d of dishes) {
+    if (myToken !== state.cancelToken) break;
+    const phrase = (d.texto_tts || '').trim();
+    if (!phrase) continue;
+    const entry = guidedDishEntry(d.dish_id);
+    const item = { dishes: entry ? [{ entry, frac: 0 }] : [], cat: null };
+    const url = await synthesize(phrase);
+    if (url && myToken === state.cancelToken) await playAudioUrl(url, myToken, item);
+  }
+
+  if (myToken === state.cancelToken) {
+    cvSetChips(chipsForGuidedDishes(dishes), true);
+    cvSpotlightSettle();
+    setSolState('idle');
+    endBotBubble();
+    state.isStreaming = false;
+  }
+  return true;
+}
+
+async function runGuidedAction(text) {
+  if (!text || typeof text !== 'object') return false;
+  if (text.action === 'add_dish') return addGuidedDishToCart(text.dish_id, text.variant);
+  if (text.action === 'more_options') return runGuidedMoreOptions(text.label || 'Más opciones');
+  if (text.action === 'flow') return runGuidedFlow(text.flow || text.text || text.label);
+  return false;
+}
+
+async function runGuidedMoreOptions(text) {
+  if (cvNorm(typeof text === 'string' ? text : (text && text.label)) !== 'mas opciones') return false;
+  const pool = state.guidedMorePool || [];
+  if (!pool.length || state.guidedMoreOffset >= pool.length) return false;
+  const next = pool.slice(state.guidedMoreOffset, state.guidedMoreOffset + 3);
+  state.guidedMoreOffset += next.length;
+  return playGuidedDishBatch('Más opciones', next);
+}
+
+async function runGuidedCategory(catId, label) {
+  const cat = state.guidedCategories && state.guidedCategories[catId];
+  if (!cat || !Array.isArray(cat.platos) || !cat.platos.length) return false;
+  const first = cat.platos.slice(0, 3);
+  state.guidedMorePool = cat.platos.slice(3);
+  state.guidedMoreOffset = 0;
+  return playGuidedDishBatch(label || cat.nombre || 'Opciones', first);
+}
+
+function addGuidedDishToCart(dishId, variant) {
+  const entry = guidedDishEntry(dishId);
+  if (!entry) return false;
+  cvSpotlightClear();
+  cvSpotlight(entry);
+  cvSpotlightSettle();
+
+  if ((entry.price_copa != null || entry.price_botella != null) && !variant) {
+    const chips = [];
+    if (entry.price_copa != null) chips.push({ label: 'Copa', action: 'add_dish', dish_id: dishId, variant: 'copa' });
+    if (entry.price_botella != null) chips.push({ label: 'Botella', action: 'add_dish', dish_id: dishId, variant: 'botella' });
+    cvSetChips(chips, true);
+    setSolState('speaking');
+    playAudioForText('¿Lo querés en copa o botella?', ++state.cancelToken)
+      .then(() => setSolState('idle')).catch(() => setSolState('idle'));
+    return true;
+  }
+
+  let item = { id: entry.id, name: entry.name, price: entry.price };
+  if (variant === 'copa' && entry.price_copa != null) item = { id: entry.id + '|copa', name: entry.name + ' (copa)', price: entry.price_copa };
+  if (variant === 'botella' && entry.price_botella != null) item = { id: entry.id + '|botella', name: entry.name + ' (botella)', price: entry.price_botella };
+  if (item.price == null) return false;
+  addToCart(item);
+  return true;
+}
+
+async function runGuidedIntent(text, withVoice) {
+  const q = cvNorm(text);
+  if (/postre|dulce/.test(q)) return runGuidedFlow('¿Qué postre me recomendás?');
+  if (/sin alcohol|mocktail/.test(q)) return runGuidedCategory('mocktails', text);
+  if (/con alcohol|tragos|cocktail/.test(q)) return runGuidedCategory('cocktails', text);
+  if (/vino|champagne|espumante|alcohol|bebida|tomar/.test(q)) return runGuidedFlow('Recomendame un vino');
+  if (/picar|entrada|compartir/.test(q)) return runGuidedFlow('¿Qué tenés para picar?');
+  if (/especial|recomend|principal|carne|bife|costilla/.test(q)) return runGuidedFlow('¿Cuál es la especialidad de la casa?');
+  const cat = Object.values(state.guidedCategories || {}).find(c => q && cvNorm(c.nombre || '').split(' ').some(w => w.length > 3 && (q.includes(w) || w.includes(q))));
+  if (cat && Array.isArray(cat.platos) && cat.platos.length) {
+    state.guidedMorePool = cat.platos;
+    state.guidedMoreOffset = Math.min(3, cat.platos.length);
+    return playGuidedDishBatch(text, cat.platos.slice(0, 3));
+  }
+  return false;
+}
+
 async function runGuidedFlow(text) {
-  const flow = state.guidedFlows && state.guidedFlows[text];
+  if (text === 'Sin alcohol') return runGuidedCategory('mocktails', text);
+  if (text === 'Con alcohol') return runGuidedCategory('cocktails', text);
+  const flowKey = ({ '¿Algo para tomar?': 'Recomendame un vino', 'Un postre': '¿Qué postre me recomendás?' })[text] || text;
+  const flow = state.guidedFlows && state.guidedFlows[flowKey];
   if (!flow || !Array.isArray(flow.items) || !flow.items.length) return false;
+  setGuidedMoreContext(flow);
 
   state.isStreaming = true;
   const myToken = ++state.cancelToken;
   stopCurrentAudio();
   cvSpotlightClear();
   cvSetChips(null);
-  state.history.push({ role: 'user', text });
-  addUserBubble(text);
+  state.history.push({ role: 'user', text: flowKey });
+  addUserBubble(flowKey);
   cvEvento('chat', { guiado: true, pregrabado: true });
   setSolState('speaking');
   startBotBubble();
@@ -4085,7 +4232,7 @@ async function runGuidedFlow(text) {
   }
 
   if (myToken === state.cancelToken) {
-    cvSetChips(flow.chips || null);
+    cvSetChips((flow.chips || []).map(guidedChipForText), true);
     cvSpotlightSettle();
     setSolState('idle');
     endBotBubble();
@@ -4096,35 +4243,8 @@ async function runGuidedFlow(text) {
 
 async function runGuidedDish(text) {
   const dish = state.guidedDishes && state.guidedDishes[text];
-  const phrase = dish && (dish.texto_tts || '').trim();
-  if (!phrase) return false;
-
-  state.isStreaming = true;
-  const myToken = ++state.cancelToken;
-  stopCurrentAudio();
-  cvSpotlightClear();
-  cvSetChips(null);
-  state.history.push({ role: 'user', text });
-  addUserBubble(text);
-  cvEvento('chat', { guiado: true, pregrabado: true, plato: true });
-  setSolState('speaking');
-  startBotBubble();
-  updateBotBubble(phrase);
-  state.history.push({ role: 'model', text: phrase });
-  if (state.history.length > 8) state.history = state.history.slice(-8);
-
-  const entry = dish.dish_id && state.dishIndex ? state.dishIndex.find(d => d.dish_id === dish.dish_id) : null;
-  const item = { dishes: entry ? [{ entry, frac: 0 }] : [], cat: null };
-  const url = await synthesize(phrase);
-  if (url && myToken === state.cancelToken) await playAudioUrl(url, myToken, item);
-
-  if (myToken === state.cancelToken) {
-    cvSpotlightSettle();
-    setSolState('idle');
-    endBotBubble();
-    state.isStreaming = false;
-  }
-  return true;
+  if (!dish) return false;
+  return addGuidedDishToCart(dish.dish_id);
 }
 
 function stopCurrentAudio() {
@@ -4818,10 +4938,12 @@ async function quickAsk(text){
     stopSpeaking();
     state.isStreaming = false;
   }
+  if (await runGuidedAction(text)) return;
   if (await runGuidedFlow(text)) return;
   if (await runGuidedDish(text)) return;
-  const cacheable = !CV_NO_CACHE.has((text || '').trim().toLowerCase());
-  converse(text, true, cacheable);   // chip guiado con voz; cacheable salvo los de acción contextual
+  const fallbackText = typeof text === 'string' ? text : ((text && (text.text || text.label)) || '');
+  const cacheable = !CV_NO_CACHE.has((fallbackText || '').trim().toLowerCase());
+  converse(fallbackText, true, cacheable);   // chip guiado con voz; cacheable salvo los de acción contextual
 }
 function toggleQuickActions(){
   const qa = $('#quickActions'); if (!qa) return;
@@ -5603,7 +5725,7 @@ async def _post_with_retry(client: httpx.AsyncClient, url: str, body: dict, head
 # Caché de respuestas del flujo guiado (chips) en Supabase. Tolerante: si falla o no está
 # configurado, se genera con el LLM igual (nunca rompe). Solo cachea mensajes "guided".
 def _resp_cache_on() -> bool:
-    return bool(RESPUESTAS_CACHE and SUPABASE_URL and SUPABASE_KEY)
+    return False
 
 
 def _resp_cache_key(message: str) -> str:
