@@ -4421,7 +4421,7 @@ async function onRecorderStop() {
     const data = await r.json();
     const text = (data.text || '').trim();
     if (!text) {
-      showToast(data.busy ? 'Estoy muy ocupada, esperá un segundo y volvé a intentarlo' : 'No te escuché bien, ¿lo repetís?');
+      showToast(data.busy ? 'No pude transcribir ese audio, probá otra vez' : 'No te escuché bien, ¿lo repetís?');
       setSolState('idle');
       endBotBubble();
       return;
@@ -5625,6 +5625,16 @@ def _next_gemini_key() -> str:
     return k
 
 
+def _gemini_stt_key_order() -> List[str]:
+    """Orden rotativo para STT: si una key está en ráfaga/cuota, probar las demás antes de rendirse."""
+    global _gemini_stt_rr
+    if not GEMINI_KEYS:
+        return []
+    start = _gemini_stt_rr % len(GEMINI_KEYS)
+    _gemini_stt_rr += 1
+    return GEMINI_KEYS[start:] + GEMINI_KEYS[:start]
+
+
 class _BrainUnavailable(Exception):
     """El cerebro no pudo arrancar (429/503/4xx/error) → probar el siguiente de la cadena."""
     def __init__(self, status: int):
@@ -6513,20 +6523,29 @@ async def stt(req: STTRequest):
                              "thinkingConfig": {"thinkingBudget": 0}}
     }
 
+    last_status = 0
+    last_text = ""
     async with httpx.AsyncClient(timeout=30.0) as client:
-        r = await _post_with_retry(client, f"{GEMINI_GENERATE}?key={_next_gemini_key()}", body,
-                                   {"Content-Type": "application/json"})
-        if r.status_code == 429:
-            # cupo/ráfaga: no rompemos; el front lo trata como "no te entendí" y reintenta
+        for key in _gemini_stt_key_order():
+            r = await _post_with_retry(client, f"{GEMINI_GENERATE}?key={key}", body,
+                                       {"Content-Type": "application/json"})
+            last_status = r.status_code
+            last_text = r.text[:500]
+            if r.status_code in (429, 503):
+                continue
+            if r.status_code != 200:
+                raise HTTPException(r.status_code, f"Gemini STT error: {last_text}")
+            data = r.json()
+            try:
+                text = data["candidates"][0]["content"]["parts"][0]["text"].strip()
+            except (KeyError, IndexError):
+                text = ""
+            return {"text": text}
+        if last_status == 429:
             return {"text": "", "busy": True}
-        if r.status_code != 200:
-            raise HTTPException(r.status_code, f"Gemini STT error: {r.text[:500]}")
-        data = r.json()
-        try:
-            text = data["candidates"][0]["content"]["parts"][0]["text"].strip()
-        except (KeyError, IndexError):
-            text = ""
-        return {"text": text}
+        if last_status == 503:
+            return {"text": "", "busy": True}
+        raise HTTPException(last_status or 503, f"Gemini STT error: {last_text}")
 
 
 # ----------------------------------------------------------------------------
