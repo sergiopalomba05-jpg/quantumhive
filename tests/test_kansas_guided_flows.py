@@ -93,6 +93,20 @@ class KansasGuidedFlowsTest(unittest.TestCase):
         self.assertNotIn("cvDishesIn(finalVisible)", conv_body)
         self.assertNotIn("named.slice(0, 3).map", conv_body)
 
+    def test_con_alcohol_opens_beverage_type_selector(self):
+        src = source()
+        self.assertIn("async function runGuidedAlcoholOptions", src)
+        alcohol_start = src.index("async function runGuidedAlcoholOptions")
+        alcohol_end = src.index("function addGuidedDishToCart", alcohol_start)
+        alcohol_body = src[alcohol_start:alcohol_end]
+        for label in ("Vinos", "Cervezas", "Tragos"):
+            self.assertIn(label, alcohol_body)
+        flow_start = src.index("async function runGuidedFlow")
+        flow_end = src.index("async function runGuidedDish", flow_start)
+        flow_body = src[flow_start:flow_end]
+        self.assertIn("if (text === 'Con alcohol') return runGuidedAlcoholOptions(text);", flow_body)
+        self.assertNotIn("if (text === 'Con alcohol') return runGuidedCategory('cocktails', text);", flow_body)
+
 
 if __name__ == "__main__":
     unittest.main()

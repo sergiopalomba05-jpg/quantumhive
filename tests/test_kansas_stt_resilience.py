@@ -10,17 +10,24 @@ def source() -> str:
 
 
 class KansasSttResilienceTest(unittest.TestCase):
-    def test_stt_rotates_all_gemini_keys_before_busy(self):
+    def test_stt_uses_deepinfra_first_with_gemini_as_fallback(self):
         src = source()
-        self.assertIn("def _gemini_stt_key_order() -> List[str]:", src)
+        self.assertIn("STT_CHAIN", src)
+        self.assertIn("DEEPINFRA_STT_MODEL", src)
+        self.assertIn("async def _deepinfra_stt", src)
+        self.assertIn("async def _gemini_stt", src)
         stt_start = src.index("async def stt")
         stt_end = src.index("@app.post(\"/feedback\")", stt_start)
         stt_body = src[stt_start:stt_end]
-        self.assertIn("for key in _gemini_stt_key_order():", stt_body)
-        self.assertIn("last_status = r.status_code", stt_body)
-        self.assertIn("if last_status == 429:", stt_body)
+        self.assertIn("for provider in STT_CHAIN_PARSED:", stt_body)
+        self.assertIn("if provider == \"deepinfra\":", stt_body)
+        self.assertIn("elif provider == \"gemini\":", stt_body)
         self.assertLess(
-            stt_body.index("for key in _gemini_stt_key_order():"),
+            stt_body.index("if provider == \"deepinfra\":"),
+            stt_body.index("elif provider == \"gemini\":"),
+        )
+        self.assertLess(
+            stt_body.index("for provider in STT_CHAIN_PARSED:"),
             stt_body.index("return {\"text\": \"\", \"busy\": True}"),
         )
 

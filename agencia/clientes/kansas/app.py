@@ -77,6 +77,9 @@ HF_URL             = os.environ.get("HF_URL", "https://router.huggingface.co/v1/
 DEEPINFRA_API_KEY  = os.environ.get("DEEPINFRA_API_KEY", "").strip()
 DEEPINFRA_MODEL    = os.environ.get("DEEPINFRA_MODEL", "Qwen/Qwen2.5-72B-Instruct").strip()
 DEEPINFRA_URL      = os.environ.get("DEEPINFRA_URL", "https://api.deepinfra.com/v1/openai/chat/completions").strip()
+STT_CHAIN          = os.environ.get("STT_CHAIN", "deepinfra,gemini").strip()
+DEEPINFRA_STT_MODEL = os.environ.get("DEEPINFRA_STT_MODEL", "openai/whisper-large-v3").strip()
+DEEPINFRA_STT_URL   = os.environ.get("DEEPINFRA_STT_URL", f"https://api.deepinfra.com/v1/inference/{DEEPINFRA_STT_MODEL}").strip()
 # VOZ en DeepInfra (Kokoro-82M): ~150ms y $0.62/1M caracteres (≈ gratis) → reemplaza a MiniMax (misma
 # infra que el cerebro, un solo proveedor). Reusa DEEPINFRA_API_KEY. Probado: el que clona (Chatterbox)
 # es 7-10s = inusable; Kokoro vuela. Voz española neutra (la clonación argentina = futuro, F5 self-host).
@@ -4152,6 +4155,33 @@ async function runGuidedCategory(catId, label) {
   return playGuidedDishBatch(label || cat.nombre || 'Opciones', first);
 }
 
+async function runGuidedAlcoholOptions(text) {
+  const reply = 'Dale, ¿qué tipo de bebida con alcohol preferís?';
+  state.isStreaming = true;
+  const myToken = ++state.cancelToken;
+  stopCurrentAudio();
+  cvSpotlightClear();
+  cvSetChips(null);
+  state.history.push({ role: 'user', text: text || 'Con alcohol' });
+  addUserBubble(text || 'Con alcohol');
+  cvEvento('chat', { guiado: true, pregrabado: true, selector: 'alcohol' });
+  setSolState('speaking');
+  startBotBubble();
+  updateBotBubble(reply);
+  state.history.push({ role: 'model', text: reply });
+  if (state.history.length > 8) state.history = state.history.slice(-8);
+  const url = await synthesize(reply);
+  if (url && myToken === state.cancelToken) await playAudioUrl(url, myToken);
+  if (myToken === state.cancelToken) {
+    cvSetChips(['Vinos', 'Cervezas', 'Tragos'], true);
+    cvSpotlightSettle();
+    setSolState('idle');
+    endBotBubble();
+    state.isStreaming = false;
+  }
+  return true;
+}
+
 function addGuidedDishToCart(dishId, variant) {
   const entry = guidedDishEntry(dishId);
   if (!entry) return false;
@@ -4182,7 +4212,8 @@ async function runGuidedIntent(text, withVoice) {
   const q = cvNorm(text);
   if (/postre|dulce/.test(q)) return runGuidedFlow('¿Qué postre me recomendás?');
   if (/sin alcohol|mocktail/.test(q)) return runGuidedCategory('mocktails', text);
-  if (/con alcohol|tragos|cocktail/.test(q)) return runGuidedCategory('cocktails', text);
+  if (/con alcohol/.test(q)) return runGuidedAlcoholOptions(text);
+  if (/tragos|cocktail/.test(q)) return runGuidedCategory('cocktails', text);
   if (/vino|champagne|espumante|alcohol|bebida|tomar/.test(q)) return runGuidedFlow('Recomendame un vino');
   if (/picar|entrada|compartir/.test(q)) return runGuidedFlow('¿Qué tenés para picar?');
   if (/especial|recomend|principal|carne|bife|costilla/.test(q)) return runGuidedFlow('¿Cuál es la especialidad de la casa?');
@@ -4197,7 +4228,10 @@ async function runGuidedIntent(text, withVoice) {
 
 async function runGuidedFlow(text) {
   if (text === 'Sin alcohol') return runGuidedCategory('mocktails', text);
-  if (text === 'Con alcohol') return runGuidedCategory('cocktails', text);
+  if (text === 'Con alcohol') return runGuidedAlcoholOptions(text);
+  if (text === 'Vinos') return runGuidedFlow('Recomendame un vino');
+  if (text === 'Cervezas') return runGuidedCategory('cervezas', text);
+  if (text === 'Tragos') return runGuidedCategory('cocktails', text);
   const flowKey = ({ '¿Algo para tomar?': 'Recomendame un vino', 'Un postre': '¿Qué postre me recomendás?' })[text] || text;
   const flow = state.guidedFlows && state.guidedFlows[flowKey];
   if (!flow || !Array.isArray(flow.items) || !flow.items.length) return false;
@@ -5518,6 +5552,9 @@ async def health():
         "brain_chain": [f"{p}:{m}" for p, m, _k in BRAIN_CHAIN_PARSED],  # sin keys (repo público)
         "brain_primary": ("deepinfra:" + DEEPINFRA_MODEL) if DEEPINFRA_API_KEY else ((BRAIN_CHAIN_PARSED[0][0] + ":" + BRAIN_CHAIN_PARSED[0][1]) if BRAIN_CHAIN_PARSED else None),
         "deepinfra_key_set": bool(DEEPINFRA_API_KEY),
+        "stt_chain": STT_CHAIN_PARSED,
+        "stt_primary": STT_CHAIN_PARSED[0] if STT_CHAIN_PARSED else None,
+        "deepinfra_stt_model": DEEPINFRA_STT_MODEL,
         "groq_key_set": bool(GROQ_API_KEY),
         "openrouter_key_set": bool(OPENROUTER_API_KEY),
         "hf_key_set": bool(HF_TOKEN),
@@ -5585,6 +5622,19 @@ def _parse_brain_chain() -> List[tuple]:
 
 
 BRAIN_CHAIN_PARSED = _parse_brain_chain()
+
+
+def _parse_stt_chain() -> List[str]:
+    has = {"deepinfra": bool(DEEPINFRA_API_KEY), "gemini": bool(GEMINI_KEYS)}
+    order: List[str] = []
+    for entry in (STT_CHAIN or "deepinfra,gemini").split(","):
+        prov = entry.strip().lower().split(":")[0].strip()
+        if prov in has and prov not in order:
+            order.append(prov)
+    return [p for p in order if has.get(p)]
+
+
+STT_CHAIN_PARSED = _parse_stt_chain()
 
 # Round-robin: puntero que avanza un carril por request. Reparte la carga entre las keys/proveedores
 # ANTES de toparse con el límite por minuto (en vez de quemar uno hasta el 429 y recién ahí rotar).
@@ -5729,6 +5779,38 @@ async def _post_with_retry(client: httpx.AsyncClient, url: str, body: dict, head
         await asyncio.sleep(delay)
         delay *= 2
     return r
+
+
+async def _deepinfra_stt(client: httpx.AsyncClient, audio_bytes: bytes, mime_type: str) -> str:
+    r = await client.post(
+        DEEPINFRA_STT_URL,
+        headers={"Authorization": f"Bearer {DEEPINFRA_API_KEY}"},
+        files={"audio": ("audio.webm", audio_bytes, mime_type or "audio/webm")},
+    )
+    if r.status_code != 200:
+        raise HTTPException(r.status_code, f"DeepInfra STT error: {r.text[:500]}")
+    data = r.json()
+    return ((data.get("text") or data.get("transcription") or "").strip())
+
+
+async def _gemini_stt(client: httpx.AsyncClient, body: dict) -> str:
+    last_status = 0
+    last_text = ""
+    for key in _gemini_stt_key_order():
+        r = await _post_with_retry(client, f"{GEMINI_GENERATE}?key={key}", body,
+                                   {"Content-Type": "application/json"})
+        last_status = r.status_code
+        last_text = r.text[:500]
+        if r.status_code in (429, 503):
+            continue
+        if r.status_code != 200:
+            raise HTTPException(r.status_code, f"Gemini STT error: {last_text}")
+        data = r.json()
+        try:
+            return data["candidates"][0]["content"]["parts"][0]["text"].strip()
+        except (KeyError, IndexError):
+            return ""
+    raise HTTPException(last_status or 503, f"Gemini STT error: {last_text}")
 
 
 # ----------------------------------------------------------------------------
@@ -6504,11 +6586,16 @@ async def _prewarm():
 # ----------------------------------------------------------------------------
 @app.post("/stt")
 async def stt(req: STTRequest):
-    """Transcribe audio con Gemini. Más confiable que Web Speech API en iOS."""
-    if not GEMINI_KEYS:
-        raise HTTPException(500, "No hay ninguna key de Gemini configurada en el Space (GEMINI_API_KEY / GEMINI_KEY_n)")
+    """Transcribe audio con la cadena STT: DeepInfra Whisper primero, Gemini como fallback."""
+    if not STT_CHAIN_PARSED:
+        raise HTTPException(500, "No hay proveedor STT configurado (DEEPINFRA_API_KEY / GEMINI_API_KEY)")
     if not req.audio_base64:
         raise HTTPException(400, "Audio vacío")
+
+    try:
+        audio_bytes = base64.b64decode(req.audio_base64.split(",", 1)[-1])
+    except Exception:
+        raise HTTPException(400, "Audio inválido")
 
     body = {
         "contents": [{
@@ -6526,26 +6613,26 @@ async def stt(req: STTRequest):
     last_status = 0
     last_text = ""
     async with httpx.AsyncClient(timeout=30.0) as client:
-        for key in _gemini_stt_key_order():
-            r = await _post_with_retry(client, f"{GEMINI_GENERATE}?key={key}", body,
-                                       {"Content-Type": "application/json"})
-            last_status = r.status_code
-            last_text = r.text[:500]
-            if r.status_code in (429, 503):
-                continue
-            if r.status_code != 200:
-                raise HTTPException(r.status_code, f"Gemini STT error: {last_text}")
-            data = r.json()
+        for provider in STT_CHAIN_PARSED:
             try:
-                text = data["candidates"][0]["content"]["parts"][0]["text"].strip()
-            except (KeyError, IndexError):
-                text = ""
-            return {"text": text}
-        if last_status == 429:
+                if provider == "deepinfra":
+                    text = await _deepinfra_stt(client, audio_bytes, req.mime_type)
+                elif provider == "gemini":
+                    text = await _gemini_stt(client, body)
+                else:
+                    continue
+                return {"text": text}
+            except HTTPException as e:
+                last_status = e.status_code
+                last_text = str(e.detail)[:500]
+                continue
+            except Exception as e:
+                last_status = 503
+                last_text = str(e)[:500]
+                continue
+        if last_status in (429, 500, 502, 503, 504):
             return {"text": "", "busy": True}
-        if last_status == 503:
-            return {"text": "", "busy": True}
-        raise HTTPException(last_status or 503, f"Gemini STT error: {last_text}")
+        raise HTTPException(last_status or 503, f"STT error: {last_text}")
 
 
 # ----------------------------------------------------------------------------
