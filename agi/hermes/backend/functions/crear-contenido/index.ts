@@ -1,10 +1,12 @@
 // Edge Function "crear-contenido" — genera un reel branded de una herramienta.
 // Combina: la herramienta (detalle) + la receta del reel original (guion/visual/formato) + tu marca
 // → devuelve guion + prompt + visual listos para grabar TU versión (no idéntica al original).
-// Secrets: GEMINI_API_KEY (la cargás vos); SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (Supabase los inyecta).
+// Secrets: VERTEX_PROJECT_ID, VERTEX_LOCATION (opcional); SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (Supabase los inyecta).
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { VertexAI } from "npm:@google-cloud/vertexai@1.9.3";
 
-const GEMINI_KEY = Deno.env.get("GEMINI_API_KEY") ?? "";
+const PROJECT_ID = Deno.env.get("VERTEX_PROJECT_ID") ?? "";
+const LOCATION = Deno.env.get("VERTEX_LOCATION") ?? "us-central1";
 const MODEL = Deno.env.get("GEMINI_CONTENIDO_MODEL") ?? "gemini-2.5-flash";
 const SB_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SB_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
@@ -18,7 +20,7 @@ const cors = {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   try {
-    if (!GEMINI_KEY) throw new Error("Falta el secret GEMINI_API_KEY en la Edge Function.");
+    if (!PROJECT_ID) throw new Error("Falta el secret VERTEX_PROJECT_ID en la Edge Function.");
     const { herramienta_id } = await req.json();
     if (!herramienta_id) throw new Error("Falta herramienta_id.");
     const sb = createClient(SB_URL, SB_KEY);
@@ -46,16 +48,16 @@ Adaptalo al avatar/nombre/forma de transmitir de Sergio. Devolvé en markdown, c
 ## CTA (hacia la academia)
 ## Hashtags`;
 
-    const body = {
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
+    const vertex = new VertexAI({ project: PROJECT_ID, location: LOCATION });
+    const genModel = vertex.getGenerativeModel({
+      model: MODEL,
       generationConfig: { temperature: 0.8 },
-    };
-    const r = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_KEY}`,
-      { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) },
-    );
-    const j = await r.json();
-    const contenido = j?.candidates?.[0]?.content?.parts?.[0]?.text ?? "No pude generar el contenido.";
+    });
+    const result = await genModel.generateContent({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+    });
+    const contenido = result?.response?.candidates?.[0]?.content?.parts?.[0]?.text
+      ?? "No pude generar el contenido.";
     return new Response(JSON.stringify({ contenido, herramienta: h.nombre }), {
       headers: { ...cors, "Content-Type": "application/json" },
     });

@@ -1,14 +1,17 @@
 // Edge Function "asistente" — el cerebro de QuantumHive en la web (mismo que Hermes).
-// La PWA le habla; responde con Gemini cargando la identidad de QuantumHive + el catálogo
+// La PWA le habla; responde con Vertex AI (Gemini) cargando la identidad de QuantumHive + el catálogo
 // entero como contexto. Las keys viven como secrets del lado servidor (no se exponen).
 //
 // Secrets necesarios (Supabase → Edge Functions → Secrets):
-//   GEMINI_API_KEY            (la cargás vos)
+//   VERTEX_PROJECT_ID         (la cargás vos)
+//   VERTEX_LOCATION           (la cargás vos, ej: us-central1)
 //   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY  (los inyecta Supabase solo)
 // Modelo configurable: GEMINI_CHAT_MODEL (default gemini-2.5-flash).
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { VertexAI } from "npm:@google-cloud/vertexai@1.9.3";
 
-const GEMINI_KEY = Deno.env.get("GEMINI_API_KEY") ?? "";
+const PROJECT_ID = Deno.env.get("VERTEX_PROJECT_ID") ?? "";
+const LOCATION = Deno.env.get("VERTEX_LOCATION") ?? "us-central1";
 const MODEL = Deno.env.get("GEMINI_CHAT_MODEL") ?? "gemini-2.5-flash";
 const SB_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SB_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
@@ -57,27 +60,24 @@ async function buildCatalogContext(sb: ReturnType<typeof createClient>) {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   try {
-    if (!GEMINI_KEY) throw new Error("Falta el secret GEMINI_API_KEY en la Edge Function.");
+    if (!PROJECT_ID) throw new Error("Falta el secret VERTEX_PROJECT_ID en la Edge Function.");
     const { messages } = await req.json();
     const sb = createClient(SB_URL, SB_KEY);
     const catalog = await buildCatalogContext(sb);
     const system = `${SOUL}\n\n=== CATÁLOGO DE QUANTUMHIVE ===${catalog}`;
-    const contents = (messages ?? []).map((m: any) => ({
+    const vertex = new VertexAI({ project: PROJECT_ID, location: LOCATION });
+    const genModel = vertex.getGenerativeModel({
+      model: MODEL,
+      systemInstruction: { parts: [{ text: system }] },
+      generationConfig: { temperature: 0.6 },
+      tools: [{ googleSearchRetrieval: {} }],
+    });
+    const parts = (messages ?? []).map((m: any) => ({
       role: m.role === "assistant" ? "model" : "user",
       parts: [{ text: String(m.content ?? "") }],
     }));
-    const body = {
-      systemInstruction: { parts: [{ text: system }] },
-      contents,
-      tools: [{ google_search: {} }],
-      generationConfig: { temperature: 0.6 },
-    };
-    const r = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_KEY}`,
-      { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) },
-    );
-    const j = await r.json();
-    const reply = j?.candidates?.[0]?.content?.parts?.[0]?.text
+    const result = await genModel.generateContent({ contents: parts });
+    const reply = result?.response?.candidates?.[0]?.content?.parts?.[0]?.text
       ?? "No pude generar respuesta. Probá de nuevo.";
     return new Response(JSON.stringify({ reply }), {
       headers: { ...cors, "Content-Type": "application/json" },
