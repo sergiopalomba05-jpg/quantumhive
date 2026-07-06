@@ -1569,10 +1569,14 @@ async def websocket_live_endpoint(websocket: WebSocket):
     async def run_live_loop(session):
         async def receive_from_client():
             try:
+                bytes_count = 0
                 while True:
                     data = await websocket.receive()
                     if "bytes" in data:
                         # Recibimos audio PCM (16kHz) desde el frontend
+                        bytes_count += len(data["bytes"])
+                        if bytes_count % 32000 == 0 or bytes_count < 10000:
+                            print(f"[WebSocket] Recibidos {len(data['bytes'])} bytes de audio (total: {bytes_count})")
                         await session.send_realtime_input(
                             audio=types.Blob(
                                 data=data["bytes"], 
@@ -1580,9 +1584,11 @@ async def websocket_live_endpoint(websocket: WebSocket):
                             )
                         )
                     elif "text" in data:
+                        print(f"[WebSocket] Recibido texto de cliente: {data['text']}")
                         try:
                             msg = json.loads(data["text"])
                             if "client_content" in msg:
+                                print(f"[WebSocket] Enviando client_content a Gemini: {msg['client_content']}")
                                 # Enviar texto oculto (prompt) al modelo en tiempo real
                                 await session.send_client_content(
                                     turns=[types.Content(parts=[types.Part.from_text(
@@ -1608,9 +1614,9 @@ async def websocket_live_endpoint(websocket: WebSocket):
                                     # Audio PCM (24kHz nativo de Gemini) -> Enviar al frontend
                                     await websocket.send_bytes(part.inline_data.data)
                                 elif part.text is not None:
-                                    # Si responde texto / subtítulo (opcional)
-                                    pass
+                                    print(f"[WebSocket] Gemini texto: {part.text}")
                     if response.tool_call is not None:
+                        print(f"[WebSocket] Gemini tool call recibida...")
                         # Gemini quiere ejecutar una herramienta
                         for function_call in response.tool_call.function_calls:
                             await websocket.send_text(json.dumps({
@@ -1631,6 +1637,10 @@ async def websocket_live_endpoint(websocket: WebSocket):
                 pass
             except Exception as e:
                 print("[WebSocket] Error Gemini:", e)
+
+        # Handshake: notify client that session is ready
+        print("[WebSocket] Enviando mensaje ready a cliente...")
+        await websocket.send_text(json.dumps({"type": "ready"}))
 
         client_task = asyncio.create_task(receive_from_client())
         gemini_task = asyncio.create_task(receive_from_gemini())
