@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,200..900,0..100,0..1&family=Manrope:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Fraunces", Georgia, serif;
+  --font-sans: "Manrope", system-ui, sans-serif;
+  --color-accent: #8B1C2B;
+  --color-accent-dark: #6E1422;
+  --color-gold: #C9A86A;
+  --color-gold-dark: #A88A4E;
+}
+
+/* Custom global styles to maintain elegant dark mode background and custom scrollbars */
+body {
+  background-color: #0E0A07;
+  color: #F4ECD8;
+  font-family: var(--font-sans);
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(201, 168, 106, 0.2);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(201, 168, 106, 0.4);
+}
+
