@@ -54,9 +54,11 @@ export function useLiveAudio({ onToolCall, onAudioStart, onAudioStop }: UseLiveA
   const processorRef = useRef<ScriptProcessorNode | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const nextPlayTimeRef = useRef<number>(0);
+  const initialMessageRef = useRef<string | undefined>(undefined);
 
   const connect = useCallback(async (systemInstruction: string, initialMessage?: string) => {
     if (wsRef.current) return;
+    initialMessageRef.current = initialMessage;
 
     try {
       // 1. Iniciar WebSocket
@@ -66,15 +68,15 @@ export function useLiveAudio({ onToolCall, onAudioStart, onAudioStop }: UseLiveA
       wsRef.current = ws;
 
       ws.onopen = () => {
+        console.log("[useLiveAudio] WebSocket connected successfully!");
         setIsConnected(true);
         // Enviar config inicial
+        console.log("[useLiveAudio] Sending system instruction to WebSocket...");
         ws.send(JSON.stringify({ system_instruction: systemInstruction }));
-        if (initialMessage) {
-          ws.send(JSON.stringify({ client_content: initialMessage }));
-        }
       };
 
-      ws.onclose = () => {
+      ws.onclose = (ev) => {
+        console.log("[useLiveAudio] WebSocket closed. Event details:", ev);
         setIsConnected(false);
         disconnect();
       };
@@ -100,15 +102,23 @@ export function useLiveAudio({ onToolCall, onAudioStart, onAudioStop }: UseLiveA
 
       ws.onmessage = async (event) => {
         if (typeof event.data === "string") {
+          console.log("[useLiveAudio] WebSocket received string text:", event.data);
           try {
             const msg = JSON.parse(event.data);
-            if (msg.type === "tool_call" && onToolCall) {
+            if (msg.type === "ready") {
+              console.log("[useLiveAudio] Server is ready! Sending initial greeting message:", initialMessageRef.current);
+              if (initialMessageRef.current) {
+                ws.send(JSON.stringify({ client_content: initialMessageRef.current }));
+              }
+            } else if (msg.type === "tool_call" && onToolCall) {
+              console.log("[useLiveAudio] Triggering tool call:", msg.name, msg.args);
               onToolCall(msg.name, msg.args);
             }
           } catch (e) {
             console.error("Error parseando WS text", e);
           }
         } else if (event.data instanceof Blob) {
+          console.log("[useLiveAudio] WebSocket received audio Blob chunk of size:", event.data.size);
           // Es audio binario (PCM 16-bit 24kHz desde Gemini)
           if (audioCtx.state === 'suspended') {
             try {
