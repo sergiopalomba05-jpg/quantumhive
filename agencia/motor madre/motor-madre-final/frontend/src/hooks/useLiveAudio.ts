@@ -30,9 +30,11 @@ interface UseLiveAudioProps {
 export function useLiveAudio({ onToolCall, onAudioStart, onAudioStop }: UseLiveAudioProps = {}) {
   const [isConnected, setIsConnected] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [analyserNode, setAnalyserNode] = useState<AnalyserNode | null>(null);
   
   const wsRef = useRef<WebSocket | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const micContextRef = useRef<AudioContext | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const processorRef = useRef<ScriptProcessorNode | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -79,6 +81,7 @@ export function useLiveAudio({ onToolCall, onAudioStart, onAudioStop }: UseLiveA
       analyser.fftSize = 256;
       analyser.connect(audioCtx.destination);
       analyserRef.current = analyser;
+      setAnalyserNode(analyser);
 
       ws.onmessage = async (event) => {
         if (typeof event.data === "string") {
@@ -139,8 +142,18 @@ export function useLiveAudio({ onToolCall, onAudioStart, onAudioStop }: UseLiveA
         } });
         mediaStreamRef.current = stream;
 
-        const source = audioCtx.createMediaStreamSource(stream);
-        const processor = audioCtx.createScriptProcessor(2048, 1, 1);
+        const micCtx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
+        if (micCtx.state === 'suspended') {
+          try {
+            await micCtx.resume();
+          } catch (e) {
+            console.warn("Failed to resume mic context:", e);
+          }
+        }
+        micContextRef.current = micCtx;
+
+        const source = micCtx.createMediaStreamSource(stream);
+        const processor = micCtx.createScriptProcessor(2048, 1, 1);
         processorRef.current = processor;
 
         processor.onaudioprocess = (e) => {
@@ -153,7 +166,7 @@ export function useLiveAudio({ onToolCall, onAudioStart, onAudioStop }: UseLiveA
         };
 
         source.connect(processor);
-        processor.connect(audioCtx.destination); // Required for Chrome to trigger onaudioprocess
+        processor.connect(micCtx.destination); // Required for Chrome to trigger onaudioprocess
       } catch (micErr) {
         console.warn("Microphone access denied or not available. Running in output-only (listen) mode.", micErr);
       }
@@ -181,6 +194,12 @@ export function useLiveAudio({ onToolCall, onAudioStart, onAudioStop }: UseLiveA
       audioContextRef.current.close();
       audioContextRef.current = null;
     }
+    if (micContextRef.current) {
+      micContextRef.current.close();
+      micContextRef.current = null;
+    }
+    analyserRef.current = null;
+    setAnalyserNode(null);
     setIsConnected(false);
     setIsSpeaking(false);
   }, []);
@@ -197,6 +216,6 @@ export function useLiveAudio({ onToolCall, onAudioStart, onAudioStop }: UseLiveA
     connect,
     disconnect,
     sendTextMessage,
-    analyserNode: analyserRef.current
+    analyserNode
   };
 }
