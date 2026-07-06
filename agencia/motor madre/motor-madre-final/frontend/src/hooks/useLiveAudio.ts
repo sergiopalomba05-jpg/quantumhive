@@ -21,6 +21,21 @@ function int16ToFloat32(input: Int16Array) {
   return output;
 }
 
+// Helper to resample Float32Array from 24kHz to 16kHz by keeping 2 out of every 3 samples
+function resample24To16(input: Float32Array) {
+  const outputLength = Math.floor(input.length * 2 / 3);
+  const output = new Float32Array(outputLength);
+  let j = 0;
+  for (let i = 0; i < input.length; i++) {
+    if (i % 3 !== 2) {
+      if (j < outputLength) {
+        output[j++] = input[i];
+      }
+    }
+  }
+  return output;
+}
+
 interface UseLiveAudioProps {
   onToolCall?: (name: string, args: any) => void;
   onAudioStart?: () => void;
@@ -31,10 +46,10 @@ export function useLiveAudio({ onToolCall, onAudioStart, onAudioStop }: UseLiveA
   const [isConnected, setIsConnected] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [analyserNode, setAnalyserNode] = useState<AnalyserNode | null>(null);
+  const [isMicMuted, setIsMicMuted] = useState(false);
   
   const wsRef = useRef<WebSocket | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
-  const micContextRef = useRef<AudioContext | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const processorRef = useRef<ScriptProcessorNode | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -142,31 +157,22 @@ export function useLiveAudio({ onToolCall, onAudioStart, onAudioStop }: UseLiveA
         } });
         mediaStreamRef.current = stream;
 
-        const micCtx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
-        if (micCtx.state === 'suspended') {
-          try {
-            await micCtx.resume();
-          } catch (e) {
-            console.warn("Failed to resume mic context:", e);
-          }
-        }
-        micContextRef.current = micCtx;
-
-        const source = micCtx.createMediaStreamSource(stream);
-        const processor = micCtx.createScriptProcessor(2048, 1, 1);
+        const source = audioCtx.createMediaStreamSource(stream);
+        const processor = audioCtx.createScriptProcessor(2048, 1, 1);
         processorRef.current = processor;
 
         processor.onaudioprocess = (e) => {
           if (ws.readyState === WebSocket.OPEN) {
             const inputData = e.inputBuffer.getChannelData(0);
-            const pcm16 = floatTo16BitPCM(inputData);
+            const resampledData = resample24To16(inputData);
+            const pcm16 = floatTo16BitPCM(resampledData);
             // Enviar como binario
             ws.send(pcm16.buffer);
           }
         };
 
         source.connect(processor);
-        processor.connect(micCtx.destination); // Required for Chrome to trigger onaudioprocess
+        processor.connect(audioCtx.destination); // Required for Chrome to trigger onaudioprocess
       } catch (micErr) {
         console.warn("Microphone access denied or not available. Running in output-only (listen) mode.", micErr);
       }
@@ -194,28 +200,44 @@ export function useLiveAudio({ onToolCall, onAudioStart, onAudioStop }: UseLiveA
       audioContextRef.current.close();
       audioContextRef.current = null;
     }
-    if (micContextRef.current) {
-      micContextRef.current.close();
-      micContextRef.current = null;
-    }
     analyserRef.current = null;
     setAnalyserNode(null);
     setIsConnected(false);
     setIsSpeaking(false);
+    setIsMicMuted(false);
   }, []);
 
   const sendTextMessage = useCallback((text: string) => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      console.log("[useLiveAudio] sendTextMessage: sending text:", text);
       wsRef.current.send(JSON.stringify({ client_content: text }));
+    } else {
+      console.warn("[useLiveAudio] sendTextMessage skipped: socket is not open. readyState:", wsRef.current?.readyState);
     }
   }, []);
+
+  const toggleMic = useCallback(() => {
+    if (mediaStreamRef.current) {
+      const audioTracks = mediaStreamRef.current.getAudioTracks();
+      if (audioTracks.length > 0) {
+        const nextMute = !isMicMuted;
+        audioTracks.forEach(track => {
+          track.enabled = !nextMute;
+        });
+        setIsMicMuted(nextMute);
+        console.log("[useLiveAudio] Microphone toggled. Muted:", nextMute);
+      }
+    }
+  }, [isMicMuted]);
 
   return {
     isConnected,
     isSpeaking,
+    isMicMuted,
     connect,
     disconnect,
     sendTextMessage,
+    toggleMic,
     analyserNode
   };
 }
