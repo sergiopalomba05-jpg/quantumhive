@@ -57,7 +57,7 @@ export default function App() {
   const [currentSubtitle, setCurrentSubtitle] = useState<string>("");
   const [orbTilt, setOrbTilt] = useState({ x: 0, y: 0 });
 
-  const { isConnected, isSpeaking, connect, disconnect, sendTextMessage, analyserNode } = useLiveAudio({
+  const { isConnected, isSpeaking, isMicMuted, connect, disconnect, sendTextMessage, toggleMic, analyserNode } = useLiveAudio({
     onAudioStart: () => setWaitressState("speaking"),
     onAudioStop: () => setWaitressState("idle")
   });
@@ -148,8 +148,12 @@ export default function App() {
   };
 
   const handleVoiceToggle = () => {
-    if (isRecording) stopRecording();
-    else startRecording();
+    if (isConnected) {
+      toggleMic();
+    } else {
+      if (isRecording) stopRecording();
+      else startRecording();
+    }
   };
 
   // Load menu and check search query for locked table numbers
@@ -807,7 +811,12 @@ export default function App() {
         promptContext
       );
     } else {
+      setWaitressState("thinking");
       sendTextMessage(promptContext);
+      // Safe fallback: reset thinking state if no audio response plays after 5 seconds
+      setTimeout(() => {
+        setWaitressState((prev) => (prev === "thinking" ? "idle" : prev));
+      }, 5000);
     }
 
     // Scroll al plato si coincide
@@ -1199,7 +1208,13 @@ export default function App() {
         </div>
 
         <VideoAvatar 
-          waitressState={waitressState} 
+          waitressState={
+            waitressState === "thinking"
+              ? "thinking"
+              : isConnected
+              ? (isSpeaking ? "speaking" : (isMicMuted ? "idle" : "listening"))
+              : waitressState
+          } 
           currentSubtitle={currentSubtitle} 
           onClick={handleVoiceToggle} 
           analyserNode={analyserNode}
