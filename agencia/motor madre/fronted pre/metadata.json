@@ -1,0 +1,6 @@
+{
+  "name": "La Escaloneta - Carta Viva",
+  "description": "Menú interactivo premium de La Escaloneta con tarjetas visuales, asistente de voz interactiva por Sol y comanda digital.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
