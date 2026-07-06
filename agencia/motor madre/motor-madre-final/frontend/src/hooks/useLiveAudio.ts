@@ -64,6 +64,13 @@ export function useLiveAudio({ onToolCall, onAudioStart, onAudioStop }: UseLiveA
 
       // 2. Configurar reproducción de audio (salida)
       const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
+      if (audioCtx.state === 'suspended') {
+        try {
+          await audioCtx.resume();
+        } catch (e) {
+          console.warn("Failed to resume audio context automatically:", e);
+        }
+      }
       audioContextRef.current = audioCtx;
       nextPlayTimeRef.current = audioCtx.currentTime;
 
@@ -85,6 +92,13 @@ export function useLiveAudio({ onToolCall, onAudioStart, onAudioStop }: UseLiveA
           }
         } else if (event.data instanceof Blob) {
           // Es audio binario (PCM 16-bit 24kHz desde Gemini)
+          if (audioCtx.state === 'suspended') {
+            try {
+              await audioCtx.resume();
+            } catch (e) {
+              console.warn("Failed to resume audio context on message:", e);
+            }
+          }
           const arrayBuffer = await event.data.arrayBuffer();
           const int16Array = new Int16Array(arrayBuffer);
           const float32Array = int16ToFloat32(int16Array);
