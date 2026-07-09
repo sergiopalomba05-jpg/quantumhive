@@ -2,11 +2,8 @@ node_modules
 .env
 .env.*
 src/
-*.cjs
-*.ts
-!dist/
-!public/
 tsconfig.json
 vite.config.ts
 README.md
 .gitignore
+*.log

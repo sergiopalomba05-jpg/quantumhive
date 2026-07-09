@@ -2,9 +2,14 @@ FROM node:20-slim
 
 WORKDIR /app
 
+COPY package.json package-lock.json ./
+RUN npm ci
+
 COPY . .
 
-RUN npm ci --omit=dev
+RUN npm run build
+
+RUN npm prune --omit=dev
 
 ENV NODE_ENV=production
 ENV PORT=8080
