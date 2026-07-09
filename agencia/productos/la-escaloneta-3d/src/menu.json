@@ -1,0 +1,847 @@
+{
+  "_meta": {
+    "version": "1.1.0",
+    "product": "Carta Viva",
+    "restaurant_id": "la-escaloneta",
+    "instance": "demo",
+    "created": "2026-06-10",
+    "description": "Carta Kansas — versión podada para demo Carta Viva v1. Sin happy hour (riesgo de doble precio), sin marcas registradas (mejora TTS), greeting neutro."
+  },
+  "restaurant": {
+    "name": "La Escaloneta",
+    "tagline": "Cocina casera con alma",
+    "currency": "ARS",
+    "currency_symbol": "$"
+  },
+  "assistant": {
+    "name": "Sol",
+    "voice_gender": "female",
+    "language": "español rioplatense",
+    "personality": "Sos la mesera virtual de La Escaloneta. No tenés nombre — simplemente sos 'tu mesera virtual' (o Sol, tu mesera virtual). NUNCA digas que sos una IA, un bot, o que no sos real. Sos la mesera del lugar, punto. Tu personalidad: cálida, cercana y canchera. Como la moza de confianza que ya te conoce. Usás voseo rioplatense natural: vos, tenés, querés, podés, te cuento. Hablás con entusiasmo genuino de la comida. Describís con apetito, no con lista de ingredientes. Cuando te preguntan por un plato, lo vendés: contás qué lo hace especial, qué lo acompaña, por qué vale la pena. Si alguien duda entre opciones, ayudás a decidir (¿tenés hambre de algo liviano o algo contundente?). Sugerís maridajes de vino o bebidas cuando corresponde, con naturalidad. Respondés con calidez y extensión adecuada: no sos telegráfica pero tampoco interminable. NUNCA inventás precios. Si no está cargado, decís 'ese te lo confirma el mozo con la carta en mano'. Nunca usás emojis.",
+    "greeting": "¡Hola! Soy tu mesera virtual. Estoy acá para ayudarte con la carta, sugerirte algo rico o resolver cualquier duda. ¿Por dónde empezamos?"
+  },
+  "rules": {
+    "sharing_surcharge": {
+      "amount": 11500,
+      "note": "Los platos que se compartan tienen un adicional de $11.500",
+      "applies_to": [
+        "ensaladas",
+        "pastas",
+        "carnes_y_cerdos",
+        "pescados",
+        "aves"
+      ],
+      "bar_exception": "En la barra NO se cobra adicional por plato compartido"
+    },
+    "bread": "El pan no viene automáticamente — debe solicitarse al mozo",
+    "side_salad_addon": {
+      "price": 11500,
+      "options": [
+        "Traditional",
+        "Mixed",
+        "Caesar"
+      ],
+      "note": "Se puede sumar una ensalada a los platos principales por $11.500"
+    },
+    "single_dish_surcharge": {
+      "amount": 11500,
+      "note": "Si se pide un plato para consumo individual (no compartido) en una mesa de más personas, hay un adicional de $11.500"
+    },
+    "extras": {
+      "panceta_cheeseburger": {
+        "amount": 2500,
+        "note": "Adicional para agregar panceta a la Hamburguesa con Queso"
+      },
+      "salsa_extra_hot_fudge": {
+        "amount": 2500,
+        "note": "Adicional por salsa de chocolate o dulce de leche en Sundae de Chocolate Caliente"
+      }
+    },
+    "kids_menu": {
+      "age_limit": 10,
+      "note": "Menú Kids exclusivamente para menores de 10 años"
+    },
+    "wine_copa_volume": {
+      "vinos": "250 cm3",
+      "champagne_y_espumantes": "150 cm3"
+    },
+    "food_safety_note": "Consumir carne, mariscos o huevos crudos puede aumentar el riesgo de enfermedades alimenticias. Nuestras hamburguesas son caseras y se preparan diariamente.",
+    "happy_hour": {
+      "note": "Hay happy hour con precios especiales en la barra. Si te preguntan por horario o precios de happy hour, derivá al mozo con gracia: el horario no está cargado."
+    }
+  },
+  "menu": [
+    {
+      "id": "entradas",
+      "name": "Entradas",
+      "sharing_surcharge": false,
+      "items": [
+        {
+          "id": "spinach_dip",
+          "name": "Dip de Espinaca y Queso",
+          "description": "Dip de espinaca con salsa blanca y queso, acompañado con tortilla chips, salsa picante y queso crema",
+          "price": 27300
+        },
+        {
+          "id": "chicken_tenders_entrada",
+          "name": "Tiras de Pollo Crocante",
+          "description": "Lonchas de pollo aderezadas, acompañadas con salsa Honey Mustard",
+          "price": 29000
+        },
+        {
+          "id": "kansas_rolls",
+          "name": "Arrolladitos de Pollo y Verduras",
+          "description": "Arrolladitos crocantes de pollo y verduras, condimentados con especias de la casa, servidos con salsa picante y queso",
+          "price": 27800
+        },
+        {
+          "id": "mini_nachos",
+          "name": "Mini Nachos",
+          "description": "Nachos cubiertos con chilli casero, queso gratinado, tomates picados y cebolla de verdeo",
+          "price": 27000
+        },
+        {
+          "id": "smoked_salmon_entrada",
+          "name": "Salmón Ahumado con Aderezo de la Casa",
+          "description": "Salmón ahumado, acompañado con tostaditas y aderezo del chef",
+          "price": 29000
+        }
+      ]
+    },
+    {
+      "id": "flatbreads",
+      "name": "Pizzetas",
+      "sharing_surcharge": false,
+      "items": [
+        {
+          "id": "bbq_chicken_flatbread",
+          "name": "Pizzeta de Pollo BBQ",
+          "description": "Pan plano con pollo, quesos mixtos, queso de cabra, cebollas y cilantro, aderezado con barbacoa",
+          "price": 32000
+        },
+        {
+          "id": "steak_mushroom_flatbread",
+          "name": "Pizzeta de Bife y Hongos",
+          "description": "Pan plano con lomo, queso azul, champignones y espinacas",
+          "price": 31300
+        },
+        {
+          "id": "shrimp_flatbread",
+          "name": "Pizzeta de Camarón, Queso de Cabra y Dátiles",
+          "description": "Pan plano con langostinos asados, dátiles, morrones y queso de cabra",
+          "price": 29500
+        }
+      ]
+    },
+    {
+      "id": "ensaladas",
+      "name": "Ensaladas",
+      "sharing_surcharge": true,
+      "items": [
+        {
+          "id": "grilled_chicken_salad",
+          "name": "Ensalada de Pollo Grillado",
+          "description": "Lechugas frescas de estación, repollo, fetas de pollo grilladas y tiritas de tortilla, con Honey Lime Vinaigrette y Peanut Sauce",
+          "price": 18000,
+          "options": [
+            "Con langostinos a la leña — consultar precio al mozo"
+          ]
+        },
+        {
+          "id": "mediterranean_salad",
+          "name": "Ensalada Mediterránea",
+          "description": "Lechugas frescas, queso feta, aceitunas negras, pollo grillado y tiritas de tortilla, con Classic Vinaigrette",
+          "price": 18000
+        },
+        {
+          "id": "caesar_salad",
+          "name": "Ensalada César con Pollo",
+          "description": "Lechuga fresca, croutones, pollo rebozado o grillado y queso reggianito con aderezo Caesar",
+          "price": 18900,
+          "options": [
+            "Con langostinos a la leña — consultar precio al mozo",
+            "Con smoked salmon — consultar precio al mozo"
+          ]
+        },
+        {
+          "id": "bistro_salad",
+          "name": "Ensalada Bistró",
+          "description": "Mix de lechugas frescas con pollo, queso de cabra, dátiles, palta, almendras tostadas, tomates cherry, croutons de maíz y aderezo cítrico",
+          "price": 19300
+        }
+      ]
+    },
+    {
+      "id": "hamburguesas",
+      "name": "Hamburguesas y Sandwiches",
+      "sharing_surcharge": false,
+      "items": [
+        {
+          "id": "cheeseburger",
+          "name": "Hamburguesa con Queso",
+          "description": "Hamburguesa casera con queso cheddar, lechuga, tomate, pepino y cebolla, acompañada con papas fritas",
+          "price": 26800,
+          "extras": [
+            {
+              "name": "Panceta",
+              "price": 2500
+            }
+          ]
+        },
+        {
+          "id": "club_sandwich",
+          "name": "Club Sándwich",
+          "description": "Sandwich frío de jamón, queso y pollo fileteado con panceta, tomate y lechuga, en pan de trigo con papas fritas",
+          "price": 28500
+        }
+      ]
+    },
+    {
+      "id": "acompanamentos",
+      "name": "Acompañamientos",
+      "sharing_surcharge": false,
+      "items": [
+        {
+          "id": "white_rice",
+          "name": "Arroz Blanco",
+          "description": "Arroz blanco",
+          "price": 11500
+        },
+        {
+          "id": "french_fries",
+          "name": "Papas Fritas",
+          "description": "Papas fritas",
+          "price": 11500
+        },
+        {
+          "id": "fresh_vegetables",
+          "name": "Verduras Salteadas",
+          "description": "Vegetales rostizados, brócolis o zucchinis asados a la leña",
+          "price": 11500
+        },
+        {
+          "id": "cole_slaw",
+          "name": "Ensalada de Repollo",
+          "description": "Ensalada de repollo blanco y colorado con aderezo cole slaw",
+          "price": 11500
+        },
+        {
+          "id": "mashed_potato",
+          "name": "Puré de Papa",
+          "description": "Puré de papas",
+          "price": 12500
+        },
+        {
+          "id": "quinoa_medley",
+          "name": "Quinoa Salteada",
+          "description": "Quinoa tricolor con almendras, granos de maíz y pasas de uva, aderezo de yogur",
+          "price": 12500
+        },
+        {
+          "id": "cream_spinach",
+          "name": "Espinaca a la Crema",
+          "description": "Espinacas a la crema",
+          "price": 12500
+        },
+        {
+          "id": "loaded_baked_potato",
+          "name": "Papa Rellena",
+          "description": "Papa rellena con manteca, queso crema, queso cheddar, panceta y cebollines",
+          "price": 12500
+        }
+      ]
+    },
+    {
+      "id": "carnes",
+      "name": "Carnes y Cerdos",
+      "sharing_surcharge": true,
+      "side_salad_available": true,
+      "items": [
+        {
+          "id": "bbq_ribs",
+          "name": "Costillas BBQ 500gr",
+          "description": "Costillar de cerdo asado a fuego lento con salsa barbacoa, acompañado con papas fritas y Ensalada de Repollo",
+          "price": 42000
+        },
+        {
+          "id": "ny_strip",
+          "name": "Bife de Chorizo 400gr",
+          "description": "Bife de chorizo grillado a la leña, acompañado con papa rellena",
+          "price": 53500
+        },
+        {
+          "id": "rib_eye",
+          "name": "Ojo de Bife 400gr",
+          "description": "Ojo de bife grillado a la leña, acompañado con papas fritas",
+          "price": 56700
+        },
+        {
+          "id": "montreal_steak",
+          "name": "Bife a las Especias 400gr",
+          "description": "Bife de chorizo grillado a la leña con pimientas variadas, acompañado con papas fritas",
+          "price": 56700
+        },
+        {
+          "id": "filet_mignon",
+          "name": "Filet Mignon",
+          "description": "Bife de lomo grillado a la leña, acompañado con papa rellena",
+          "price": 58900
+        },
+        {
+          "id": "hawaiian_steak",
+          "name": "Bife a la Hawaiana 400gr",
+          "description": "Ojo de bife marinado en salsa de soja, ananá y jengibre, grillado a la leña, acompañado con puré de papas",
+          "price": 58900
+        }
+      ]
+    },
+    {
+      "id": "pescados",
+      "name": "Pescados",
+      "sharing_surcharge": true,
+      "side_salad_available": true,
+      "items": [
+        {
+          "id": "cilantro_shrimp",
+          "name": "Camarones al Cilantro",
+          "description": "Brochette de langostinos grillados a la leña sobre arroz con aceite de cilantro, morrones y cebollines, acompañado con espinaca a la crema",
+          "price": 36500
+        },
+        {
+          "id": "grilled_salmon",
+          "name": "Salmón Grillado 300gr",
+          "description": "Filet de salmón grillado a la leña, acompañado con papas fritas",
+          "price": 42000
+        },
+        {
+          "id": "cedar_salmon",
+          "name": "Salmón a la Plancha de Cedro 300gr",
+          "description": "Salmón cocido en horno de barro sobre tabla de cedro, pintado con glacé de mostaza, acompañado con papa rellena",
+          "price": 44000
+        }
+      ]
+    },
+    {
+      "id": "aves",
+      "name": "Aves",
+      "sharing_surcharge": true,
+      "side_salad_available": true,
+      "items": [
+        {
+          "id": "grilled_chicken_breast",
+          "name": "Pechuga de Pollo Grillada",
+          "description": "Pechuga de pollo deshuesada grillada a la leña con brócoli al vapor",
+          "price": 25800
+        },
+        {
+          "id": "bbq_chicken_main",
+          "name": "Pollo BBQ",
+          "description": "Pechuga de pollo grillada a la leña con salsa barbacoa, acompañada con papas fritas",
+          "price": 26000
+        },
+        {
+          "id": "kansas_chicken_main",
+          "name": "Pollo de la Casa",
+          "description": "Pechuga de pollo grillada a la leña con queso mixto, tomate picado y cebolla de verdeo, acompañada con papas fritas",
+          "price": 30000
+        },
+        {
+          "id": "tennessee_chicken",
+          "name": "Pollo Crocante con Guarniciones",
+          "description": "Pechuga de pollo grillada a la leña con salsa barbacoa, jamón ahumado y queso, acompañada con papas fritas",
+          "price": 31000
+        }
+      ]
+    },
+    {
+      "id": "pastas",
+      "name": "Pastas",
+      "sharing_surcharge": true,
+      "items": [
+        {
+          "id": "vegetarian_platter",
+          "name": "Plato Vegetariano",
+          "description": "Zucchinis asados a la leña, quinoa medley, arroz y brócoli",
+          "price": 25800
+        },
+        {
+          "id": "thai_pasta",
+          "name": "Pasta Thai con Pollo",
+          "description": "Pasta penne salteada con vegetales, pollo y castañas de cajú en salsa Thai con soja y jengibre",
+          "price": 25800,
+          "options": [
+            "Con lomo — consultar precio al mozo",
+            "Con langostinos a la leña — consultar precio al mozo"
+          ]
+        },
+        {
+          "id": "arizona_pasta",
+          "name": "Pasta de la Casa",
+          "description": "Pasta Penne al dente con salsa Alfredo, pollo, morrones y especias de Arizona",
+          "price": 28500
+        },
+        {
+          "id": "smoked_salmon_pasta",
+          "name": "Pasta con Salmón Ahumado",
+          "description": "Pasta Linguini al dente con salsa de crema, salmón ahumado, vino blanco, morrones y eneldo fresco",
+          "price": 28500
+        }
+      ]
+    },
+    {
+      "id": "kids",
+      "name": "Menú Niños",
+      "note": "Menú exclusivo para menores de 10 años",
+      "sharing_surcharge": false,
+      "items": [
+        {
+          "id": "kid_pasta",
+          "name": "Pasta para Niños",
+          "description": "Pasta Fusilli con salsa crema, marinara o rosada",
+          "price": 15000
+        },
+        {
+          "id": "kid_cheeseburger",
+          "name": "Hamburguesa para Niños",
+          "description": "Hamburguesa casera con queso, servida con papas fritas",
+          "price": 17000
+        },
+        {
+          "id": "kid_chicken",
+          "name": "Tiras de Pollo para Niños",
+          "description": "Trozos de pollo rebozado, servido con papas fritas",
+          "price": 17000
+        },
+        {
+          "id": "kid_ribs",
+          "name": "Costillitas BBQ para Niños",
+          "description": "Costilla de cerdo estilo Kansas, servida con papas fritas",
+          "price": 18000
+        }
+      ]
+    },
+    {
+      "id": "postres",
+      "name": "Postres",
+      "sharing_surcharge": false,
+      "items": [
+        {
+          "id": "carrot_cake",
+          "name": "Torta de Zanahoria",
+          "description": "Torta de coco, nueces y canela con cobertura de queso crema",
+          "price": 21500
+        },
+        {
+          "id": "key_lime_pie",
+          "name": "Tarta de Lima",
+          "description": "Crujiente base de galleta con crema cítrica de lima y crema batida",
+          "price": 21000
+        },
+        {
+          "id": "going_bananas",
+          "name": "Banana Split",
+          "description": "Plátano caramelizado con helado de vainilla, dulce de leche y salsa de chocolate",
+          "price": 23500
+        },
+        {
+          "id": "kansas_cheesecake",
+          "name": "Cheesecake de la Casa",
+          "description": "Clásico pastel de queso estilo New York con salsa de frambuesas",
+          "price": 24000
+        },
+        {
+          "id": "argentinean_cheesecake",
+          "name": "Cheesecake Argentino",
+          "description": "Riquísimo cheesecake elaborado con el mejor dulce de leche repostero",
+          "price": 24500
+        },
+        {
+          "id": "hot_fudge_sundae",
+          "name": "Sundae de Chocolate Caliente",
+          "description": "Helado de vainilla, bañado en salsa de chocolate caliente, crema batida y nueces pecán",
+          "price": 25000
+        }
+      ]
+    },
+    {
+      "id": "tes",
+      "name": "Tés e Infusiones",
+      "sharing_surcharge": false,
+      "items": [
+        {
+          "id": "kansas_blend",
+          "name": "Blend de la Casa",
+          "description": "Manzanas asadas, canela, nueces, miel, limón y jengibre",
+          "price": 5500
+        },
+        {
+          "id": "kansas_calm",
+          "name": "Calma de la Casa",
+          "description": "Cedrón, clementina, manzanas y rosa mosqueta",
+          "price": 5500
+        },
+        {
+          "id": "very_berries",
+          "name": "Frutos Rojos",
+          "description": "Moras, arándanos, grosellas y frambuesas",
+          "price": 5500
+        },
+        {
+          "id": "thai_wind",
+          "name": "Brisa Thai",
+          "description": "Té verde con ananá, maracuyá y coco",
+          "price": 5500
+        },
+        {
+          "id": "english_breakfast",
+          "name": "English Breakfast",
+          "description": "Hebras de Sri Lanka, India y China",
+          "price": 5500
+        }
+      ]
+    }
+  ],
+  "drinks": [
+    {
+      "id": "bebidas",
+      "name": "Bebidas",
+      "items": [
+        {
+          "id": "coca_cola",
+          "name": "Gaseosa Línea Coca Cola",
+          "price": 5000
+        },
+        {
+          "id": "villa_sin",
+          "name": "Villavicencio Sin Gas",
+          "price": 4500
+        },
+        {
+          "id": "villa_con",
+          "name": "Villavicencio Con Gas",
+          "price": 4500
+        },
+        {
+          "id": "agua_saborizada",
+          "name": "Aguas Saborizadas",
+          "price": 4500
+        },
+        {
+          "id": "sanpellegrino",
+          "name": "Agua Sanpellegrino (con gas)",
+          "price": 13700
+        },
+        {
+          "id": "acqua_panna",
+          "name": "Acqua Panna (sin gas)",
+          "price": 13700
+        },
+        {
+          "id": "iced_tea",
+          "name": "Té Helado",
+          "price": 5000
+        },
+        {
+          "id": "arnold_palmer",
+          "name": "Arnold Palmer",
+          "price": 5600
+        },
+        {
+          "id": "jugos",
+          "name": "Jugos (Naranja o Pomelo)",
+          "price": 6900
+        },
+        {
+          "id": "limonada",
+          "name": "Limonada",
+          "price": 7500
+        },
+        {
+          "id": "limonada_menta",
+          "name": "Limonada con Menta y Jengibre",
+          "price": 8000
+        },
+        {
+          "id": "cafe",
+          "name": "Café",
+          "price": 6300
+        },
+        {
+          "id": "cappuccino",
+          "name": "Cappuccino",
+          "price": 6800
+        }
+      ]
+    },
+    {
+      "id": "cervezas",
+      "name": "Cervezas",
+      "items": [
+        {
+          "id": "imperial_chopp",
+          "name": "Imperial Chopp",
+          "price": 7700
+        },
+        {
+          "id": "miller",
+          "name": "Miller Lata 473cc",
+          "price": 7700
+        },
+        {
+          "id": "imperial_ipa",
+          "name": "Imperial IPA Lata 473cc",
+          "price": 7700
+        },
+        {
+          "id": "imperial_apa",
+          "name": "Imperial APA Lata 473cc",
+          "price": 7700
+        },
+        {
+          "id": "warsteiner",
+          "name": "Warsteiner Chopp",
+          "price": 8300
+        },
+        {
+          "id": "heineken",
+          "name": "Heineken Chopp",
+          "price": 8300
+        },
+        {
+          "id": "heineken_na",
+          "name": "Heineken Sin Alcohol Lata 355cc",
+          "price": 8300
+        },
+        {
+          "id": "blue_moon",
+          "name": "Blue Moon Porrón 355cc",
+          "price": 11000
+        }
+      ]
+    },
+    {
+      "id": "cocktails",
+      "name": "Tragos",
+      "note": "Selección curada para demo. La carta completa tiene más opciones.",
+      "items": [
+        {
+          "id": "gin_tonic",
+          "name": "Gin Tonic",
+          "price": 10000
+        },
+        {
+          "id": "mojito",
+          "name": "Mojito",
+          "price": 10000
+        },
+        {
+          "id": "fernet_cola",
+          "name": "Fernet Branca Cola",
+          "price": 10000
+        },
+        {
+          "id": "aperol_spritz",
+          "name": "Aperol Spritz",
+          "price": 11500
+        },
+        {
+          "id": "pisco_sour",
+          "name": "Pisco Sour",
+          "price": 11500
+        },
+        {
+          "id": "caipirinha",
+          "name": "Caipirinha",
+          "price": 11500
+        },
+        {
+          "id": "daiquiri",
+          "name": "Daiquiri",
+          "price": 11500
+        },
+        {
+          "id": "pina_colada",
+          "name": "Piña Colada",
+          "price": 11500
+        },
+        {
+          "id": "negroni",
+          "name": "Negroni",
+          "price": 13000
+        },
+        {
+          "id": "old_fashioned",
+          "name": "Old Fashioned",
+          "price": 13000
+        },
+        {
+          "id": "manhattan",
+          "name": "Manhattan",
+          "price": 13000
+        },
+        {
+          "id": "long_island",
+          "name": "Long Island Ice Tea",
+          "price": 13000
+        }
+      ]
+    },
+    {
+      "id": "mocktails",
+      "name": "Tragos sin Alcohol",
+      "items": [
+        {
+          "id": "spring_dream_na",
+          "name": "Spring Dream (Sin Alcohol)",
+          "price": 9500
+        },
+        {
+          "id": "rubi_red",
+          "name": "Rubi Red (Sin Alcohol)",
+          "price": 9500
+        },
+        {
+          "id": "pisco_sour_na",
+          "name": "Pisco Sour (Sin Alcohol)",
+          "price": 9500
+        },
+        {
+          "id": "maracurovska_na",
+          "name": "Maracurovska (Sin Alcohol)",
+          "price": 9500
+        }
+      ]
+    },
+    {
+      "id": "champagne",
+      "name": "Champagne & Espumantes",
+      "note": "Copa = 150 cm3",
+      "items": [
+        {
+          "id": "zaffiro",
+          "name": "Zaffiro Extra Brut",
+          "bodega": "Bodega Zaffiro",
+          "price_copa": 6000,
+          "price_botella": 24200
+        },
+        {
+          "id": "salentein_brut",
+          "name": "Salentein Brut Nature",
+          "bodega": "Bodega Salentein",
+          "price_copa": 7000,
+          "price_botella": 24800
+        },
+        {
+          "id": "chandon_aperitif",
+          "name": "Chandon Apéritif",
+          "bodega": "Bodega Chandon",
+          "price_copa": 9500,
+          "price_botella": 27100
+        },
+        {
+          "id": "chandon_brut",
+          "name": "Chandon Extra Brut",
+          "bodega": "Bodega Chandon",
+          "price_copa": 8000,
+          "price_botella": 31200
+        },
+        {
+          "id": "baron_b",
+          "name": "Baron B Cuvée Spéciale",
+          "bodega": "Bodega Baron B",
+          "price_copa": 8200,
+          "price_botella": 58800
+        }
+      ]
+    },
+    {
+      "id": "vinos_tintos",
+      "name": "Vinos Tintos",
+      "note": "Copa = 250 cm3",
+      "subcategories": [
+        {
+          "id": "malbec",
+          "name": "Malbec",
+          "items": [
+            {
+              "id": "alaris",
+              "name": "Alaris Malbec",
+              "bodega": "Bodega Salentein",
+              "price_copa": 8000,
+              "price_botella": 23100
+            },
+            {
+              "id": "nieto_malbec",
+              "name": "Nieto Senetiner Malbec",
+              "bodega": "Bodega Nieto Senetiner",
+              "price_copa": 8200,
+              "price_botella": 23600
+            },
+            {
+              "id": "saint_felicien",
+              "name": "Saint Felicien Malbec",
+              "bodega": "Bodega Catena Zapata",
+              "price_copa": 8200,
+              "price_botella": 28000
+            },
+            {
+              "id": "terrazas_reserva",
+              "name": "Terrazas de los Andes Reserva Malbec",
+              "bodega": "Bodega Terrazas de los Andes",
+              "price_copa": 9500,
+              "price_botella": 26300
+            }
+          ]
+        },
+        {
+          "id": "cabernet",
+          "name": "Cabernet Sauvignon",
+          "items": [
+            {
+              "id": "santa_julia_cab",
+              "name": "Santa Julia Cabernet Sauvignon",
+              "bodega": "Bodega Santa Julia",
+              "price_copa": 8000,
+              "price_botella": 22100
+            },
+            {
+              "id": "trumpeter_res",
+              "name": "Trumpeter Reserva Cabernet Sauvignon",
+              "bodega": "Bodega Rutini",
+              "price_copa": 8200,
+              "price_botella": 24700
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vinos_blancos",
+      "name": "Vinos Blancos",
+      "note": "Copa = 250 cm3",
+      "items": [
+        {
+          "id": "santa_julia_sauv",
+          "name": "Santa Julia Sauvignon Blanc",
+          "bodega": "Bodega Santa Julia",
+          "price_copa": 8000,
+          "price_botella": 23100
+        },
+        {
+          "id": "nieto_chardonnay",
+          "name": "Nieto Senetiner Chardonnay",
+          "bodega": "Bodega Nieto Senetiner",
+          "price_copa": 8000,
+          "price_botella": 23100
+        },
+        {
+          "id": "pioneer_blanc",
+          "name": "Pioneer Semillon",
+          "bodega": "Bodega La Celia",
+          "price_copa": 8200,
+          "price_botella": 24700
+        }
+      ]
+    }
+  ]
+}

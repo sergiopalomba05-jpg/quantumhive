@@ -1,0 +1,317 @@
+- generic [active] [ref=f23e1]:
+  - generic [ref=f23e3]:
+    - generic [ref=f23e4]:
+      - complementary "Omitir vínculos" [ref=f23e5]:
+        - link "Ir al contenido principal" [ref=f23e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f23e7]: Ir al contenido principal
+        - button "Combinación de teclas para acceso directo" [ref=f23e8]:
+          - generic [ref=f23e9]: Combinación de teclas para acceso directo
+        - link "Ayuda sobre la accesibilidad externo, se abre en una ventana nueva" [ref=f23e10] [cursor=pointer]:
+          - /url: https://cloud.google.com/docs/accessibility?hl=es_419
+          - generic [ref=f23e11]:
+            - text: Ayuda sobre la accesibilidad
+            - generic "externo, se abre en una ventana nueva" [ref=f23e12]:
+              - img "externo, se abre en una ventana nueva" [ref=f23e13]:
+                - img [ref=f23e14]
+        - link "Comentarios sobre accesibilidad externo, se abre en una ventana nueva" [ref=f23e16] [cursor=pointer]:
+          - /url: https://support.google.com/accessibility/contact/feedback?hl=es_419
+          - generic [ref=f23e17]:
+            - text: Comentarios sobre accesibilidad
+            - generic "externo, se abre en una ventana nueva" [ref=f23e18]:
+              - img "externo, se abre en una ventana nueva" [ref=f23e19]:
+                - img [ref=f23e20]
+      - banner [ref=f23e23]:
+        - generic [ref=f23e24]:
+          - navigation [ref=f23e27]:
+            - button "Menú de navegación (.)" [ref=f23e28] [cursor=pointer]:
+              - img [ref=f23e30]
+          - link "Google Cloud Platform - Página principal" [ref=f23e32] [cursor=pointer]:
+            - /url: /
+            - generic:
+              - img
+          - button "No se seleccionó ningún proyecto. Presiona Intro para seleccionar un proyecto, una carpeta o una organización." [ref=f23e40]
+        - search "Google Cloud Platform" [ref=f23e46]:
+          - combobox [ref=f23e47]:
+            - searchbox "Ingresa una consulta para buscar recursos, documentos, productos y mucho más" [ref=f23e48]
+          - button "Ver todos los resultados de la búsqueda" [disabled]:
+            - generic:
+              - img
+            - generic: Buscar
+        - generic [ref=f23e49]:
+          - generic [ref=f23e50]:
+            - generic [ref=f23e53]:
+              - button "Activar Cloud Shell (G then S)" [disabled]:
+                - generic:
+                  - img
+            - button "Abrir notificaciones" [ref=f23e57] [cursor=pointer]:
+              - img [ref=f23e59]
+            - button "Configuración y utilidades" [ref=f23e65] [cursor=pointer]:
+              - img [ref=f23e67]
+          - img [ref=f23e71]
+    - generic [ref=f23e91]:
+      - navigation "IAM y administración" [ref=f23e98]:
+        - generic [ref=f23e99]:
+          - heading "IAM y administración" [level=2] [ref=f23e101]:
+            - link "IAM y administración" [ref=f23e102] [cursor=pointer]:
+              - /url: /iam-admin
+              - img [ref=f23e105]
+              - generic [ref=f23e109]: IAM y administración
+          - generic [ref=f23e111]:
+            - group "Identidad y acceso" [ref=f23e112]:
+              - heading "Identidad y acceso" [level=3] [ref=f23e117]:
+                - button "Identidad y acceso" [expanded] [ref=f23e118]:
+                  - generic [ref=f23e120]:
+                    - generic [ref=f23e121]: Identidad y acceso
+                    - img [ref=f23e125]
+              - list "Identidad y acceso" [ref=f23e127]:
+                - listitem [ref=f23e128]:
+                  - generic [ref=f23e131]:
+                    - link "IAM, 1 de 8" [ref=f23e132] [cursor=pointer]:
+                      - /url: /iam-admin/iam
+                      - generic [ref=f23e133]:
+                        - img [ref=f23e136]
+                        - generic [ref=f23e138]: IAM
+                    - button "Más opciones" [ref=f23e140] [cursor=pointer]:
+                      - img [ref=f23e142]
+                - listitem [ref=f23e144]:
+                  - generic [ref=f23e147]:
+                    - link "Cuentas de servicio, 2 de 8" [ref=f23e148] [cursor=pointer]:
+                      - /url: /iam-admin/serviceaccounts
+                      - generic [ref=f23e149]:
+                        - img [ref=f23e152]
+                        - generic [ref=f23e154]: Cuentas de servicio
+                    - button "Más opciones" [ref=f23e156] [cursor=pointer]:
+                      - img [ref=f23e158]
+                - listitem [ref=f23e160]:
+                  - generic [ref=f23e163]:
+                    - link "Grupos, 3 de 8" [ref=f23e164] [cursor=pointer]:
+                      - /url: /iam-admin/groups
+                      - generic [ref=f23e165]:
+                        - img [ref=f23e168]
+                        - generic [ref=f23e170]: Grupos
+                    - button "Más opciones" [ref=f23e172] [cursor=pointer]:
+                      - img [ref=f23e174]
+                - listitem [ref=f23e176]:
+                  - generic [ref=f23e179]:
+                    - link "Privileged Access Manager, 4 de 8" [ref=f23e180] [cursor=pointer]:
+                      - /url: /iam-admin/pam
+                      - generic [ref=f23e181]:
+                        - img [ref=f23e184]
+                        - generic [ref=f23e189]: Privileged Access Manager
+                    - button "Más opciones" [ref=f23e191] [cursor=pointer]:
+                      - img [ref=f23e193]
+                - listitem [ref=f23e195]:
+                  - generic [ref=f23e198]:
+                    - link "Roles, 5 de 8" [ref=f23e199] [cursor=pointer]:
+                      - /url: /iam-admin/roles
+                      - generic [ref=f23e200]:
+                        - img [ref=f23e203]
+                        - generic [ref=f23e205]: Roles
+                    - button "Más opciones" [ref=f23e207] [cursor=pointer]:
+                      - img [ref=f23e209]
+                - listitem [ref=f23e211]:
+                  - generic [ref=f23e214]:
+                    - link "Federación de identidades para cargas de trabajo, 6 de 8" [ref=f23e215] [cursor=pointer]:
+                      - /url: /iam-admin/workload-identity-pools
+                      - generic [ref=f23e216]:
+                        - img [ref=f23e219]
+                        - generic [ref=f23e222]: Federación de identidades para cargas de trabajo
+                    - button "Más opciones" [ref=f23e224] [cursor=pointer]:
+                      - img [ref=f23e226]
+                - listitem [ref=f23e228]:
+                  - generic [ref=f23e231]:
+                    - link "Federación de identidades de personal, 7 de 8" [ref=f23e232] [cursor=pointer]:
+                      - /url: /iam-admin/workforce-identity-pools
+                      - generic [ref=f23e233]:
+                        - img [ref=f23e236]
+                        - generic [ref=f23e238]: Federación de identidades de personal
+                    - button "Más opciones" [ref=f23e240] [cursor=pointer]:
+                      - img [ref=f23e242]
+                - listitem [ref=f23e244]:
+                  - generic [ref=f23e247]:
+                    - link "Límite de acceso principal, 8 de 8" [ref=f23e248] [cursor=pointer]:
+                      - /url: /iam-admin/principal-access-boundary
+                      - generic [ref=f23e249]:
+                        - img [ref=f23e252]
+                        - generic [ref=f23e254]: Límite de acceso principal
+                    - button "Más opciones" [ref=f23e256] [cursor=pointer]:
+                      - img [ref=f23e258]
+            - group "Administración de recursos" [ref=f23e260]:
+              - heading "Administración de recursos" [level=3] [ref=f23e265]:
+                - button "Administración de recursos" [expanded] [ref=f23e266]:
+                  - generic [ref=f23e268]:
+                    - generic [ref=f23e269]: Administración de recursos
+                    - img [ref=f23e273]
+              - list "Administración de recursos" [ref=f23e275]:
+                - listitem [ref=f23e276]:
+                  - generic [ref=f23e279]:
+                    - link "Políticas de la organización, 1 de 5" [ref=f23e280] [cursor=pointer]:
+                      - /url: /iam-admin/orgpolicies
+                      - generic [ref=f23e281]:
+                        - img [ref=f23e284]
+                        - generic [ref=f23e286]: Políticas de la organización
+                    - button "Más opciones" [ref=f23e288] [cursor=pointer]:
+                      - img [ref=f23e290]
+                - listitem [ref=f23e292]:
+                  - generic [ref=f23e295]:
+                    - link "Inventario de recursos, 2 de 5" [ref=f23e296] [cursor=pointer]:
+                      - /url: /iam-admin/asset-inventory
+                      - generic [ref=f23e297]:
+                        - img [ref=f23e300]
+                        - generic [ref=f23e302]: Inventario de recursos
+                    - button "Más opciones" [ref=f23e304] [cursor=pointer]:
+                      - img [ref=f23e306]
+                - listitem [ref=f23e308]:
+                  - generic [ref=f23e311]:
+                    - link "Configuración, 3 de 5" [ref=f23e312] [cursor=pointer]:
+                      - /url: /iam-admin/settings
+                      - generic [ref=f23e313]:
+                        - img [ref=f23e316]
+                        - generic [ref=f23e318]: Configuración
+                    - button "Más opciones" [ref=f23e320] [cursor=pointer]:
+                      - img [ref=f23e322]
+                - listitem [ref=f23e324]:
+                  - generic [ref=f23e327]:
+                    - link "Etiquetas de recursos, 4 de 5" [ref=f23e328] [cursor=pointer]:
+                      - /url: /iam-admin/labels
+                      - generic [ref=f23e329]:
+                        - img [ref=f23e332]
+                        - generic [ref=f23e334]: Etiquetas de recursos
+                    - button "Más opciones" [ref=f23e336] [cursor=pointer]:
+                      - img [ref=f23e338]
+                - listitem [ref=f23e340]:
+                  - generic [ref=f23e343]:
+                    - link "Etiquetas de políticas, 5 de 5" [ref=f23e344] [cursor=pointer]:
+                      - /url: /iam-admin/tags
+                      - generic [ref=f23e345]:
+                        - img [ref=f23e348]
+                        - generic [ref=f23e350]: Etiquetas de políticas
+                    - button "Más opciones" [ref=f23e352] [cursor=pointer]:
+                      - img [ref=f23e354]
+            - group "Herramientas de diagnóstico" [ref=f23e356]:
+              - heading "Herramientas de diagnóstico" [level=3] [ref=f23e361]:
+                - button "Herramientas de diagnóstico" [expanded] [ref=f23e362]:
+                  - generic [ref=f23e364]:
+                    - generic [ref=f23e365]: Herramientas de diagnóstico
+                    - img [ref=f23e369]
+              - list "Herramientas de diagnóstico" [ref=f23e371]:
+                - listitem [ref=f23e372]:
+                  - generic [ref=f23e375]:
+                    - link "Estadísticas de seguridad, 1 de 3" [ref=f23e376] [cursor=pointer]:
+                      - /url: /iam-admin/security-insights
+                      - generic [ref=f23e377]:
+                        - img [ref=f23e380]
+                        - generic [ref=f23e382]:
+                          - text: Estadísticas de seguridad
+                          - img "vista previa" [ref=f23e384]
+                    - button "Más opciones" [ref=f23e386] [cursor=pointer]:
+                      - img [ref=f23e388]
+                - listitem [ref=f23e390]:
+                  - generic [ref=f23e393]:
+                    - link "Analizador de políticas, 2 de 3" [ref=f23e394] [cursor=pointer]:
+                      - /url: /iam-admin/analyzer
+                      - generic [ref=f23e395]:
+                        - img [ref=f23e398]
+                        - generic [ref=f23e400]: Analizador de políticas
+                    - button "Más opciones" [ref=f23e402] [cursor=pointer]:
+                      - img [ref=f23e404]
+                - listitem [ref=f23e406]:
+                  - generic [ref=f23e409]:
+                    - link "Solucionador de problemas de políticas, 3 de 3" [ref=f23e410] [cursor=pointer]:
+                      - /url: /iam-admin/troubleshooter
+                      - generic [ref=f23e411]:
+                        - img [ref=f23e414]
+                        - generic [ref=f23e416]: Solucionador de problemas de políticas
+                    - button "Más opciones" [ref=f23e418] [cursor=pointer]:
+                      - img [ref=f23e420]
+            - group "Administración de la nube" [ref=f23e422]:
+              - heading "Administración de la nube" [level=3] [ref=f23e427]:
+                - button "Administración de la nube" [expanded] [ref=f23e428]:
+                  - generic [ref=f23e430]:
+                    - generic [ref=f23e431]: Administración de la nube
+                    - img [ref=f23e435]
+              - list "Administración de la nube" [ref=f23e437]:
+                - listitem [ref=f23e438]:
+                  - generic [ref=f23e441]:
+                    - link "Cuotas y límites del sistema, 1 de 5" [ref=f23e442] [cursor=pointer]:
+                      - /url: /iam-admin/quotas
+                      - generic [ref=f23e443]:
+                        - img [ref=f23e446]
+                        - generic [ref=f23e448]: Cuotas y límites del sistema
+                    - button "Más opciones" [ref=f23e450] [cursor=pointer]:
+                      - img [ref=f23e452]
+                - listitem [ref=f23e454]:
+                  - generic [ref=f23e457]:
+                    - link "Registros de auditoría, 2 de 5" [ref=f23e458] [cursor=pointer]:
+                      - /url: /iam-admin/audit
+                      - generic [ref=f23e459]:
+                        - img [ref=f23e462]
+                        - generic [ref=f23e464]: Registros de auditoría
+                    - button "Más opciones" [ref=f23e466] [cursor=pointer]:
+                      - img [ref=f23e468]
+                - listitem [ref=f23e470]:
+                  - generic [ref=f23e473]:
+                    - link "Identidad y organización, 3 de 5" [ref=f23e474] [cursor=pointer]:
+                      - /url: /iam-admin/cloudidentity/consumer
+                      - generic [ref=f23e475]:
+                        - img [ref=f23e478]
+                        - generic [ref=f23e480]: Identidad y organización
+                    - button "Más opciones" [ref=f23e482] [cursor=pointer]:
+                      - img [ref=f23e484]
+                - listitem [ref=f23e486]:
+                  - generic [ref=f23e489]:
+                    - link "Contactos esenciales, 4 de 5" [ref=f23e490] [cursor=pointer]:
+                      - /url: /iam-admin/essential-contacts
+                      - generic [ref=f23e491]:
+                        - img [ref=f23e494]
+                        - generic [ref=f23e496]: Contactos esenciales
+                    - button "Más opciones" [ref=f23e498] [cursor=pointer]:
+                      - img [ref=f23e500]
+                - listitem [ref=f23e502]:
+                  - generic [ref=f23e505]:
+                    - link "Privacidad y seguridad, 5 de 5" [ref=f23e506] [cursor=pointer]:
+                      - /url: /iam-admin/privacy
+                      - generic [ref=f23e507]:
+                        - img [ref=f23e510]
+                        - generic [ref=f23e512]: Privacidad y seguridad
+                    - button "Más opciones" [ref=f23e514] [cursor=pointer]:
+                      - img [ref=f23e516]
+            - group "Riesgo de acceso" [ref=f23e518]:
+              - heading "Riesgo de acceso" [level=3] [ref=f23e523]:
+                - button "Riesgo de acceso" [expanded] [ref=f23e524]:
+                  - generic [ref=f23e526]:
+                    - generic [ref=f23e527]: Riesgo de acceso
+                    - img [ref=f23e531]
+              - list "Riesgo de acceso" [ref=f23e533]:
+                - listitem [ref=f23e534]:
+                  - generic [ref=f23e537]:
+                    - link "Identity‑Aware Proxy, 1 de 1" [ref=f23e538] [cursor=pointer]:
+                      - /url: /iam-admin/iap
+                      - generic [ref=f23e539]:
+                        - img [ref=f23e542]
+                        - generic [ref=f23e544]: Identity‑Aware Proxy
+                    - button "Más opciones" [ref=f23e546] [cursor=pointer]:
+                      - img [ref=f23e548]
+          - generic [ref=f23e553]:
+            - link "Administra recursos de manera jerárquica por proyecto, carpeta y organización." [ref=f23e555] [cursor=pointer]:
+              - /url: /cloud-resource-manager
+              - img [ref=f23e557]:
+                - img [ref=f23e558]
+              - generic [ref=f23e560]: Administrar recursos
+            - separator [ref=f23e561]
+            - button "Explorar Notas de versión de IAM & Admin" [ref=f23e563]:
+              - img [ref=f23e565]:
+                - img [ref=f23e566]
+              - generic [ref=f23e568]: Notas de versión
+          - button "Activar o desactivar el menú de navegación de IAM y administración" [pressed] [ref=f23e570] [cursor=pointer]:
+            - img [ref=f23e573]
+      - main [ref=f23e576]:
+        - progressbar [ref=f23e584]:
+          - img [ref=f23e586]
+          - generic [ref=f23e589]:
+            - img [ref=f23e591]
+            - img [ref=f23e594]
+            - img [ref=f23e597]
+  - iframe [ref=f23e600]:
+    

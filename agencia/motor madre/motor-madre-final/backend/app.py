@@ -1604,27 +1604,34 @@ async def websocket_live_endpoint(websocket: WebSocket):
 
         async def receive_from_gemini():
             try:
+                accumulated_text = ""
                 async for response in session.receive():
                     server_content = response.server_content
                     if server_content is not None:
+                        if server_content.turn_complete:
+                            if accumulated_text.strip():
+                                print(f"[WebSocket] Turno Gemini completado. Enviando texto final: {accumulated_text}", flush=True)
+                                await websocket.send_text(json.dumps({
+                                    "type": "text_final",
+                                    "text": accumulated_text
+                                }))
+                                accumulated_text = ""
+                        
                         model_turn = server_content.model_turn
                         if model_turn is not None:
                             for part in model_turn.parts:
                                 if part.inline_data is not None:
-                                    # Audio PCM (24kHz nativo de Gemini) -> Enviar al frontend
                                     await websocket.send_bytes(part.inline_data.data)
                                 elif part.text is not None:
-                                    print(f"[WebSocket] Gemini texto: {part.text}")
+                                    print(f"[WebSocket] Gemini texto chunk: {part.text}", flush=True)
+                                    accumulated_text += part.text
+                                    await websocket.send_text(json.dumps({
+                                        "type": "text_chunk",
+                                        "text": part.text
+                                    }))
                     if response.tool_call is not None:
-                        print(f"[WebSocket] Gemini tool call recibida...")
-                        # Gemini quiere ejecutar una herramienta
+                        print(f"[WebSocket] Gemini tool call recibida (ignoring and answering OK)...", flush=True)
                         for function_call in response.tool_call.function_calls:
-                            await websocket.send_text(json.dumps({
-                                "type": "tool_call",
-                                "name": function_call.name,
-                                "args": function_call.args
-                            }))
-                            # Responder inmediatamente a Gemini que la tool fue ejecutada
                             await session.send_tool_response(
                                 function_responses=[
                                     types.FunctionResponse(
@@ -1636,7 +1643,7 @@ async def websocket_live_endpoint(websocket: WebSocket):
             except asyncio.CancelledError:
                 pass
             except Exception as e:
-                print("[WebSocket] Error Gemini:", e)
+                print("[WebSocket] Error Gemini:", e, flush=True)
 
         # Handshake: notify client that session is ready
         print("[WebSocket] Enviando mensaje ready a cliente...")
@@ -1684,21 +1691,20 @@ async def websocket_live_endpoint(websocket: WebSocket):
             location=VERTEX_LOCATION,
         )
         model_vertex = "gemini-live-2.5-flash-native-audio"
-        print(f"[WebSocket] Intentando conectar a Gemini Live en Vertex AI ({model_vertex})...")
+        print(f"[WebSocket] Intentando conectar a Gemini Live en Vertex AI ({model_vertex})...", flush=True)
         
         async with client_vertex.aio.live.connect(
             model=model_vertex,
             config=types.LiveConnectConfig(
                 response_modalities=["AUDIO"],
-                system_instruction=types.Content(parts=[types.Part.from_text(text=sys_prompt)]),
-                tools=tools
+                system_instruction=types.Content(parts=[types.Part.from_text(text=sys_prompt)])
             )
         ) as session:
-            print("[WebSocket] Conectado a Gemini Live API en Vertex AI con éxito.")
+            print("[WebSocket] Conectado a Gemini Live API en Vertex AI con éxito.", flush=True)
             connected = True
             await run_live_loop(session)
     except Exception as e_vertex:
-        print("[WebSocket] Fallo de conexión a Vertex AI:", e_vertex)
+        print("[WebSocket] Fallo de conexión a Vertex AI:", e_vertex, flush=True)
 
     # Capa 2: Fallback a AI Studio si Vertex AI falla o da error 1008 (usando API key provista)
     if not connected:
@@ -1707,24 +1713,23 @@ async def websocket_live_endpoint(websocket: WebSocket):
             try:
                 client_studio = genai.Client(api_key=api_key_env)
                 model_studio = "gemini-3.1-flash-live-preview"
-                print(f"[WebSocket] Fallback: Intentando conectar a Gemini Live en AI Studio ({model_studio})...")
+                print(f"[WebSocket] Fallback: Intentando conectar a Gemini Live en AI Studio ({model_studio})...", flush=True)
                 
                 async with client_studio.aio.live.connect(
                     model=model_studio,
                     config=types.LiveConnectConfig(
                         response_modalities=["AUDIO"],
-                        system_instruction=types.Content(parts=[types.Part.from_text(text=sys_prompt)]),
-                        tools=tools
+                        system_instruction=types.Content(parts=[types.Part.from_text(text=sys_prompt)])
                     )
                 ) as session:
-                    print("[WebSocket] Conectado a Gemini Live API en AI Studio con éxito.")
+                    print("[WebSocket] Conectado a Gemini Live API en AI Studio con éxito.", flush=True)
                     connected = True
                     await run_live_loop(session)
             except Exception as e_studio:
-                print("[WebSocket] Fallo de conexión a AI Studio:", e_studio)
+                print("[WebSocket] Fallo de conexión a AI Studio:", e_studio, flush=True)
 
     if not connected:
-        print("[WebSocket] No se pudo establecer conexión con ninguna plataforma de Gemini Live.")
+        print("[WebSocket] No se pudo establecer conexión con ninguna plataforma de Gemini Live.", flush=True)
         await websocket.close(code=1008, reason="No se pudo iniciar la sesión de Gemini Live")
 
 

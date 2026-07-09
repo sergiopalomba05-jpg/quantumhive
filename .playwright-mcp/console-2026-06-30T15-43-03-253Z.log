@@ -1,0 +1,10 @@
+[    1118ms] TypeError: Cannot read properties of null (reading 'length')
+    at Object.acquireContext (https://yaspapeobeauty.com/static/vendor/chart.js/Chart.min.js:7:86074)
+    at tn.construct (https://yaspapeobeauty.com/static/vendor/chart.js/Chart.min.js:7:102546)
+    at new tn (https://yaspapeobeauty.com/static/vendor/chart.js/Chart.min.js:7:102287)
+    at https://yaspapeobeauty.com/static/js/demo/chart-area-demo.js:32:19
+[    1119ms] TypeError: Cannot read properties of null (reading 'length')
+    at Object.acquireContext (https://yaspapeobeauty.com/static/vendor/chart.js/Chart.min.js:7:86074)
+    at tn.construct (https://yaspapeobeauty.com/static/vendor/chart.js/Chart.min.js:7:102546)
+    at new tn (https://yaspapeobeauty.com/static/vendor/chart.js/Chart.min.js:7:102287)
+    at https://yaspapeobeauty.com/static/js/demo/chart-pie-demo.js:7:18

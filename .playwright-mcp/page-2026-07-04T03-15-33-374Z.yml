@@ -1,0 +1,236 @@
+- generic [ref=f13e3]:
+  - generic [ref=f13e4]:
+    - complementary "Omitir vínculos" [ref=f13e5]:
+      - link "Ir al contenido principal" [ref=f13e6] [cursor=pointer]:
+        - /url: /agent-platform/studio/agent-designer/list?project=project-aa5fb956-b08a-4e13-869
+        - generic [ref=f13e7]: Ir al contenido principal
+      - button "Combinación de teclas para acceso directo" [ref=f13e8]:
+        - generic [ref=f13e9]: Combinación de teclas para acceso directo
+      - link "Ayuda sobre la accesibilidad externo, se abre en una ventana nueva" [ref=f13e10] [cursor=pointer]:
+        - /url: https://cloud.google.com/docs/accessibility?hl=en_US
+        - generic [ref=f13e11]:
+          - text: Ayuda sobre la accesibilidad
+          - generic "externo, se abre en una ventana nueva" [ref=f13e12]:
+            - img "externo, se abre en una ventana nueva" [ref=f13e13]:
+              - img [ref=f13e14]
+      - link "Comentarios sobre accesibilidad externo, se abre en una ventana nueva" [ref=f13e16] [cursor=pointer]:
+        - /url: https://support.google.com/accessibility/contact/feedback?hl=en_US
+        - generic [ref=f13e17]:
+          - text: Comentarios sobre accesibilidad
+          - generic "externo, se abre en una ventana nueva" [ref=f13e18]:
+            - img "externo, se abre en una ventana nueva" [ref=f13e19]:
+              - img [ref=f13e20]
+    - banner [ref=f13e23]:
+      - generic [ref=f13e24]:
+        - navigation [ref=f13e27]:
+          - button "Menú de navegación (.)" [ref=f13e28] [cursor=pointer]:
+            - img [ref=f13e30]
+        - link "Google Cloud Platform - Página principal" [ref=f13e32] [cursor=pointer]:
+          - /url: /
+          - generic:
+            - img
+        - button "Actualmente, estás trabajando en My First Project. Presiona Intro para cambiar de proyecto, de carpeta o de organización." [ref=f13e40]:
+          - generic [ref=f13e41]:
+            - img [ref=f13e43]
+            - generic [ref=f13e46]: My First Project
+      - button "Abrir la búsqueda" [ref=f13e53] [cursor=pointer]:
+        - img [ref=f13e55]
+      - generic [ref=f13e57]:
+        - generic [ref=f13e58]:
+          - button "Abrir chat de Gemini AI (Alt G)" [ref=f13e62] [cursor=pointer]:
+            - img [ref=f13e64]
+          - button "Activar Cloud Shell (G then S)" [ref=f13e262] [cursor=pointer]:
+            - img [ref=f13e264]
+          - button "Abrir notificaciones" [ref=f13e72] [cursor=pointer]:
+            - img [ref=f13e74]
+          - button "Configuración y utilidades" [ref=f13e80] [cursor=pointer]:
+            - img [ref=f13e82]
+        - 'button "Cuenta: Sergio Palomba (sergiopalomba05@gmail.com)" [ref=f13e88]':
+          - img [ref=f13e89]
+  - generic [ref=f13e98]:
+    - generic [ref=f13e99]:
+      - status "Comunicación" [ref=f13e271]:
+        - img [ref=f13e274]:
+          - img [ref=f13e275]
+        - generic [ref=f13e277]:
+          - generic [ref=f13e279]: Actualmente, estás generando cargos en tu cuenta de facturación My Billing Account 1 a partir del 10 de junio de 2026.
+          - link "Más información sobre Google Cloud" [ref=f13e280] [cursor=pointer]:
+            - /url: https://cloud.google.com/free/docs/free-cloud-features#understanding-costs
+            - text: Learn more
+        - button "Descartar" [ref=f13e282]:
+          - generic [ref=f13e283]: Descartar
+        - button "Ver los costos en facturación" [ref=f13e285]:
+          - generic [ref=f13e286]: Ver los costos en facturación
+      - navigation "Ruta de navegación" [ref=f13e103]:
+        - link "Plataforma de agentes" [ref=f13e106] [cursor=pointer]:
+          - /url: /agent-platform?project=project-aa5fb956-b08a-4e13-869
+          - img [ref=f13e109]
+          - generic [ref=f13e112]: Plataforma de agentes
+        - list [ref=f13e113]:
+          - listitem [ref=f13e114]:
+            - generic [ref=f13e115]: /
+            - link "Studio" [ref=f13e118] [cursor=pointer]:
+              - /url: /agent-platform/studio?project=project-aa5fb956-b08a-4e13-869
+              - generic [ref=f13e120]: Studio
+          - listitem [ref=f13e121]:
+            - generic [ref=f13e122]: /
+            - link "Agentes" [ref=f13e125] [cursor=pointer]:
+              - /url: /agent-platform/studio/agent-designer/list?project=project-aa5fb956-b08a-4e13-869
+              - generic [ref=f13e127]: Agentes
+          - listitem [ref=f13e287]:
+            - generic [ref=f13e288]: /
+            - link "Nuevo agente" [ref=f13e291] [cursor=pointer]:
+              - /url: /agent-platform/studio/agent-designer/edit/new?project=project-aa5fb956-b08a-4e13-869
+              - generic [ref=f13e293]: Nuevo agente
+    - main [ref=f13e139]:
+      - generic [ref=f13e152]:
+        - generic [ref=f13e155]:
+          - generic [ref=f13e156]:
+            - button "Nuevo" [ref=f13e161] [cursor=pointer]:
+              - img [ref=f13e163]
+              - generic [ref=f13e165]: Nuevo
+            - generic [ref=f13e166]:
+              - link "Agentes" [ref=f13e168] [cursor=pointer]:
+                - /url: /agent-platform/studio/agent-designer/list?project=project-aa5fb956-b08a-4e13-869
+                - img [ref=f13e170]
+                - generic [ref=f13e172]: Agentes
+              - link "Creador de apps" [ref=f13e174] [cursor=pointer]:
+                - /url: /agent-platform/studio/build?project=project-aa5fb956-b08a-4e13-869
+                - img [ref=f13e176]
+                - generic [ref=f13e178]: Creador de apps
+              - link "Genera contenido multimedia" [ref=f13e180] [cursor=pointer]:
+                - /url: /agent-platform/studio/media?project=project-aa5fb956-b08a-4e13-869
+                - img [ref=f13e182]
+                - generic [ref=f13e185]: Genera contenido multimedia
+            - generic [ref=f13e188]:
+              - generic [ref=f13e189]: Recientes
+              - list [ref=f13e190]:
+                - listitem [ref=f13e191]:
+                  - button "carta qr" [ref=f13e192] [cursor=pointer]:
+                    - generic [ref=f13e193]: carta qr
+                - listitem [ref=f13e194]:
+                  - button "video cambiar avatar" [ref=f13e195] [cursor=pointer]:
+                    - generic [ref=f13e196]: video cambiar avatar
+              - button "Ver todas las instrucciones" [ref=f13e197] [cursor=pointer]:
+                - generic [ref=f13e198]: Ver todo
+          - generic [ref=f13e199]:
+            - generic [ref=f13e200]:
+              - link "Obtener una clave de API" [ref=f13e203] [cursor=pointer]:
+                - /url: /agent-platform/studio/settings/api-keys?project=project-aa5fb956-b08a-4e13-869
+                - img [ref=f13e205]
+                - generic [ref=f13e208]: Obtener una clave de API
+              - link "Documentación, se abre en una ventana nueva" [ref=f13e209] [cursor=pointer]:
+                - /url: https://cloud.google.com/gemini-enterprise-agent-platform/console-link-studio
+                - img [ref=f13e211]
+                - generic [ref=f13e213]: Documentación
+                - img [ref=f13e215]
+              - link "Configuración" [ref=f13e218] [cursor=pointer]:
+                - /url: /agent-platform/studio/settings?project=project-aa5fb956-b08a-4e13-869
+                - img [ref=f13e220]
+                - generic [ref=f13e222]: Configuración
+                - button "Tema de color" [ref=f13e224]:
+                  - img [ref=f13e226]
+            - button "Activar o desactivar el menú de navegación" [expanded] [ref=f13e230] [cursor=pointer]:
+              - img [ref=f13e232]
+        - main [ref=f13e234]:
+          - generic [ref=f13e298]:
+            - generic [ref=f13e300]:
+              - generic [ref=f13e301]:
+                - button "Back to Agents" [ref=f13e303] [cursor=pointer]
+                - generic [ref=f13e307]:
+                  - generic [ref=f13e310]: L
+                  - generic [ref=f13e313]:
+                    - generic [ref=f13e314]: La Escaloneta
+                    - generic [ref=f13e315]: Vista previa
+              - generic [ref=f13e317]:
+                - generic [ref=f13e319] [cursor=pointer]: Flow
+                - generic [ref=f13e321] [cursor=pointer]: Preview
+              - generic [ref=f13e322]:
+                - button "Undo" [ref=f13e510] [cursor=pointer]
+                - generic:
+                  - button "Redo" [disabled]
+                - button "Save" [ref=f13e326] [cursor=pointer]:
+                  - generic [ref=f13e328]:
+                    - generic: Save
+            - generic [ref=f13e333]:
+              - generic [ref=f13e335]:
+                - img [ref=f13e337]
+                - generic:
+                  - generic:
+                    - img [ref=f13e340]
+                    - generic [ref=f13e347] [cursor=pointer]:
+                      - generic [ref=f13e354]: La Escaloneta
+                      - generic [ref=f13e356]: No se agregó información
+              - generic [ref=f13e365]:
+                - generic "Fit to Screen" [ref=f13e366]:
+                  - button "Fit to Screen" [ref=f13e367] [cursor=pointer]
+                - generic "Zoom In" [ref=f13e371]:
+                  - button "Zoom In" [ref=f13e372] [cursor=pointer]
+                - generic "Zoom Out" [ref=f13e376]:
+                  - button "Zoom Out" [ref=f13e377] [cursor=pointer]
+              - generic [ref=f13e384]:
+                - generic [ref=f13e385]:
+                  - heading "Details" [level=3] [ref=f13e387]
+                  - button "Close panel" [ref=f13e390] [cursor=pointer]
+                - generic [ref=f13e396]:
+                  - generic [ref=f13e397]:
+                    - generic [ref=f13e399]:
+                      - generic [ref=f13e400]:
+                        - text: Nombre
+                        - img "Required" [ref=f13e401]: "*"
+                      - generic [ref=f13e405]:
+                        - textbox "Nombre del agente" [ref=f13e411]:
+                          - /placeholder: Ingresa un nombre
+                          - text: La Escaloneta
+                        - generic [ref=f13e413]: 13 / 128
+                    - generic [ref=f13e414]:
+                      - generic [ref=f13e416]:
+                        - text: Descripción
+                        - img "Required" [ref=f13e417]: "*"
+                      - generic [ref=f13e422]:
+                        - textbox "Descripción del agente" [ref=f13e427]:
+                          - /placeholder: Explica el propósito y las capacidades de este agente
+                        - generic [ref=f13e429]: 0 / 500000
+                    - generic [ref=f13e430]:
+                      - generic [ref=f13e432]:
+                        - text: Instrucciones
+                        - img "Required" [ref=f13e433]: "*"
+                      - generic [ref=f13e438]:
+                        - textbox "Instrucciones del agente" [ref=f13e443]:
+                          - /placeholder: Instruye a este agente sobre sus objetivos y su comportamiento
+                        - generic [ref=f13e445]: 0 / 500000
+                    - generic [ref=f13e446]:
+                      - generic [ref=f13e448]: Modelo
+                      - generic [ref=f13e451]:
+                        - combobox "Modelo del agente" [ref=f13e452]:
+                          - generic [ref=f13e455]:
+                            - generic [ref=f13e458]: Gemini 3.5 Flash
+                            - img [ref=f13e462]
+                        - generic:
+                          - generic:
+                            - generic: Gemini 3.5 Flash
+                          - generic:
+                            - generic: Gemini 3.1 Pro (preview)
+                          - generic:
+                            - generic: Gemini 2.5 Flash
+                          - generic:
+                            - generic: Gemini 2.5 Pro
+                  - group [ref=f13e465]:
+                    - generic "Herramientas Habilita el agente para completar tareas" [ref=f13e466] [cursor=pointer]:
+                      - generic [ref=f13e468]:
+                        - generic [ref=f13e469]: Herramientas
+                        - generic [ref=f13e470]: Habilita el agente para completar tareas
+                    - generic [ref=f13e475]:
+                      - generic [ref=f13e483]:
+                        - generic:
+                          - textbox: "Tools: Búsqueda de Google; Tools: Contexto de URL"
+                      - generic [ref=f13e484]:
+                        - generic [ref=f13e485]:
+                          - generic [ref=f13e486]:
+                            - generic [ref=f13e488]: Búsqueda de Google
+                            - button "Remove" [ref=f13e490] [cursor=pointer]
+                          - generic [ref=f13e494]:
+                            - generic [ref=f13e497]: Contexto de URL
+                            - button "Remove" [ref=f13e499] [cursor=pointer]
+                        - generic "Agregar herramientas" [ref=f13e504] [cursor=pointer]:
+                          - button "Agregar herramientas" [ref=f13e505]

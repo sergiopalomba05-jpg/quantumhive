@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Yaspapeobeauty · Empleada virtual IA</title>
+<style>
+  :root {
+    --bg: #fff7fb;
+    --bg-soft: #fff0f6;
+    --card: #ffffff;
+    --rose: #d6336c;
+    --rose-dark: #a61e4d;
+    --rose-soft: #ffe0ec;
+    --ink: #4a1630;
+    --muted: #7a5267;
+    --line: #f2cad8;
+    --gold: #f5c96a;
+    --shadow: 0 16px 44px rgba(214, 51, 108, 0.12);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+    background: linear-gradient(180deg, #fff9fc 0%, #fff2f7 100%);
+    color: var(--ink);
+    line-height: 1.55;
+  }
+  .wrap {
+    width: min(100%, 980px);
+    margin: 0 auto;
+    padding: 0 16px 48px;
+  }
+  .hero {
+    padding: 32px 0 18px;
+  }
+  .hero-card {
+    background: radial-gradient(circle at top left, #f783ac 0%, #d6336c 42%, #8f1843 100%);
+    color: #fff;
+    border-radius: 28px;
+    padding: 28px 20px 24px;
+    box-shadow: 0 18px 48px rgba(166, 30, 77, 0.28);
+    overflow: hidden;
+    position: relative;
+  }
+  .hero-card::after {
+    content: "";
+    position: absolute;
+    inset: auto -40px -60px auto;
+    width: 180px;
+    height: 180px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.16);
+    border: 1px solid rgba(255,255,255,0.22);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  h1 {
+    margin: 16px 0 10px;
+    font-size: clamp(2rem, 7vw, 3.3rem);
+    line-height: 1.02;
+    letter-spacing: -.03em;
+  }
+  .hero p {
+    margin: 0;
+    font-size: 1rem;
+    max-width: 56ch;
+    opacity: .96;
+  }
+  .hero-grid {
+    display: grid;
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .pill {
+    display: inline-flex;
+    width: fit-content;
+    padding: 9px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.20);
+    font-size: .9rem;
+  }
+  section {
+    margin-top: 18px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    box-shadow: var(--shadow);
+    padding: 22px 18px;
+  }
+  h2 {
+    margin: 0 0 10px;
+    font-size: clamp(1.35rem, 5.5vw, 2rem);
+    color: var(--rose-dark);
+    letter-spacing: -.02em;
+  }
+  h3 {
+    margin: 0 0 8px;
+    font-size: 1.08rem;
+    color: var(--rose-dark);
+  }
+  p.lead {
+    margin: 0;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+  .grid {
+    display: grid;
+    gap: 14px;
+    margin-top: 16px;
+  }
+  .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  @media (max-width: 860px) {
+    .grid.two, .grid.three { grid-template-columns: 1fr; }
+  }
+  .mini-card {
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, #fff 0%, var(--bg-soft) 100%);
+    padding: 18px 16px;
+  }
+  .mini-card p { margin: 0; color: var(--muted); }
+  .tag {
+    display: inline-flex;
+    width: fit-content;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: var(--rose-soft);
+    color: var(--rose-dark);
+    font-size: .75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 12px;
+  }
+  ul.clean {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  ul.clean li {
+    position: relative;
+    padding-left: 26px;
+    margin: 10px 0;
+    color: var(--muted);
+  }
+  ul.clean li::before {
+    content: "✦";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--rose);
+    font-weight: 700;
+  }
+  .highlight {
+    background: linear-gradient(135deg, #fff4d6 0%, #ffe8b2 100%);
+    border: 1px solid #f5d48c;
+    color: #7a4c00;
+    border-radius: 18px;
+    padding: 16px;
+    margin-top: 16px;
+  }
+  .flow {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .flow-step {
+    border-radius: 18px;
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 16px;
+  }
+  .flow-step strong {
+    display: block;
+    color: var(--rose-dark);
+    margin-bottom: 8px;
+  }
+  .plan {
+    border-radius: 24px;
+    border: 1px solid var(--line);
+    padding: 20px 18px;
+    background: linear-gradient(180deg, #fff 0%, #fff7fb 100%);
+    box-shadow: var(--shadow);
+  }
+  .price {
+    margin: 12px 0 0;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--rose-dark);
+    letter-spacing: -.04em;
+  }
+  .price small {
+    font-size: .95rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .price-stack {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .price-old {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #c06b88;
+    text-decoration: line-through;
+    text-decoration-thickness: 3px;
+    opacity: .9;
+  }
+  .subprice {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: .95rem;
+  }
+  .divider {
+    height: 1px;
+    background: var(--line);
+    margin: 18px 0;
+  }
+  .footer-note {
+    text-align: center;
+    margin-top: 24px;
+    color: var(--muted);
+    font-size: .86rem;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-card">
+        <div class="eyebrow">Agente IA humanizado · Yaspapeobeauty</div>
+        <h1>Empleada virtual IA para atención, diagnóstico y agenda</h1>
+        <p>Una empleada virtual preparada con la información real del salón para mantener la forma de tratar a cada clienta, hacer diagnósticos súper personalizados, convertir más conversaciones en turnos concretos y dejar que la tecnología quede invisible: lo único que se siente es la calidez de Yaspapeobeauty.</p>
+        <div class="hero-grid">
+          <span class="pill">Atiende 24/7 en cualquier horario</span>
+          <span class="pill">Puede hablar con varias clientas al mismo tiempo sin perder la atención individual, cálida y especial en cada clienta</span>
+          <span class="pill">No pierde el hilo de cada conversación</span>
+          <span class="pill">Se conecta con la agenda actual del salón</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2>Qué hace la empleada virtual</h2>
+        <p class="lead">La empleada virtual no reemplaza por algo frío la forma de atender del salón: la sostiene, la replica y la escala para poder contestar todos los mensajes automáticamente, no hacer esperar a las clientas y evitar que se llene el WhatsApp de conversaciones sin responder.</p>
+        <div class="grid three">
+          <div class="mini-card">
+            <div class="tag">Ninguna clienta sin respuesta</div>
+            <h3>24/7 sin saturar el WhatsApp</h3>
+            <p>Puede hablar con varias clientas al mismo tiempo sin perder la atención individual, cálida y especial en cada clienta, y sin dejar mensajes sin responder.</p>
+          </div>
+          <div class="mini-card">
+            <div class="tag">Trato humanizado</div>
+            <h3>Nunca a un robot</h3>
+            <p>Suena como alguien del salón que quiere a sus clientas, nunca a un robot. La atención se siente cálida, cercana y alineada con la identidad de Yaspapeobeauty.</p>
+          </div>
+          <div class="mini-card">
+            <div class="tag">Diagnóstico real</div>
+            <h3>Personalizado según cada caso</h3>
+            <p>Hace preguntas cortas y naturales para detectar si corresponde CPLEX, Botox, Keratina Plex, Alisado Plex, Keratina libre de formol o Alisado Brazilian, y luego informa precio, seña, duración, compatibilidades, horarios y política de reserva.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2>Embudo actual del salón</h2>
+        <p class="lead">La conversación entra desde Instagram y el link de WhatsApp. Desde ahí, la empleada virtual toma la consulta, diagnostica y acompaña hasta la reserva. Cada clienta puede elegir entre <b>agendar su turno online en el momento</b> o esperar un <b>asesoramiento 100% personalizado</b>, sin minimizar nunca el valor del trato humano.</p>
+        <div class="flow">
+          <div class="flow-step">
+            <strong>1. Instagram → WhatsApp</strong>
+            El embudo arranca en Instagram y lleva a la clienta al enlace de WhatsApp del salón: <b>https://walink.co/6a58d1</b>
+          </div>
+          <div class="flow-step">
+            <strong>2. El agente recibe la consulta</strong>
+            Puede responder texto y audio, en tiempo real, con el tono real del equipo de Yaspapeobeauty y sin perder el hilo de cada conversación.
+          </div>
+          <div class="flow-step">
+            <strong>3. Hace el diagnóstico correspondiente</strong>
+            Evalúa objetivo, estructura del cabello, tintura, decoloración, canas naturales, necesidad de mantenimiento y compatibilidades.
+          </div>
+          <div class="flow-step">
+            <strong>4. Informa y agenda si corresponde</strong>
+            Si la clienta ya está decidida, avanza con el turno, la seña y la agenda. Si prefiere contención del equipo, se la deriva a atención humana personalizada, que responde de <b>lunes a viernes de 9hs a 14hs</b>.
+          </div>
+          <div class="flow-step">
+            <strong>5. Cada clienta elige cómo quiere avanzar</strong>
+            Hay clientas que quieren resolver rápido y agendar su turno online en el momento, otras que prefieren esperar a hablar con una persona, y otras que ya vienen hace mucho y saben qué hacerse.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2>Diagnóstico y precio súper personalizados</h2>
+        <p class="lead">El agente ya puede trabajar con la lógica real del salón para responder con mucha más precisión que un chat automático básico.</p>
+        <div class="grid two">
+          <div class="mini-card">
+            <h3>Evalúa cada caso según:</h3>
+            <ul class="clean">
+              <li>Si la clienta quiere mantener la forma natural o busca más lacio.</li>
+              <li>Si el pelo está reseco, opaco, con frizz, poroso, dañado o sensibilizado.</li>
+              <li>Si tiene tintura, decoloración o canas naturales sin teñir.</li>
+              <li>Si corresponde un tratamiento de nutrición, reconstrucción, relajación o alisado.</li>
+              <li>Si está consultando por repetir tratamiento o por compatibilidad con futuros procesos químicos.</li>
+            </ul>
+          </div>
+          <div class="mini-card">
+            <h3>Puede informar con detalle:</h3>
+            <ul class="clean">
+              <li>Rangos de precio por tratamiento.</li>
+              <li>Valor de la seña según el servicio.</li>
+              <li>Tiempo estimado del proceso.</li>
+              <li>Recomendaciones de mantenimiento y repetición.</li>
+              <li>Compatibilidades entre tratamientos, tintura y decoloración.</li>
+              <li>Qué servicio conviene según el objetivo real de cada clienta.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="highlight">
+          <b>Ejemplos de precios que ya puede manejar:</b><br />
+          Botox y Keratina Plex: <b>$115.000 a $130.000</b><br />
+          Alisado Plex: <b>$150.000 a $180.000</b><br />
+          Keratina libre de formol: <b>$150.000 a $170.000</b><br />
+          Alisado Brazilian: <b>$260.000 a $315.000</b><br />
+          Y además puede explicar la <b>seña correspondiente</b>, la política de reprogramación y el envío de comprobante dentro de las próximas 2 horas.
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2>Implementación inicial</h2>
+        <p class="lead">Ya está hecha y en este caso quedaría bonificada. Esa base deja lista a la empleada virtual para pasar a producción real con la personalidad, el conocimiento y la lógica comercial del salón cargados.</p>
+        <div class="price-stack">
+          <div class="price-old">USD 600</div>
+          <div class="price">Bonificado</div>
+        </div>
+        <div class="grid two">
+          <div class="mini-card">
+            <h3>Ese setup inicial incluye:</h3>
+            <ul class="clean">
+              <li>Carga del conocimiento real del salón.</li>
+              <li>Armado del agente, de la personalidad, tono y lógica comercial.</li>
+              <li>Adaptación al entorno de la empleada virtual para que se integre como una nueva integrante del equipo.</li>
+              <li>Configuración del diagnóstico por tratamientos, precios, señas, compatibilidades y agenda.</li>
+            </ul>
+          </div>
+          <div class="mini-card">
+            <h3>Qué cubre el valor mensual</h3>
+            <ul class="clean">
+              <li>Los gastos fijos mensuales de la empleada virtual.</li>
+              <li>Base de datos vectorial privada para memoria.</li>
+              <li>Motor de IA conversacional.</li>
+              <li>Motor de voz para audio humanizado.</li>
+              <li>Mantenimiento técnico, monitoreo y ajustes continuos.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2>Planes</h2>
+        <div class="grid two">
+          <div class="plan">
+            <div class="tag">Plan Base</div>
+            <h3>Empleada virtual para WhatsApp</h3>
+            <div class="price">USD 300 <small>/ mes</small></div>
+            <div class="divider"></div>
+            <ul class="clean">
+              <li>Atención automática 24/7 en WhatsApp.</li>
+              <li>Diagnóstico personalizado según cada clienta y su caso.</li>
+              <li>Respuesta con precios, señas, horarios, ubicación, formas de pago y políticas de reserva.</li>
+              <li>Capacidad de atender varias conversaciones a la vez sin perder el hilo.</li>
+              <li>Conexión con la agenda actual del salón para crear o gestionar turnos.</li>
+              <li>Soporte para texto y audio humanizado.</li>
+            </ul>
+          </div>
+
+          <div class="plan">
+            <div class="tag">Plan Plus</div>
+            <h3>Todo lo del Base + Memoria e integración en Instagram</h3>
+            <div class="price">USD 400 <small>/ mes</small></div>
+            <div class="subprice">Versión premium con seguimiento y personalización más profunda</div>
+            <div class="divider"></div>
+            <ul class="clean">
+              <li>Todo lo incluido en el Plan Base.</li>
+              <li>Memoria persistente en <b>base de datos vectorial privada</b> para recordar historial, preferencias y contexto.</li>
+              <li>Recordatorios de turnos antes de la cita.</li>
+              <li>Le manda un <b>audio preguntando cómo va el tratamiento</b>, cómo le quedó o cómo lo siente, y también puede enviar mensajes de seguimiento con ofertas o recordatorios cada cierto tiempo.</li>
+              <li>Mantiene la retención de clientes activa ofreciendo un trato más personalizado a cada clienta.</li>
+              <li>Integración del mismo agente para contestar también los mensajes de Instagram.</li>
+              <li>Opción de <b>clonación de voz</b> si el equipo lo desea, para que el agente pueda sonar prácticamente idéntico a una integrante y resulte imperceptible.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2>Resultado buscado</h2>
+        <p class="lead">Que el equipo de Yaspapeobeauty pueda sumar una <b>nueva integrante</b> en forma de empleada virtual: atendiendo a varias clientas al mismo tiempo, sin dejar conversaciones pendientes, sin saturar el WhatsApp, dando un diagnóstico real a cada una según su caso y avanzando a turno cuando corresponda, mientras mantiene intacta la calidez con la que el salón trata a cada clienta.</p>
+      </div>
+    </section>
+
+    <div class="footer-note">QuantumHive · Propuesta comercial para Yaspapeobeauty</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,244 @@
+- generic [ref=f13e1]:
+  - generic [ref=f13e3]:
+    - generic [ref=f13e4]:
+      - complementary [ref=f13e514]:
+        - link [ref=f13e515] [cursor=pointer]:
+          - /url: /agent-platform/studio/agent-designer/list?project=project-aa5fb956-b08a-4e13-869
+          - generic [ref=f13e7]: Ir al contenido principal
+        - button [ref=f13e516]:
+          - generic [ref=f13e9]: Combinación de teclas para acceso directo
+        - link [ref=f13e517] [cursor=pointer]:
+          - /url: https://cloud.google.com/docs/accessibility?hl=en_US
+          - generic [ref=f13e11]:
+            - text: Ayuda sobre la accesibilidad
+            - img [ref=f13e519]:
+              - img [ref=f13e14]
+        - link [ref=f13e520] [cursor=pointer]:
+          - /url: https://support.google.com/accessibility/contact/feedback?hl=en_US
+          - generic [ref=f13e17]:
+            - text: Comentarios sobre accesibilidad
+            - img [ref=f13e522]:
+              - img [ref=f13e20]
+      - banner [ref=f13e23]:
+        - generic [ref=f13e24]:
+          - navigation [ref=f13e27]:
+            - button [ref=f13e523] [cursor=pointer]:
+              - img [ref=f13e30]
+          - link [ref=f13e524] [cursor=pointer]:
+            - /url: /
+            - generic:
+              - img
+          - button [ref=f13e525]:
+            - generic [ref=f13e41]:
+              - img [ref=f13e43]
+              - generic [ref=f13e46]: My First Project
+        - button [ref=f13e526] [cursor=pointer]:
+          - img [ref=f13e55]
+        - generic [ref=f13e57]:
+          - generic [ref=f13e58]:
+            - button [ref=f13e527] [cursor=pointer]:
+              - img [ref=f13e64]
+            - button [ref=f13e528] [cursor=pointer]:
+              - img [ref=f13e264]
+            - button [ref=f13e529] [cursor=pointer]:
+              - img [ref=f13e74]
+            - button [ref=f13e530] [cursor=pointer]:
+              - img [ref=f13e82]
+          - button [ref=f13e531]:
+            - img [ref=f13e89]
+    - generic [ref=f13e98]:
+      - generic [ref=f13e99]:
+        - status [ref=f13e532]:
+          - img [ref=f13e274]:
+            - img [ref=f13e275]
+          - generic [ref=f13e277]:
+            - generic [ref=f13e279]: Actualmente, estás generando cargos en tu cuenta de facturación My Billing Account 1 a partir del 10 de junio de 2026.
+            - link [ref=f13e533] [cursor=pointer]:
+              - /url: https://cloud.google.com/free/docs/free-cloud-features#understanding-costs
+              - text: Learn more
+          - button [ref=f13e534]:
+            - generic [ref=f13e283]: Descartar
+          - button [ref=f13e535]:
+            - generic [ref=f13e286]: Ver los costos en facturación
+        - navigation [ref=f13e536]:
+          - link [ref=f13e537] [cursor=pointer]:
+            - /url: /agent-platform?project=project-aa5fb956-b08a-4e13-869
+            - img [ref=f13e109]
+            - generic [ref=f13e112]: Plataforma de agentes
+          - list [ref=f13e113]:
+            - listitem [ref=f13e114]:
+              - generic [ref=f13e115]: /
+              - link [ref=f13e538] [cursor=pointer]:
+                - /url: /agent-platform/studio?project=project-aa5fb956-b08a-4e13-869
+                - generic [ref=f13e120]: Studio
+            - listitem [ref=f13e121]:
+              - generic [ref=f13e122]: /
+              - link [ref=f13e539] [cursor=pointer]:
+                - /url: /agent-platform/studio/agent-designer/list?project=project-aa5fb956-b08a-4e13-869
+                - generic [ref=f13e127]: Agentes
+            - listitem [ref=f13e287]:
+              - generic [ref=f13e288]: /
+              - link [ref=f13e540] [cursor=pointer]:
+                - /url: /agent-platform/studio/agent-designer/edit/new?project=project-aa5fb956-b08a-4e13-869
+                - generic [ref=f13e293]: Nuevo agente
+      - main [ref=f13e139]:
+        - generic [ref=f13e152]:
+          - generic [ref=f13e155]:
+            - generic [ref=f13e156]:
+              - button [ref=f13e541] [cursor=pointer]:
+                - img [ref=f13e163]
+                - generic [ref=f13e165]: Nuevo
+              - generic [ref=f13e166]:
+                - link [ref=f13e542] [cursor=pointer]:
+                  - /url: /agent-platform/studio/agent-designer/list?project=project-aa5fb956-b08a-4e13-869
+                  - img [ref=f13e170]
+                  - generic [ref=f13e172]: Agentes
+                - link [ref=f13e543] [cursor=pointer]:
+                  - /url: /agent-platform/studio/build?project=project-aa5fb956-b08a-4e13-869
+                  - img [ref=f13e176]
+                  - generic [ref=f13e178]: Creador de apps
+                - link [ref=f13e544] [cursor=pointer]:
+                  - /url: /agent-platform/studio/media?project=project-aa5fb956-b08a-4e13-869
+                  - img [ref=f13e182]
+                  - generic [ref=f13e185]: Genera contenido multimedia
+              - generic [ref=f13e188]:
+                - generic [ref=f13e189]: Recientes
+                - list [ref=f13e190]:
+                  - listitem [ref=f13e191]:
+                    - button [ref=f13e545] [cursor=pointer]:
+                      - generic [ref=f13e193]: carta qr
+                  - listitem [ref=f13e194]:
+                    - button [ref=f13e546] [cursor=pointer]:
+                      - generic [ref=f13e196]: video cambiar avatar
+                - button [ref=f13e547] [cursor=pointer]:
+                  - generic [ref=f13e198]: Ver todo
+            - generic [ref=f13e199]:
+              - generic [ref=f13e200]:
+                - link [ref=f13e548] [cursor=pointer]:
+                  - /url: /agent-platform/studio/settings/api-keys?project=project-aa5fb956-b08a-4e13-869
+                  - img [ref=f13e205]
+                  - generic [ref=f13e208]: Obtener una clave de API
+                - link [ref=f13e549] [cursor=pointer]:
+                  - /url: https://cloud.google.com/gemini-enterprise-agent-platform/console-link-studio
+                  - img [ref=f13e211]
+                  - generic [ref=f13e213]: Documentación
+                  - img [ref=f13e215]
+                - link [ref=f13e550] [cursor=pointer]:
+                  - /url: /agent-platform/studio/settings?project=project-aa5fb956-b08a-4e13-869
+                  - img [ref=f13e220]
+                  - generic [ref=f13e222]: Configuración
+                  - button [ref=f13e551]:
+                    - img [ref=f13e226]
+              - button [expanded] [ref=f13e552] [cursor=pointer]:
+                - img [ref=f13e232]
+          - main [ref=f13e234]:
+            - generic [ref=f13e298]:
+              - generic [ref=f13e300]:
+                - generic [ref=f13e301]:
+                  - button [ref=f13e553] [cursor=pointer]
+                  - generic [ref=f13e307]:
+                    - generic [ref=f13e310]: L
+                    - generic [ref=f13e313]:
+                      - generic [ref=f13e314]: La Escaloneta
+                      - generic [ref=f13e315]: Vista previa
+                - generic [ref=f13e317]:
+                  - generic [ref=f13e319] [cursor=pointer]: Flow
+                  - generic [ref=f13e321] [cursor=pointer]: Preview
+                - generic [ref=f13e322]:
+                  - button [ref=f13e554] [cursor=pointer]
+                  - generic:
+                    - button [disabled]
+                  - button [ref=f13e555] [cursor=pointer]
+              - generic [ref=f13e333]:
+                - generic [ref=f13e335]:
+                  - img [ref=f13e337]
+                  - generic:
+                    - generic:
+                      - img [ref=f13e340]
+                      - generic [ref=f13e347] [cursor=pointer]:
+                        - generic [ref=f13e354]: La Escaloneta
+                        - generic [ref=f13e356]: Mesera virtual de La Escaloneta, restaurante en Olivos, Buenos Aires. Atiende clientes por chat y voz, recomienda platos de la carta, toma pedidos y responde consultas en español rioplatense.
+                - generic [ref=f13e365]:
+                  - button [ref=f13e557] [cursor=pointer]
+                  - button [ref=f13e559] [cursor=pointer]
+                  - button [ref=f13e561] [cursor=pointer]
+                - generic [ref=f13e384]:
+                  - generic [ref=f13e385]:
+                    - heading [level=3] [ref=f13e562]: Details
+                    - button [ref=f13e563] [cursor=pointer]
+                  - generic [ref=f13e396]:
+                    - generic [ref=f13e397]:
+                      - generic [ref=f13e399]:
+                        - generic [ref=f13e400]:
+                          - text: Nombre
+                          - img [ref=f13e564]: "*"
+                        - generic [ref=f13e405]:
+                          - textbox [ref=f13e565]:
+                            - /placeholder: Ingresa un nombre
+                            - text: La Escaloneta
+                          - generic [ref=f13e413]: 13 / 128
+                      - generic [ref=f13e414]:
+                        - generic [ref=f13e416]:
+                          - text: Descripción
+                          - img [ref=f13e566]: "*"
+                        - generic [ref=f13e422]:
+                          - textbox [ref=f13e567]:
+                            - /placeholder: Explica el propósito y las capacidades de este agente
+                            - text: Mesera virtual de La Escaloneta, restaurante en Olivos, Buenos Aires. Atiende clientes por chat y voz, recomienda platos de la carta, toma pedidos y responde consultas en español rioplatense.
+                          - generic [ref=f13e429]: 191 / 500000
+                      - generic [ref=f13e430]:
+                        - generic [ref=f13e432]:
+                          - text: Instrucciones
+                          - img [ref=f13e568]: "*"
+                        - generic [ref=f13e438]:
+                          - textbox [ref=f13e569]:
+                            - /placeholder: Instruye a este agente sobre sus objetivos y su comportamiento
+                            - text: "Sos la mesera de La Escaloneta. Trabajás acá hace años, conocés la carta de memoria y sabés leer a cada cliente. IDIOMA (REGLA ABSOLUTA, ANTES QUE TODO): hablás SIEMPRE en español rioplatense argentino. JAMÁS escribís una sola palabra en portugués ni en ningún otro idioma, aunque el cliente te hable en portugués o en otro idioma. Ante cualquier duda, es español argentino. CÓMO HABLÁS: - Usás \"vos\" siempre, nunca \"tú\". - Sos cálida, directa, genuina. Hablás como una mesera de verdad, no como un robot. - Respondés corto o largo según la situación: si te saludan, devolvés la salutación y ya; si piden recomendación, te explayás con apetito. - podés usar emojis con moderación (1-2 por mensaje como máximo). - NO usás formalidades excesivas como \"estimado cliente\". - Si el cliente es indeciso, lo orientás con confianza: \"¿Te tira más un clásico o querés probar algo nuevo?\" - Si el cliente se enoja o se queja, mantenés la calma y ofrecés soluciones. - Si te preguntan algo que no sabés del todo, lo admitís con naturalidad y sugerís consultar con el mozo. FLUJO DEL PEDIDO: 1. SALUDO: Presentate brevemente y preguntá cómo ayudar. 2. CARTA: Si piden la carta o un plato específico, respondé con el nombre, descripción breve y precio. 3. RECOMENDACIÓN: Si no saben qué pedir, preguntá qué les pinta (carne, pasta, ensalada, etc.) y recomendá 1-2 opciones con descripción apetitosa. 4. MODIFICACIONES: Si piden cambios (sin cebolla, punto de cocción, etc.), anotá y confirmá. 5. BEBIDA: Preguntá si quieren algo para tomar. 6. CIERRE: Recapitulá el pedido completo y confirmá. 7. El TOTAL del pedido NO lo decís ni lo sumás vos (te equivocás): la app lo muestra exacto en pantalla. REGLAS: - No inventés precios ni platos que no estén en la carta. - Si un plato no está disponible, decílo y sugerí una alternativa. - NO recomendéis algo que ya está en el pedido del cliente. - Si el cliente pregunta por horarios, dirección o datos del local, respondé con lo que sepas. - Si el clienteCIERRA el pedido o pide la cuenta, recitá EXACTAMENTE la lista del pedido, sin agregar, sacar ni inventar nada."
+                          - generic [ref=f13e445]: 2104 / 500000
+                      - generic [ref=f13e446]:
+                        - generic [ref=f13e448]: Modelo
+                        - combobox [ref=f13e570]:
+                          - generic [ref=f13e455]:
+                            - generic [ref=f13e458]: Gemini 3.5 Flash
+                            - img [ref=f13e462]
+                    - group [ref=f13e465]:
+                      - generic [ref=f13e468] [cursor=pointer]:
+                        - generic [ref=f13e469]: Herramientas
+                        - generic [ref=f13e470]: Habilita el agente para completar tareas
+                      - generic [ref=f13e475]:
+                        - generic [ref=f13e483]:
+                          - textbox: "Tools: Búsqueda de Google; Tools: Contexto de URL"
+                        - generic [ref=f13e484]:
+                          - generic [ref=f13e485]:
+                            - generic [ref=f13e486]:
+                              - generic [ref=f13e488]: Búsqueda de Google
+                              - button [ref=f13e572] [cursor=pointer]
+                            - generic [ref=f13e494]:
+                              - generic [ref=f13e497]: Contexto de URL
+                              - button [ref=f13e573] [cursor=pointer]
+                          - button [ref=f13e575] [cursor=pointer]
+  - dialog "Guardar agente" [ref=f13e579]:
+    - generic [ref=f13e582]:
+      - heading "Guardar agente" [level=1] [ref=f13e583]
+      - generic [ref=f13e584]:
+        - paragraph [ref=f13e585]: Tu región determina dónde se almacena la configuración del agente y dónde se implementará este último. El agente solo se puede implementar en la misma región en la que se almacena su configuración.
+        - generic [ref=f13e586]:
+          - generic [ref=f13e590] [cursor=pointer]:
+            - generic [ref=f13e591]:
+              - text: Nombre del agente
+              - generic [ref=f13e592]: "*"
+            - textbox "Nombre del agente" [active] [ref=f13e594]: La Escaloneta
+          - generic [ref=f13e595]:
+            - generic [ref=f13e596]:
+              - generic [ref=f13e597]: Región
+              - img "Por el momento, la implementación solo está disponible en la región us-west1" [ref=f13e598]:
+                - img [ref=f13e599]
+            - generic [ref=f13e601]: us-west1
+          - generic [ref=f13e602]:
+            - img [ref=f13e604]
+            - generic [ref=f13e606]: Auto-save is on. Any further changes will be auto-saved.
+      - generic [ref=f13e607]:
+        - button "Guardar" [ref=f13e608]:
+          - generic [ref=f13e609]: Guardar
+        - button "Cerrar" [ref=f13e610]:
+          - generic [ref=f13e611]: Cerrar

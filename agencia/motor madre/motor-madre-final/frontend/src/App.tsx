@@ -58,8 +58,35 @@ export default function App() {
   const [orbTilt, setOrbTilt] = useState({ x: 0, y: 0 });
 
   const { isConnected, isSpeaking, isMicMuted, connect, disconnect, sendTextMessage, toggleMic, analyserNode } = useLiveAudio({
-    onAudioStart: () => setWaitressState("speaking"),
-    onAudioStop: () => setWaitressState("idle")
+    onAudioStart: () => {
+      setCurrentSubtitle("");
+      setWaitressState("speaking");
+    },
+    onAudioStop: () => setWaitressState("idle"),
+    onTextChunk: (text) => {
+      setCurrentSubtitle((prev) => {
+        const next = prev + text;
+        return next
+          .replace(/#PEDIDO#[\s\S]*$/, "")
+          .replace(/#CHIPS#[\s\S]*$/, "")
+          .replace(/#CUENTA#[\s\S]*$/, "")
+          .trim();
+      });
+    },
+    onTextFinal: (text) => {
+      const cleaned = text
+        .replace(/#PEDIDO#[\s\S]*$/, "")
+        .replace(/#CHIPS#[\s\S]*$/, "")
+        .replace(/#CUENTA#[\s\S]*$/, "")
+        .trim();
+      
+      setChatHistory((prev) => [
+        ...prev,
+        { role: "model", text: cleaned }
+      ]);
+      
+      parseTechnicalDirectives(text);
+    }
   });
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -802,6 +829,7 @@ export default function App() {
   };
 
   const handleChipClick = (chip: string) => {
+    setCurrentSubtitle("");
     const promptContext = `El usuario acaba de seleccionar la opción: "${chip}". Háblale sobre esto, recomienda algún plato si aplica, y sé entusiasta.`;
     
     if (!isConnected) {

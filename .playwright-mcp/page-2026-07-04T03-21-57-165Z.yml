@@ -1,0 +1,116 @@
+- generic [ref=f18e3]:
+  - generic [ref=f18e4]:
+    - complementary "Omitir vínculos" [ref=f18e5]:
+      - link "Ir al contenido principal" [ref=f18e6] [cursor=pointer]:
+        - /url: /agent-platform/studio/settings/api-keys?project=project-aa5fb956-b08a-4e13-869
+        - generic [ref=f18e7]: Ir al contenido principal
+      - button "Combinación de teclas para acceso directo" [ref=f18e8]:
+        - generic [ref=f18e9]: Combinación de teclas para acceso directo
+      - link "Ayuda sobre la accesibilidad externo, se abre en una ventana nueva" [ref=f18e10] [cursor=pointer]:
+        - /url: https://cloud.google.com/docs/accessibility?hl=en_US
+        - generic [ref=f18e11]:
+          - text: Ayuda sobre la accesibilidad
+          - generic "externo, se abre en una ventana nueva" [ref=f18e12]:
+            - img "externo, se abre en una ventana nueva" [ref=f18e13]:
+              - img [ref=f18e14]
+      - link "Comentarios sobre accesibilidad externo, se abre en una ventana nueva" [ref=f18e16] [cursor=pointer]:
+        - /url: https://support.google.com/accessibility/contact/feedback?hl=en_US
+        - generic [ref=f18e17]:
+          - text: Comentarios sobre accesibilidad
+          - generic "externo, se abre en una ventana nueva" [ref=f18e18]:
+            - img "externo, se abre en una ventana nueva" [ref=f18e19]:
+              - img [ref=f18e20]
+    - banner [ref=f18e23]:
+      - generic [ref=f18e24]:
+        - navigation [ref=f18e27]:
+          - button "Menú de navegación (.)" [ref=f18e28] [cursor=pointer]:
+            - img [ref=f18e30]
+        - link "Google Cloud Platform - Página principal" [ref=f18e32] [cursor=pointer]:
+          - /url: /
+          - generic:
+            - img
+        - button "Actualmente, estás trabajando en My First Project. Presiona Intro para cambiar de proyecto, de carpeta o de organización." [ref=f18e40]:
+          - generic [ref=f18e41]:
+            - img [ref=f18e43]
+            - generic [ref=f18e46]: My First Project
+      - search "Google Cloud Platform" [ref=f18e52]:
+        - combobox [ref=f18e53]:
+          - searchbox "Ingresa una consulta para buscar recursos, documentos, productos y mucho más" [ref=f18e54]
+        - button "Ver todos los resultados de la búsqueda" [disabled]:
+          - generic:
+            - img
+          - generic: Buscar
+      - generic [ref=f18e55]:
+        - generic [ref=f18e56]:
+          - button "Abrir chat de Gemini AI (Alt G)" [ref=f18e60] [cursor=pointer]:
+            - img [ref=f18e62]
+          - generic [ref=f18e66]:
+            - button "Activar Cloud Shell (G then S)" [disabled]:
+              - generic:
+                - img
+          - button "Abrir notificaciones" [ref=f18e70] [cursor=pointer]:
+            - img [ref=f18e72]
+          - button "Configuración y utilidades" [ref=f18e78] [cursor=pointer]:
+            - img [ref=f18e80]
+        - img [ref=f18e84]
+  - main [ref=f18e105]:
+    - generic [ref=f18e118]:
+      - generic [ref=f18e119]:
+        - button "Volver a la página anterior" [ref=f18e120] [cursor=pointer]:
+          - img [ref=f18e122]
+        - heading "Configuración" [level=1] [ref=f18e124]
+      - generic [ref=f18e125]:
+        - navigation "Navegación de la configuración" [ref=f18e126]:
+          - link "Experiencia" [ref=f18e127] [cursor=pointer]:
+            - /url: /agent-platform/studio/settings/appearance?project=project-aa5fb956-b08a-4e13-869
+            - img [ref=f18e129]
+            - generic [ref=f18e131]: Experiencia
+          - link "Claves de API" [ref=f18e132] [cursor=pointer]:
+            - /url: /agent-platform/studio/settings/api-keys?project=project-aa5fb956-b08a-4e13-869
+            - img [ref=f18e134]
+            - generic [ref=f18e137]: Claves de API
+          - link "Facturación" [ref=f18e138] [cursor=pointer]:
+            - /url: /agent-platform/studio/settings/billing?project=project-aa5fb956-b08a-4e13-869
+            - img [ref=f18e140]
+            - generic [ref=f18e142]: Facturación
+          - link "Uso" [ref=f18e143] [cursor=pointer]:
+            - /url: /agent-platform/studio/settings/usage-dashboard?project=project-aa5fb956-b08a-4e13-869
+            - img [ref=f18e145]
+            - generic [ref=f18e147]: Uso
+          - link "Uso compartido" [ref=f18e148] [cursor=pointer]:
+            - /url: /agent-platform/studio/settings/sharing?project=project-aa5fb956-b08a-4e13-869
+            - img [ref=f18e150]
+            - generic [ref=f18e153]: Uso compartido
+        - generic [ref=f18e159]:
+          - generic [ref=f18e160]:
+            - heading "Autentícate para acceder a la API" [level=1] [ref=f18e161]
+            - paragraph [ref=f18e162]:
+              - generic [ref=f18e163]:
+                - text: "Agent Platform ofrece dos métodos de autenticación: clave de API y credenciales predeterminadas de la aplicación (recomendado)."
+                - link "Guía de inicio rápido de la API externo, se abre en una ventana nueva" [ref=f18e164] [cursor=pointer]:
+                  - /url: https://cloud.google.com/gemini-enterprise-agent-platform/console-link-api-quickstart?hl=es_419
+                  - text: Read API quickstart guide
+                  - img "externo, se abre en una ventana nueva" [ref=f18e165]:
+                    - img [ref=f18e166]
+          - generic [ref=f18e168]:
+            - generic [ref=f18e169]:
+              - img [ref=f18e172]
+              - generic [ref=f18e174]: Credenciales predeterminadas de la aplicación
+              - generic [ref=f18e175]: Recommended
+            - paragraph [ref=f18e176]:
+              - text: ADC is the secure, standard way to connect from company hardware or cloud environments without managing secret keys manually. It automatically uses your environment's existing identity.
+              - link "Read full setup instructions step by step externo, se abre en una ventana nueva" [ref=f18e177] [cursor=pointer]:
+                - /url: https://cloud.google.com/gemini-enterprise-agent-platform/console-link-adc?hl=es_419
+                - text: Read full setup instructions step by step
+                - img "externo, se abre en una ventana nueva" [ref=f18e178]:
+                  - img [ref=f18e179]
+          - generic [ref=f18e183]:
+            - generic [ref=f18e184]:
+              - img [ref=f18e187]
+              - generic [ref=f18e190]: Claves de API
+            - paragraph [ref=f18e191]: A long-lived string credential for using Agent Platform Model APIs. Ensure you apply network and API scope restrictions to secure this key.
+            - generic [ref=f18e193]:
+              - img [ref=f18e195]
+              - generic [ref=f18e197]:
+                - text: No se permiten las claves de API
+                - generic [ref=f18e198]: La política de seguridad de tu organización no permite las claves de API. Usa las credenciales predeterminadas de la aplicación (ADC) en su lugar.

@@ -1,0 +1,14 @@
+- generic [ref=e4]:
+  - heading "Iniciar sesion" [level=3] [ref=e5]
+  - generic [ref=e6]: Usuario
+  - textbox "Usuario" [ref=e7]:
+    - /placeholder: Nombre de Usuario
+  - generic [ref=e8]: Contraseña
+  - textbox "Contraseña" [ref=e9]
+  - button "Iniciar" [ref=e10] [cursor=pointer]
+  - link "Crear Usuario" [ref=e11] [cursor=pointer]:
+    - /url: /signup1/
+    - listitem [ref=e12]: Crear Usuario
+  - link "Restaurar Contraseña" [ref=e13] [cursor=pointer]:
+    - /url: /reset_password/
+    - listitem [ref=e14]: Restaurar Contraseña

@@ -1,0 +1,12 @@
+[     830ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://yaspapeobeauty.com/iniciar_sesion/?next=/index_master:0
+[    1148ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://yaspapeobeauty.com/favicon.ico:0
+[   42523ms] TypeError: Cannot read properties of null (reading 'length')
+    at Object.acquireContext (https://yaspapeobeauty.com/static/vendor/chart.js/Chart.min.js:7:86074)
+    at tn.construct (https://yaspapeobeauty.com/static/vendor/chart.js/Chart.min.js:7:102546)
+    at new tn (https://yaspapeobeauty.com/static/vendor/chart.js/Chart.min.js:7:102287)
+    at https://yaspapeobeauty.com/static/js/demo/chart-area-demo.js:32:19
+[   42524ms] TypeError: Cannot read properties of null (reading 'length')
+    at Object.acquireContext (https://yaspapeobeauty.com/static/vendor/chart.js/Chart.min.js:7:86074)
+    at tn.construct (https://yaspapeobeauty.com/static/vendor/chart.js/Chart.min.js:7:102546)
+    at new tn (https://yaspapeobeauty.com/static/vendor/chart.js/Chart.min.js:7:102287)
+    at https://yaspapeobeauty.com/static/js/demo/chart-pie-demo.js:7:18

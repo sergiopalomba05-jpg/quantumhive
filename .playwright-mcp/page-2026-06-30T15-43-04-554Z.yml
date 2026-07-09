@@ -1,0 +1,216 @@
+- generic [ref=f3e2]:
+  - list [ref=f3e3]:
+    - link " PapeoBeauty 2.0" [ref=f3e4] [cursor=pointer]:
+      - /url: /index_master
+      - generic [ref=f3e6]: 
+      - generic [ref=f3e7]:
+        - text: PapeoBeauty
+        - superscript [ref=f3e8]: "2.0"
+    - separator [ref=f3e9]
+    - listitem [ref=f3e10]:
+      - link [ref=f3e11] [cursor=pointer]:
+        - /url: /index_master
+      - generic [ref=f3e13]:
+        - text: "Bienvenido:"
+        - heading "QUANTUMHIVE" [level=2] [ref=f3e14]
+    - separator [ref=f3e15]
+    - generic [ref=f3e16]: Menu General
+    - listitem [ref=f3e17]:
+      - link " Turnos " [expanded] [ref=f3e18] [cursor=pointer]:
+        - /url: "#"
+        - generic [ref=f3e19]: 
+        - text: Turnos 
+    - listitem [ref=f3e20]:
+      - link " Venta " [expanded] [ref=f3e21] [cursor=pointer]:
+        - /url: "#"
+        - generic [ref=f3e22]: 
+        - text: Venta 
+    - listitem [ref=f3e23]:
+      - link " Clientes " [expanded] [ref=f3e24] [cursor=pointer]:
+        - /url: "#"
+        - generic [ref=f3e25]: 
+        - text: Clientes 
+    - separator [ref=f3e26]
+    - generic [ref=f3e27]: Reportes
+    - listitem [ref=f3e28]:
+      - link " Caja " [expanded] [ref=f3e29] [cursor=pointer]:
+        - /url: "#"
+        - generic [ref=f3e30]: 
+        - text: Caja 
+    - separator [ref=f3e31]
+    - generic [ref=f3e32]: Recursos Humanos
+    - listitem [ref=f3e33]:
+      - link " Personal " [expanded] [ref=f3e34] [cursor=pointer]:
+        - /url: "#"
+        - generic [ref=f3e35]: 
+        - text: Personal 
+    - separator [ref=f3e36]
+    - button "" [ref=f3e38] [cursor=pointer]
+  - generic [ref=f3e40]:
+    - navigation [ref=f3e41]:
+      - text: 
+      - generic [ref=f3e43]:
+        - textbox "Search" [ref=f3e44]:
+          - /placeholder: Buscador...
+        - button "" [ref=f3e46] [cursor=pointer]:
+          - generic [ref=f3e47]: 
+      - list [ref=f3e48]:
+        - link "Volver" [ref=f3e51] [cursor=pointer]:
+          - /url: "#"
+          - strong [ref=f3e52]: Volver
+        - listitem [ref=f3e54]:
+          - button "QUANTUMHIVE " [ref=f3e55] [cursor=pointer]:
+            - generic [ref=f3e56]: QUANTUMHIVE
+            - generic [ref=f3e57]: 
+          - text:  
+    - main [ref=f3e59]:
+      - generic [ref=f3e61]:
+        - generic [ref=f3e64]:
+          - 'heading "Turno: 11295" [level=3] [ref=f3e66]':
+            - strong [ref=f3e67]: "Turno: 11295"
+          - generic [ref=f3e69]:
+            - strong [ref=f3e70]: "Finalizado:"
+            - text: None
+        - generic [ref=f3e74]:
+          - list [ref=f3e76]:
+            - listitem [ref=f3e77]:
+              - generic [ref=f3e78]:
+                - strong [ref=f3e80]: Ingresado
+                - strong [ref=f3e82]: Turno Iniciado
+            - listitem [ref=f3e83]:
+              - generic [ref=f3e84]:
+                - strong [ref=f3e86]: Finalizado
+                - strong [ref=f3e88]: Turno Terminado
+          - generic [ref=f3e89]:
+            - generic [ref=f3e91]:
+              - generic [ref=f3e92]:
+                - heading "DATOS CLIENTE" [level=2] [ref=f3e93]:
+                  - strong [ref=f3e94]: DATOS CLIENTE
+                - separator [ref=f3e95]
+              - generic [ref=f3e96]:
+                - paragraph
+                - generic [ref=f3e97]:
+                  - paragraph [ref=f3e98]:
+                    - strong [ref=f3e99]: "Telefono:"
+                  - generic [ref=f3e100]:
+                    - generic [ref=f3e103]: 
+                    - textbox "dni" [ref=f3e104]: "3333"
+                  - paragraph [ref=f3e105]:
+                    - strong [ref=f3e106]: "Nombre y Apellido:"
+                  - generic [ref=f3e107]:
+                    - generic [ref=f3e110]: 
+                    - textbox "Nombre" [ref=f3e111]: Cami No trabaja
+                  - paragraph
+            - generic [ref=f3e113]:
+              - generic [ref=f3e114]:
+                - heading "DATOS HORARIO" [level=2] [ref=f3e115]:
+                  - strong [ref=f3e116]: DATOS HORARIO
+                - separator [ref=f3e117]
+              - generic [ref=f3e118]:
+                - paragraph
+                - generic [ref=f3e119]:
+                  - paragraph [ref=f3e120]:
+                    - strong [ref=f3e121]: "Duracion:"
+                  - generic [ref=f3e122]:
+                    - generic [ref=f3e125]: 
+                    - textbox "Profesional" [ref=f3e126]: 2 hs
+                  - paragraph [ref=f3e127]:
+                    - strong [ref=f3e128]: "Hora Inicio:"
+                  - generic [ref=f3e129]:
+                    - generic [ref=f3e132]: 
+                    - textbox "Hora Inicio" [ref=f3e133]: 07:00
+                  - paragraph
+                  - paragraph [ref=f3e134]:
+                    - strong [ref=f3e135]: "Hora Fin:"
+                  - generic [ref=f3e136]:
+                    - generic [ref=f3e139]: 
+                    - textbox "Hora Fin" [ref=f3e140]: 09:00
+                  - paragraph
+                - paragraph
+                - link "Modificar Horario" [ref=f3e142] [cursor=pointer]:
+                  - /url: /cambiar_horario/11295/
+            - generic [ref=f3e144]:
+              - generic [ref=f3e145]:
+                - generic [ref=f3e146]:
+                  - heading "DATOS TURNO" [level=2] [ref=f3e147]:
+                    - strong [ref=f3e148]: DATOS TURNO
+                  - separator [ref=f3e149]
+                  - paragraph
+                  - generic [ref=f3e150]:
+                    - strong [ref=f3e151]: "Fecha:"
+                    - generic [ref=f3e152]:
+                      - generic [ref=f3e155]: 
+                      - textbox "Fecha:" [ref=f3e156]:
+                        - /placeholder: fecha
+                        - text: 2026-06-30
+                  - paragraph
+                  - paragraph
+                  - generic [ref=f3e157]:
+                    - strong [ref=f3e158]: "Personal Asignado:"
+                    - generic [ref=f3e159]:
+                      - generic [ref=f3e162]: 
+                      - textbox "personal_nombre" [ref=f3e163]: Camila
+                  - paragraph
+                - button "Modificar" [ref=f3e167] [cursor=pointer]
+              - separator [ref=f3e168]
+        - generic [ref=f3e171]:
+          - generic [ref=f3e172]:
+            - heading " Detalles" [level=2] [ref=f3e173]:
+              - generic [ref=f3e174]: 
+              - text: Detalles
+            - separator [ref=f3e175]
+          - generic [ref=f3e176]:
+            - list [ref=f3e178]:
+              - listitem [ref=f3e179]:
+                - link "Notas" [ref=f3e180] [cursor=pointer]:
+                  - /url: "#notes"
+                  - strong [ref=f3e181]: Notas
+              - generic [ref=f3e182]: "|"
+              - listitem [ref=f3e183]:
+                - link "Producto/Servicio" [ref=f3e184] [cursor=pointer]:
+                  - /url: "#repairparts"
+                  - strong [ref=f3e185]: Producto/Servicio
+              - generic [ref=f3e186]: "|"
+              - listitem [ref=f3e187]:
+                - link "Detalles del Servicio" [ref=f3e188] [cursor=pointer]:
+                  - /url: "#servicedetails"
+                  - strong [ref=f3e189]: Detalles del Servicio
+            - generic [ref=f3e193]:
+              - paragraph [ref=f3e194]
+              - link "Modificar" [ref=f3e195] [cursor=pointer]:
+                - /url: /agregar_nota/11295/
+        - generic [ref=f3e198]:
+          - generic [ref=f3e199]:
+            - heading " Envio de email" [level=2] [ref=f3e200]:
+              - generic [ref=f3e201]: 
+              - text: Envio de email
+            - separator [ref=f3e202]
+          - generic [ref=f3e205]:
+            - strong [ref=f3e206]: "Email Cliente:"
+            - generic [ref=f3e207]:
+              - generic [ref=f3e210]: 
+              - textbox "Email" [ref=f3e211]: s
+            - button "Editar Email" [ref=f3e212] [cursor=pointer]: Editar Email
+            - generic [ref=f3e213] [cursor=pointer]: Enviar Certificado de Turno
+        - generic [ref=f3e216]:
+          - generic [ref=f3e217]:
+            - heading "Logo de WhatsApp" [level=2] [ref=f3e218]:
+              - img "Logo de WhatsApp" [ref=f3e219]
+            - separator [ref=f3e220]
+          - generic [ref=f3e223]:
+            - strong [ref=f3e224]: "Telefono Cliente:"
+            - generic [ref=f3e225]:
+              - generic [ref=f3e228]: 
+              - spinbutton "telefono" [ref=f3e229]: "3333"
+            - link "Enviar Mensaje" [ref=f3e230] [cursor=pointer]:
+              - /url: "https://wa.me/3333/?text=Hola,%20como%20estas?%20Te%20informo%20lo%20siguiente:"
+        - generic [ref=f3e232]:
+          - generic [ref=f3e233]:
+            - heading " Cancelar Turno" [level=2] [ref=f3e234]:
+              - generic [ref=f3e235]: 
+              - text: Cancelar Turno
+            - separator [ref=f3e236]
+          - button "Cancelar" [ref=f3e237] [cursor=pointer]
+    - contentinfo [ref=f3e238]:
+      - generic [ref=f3e240]: Copyright © Yaspapeobeauty
+  - text: 

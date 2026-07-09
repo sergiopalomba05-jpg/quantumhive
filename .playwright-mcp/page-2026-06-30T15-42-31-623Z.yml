@@ -1,0 +1,77 @@
+- generic [active] [ref=f2e1]:
+  - generic [ref=f2e2]:
+    - list [ref=f2e3]:
+      - link " PapeoBeauty 2.0" [ref=f2e4] [cursor=pointer]:
+        - /url: /index_master
+        - generic [ref=f2e6]: 
+        - generic [ref=f2e7]:
+          - text: PapeoBeauty
+          - superscript [ref=f2e8]: "2.0"
+      - separator [ref=f2e9]
+      - listitem [ref=f2e10]:
+        - link [ref=f2e11] [cursor=pointer]:
+          - /url: /index_master
+        - generic [ref=f2e13]:
+          - text: "Bienvenido:"
+          - heading "QUANTUMHIVE" [level=2] [ref=f2e14]
+      - separator [ref=f2e15]
+      - generic [ref=f2e16]: Menu General
+      - listitem [ref=f2e17]:
+        - link " Turnos " [expanded] [ref=f2e18] [cursor=pointer]:
+          - /url: "#"
+          - generic [ref=f2e19]: 
+          - text: Turnos 
+      - listitem [ref=f2e20]:
+        - link " Venta " [expanded] [ref=f2e21] [cursor=pointer]:
+          - /url: "#"
+          - generic [ref=f2e22]: 
+          - text: Venta 
+      - listitem [ref=f2e23]:
+        - link " Clientes " [expanded] [ref=f2e24] [cursor=pointer]:
+          - /url: "#"
+          - generic [ref=f2e25]: 
+          - text: Clientes 
+      - separator [ref=f2e26]
+      - generic [ref=f2e27]: Reportes
+      - listitem [ref=f2e28]:
+        - link " Caja " [expanded] [ref=f2e29] [cursor=pointer]:
+          - /url: "#"
+          - generic [ref=f2e30]: 
+          - text: Caja 
+      - separator [ref=f2e31]
+      - generic [ref=f2e32]: Recursos Humanos
+      - listitem [ref=f2e33]:
+        - link " Personal " [expanded] [ref=f2e34] [cursor=pointer]:
+          - /url: "#"
+          - generic [ref=f2e35]: 
+          - text: Personal 
+      - separator [ref=f2e36]
+      - button "" [ref=f2e38] [cursor=pointer]
+    - generic [ref=f2e39]:
+      - generic [ref=f2e40]:
+        - navigation [ref=f2e41]:
+          - text: 
+          - generic [ref=f2e43]:
+            - textbox "Search" [ref=f2e44]:
+              - /placeholder: Buscador...
+            - button "" [ref=f2e46] [cursor=pointer]:
+              - generic [ref=f2e47]: 
+          - list [ref=f2e48]:
+            - link "Volver" [ref=f2e51] [cursor=pointer]:
+              - /url: "#"
+              - strong [ref=f2e52]: Volver
+            - listitem [ref=f2e54]:
+              - button "QUANTUMHIVE " [ref=f2e55] [cursor=pointer]:
+                - generic [ref=f2e56]: QUANTUMHIVE
+                - generic [ref=f2e57]: 
+              - text:  
+        - main [ref=f2e59]:
+          - heading "Nuevo Turno" [level=1] [ref=f2e62]
+          - generic [ref=f2e67]:
+            - generic [ref=f2e68]:
+              - strong [ref=f2e70]: "Numero Telefono:"
+              - combobox "Numero Telefono:" [ref=f2e71]
+            - button "Buscar" [ref=f2e73] [cursor=pointer]
+      - contentinfo [ref=f2e74]:
+        - generic [ref=f2e76]: Copyright © Yaspapeobeauty
+  - text: 

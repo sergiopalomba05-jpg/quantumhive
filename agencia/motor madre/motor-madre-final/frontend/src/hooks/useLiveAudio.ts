@@ -40,9 +40,17 @@ interface UseLiveAudioProps {
   onToolCall?: (name: string, args: any) => void;
   onAudioStart?: () => void;
   onAudioStop?: () => void;
+  onTextChunk?: (text: string) => void;
+  onTextFinal?: (text: string) => void;
 }
 
-export function useLiveAudio({ onToolCall, onAudioStart, onAudioStop }: UseLiveAudioProps = {}) {
+export function useLiveAudio({ 
+  onToolCall, 
+  onAudioStart, 
+  onAudioStop,
+  onTextChunk,
+  onTextFinal
+}: UseLiveAudioProps = {}) {
   const [isConnected, setIsConnected] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [analyserNode, setAnalyserNode] = useState<AnalyserNode | null>(null);
@@ -110,6 +118,10 @@ export function useLiveAudio({ onToolCall, onAudioStart, onAudioStop }: UseLiveA
               if (initialMessageRef.current) {
                 ws.send(JSON.stringify({ client_content: initialMessageRef.current }));
               }
+            } else if (msg.type === "text_chunk" && onTextChunk) {
+              onTextChunk(msg.text);
+            } else if (msg.type === "text_final" && onTextFinal) {
+              onTextFinal(msg.text);
             } else if (msg.type === "tool_call" && onToolCall) {
               console.log("[useLiveAudio] Triggering tool call:", msg.name, msg.args);
               onToolCall(msg.name, msg.args);

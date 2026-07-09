@@ -1,0 +1,376 @@
+- generic [active] [ref=f1e1]:
+  - generic [ref=f1e2]:
+    - list [ref=f1e3]:
+      - link " PapeoBeauty 2.0" [ref=f1e4] [cursor=pointer]:
+        - /url: /index_master
+        - generic [ref=f1e6]: 
+        - generic [ref=f1e7]:
+          - text: PapeoBeauty
+          - superscript [ref=f1e8]: "2.0"
+      - separator [ref=f1e9]
+      - listitem [ref=f1e10]:
+        - link [ref=f1e11] [cursor=pointer]:
+          - /url: /index_master
+        - generic [ref=f1e13]:
+          - text: "Bienvenido:"
+          - heading "QUANTUMHIVE" [level=2] [ref=f1e14]
+      - separator [ref=f1e15]
+      - generic [ref=f1e16]: Menu General
+      - listitem [ref=f1e17]:
+        - link " Turnos " [expanded] [ref=f1e18] [cursor=pointer]:
+          - /url: "#"
+          - generic [ref=f1e19]: 
+          - text: Turnos 
+      - listitem [ref=f1e20]:
+        - link " Venta " [expanded] [ref=f1e21] [cursor=pointer]:
+          - /url: "#"
+          - generic [ref=f1e22]: 
+          - text: Venta 
+      - listitem [ref=f1e23]:
+        - link " Clientes " [expanded] [ref=f1e24] [cursor=pointer]:
+          - /url: "#"
+          - generic [ref=f1e25]: 
+          - text: Clientes 
+      - separator [ref=f1e26]
+      - generic [ref=f1e27]: Reportes
+      - listitem [ref=f1e28]:
+        - link " Caja " [expanded] [ref=f1e29] [cursor=pointer]:
+          - /url: "#"
+          - generic [ref=f1e30]: 
+          - text: Caja 
+      - separator [ref=f1e31]
+      - generic [ref=f1e32]: Recursos Humanos
+      - listitem [ref=f1e33]:
+        - link " Personal " [expanded] [ref=f1e34] [cursor=pointer]:
+          - /url: "#"
+          - generic [ref=f1e35]: 
+          - text: Personal 
+      - separator [ref=f1e36]
+      - button "" [ref=f1e38] [cursor=pointer]
+    - generic [ref=f1e40]:
+      - navigation [ref=f1e41]:
+        - text: 
+        - generic [ref=f1e43]:
+          - textbox "Search" [ref=f1e44]:
+            - /placeholder: Buscador...
+          - button "" [ref=f1e46] [cursor=pointer]:
+            - generic [ref=f1e47]: 
+        - list [ref=f1e48]:
+          - link "Volver" [ref=f1e51] [cursor=pointer]:
+            - /url: "#"
+            - strong [ref=f1e52]: Volver
+          - listitem [ref=f1e54]:
+            - button "QUANTUMHIVE " [ref=f1e55] [cursor=pointer]:
+              - generic [ref=f1e56]: QUANTUMHIVE
+              - generic [ref=f1e57]: 
+            - text:  
+      - main [ref=f1e59]:
+        - generic [ref=f1e60]:
+          - text: Yaspapeobeauty
+          - group "Basic example" [ref=f1e62]:
+            - link "Crear Cliente" [ref=f1e63] [cursor=pointer]:
+              - /url: /nuevo
+            - link "Crear Turno" [ref=f1e64] [cursor=pointer]:
+              - /url: /buscar_cliente/
+            - link "Crear Venta" [ref=f1e65] [cursor=pointer]:
+              - /url: /buscar_orden_venta/
+            - link "Crear Reserva" [ref=f1e66] [cursor=pointer]:
+              - /url: /nueva_reserva/
+            - link "Crear Evento" [ref=f1e67] [cursor=pointer]:
+              - /url: /agregar_evento/
+          - generic [ref=f1e69]:
+            - generic [ref=f1e70]:
+              - generic [ref=f1e71]:
+                - generic [ref=f1e72]:
+                  - button "" [ref=f1e73] [cursor=pointer]:
+                    - generic [ref=f1e74]: 
+                  - button "" [ref=f1e75] [cursor=pointer]:
+                    - generic [ref=f1e76]: 
+                - button "Hoy" [disabled] [ref=f1e77]
+              - heading "29 jun – 5 jul 2026" [level=2] [ref=f1e79]
+              - generic [ref=f1e81]:
+                - button "Mes" [ref=f1e82] [cursor=pointer]
+                - button "Semana" [pressed] [ref=f1e83] [cursor=pointer]
+                - button "Día" [ref=f1e84] [cursor=pointer]
+            - generic "29 jun – 5 jul 2026" [ref=f1e85]:
+              - grid [ref=f1e87]:
+                - rowgroup [ref=f1e88]:
+                  - row "29 de junio de 2026 30 de junio de 2026 1 de julio de 2026 2 de julio de 2026 3 de julio de 2026 4 de julio de 2026 5 de julio de 2026" [ref=f1e93]:
+                    - columnheader "29 de junio de 2026" [ref=f1e94]:
+                      - generic "29 de junio de 2026" [ref=f1e96]: lun 29/6
+                    - columnheader "30 de junio de 2026" [ref=f1e97]:
+                      - generic "30 de junio de 2026" [ref=f1e99]: mar 30/6
+                    - columnheader "1 de julio de 2026" [ref=f1e100]:
+                      - generic "1 de julio de 2026" [ref=f1e102]: mié 1/7
+                    - columnheader "2 de julio de 2026" [ref=f1e103]:
+                      - generic "2 de julio de 2026" [ref=f1e105]: jue 2/7
+                    - columnheader "3 de julio de 2026" [ref=f1e106]:
+                      - generic "3 de julio de 2026" [ref=f1e108]: vie 3/7
+                    - columnheader "4 de julio de 2026" [ref=f1e109]:
+                      - generic "4 de julio de 2026" [ref=f1e111]: sáb 4/7
+                    - columnheader "5 de julio de 2026" [ref=f1e112]:
+                      - generic "5 de julio de 2026" [ref=f1e114]: dom 5/7
+                - rowgroup [ref=f1e115]:
+                  - generic [ref=f1e118]:
+                    - table [ref=f1e120]:
+                      - rowgroup [ref=f1e123]:
+                        - row [ref=f1e124]:
+                          - cell [ref=f1e125]:
+                            - generic [ref=f1e127]: 7:00
+                          - cell [ref=f1e128]
+                        - row [ref=f1e129]:
+                          - cell [ref=f1e130]
+                          - cell [ref=f1e131]
+                        - row [ref=f1e132]:
+                          - cell [ref=f1e133]:
+                            - generic [ref=f1e135]: 8:00
+                          - cell [ref=f1e136]
+                        - row [ref=f1e137]:
+                          - cell [ref=f1e138]
+                          - cell [ref=f1e139]
+                        - row [ref=f1e140]:
+                          - cell [ref=f1e141]:
+                            - generic [ref=f1e143]: 9:00
+                          - cell [ref=f1e144]
+                        - row [ref=f1e145]:
+                          - cell [ref=f1e146]
+                          - cell [ref=f1e147]
+                        - row [ref=f1e148]:
+                          - cell [ref=f1e149]:
+                            - generic [ref=f1e151]: 10:00
+                          - cell [ref=f1e152]
+                        - row [ref=f1e153]:
+                          - cell [ref=f1e154]
+                          - cell [ref=f1e155]
+                        - row [ref=f1e156]:
+                          - cell [ref=f1e157]:
+                            - generic [ref=f1e159]: 11:00
+                          - cell [ref=f1e160]
+                        - row [ref=f1e161]:
+                          - cell [ref=f1e162]
+                          - cell [ref=f1e163]
+                        - row [ref=f1e164]:
+                          - cell [ref=f1e165]:
+                            - generic [ref=f1e167]: 12:00
+                          - cell [ref=f1e168]
+                        - row [ref=f1e169]:
+                          - cell [ref=f1e170]
+                          - cell [ref=f1e171]
+                        - row [ref=f1e172]:
+                          - cell [ref=f1e173]:
+                            - generic [ref=f1e175]: 13:00
+                          - cell [ref=f1e176]
+                        - row [ref=f1e177]:
+                          - cell [ref=f1e178]
+                          - cell [ref=f1e179]
+                        - row [ref=f1e180]:
+                          - cell [ref=f1e181]:
+                            - generic [ref=f1e183]: 14:00
+                          - cell [ref=f1e184]
+                        - row [ref=f1e185]:
+                          - cell [ref=f1e186]
+                          - cell [ref=f1e187]
+                        - row [ref=f1e188]:
+                          - cell [ref=f1e189]:
+                            - generic [ref=f1e191]: 15:00
+                          - cell [ref=f1e192]
+                        - row [ref=f1e193]:
+                          - cell [ref=f1e194]
+                          - cell [ref=f1e195]
+                        - row [ref=f1e196]:
+                          - cell [ref=f1e197]:
+                            - generic [ref=f1e199]: 16:00
+                          - cell [ref=f1e200]
+                        - row [ref=f1e201]:
+                          - cell [ref=f1e202]
+                          - cell [ref=f1e203]
+                        - row [ref=f1e204]:
+                          - cell [ref=f1e205]:
+                            - generic [ref=f1e207]: 17:00
+                          - cell [ref=f1e208]
+                        - row [ref=f1e209]:
+                          - cell [ref=f1e210]
+                          - cell [ref=f1e211]
+                        - row [ref=f1e212]:
+                          - cell [ref=f1e213]:
+                            - generic [ref=f1e215]: 18:00
+                          - cell [ref=f1e216]
+                        - row [ref=f1e217]:
+                          - cell [ref=f1e218]
+                          - cell [ref=f1e219]
+                        - row [ref=f1e220]:
+                          - cell [ref=f1e221]:
+                            - generic [ref=f1e223]: 19:00
+                          - cell [ref=f1e224]
+                        - row [ref=f1e225]:
+                          - cell [ref=f1e226]
+                          - cell [ref=f1e227]
+                        - row [ref=f1e228]:
+                          - cell [ref=f1e229]:
+                            - generic [ref=f1e231]: 20:00
+                          - cell [ref=f1e232]
+                        - row [ref=f1e233]:
+                          - cell [ref=f1e234]
+                          - cell [ref=f1e235]
+                        - row [ref=f1e236]:
+                          - cell [ref=f1e237]:
+                            - generic [ref=f1e239]: 21:00
+                          - cell [ref=f1e240]
+                        - row [ref=f1e241]:
+                          - cell [ref=f1e242]
+                          - cell [ref=f1e243]
+                        - row [ref=f1e244]:
+                          - cell [ref=f1e245]:
+                            - generic [ref=f1e247]: 22:00
+                          - cell [ref=f1e248]
+                        - row [ref=f1e249]:
+                          - cell [ref=f1e250]
+                          - cell [ref=f1e251]
+                        - row [ref=f1e252]:
+                          - cell [ref=f1e253]:
+                            - generic [ref=f1e255]: 23:00
+                          - cell [ref=f1e256]
+                        - row [ref=f1e257]:
+                          - cell [ref=f1e258]
+                          - cell [ref=f1e259]
+                    - row "Yasmin Papeo 07:00 - 09:00 Yas no trabaja 11491 13:00 - 16:00 Capacitacion Tintura 11295 07:00 - 09:00 Cami No trabaja Yasmin Papeo 07:00 - 09:00 Yas no trabaja 11531 10:00 - 16:00 Belen Martinez 11525 11:30 - 17:30 Narel Calfa 11548 14:00 - 17:00 Martina Aguilar 11551 17:00 - 19:00 Tratamiento Yas . Yasmin Papeo 07:00 - 09:00 Yas no trabaja 11539 13:00 - 16:00 Ultimo Turno Valen 11553 13:00 - 16:00 Guillermina Celentano Yasmin Papeo 07:00 - 09:00 Yas no trabaja 11543 09:00 - 12:30 Tratamiento VALEN 11547 10:00 - 15:00 Agustina Aguirre Urreta 11532 11:30 - 14:30 Carolina De Luca 11528 14:30 - 18:30 Laura Carrera 11512 15:00 - 18:30 Romina Foradori 11482 10:00 - 16:00 Vanesa Ramirez 11503 10:00 - 14:00 Silvana Ustares 11499 14:00 - 15:00 Ultimo Turno Cami 11526 07:00 - 09:00 Melu No trabaja" [ref=f1e263]:
+                      - gridcell "Yasmin Papeo 07:00 - 09:00 Yas no trabaja 11491 13:00 - 16:00 Capacitacion Tintura" [ref=f1e266]:
+                        - generic [ref=f1e267]:
+                          - generic:
+                            - generic [ref=f1e271]:
+                              - strong [ref=f1e272]: Yasmin Papeo
+                              - text: 07:00 - 09:00
+                              - text: Yas no trabaja
+                            - link "11491 13:00 - 16:00 Capacitacion Tintura" [ref=f1e274] [cursor=pointer]:
+                              - /url: /orden_done/11491/
+                              - generic [ref=f1e276]:
+                                - strong [ref=f1e277]: "11491"
+                                - text: 13:00 - 16:00
+                                - text: Capacitacion Tintura
+                      - gridcell "11295 07:00 - 09:00 Cami No trabaja Yasmin Papeo 07:00 - 09:00 Yas no trabaja 11531 10:00 - 16:00 Belen Martinez" [ref=f1e279]:
+                        - generic [ref=f1e280]:
+                          - generic:
+                            - link "11295 07:00 - 09:00 Cami No trabaja" [ref=f1e282] [cursor=pointer]:
+                              - /url: /orden_done/11295/
+                              - generic [ref=f1e284]:
+                                - strong [ref=f1e285]: "11295"
+                                - text: 07:00 - 09:00
+                                - text: Cami No trabaja
+                            - generic [ref=f1e289]:
+                              - strong [ref=f1e290]: Yasmin Papeo
+                              - text: 07:00 - 09:00
+                              - text: Yas no trabaja
+                            - link "11531 10:00 - 16:00 Belen Martinez" [ref=f1e292] [cursor=pointer]:
+                              - /url: /orden_done/11531/
+                              - generic [ref=f1e294]:
+                                - strong [ref=f1e295]: "11531"
+                                - text: 10:00 - 16:00
+                                - text: Belen Martinez
+                      - gridcell "11525 11:30 - 17:30 Narel Calfa 11548 14:00 - 17:00 Martina Aguilar 11551 17:00 - 19:00 Tratamiento Yas . Yasmin Papeo 07:00 - 09:00 Yas no trabaja" [ref=f1e297]:
+                        - generic [ref=f1e298]:
+                          - generic:
+                            - link "11525 11:30 - 17:30 Narel Calfa" [ref=f1e300] [cursor=pointer]:
+                              - /url: /orden_done/11525/
+                              - generic [ref=f1e302]:
+                                - strong [ref=f1e303]: "11525"
+                                - text: 11:30 - 17:30
+                                - text: Narel Calfa
+                            - link "11548 14:00 - 17:00 Martina Aguilar" [ref=f1e305] [cursor=pointer]:
+                              - /url: /orden_done/11548/
+                              - generic [ref=f1e307]:
+                                - strong [ref=f1e308]: "11548"
+                                - text: 14:00 - 17:00
+                                - text: Martina Aguilar
+                            - link "11551 17:00 - 19:00 Tratamiento Yas ." [ref=f1e310] [cursor=pointer]:
+                              - /url: /orden_done/11551/
+                              - generic [ref=f1e312]:
+                                - strong [ref=f1e313]: "11551"
+                                - text: 17:00 - 19:00
+                                - text: Tratamiento Yas .
+                            - generic [ref=f1e317]:
+                              - strong [ref=f1e318]: Yasmin Papeo
+                              - text: 07:00 - 09:00
+                              - text: Yas no trabaja
+                      - gridcell "11539 13:00 - 16:00 Ultimo Turno Valen 11553 13:00 - 16:00 Guillermina Celentano Yasmin Papeo 07:00 - 09:00 Yas no trabaja 11543 09:00 - 12:30 Tratamiento VALEN" [ref=f1e320]:
+                        - generic [ref=f1e321]:
+                          - generic:
+                            - link "11539 13:00 - 16:00 Ultimo Turno Valen" [ref=f1e323] [cursor=pointer]:
+                              - /url: /orden_done/11539/
+                              - generic [ref=f1e325]:
+                                - strong [ref=f1e326]: "11539"
+                                - text: 13:00 - 16:00
+                                - text: Ultimo Turno Valen
+                            - link "11553 13:00 - 16:00 Guillermina Celentano" [ref=f1e328] [cursor=pointer]:
+                              - /url: /orden_done/11553/
+                              - generic [ref=f1e330]:
+                                - strong [ref=f1e331]: "11553"
+                                - text: 13:00 - 16:00
+                                - text: Guillermina Celentano
+                            - generic [ref=f1e335]:
+                              - strong [ref=f1e336]: Yasmin Papeo
+                              - text: 07:00 - 09:00
+                              - text: Yas no trabaja
+                            - link "11543 09:00 - 12:30 Tratamiento VALEN" [ref=f1e338] [cursor=pointer]:
+                              - /url: /orden_done/11543/
+                              - generic [ref=f1e340]:
+                                - strong [ref=f1e341]: "11543"
+                                - text: 09:00 - 12:30
+                                - text: Tratamiento VALEN
+                      - gridcell "11547 10:00 - 15:00 Agustina Aguirre Urreta 11532 11:30 - 14:30 Carolina De Luca 11528 14:30 - 18:30 Laura Carrera 11512 15:00 - 18:30 Romina Foradori" [ref=f1e343]:
+                        - generic [ref=f1e344]:
+                          - generic:
+                            - link "11547 10:00 - 15:00 Agustina Aguirre Urreta" [ref=f1e346] [cursor=pointer]:
+                              - /url: /orden_done/11547/
+                              - generic [ref=f1e348]:
+                                - strong [ref=f1e349]: "11547"
+                                - text: 10:00 - 15:00
+                                - text: Agustina Aguirre Urreta
+                            - link "11532 11:30 - 14:30 Carolina De Luca" [ref=f1e351] [cursor=pointer]:
+                              - /url: /orden_done/11532/
+                              - generic [ref=f1e353]:
+                                - strong [ref=f1e354]: "11532"
+                                - text: 11:30 - 14:30
+                                - text: Carolina De Luca
+                            - link "11528 14:30 - 18:30 Laura Carrera" [ref=f1e356] [cursor=pointer]:
+                              - /url: /orden_done/11528/
+                              - generic [ref=f1e358]:
+                                - strong [ref=f1e359]: "11528"
+                                - text: 14:30 - 18:30
+                                - text: Laura Carrera
+                            - link "11512 15:00 - 18:30 Romina Foradori" [ref=f1e361] [cursor=pointer]:
+                              - /url: /orden_done/11512/
+                              - generic [ref=f1e363]:
+                                - strong [ref=f1e364]: "11512"
+                                - text: 15:00 - 18:30
+                                - text: Romina Foradori
+                      - gridcell "11482 10:00 - 16:00 Vanesa Ramirez 11503 10:00 - 14:00 Silvana Ustares 11499 14:00 - 15:00 Ultimo Turno Cami 11526 07:00 - 09:00 Melu No trabaja" [ref=f1e366]:
+                        - generic [ref=f1e367]:
+                          - generic:
+                            - link "11482 10:00 - 16:00 Vanesa Ramirez" [ref=f1e369] [cursor=pointer]:
+                              - /url: /orden_done/11482/
+                              - generic [ref=f1e371]:
+                                - strong [ref=f1e372]: "11482"
+                                - text: 10:00 - 16:00
+                                - text: Vanesa Ramirez
+                            - link "11503 10:00 - 14:00 Silvana Ustares" [ref=f1e374] [cursor=pointer]:
+                              - /url: /orden_done/11503/
+                              - generic [ref=f1e376]:
+                                - strong [ref=f1e377]: "11503"
+                                - text: 10:00 - 14:00
+                                - text: Silvana Ustares
+                            - link "11499 14:00 - 15:00 Ultimo Turno Cami" [ref=f1e379] [cursor=pointer]:
+                              - /url: /orden_done/11499/
+                              - generic [ref=f1e381]:
+                                - strong [ref=f1e382]: "11499"
+                                - text: 14:00 - 15:00
+                                - text: Ultimo Turno Cami
+                            - link "11526 07:00 - 09:00 Melu No trabaja" [ref=f1e384] [cursor=pointer]:
+                              - /url: /orden_done/11526/
+                              - generic [ref=f1e386]:
+                                - strong [ref=f1e387]: "11526"
+                                - text: 07:00 - 09:00
+                                - text: Melu No trabaja
+                      - gridcell [ref=f1e389]
+  - contentinfo [ref=f1e392]:
+    - generic [ref=f1e394]: Copyright © Yaspapeobeauty
+  - text: 
