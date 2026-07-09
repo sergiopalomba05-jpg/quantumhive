@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI, Modality } from "@google/genai";
+import { VertexAI } from "@google-cloud/vertexai";
 import { menuData } from "./src/menuData";
 import { buildSystemPrompt } from "./src/systemPrompt";
 import { WebSocketServer } from "ws";
@@ -10,11 +10,16 @@ import { WebSocketServer } from "ws";
 const projectId = process.env.GOOGLE_CLOUD_PROJECT || "project-aa5fb956-b08a-4e13-869";
 const location = process.env.GOOGLE_CLOUD_LOCATION || "us-central1";
 
-// Initialize Gemini Client with Vertex AI (ADC - Application Default Credentials)
-const ai = new GoogleGenAI({
-  vertexai: true,
-  project: projectId,
-  location: location,
+// Initialize Vertex AI client with ADC (Application Default Credentials)
+const vertexAI = new VertexAI({ project: projectId, location: location });
+
+// Get the generative model
+const generativeModel = vertexAI.getGenerativeModel({
+  model: "gemini-2.5-flash",
+  generationConfig: {
+    temperature: 0.8,
+    maxOutputTokens: 1024,
+  },
 });
 
 console.log(`[Vertex AI] Project: ${projectId}, Location: ${location}`);
@@ -69,7 +74,7 @@ async function startServer() {
       vertex_ai: true,
       project: projectId,
       location: location,
-      gemini_model: "gemini-3.5-flash",
+      gemini_model: "gemini-2.5-flash",
     });
   });
 
@@ -120,22 +125,21 @@ async function startServer() {
 
     try {
       const cleanMimeType = mime_type || "audio/webm";
-      const response = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+      const sttModel = vertexAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+      const result = await sttModel.generateContent({
         contents: [
           {
-            text: "Transcribí literalmente lo que se dice en este audio en español rioplatense. Devolvé SOLO el texto transcripto, sin comillas, sin comentarios, sin nada más. Si el audio está en silencio o no se entiende, devolvé una cadena vacía.",
-          },
-          {
-            inlineData: {
-              mimeType: cleanMimeType,
-              data: audio_base64,
-            },
+            role: "user",
+            parts: [
+              { text: "Transcribí literalmente lo que se dice en este audio en español rioplatense. Devolvé SOLO el texto transcripto, sin comillas, sin comentarios, sin nada más. Si el audio está en silencio o no se entiende, devolvé una cadena vacía." },
+              { inlineData: { mimeType: cleanMimeType, data: audio_base64 } },
+            ],
           },
         ],
       });
 
-      const text = response.text || "";
+      const text = result.response?.candidates?.[0]?.content?.parts?.[0]?.text || "";
       res.json({ text: text.trim() });
     } catch (error: any) {
       console.error("Error en STT:", error);
@@ -145,6 +149,7 @@ async function startServer() {
 
   // Non-streaming chat endpoint
   app.post("/api/chat", async (req, res) => {
+    console.log("[Chat] Received request:", { bodyKeys: Object.keys(req.body || {}), messagePreview: (req.body?.message || "").substring(0, 60) });
     const { message, history, cart, lowLatency, sessionId } = req.body;
 
     try {
@@ -163,20 +168,24 @@ async function startServer() {
       }));
       contents.push({ role: "user", parts: [{ text: message }] });
 
-      const modelName = lowLatency ? "gemini-3.1-flash-lite" : "gemini-3.5-flash";
-
-      const streamResponse = await ai.models.generateContentStream({
+      const modelName = lowLatency ? "gemini-2.5-flash-lite" : "gemini-2.5-flash";
+      const chatModel = vertexAI.getGenerativeModel({
         model: modelName,
+        systemInstruction: prompt,
+      });
+
+      const streamingResult = await chatModel.generateContentStream({
         contents: contents,
-        config: {
-          systemInstruction: prompt,
+        generationConfig: {
           temperature: 0.8,
         },
       });
 
-      for await (const chunk of streamResponse) {
-        const text = chunk.text || "";
-        res.write(`event: chunk\ndata: ${JSON.stringify({ text })}\n\n`);
+      for await (const chunk of streamingResult.stream) {
+        const text = chunk.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        if (text) {
+          res.write(`event: chunk\ndata: ${JSON.stringify({ text })}\n\n`);
+        }
       }
       res.write("event: done\ndata: {}\n\n");
       res.end();
@@ -236,11 +245,24 @@ async function startServer() {
     }
 
     console.log("WebSocket client connected to Live API for table:", tableParam);
-    let session: any = null;
 
     try {
-      session = await ai.live.connect({
-        model: "gemini-3.1-flash-live-preview",
+      // For Live API, we need to use the @google/genai SDK with vertexai: true
+      // The official @google-cloud/vertexai doesn't support Live API yet
+      console.log("[Live] Importing @google/genai SDK...");
+      const { GoogleGenAI, Modality } = await import("@google/genai");
+      console.log("[Live] SDK imported successfully");
+
+      const ai = new GoogleGenAI({
+        vertexai: true,
+        project: projectId,
+        location: location,
+      });
+      console.log("[Live] GoogleGenAI client created");
+
+      console.log("[Live] Connecting to model: gemini-live-2.5-flash-native-audio");
+      const session = await ai.live.connect({
+        model: "gemini-live-2.5-flash-native-audio",
         config: {
           responseModalities: [Modality.TEXT, Modality.AUDIO],
           speechConfig: {
@@ -249,8 +271,20 @@ async function startServer() {
           systemInstruction: buildSystemPrompt() + cartNote + "\n\nSos la mesera virtual Sol para el restaurant, interactuando por llamada de voz en vivo. Respondé de forma sumamente concisa, directa y natural en español rioplatense (voseo). El usuario te está hablando por voz, así que respondé de manera conversacional, muy breve y amigable. Es sumamente importante que mantengas los tags invisibles al final de tus respuestas cuando modifiques el pedido (ej. #PEDIDO# {...}) o muestres la cuenta (ej. #CUENTA#) tal cual como indica el prompt del sistema, para que la app se actualice en pantalla en tiempo real.",
         },
         callbacks: {
+          onopen: () => {
+            console.log("[Live] Callback onopen fired");
+          },
           onmessage: (message: any) => {
             const parts = message.serverContent?.modelTurn?.parts || [];
+            const hasAudio = parts.some((p: any) => p.inlineData?.data);
+            const hasText = parts.some((p: any) => p.text);
+            const turnComplete = !!message.serverContent?.turnComplete;
+            const interrupted = !!message.serverContent?.interrupted;
+            console.log(`[Live] ← Model message: parts=${parts.length}, audio=${hasAudio}, text=${hasText}, turnComplete=${turnComplete}, interrupted=${interrupted}`);
+            if (hasText) {
+              const txt = parts.find((p: any) => p.text)?.text || "";
+              console.log(`[Live] ← Text: "${txt.substring(0, 100)}"`);
+            }
             for (const part of parts) {
               if (part.inlineData?.data) {
                 clientWs.send(JSON.stringify({ audio: part.inlineData.data }));
@@ -259,31 +293,46 @@ async function startServer() {
                 clientWs.send(JSON.stringify({ text: part.text }));
               }
             }
-            if (message.serverContent?.turnComplete) {
+            if (turnComplete) {
               clientWs.send(JSON.stringify({ turnComplete: true }));
             }
-            if (message.serverContent?.interrupted) {
+            if (interrupted) {
               clientWs.send(JSON.stringify({ interrupted: true }));
             }
+          },
+          onerror: (err: any) => {
+            console.error("[Live] Callback onerror:", err);
+          },
+          onclose: () => {
+            console.log("[Live] Callback onclose fired");
           },
         },
       });
 
+      console.log("[Live] Session connected successfully");
+      clientWs.send(JSON.stringify({ connected: true }));
+
+      let messageCount = 0;
       clientWs.on("message", (data) => {
         try {
           const parsed = JSON.parse(data.toString());
+          messageCount++;
+          if (messageCount <= 5 || messageCount % 20 === 0) {
+            console.log(`[Live] Received message #${messageCount}: audio=${!!parsed.audio}, text=${!!parsed.text}`);
+          }
           if (parsed.audio) {
             session.sendRealtimeInput({
               audio: { data: parsed.audio, mimeType: "audio/pcm;rate=16000" },
             });
           }
           if (parsed.text) {
+            console.log(`[Live] Sending text to model: "${parsed.text.substring(0, 80)}"`);
             session.sendRealtimeInput({
               text: parsed.text,
             });
           }
         } catch (err) {
-          console.error("Error parsing message from client WS:", err);
+          console.error("[Live] Error parsing/sending message:", err);
         }
       });
 
@@ -301,9 +350,11 @@ async function startServer() {
         }
       });
     } catch (err: any) {
-      console.error("Failed to connect to Live Agent:", err);
+      console.error("[Live] Failed to connect to Live Agent:", err);
+      console.error("[Live] Error message:", err?.message);
+      console.error("[Live] Error stack:", err?.stack);
       const isQuota = isQuotaError(err);
-      const errorMsg = isQuota ? "Quota Exceeded" : "No se pudo conectar con el agente de voz.";
+      const errorMsg = isQuota ? "Quota Exceeded" : `No se pudo conectar con el agente de voz: ${err?.message || "unknown error"}`;
       clientWs.send(JSON.stringify({ error: errorMsg }));
       clientWs.close();
     }

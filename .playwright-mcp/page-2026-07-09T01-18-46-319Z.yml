@@ -1,0 +1,222 @@
+- generic [active] [ref=f5e1]:
+  - generic [ref=f5e3]:
+    - generic [ref=f5e4]:
+      - complementary "Omitir vínculos" [ref=f5e5]:
+        - link "Ir al contenido principal" [ref=f5e6] [cursor=pointer]:
+          - /url: /cloud-build/triggers?project=project-aa5fb956-b08a-4e13-869
+          - generic [ref=f5e7]: Ir al contenido principal
+        - button "Combinación de teclas para acceso directo" [ref=f5e8]:
+          - generic [ref=f5e9]: Combinación de teclas para acceso directo
+        - link "Ayuda sobre la accesibilidad externo, se abre en una ventana nueva" [ref=f5e10] [cursor=pointer]:
+          - /url: https://cloud.google.com/docs/accessibility?hl=en_US
+          - generic [ref=f5e11]:
+            - text: Ayuda sobre la accesibilidad
+            - generic "externo, se abre en una ventana nueva" [ref=f5e12]:
+              - img "externo, se abre en una ventana nueva" [ref=f5e13]:
+                - img [ref=f5e14]
+        - link "Comentarios sobre accesibilidad externo, se abre en una ventana nueva" [ref=f5e16] [cursor=pointer]:
+          - /url: https://support.google.com/accessibility/contact/feedback?hl=en_US
+          - generic [ref=f5e17]:
+            - text: Comentarios sobre accesibilidad
+            - generic "externo, se abre en una ventana nueva" [ref=f5e18]:
+              - img "externo, se abre en una ventana nueva" [ref=f5e19]:
+                - img [ref=f5e20]
+      - banner [ref=f5e23]:
+        - generic [ref=f5e24]:
+          - navigation [ref=f5e27]:
+            - button "Menú de navegación (.)" [ref=f5e28] [cursor=pointer]:
+              - img [ref=f5e30]
+          - link "Google Cloud Platform - Página principal" [ref=f5e32] [cursor=pointer]:
+            - /url: /
+            - generic:
+              - img
+          - button "Actualmente, estás trabajando en My First Project. Presiona Intro para cambiar de proyecto, de carpeta o de organización." [ref=f5e40]:
+            - generic [ref=f5e41]:
+              - img [ref=f5e43]
+              - generic [ref=f5e46]: My First Project
+        - search "Google Cloud Platform" [ref=f5e52]:
+          - combobox [ref=f5e53]:
+            - searchbox "Ingresa una consulta para buscar recursos, documentos, productos y mucho más" [ref=f5e54]
+          - button "Ver todos los resultados de la búsqueda" [disabled]:
+            - generic:
+              - img
+            - generic: Buscar
+        - generic [ref=f5e55]:
+          - generic [ref=f5e56]:
+            - button "Activar Cloud Shell" [disabled] [ref=f5e59]:
+              - img [ref=f5e61]
+            - button "Abrir notificaciones" [ref=f5e65]:
+              - img [ref=f5e67]
+            - button "Configuración y utilidades" [ref=f5e71]:
+              - img [ref=f5e73]
+          - img [ref=f5e77]
+    - generic [ref=f5e86]:
+      - navigation "Ruta de navegación" [ref=f5e91]:
+        - link "Cloud Build" [ref=f5e94] [cursor=pointer]:
+          - /url: /cloud-build?project=project-aa5fb956-b08a-4e13-869
+          - img [ref=f5e97]
+          - generic [ref=f5e102]: Cloud Build
+        - list [ref=f5e103]:
+          - listitem [ref=f5e104]:
+            - generic [ref=f5e105]: /
+            - link "Activadores" [ref=f5e108] [cursor=pointer]:
+              - /url: /cloud-build/triggers?project=project-aa5fb956-b08a-4e13-869
+              - generic [ref=f5e110]: Activadores
+      - generic [ref=f5e121]:
+        - navigation "Cloud Build" [ref=f5e128]:
+          - generic [ref=f5e129]:
+            - list "Panel, 1 de 6 Más opciones Historial, 2 de 6 Más opciones Repositorios, 3 de 6 Más opciones Activadores, 4 de 6 Más opciones Grupos de trabajadores, 5 de 6 Más opciones Permisos, 6 de 6 Más opciones" [ref=f5e133]:
+              - listitem [ref=f5e134]:
+                - generic [ref=f5e137]:
+                  - link "Panel, 1 de 6" [ref=f5e138] [cursor=pointer]:
+                    - /url: /cloud-build/dashboard
+                    - generic [ref=f5e139]:
+                      - img [ref=f5e142]
+                      - generic [ref=f5e144]: Panel
+                  - button "Más opciones" [ref=f5e146] [cursor=pointer]:
+                    - img [ref=f5e148]
+              - listitem [ref=f5e150]:
+                - generic [ref=f5e153]:
+                  - link "Historial, 2 de 6" [ref=f5e154] [cursor=pointer]:
+                    - /url: /cloud-build/builds
+                    - generic [ref=f5e155]:
+                      - img [ref=f5e158]
+                      - generic [ref=f5e160]: Historial
+                  - button "Más opciones" [ref=f5e162] [cursor=pointer]:
+                    - img [ref=f5e164]
+              - listitem [ref=f5e166]:
+                - generic [ref=f5e169]:
+                  - link "Repositorios, 3 de 6" [ref=f5e170] [cursor=pointer]:
+                    - /url: /cloud-build/repositories
+                    - generic [ref=f5e171]:
+                      - img [ref=f5e174]
+                      - generic [ref=f5e176]: Repositorios
+                  - button "Más opciones" [ref=f5e178] [cursor=pointer]:
+                    - img [ref=f5e180]
+              - listitem [ref=f5e182]:
+                - generic [ref=f5e185]:
+                  - link "Activadores, 4 de 6" [ref=f5e186] [cursor=pointer]:
+                    - /url: /cloud-build/triggers
+                    - generic [ref=f5e187]:
+                      - img [ref=f5e190]
+                      - generic [ref=f5e192]: Activadores
+                  - button "Más opciones" [ref=f5e194] [cursor=pointer]:
+                    - img [ref=f5e196]
+              - listitem [ref=f5e198]:
+                - generic [ref=f5e201]:
+                  - link "Grupos de trabajadores, 5 de 6" [ref=f5e202] [cursor=pointer]:
+                    - /url: /cloud-build/worker-pools
+                    - generic [ref=f5e203]:
+                      - img [ref=f5e206]
+                      - generic [ref=f5e208]: Grupos de trabajadores
+                  - button "Más opciones" [ref=f5e210] [cursor=pointer]:
+                    - img [ref=f5e212]
+              - listitem [ref=f5e214]:
+                - generic [ref=f5e217]:
+                  - link "Permisos, 6 de 6" [ref=f5e218] [cursor=pointer]:
+                    - /url: /cloud-build/permissions
+                    - generic [ref=f5e219]:
+                      - img [ref=f5e222]
+                      - generic [ref=f5e224]: Permisos
+                  - button "Más opciones" [ref=f5e226] [cursor=pointer]:
+                    - img [ref=f5e228]
+            - button "Explorar Notas de versión de Cloud Build" [ref=f5e235]:
+              - img [ref=f5e237]:
+                - img [ref=f5e238]
+              - generic [ref=f5e240]: Notas de versión
+            - button "Activar o desactivar el menú de navegación de Cloud Build" [pressed] [ref=f5e242] [cursor=pointer]:
+              - img [ref=f5e245]
+        - main [ref=f5e248]:
+          - generic [ref=f5e265]:
+            - generic [ref=f5e268]:
+              - heading "Activadores" [level=1] [ref=f5e271]:
+                - generic [ref=f5e272]: Activadores
+              - toolbar "Activadores" [ref=f5e275]:
+                - generic [ref=f5e277]:
+                  - button "Crear activador" [ref=f5e278] [cursor=pointer]:
+                    - img [ref=f5e280]
+                    - generic [ref=f5e282]: Crear activador
+                  - button "Conectar repositorio" [ref=f5e283]:
+                    - img [ref=f5e285]
+                    - generic [ref=f5e289]: Conectar repositorio
+                  - button "Administrar repositorios" [ref=f5e290] [cursor=pointer]:
+                    - img [ref=f5e292]
+                    - generic [ref=f5e294]: Administrar repositorios
+                - button "Abrir o cerrar el Panel de aprendizaje" [ref=f5e298]:
+                  - img [ref=f5e300]:
+                    - img [ref=f5e301]
+                  - generic [ref=f5e303]: Más información
+            - generic [ref=f5e305]:
+              - paragraph [ref=f5e307]: Un activador de Cloud Build inicia una compilación de forma automática cada vez que realizas algún cambio en el código fuente o en algún otro evento entrante.
+              - generic [ref=f5e310]:
+                - generic [ref=f5e311]:
+                  - img [ref=f5e313]
+                  - generic [ref=f5e315]: Filtro
+                  - group "Filtro" [ref=f5e316]:
+                    - combobox "Filtro" [ref=f5e318]: Escribir el nombre o valor de la propiedad
+                  - button "Ayuda con el filtrado." [ref=f5e320] [cursor=pointer]:
+                    - img [ref=f5e322]
+                - button "Opciones de visualización de columnas..." [ref=f5e327] [cursor=pointer]:
+                  - img [ref=f5e329]
+              - grid "Activadores , Navega por la tabla con las teclas de flecha. Ingresa la tecla para interactuar con la celda. Presiona Tab para navegar por la celda. Presiona Escape para salir de la celda." [ref=f5e334]:
+                - rowgroup [ref=f5e344]:
+                  - row "Nombre Región Descripción Repositorio Evento Configuración de compilación Estado Ejecutar Acciones" [ref=f5e345]:
+                    - columnheader "Nombre" [ref=f5e346]:
+                      - generic [ref=f5e348] [cursor=pointer]:
+                        - generic [ref=f5e349]: Nombre
+                        - button "Ordenar por Nombre" [ref=f5e350]:
+                          - img [ref=f5e352]
+                    - columnheader "Región" [ref=f5e354]:
+                      - generic [ref=f5e356] [cursor=pointer]:
+                        - generic [ref=f5e357]: Región
+                        - button "Ordenar por Región" [ref=f5e358]:
+                          - img [ref=f5e360]
+                    - columnheader "Descripción" [ref=f5e362]:
+                      - generic [ref=f5e364] [cursor=pointer]:
+                        - generic [ref=f5e365]: Descripción
+                        - button "Ordenar por Descripción" [ref=f5e366]:
+                          - img [ref=f5e368]
+                    - columnheader "Repositorio" [ref=f5e370]:
+                      - generic [ref=f5e372] [cursor=pointer]:
+                        - generic [ref=f5e373]: Repositorio
+                        - button "Ordenar por Repositorio" [ref=f5e374]:
+                          - img [ref=f5e376]
+                    - columnheader "Evento" [ref=f5e378]:
+                      - generic [ref=f5e380] [cursor=pointer]:
+                        - generic [ref=f5e381]: Evento
+                        - button "Ordenar por Evento" [ref=f5e382]:
+                          - img [ref=f5e384]
+                    - columnheader "Configuración de compilación" [ref=f5e386]:
+                      - generic [ref=f5e388] [cursor=pointer]:
+                        - generic [ref=f5e389]: Configuración de compilación
+                        - button "Ordenar por Configuración de compilación" [ref=f5e390]:
+                          - img [ref=f5e392]
+                    - columnheader "Estado" [ref=f5e394]:
+                      - generic [ref=f5e396] [cursor=pointer]:
+                        - generic [ref=f5e397]: Estado
+                        - button "Ordenar por Estado" [ref=f5e398]:
+                          - img [ref=f5e400]
+                    - columnheader "Ejecutar"
+                    - columnheader "Acciones"
+                - rowgroup [ref=f5e403]:
+                  - row "No hay filas para mostrar" [ref=f5e404]:
+                    - gridcell "No hay filas para mostrar" [ref=f5e405]
+              - generic [ref=f5e408]:
+                - img [ref=f5e410]
+                - generic [ref=f5e412]:
+                  - heading "No hay activadores configurados" [level=2] [ref=f5e414]
+                  - generic [ref=f5e415]:
+                    - text: Inicia una compilación de forma automática cada vez que realices cambios en tu código fuente o en respuesta a otros eventos.
+                    - link "Más información externo, se abre en una ventana nueva" [ref=f5e416] [cursor=pointer]:
+                      - /url: https://cloud.google.com/build/docs/running-builds/automate-builds?hl=es_419
+                      - text: Más información
+                      - img "externo, se abre en una ventana nueva" [ref=f5e417]:
+                        - img [ref=f5e418]
+                - generic [ref=f5e420]:
+                  - link "Crear activador" [ref=f5e421] [cursor=pointer]:
+                    - /url: /cloud-build/triggers/add?project=project-aa5fb956-b08a-4e13-869
+                    - generic [ref=f5e422]: Crear activador
+                  - button "Conectar repositorio" [ref=f5e423]:
+                    - generic [ref=f5e424]: Conectar repositorio
+  - paragraph
+  - paragraph

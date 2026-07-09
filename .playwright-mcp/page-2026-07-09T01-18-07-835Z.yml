@@ -1,0 +1,77 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - complementary "Omitir vínculos" [ref=e5]:
+        - link "Ir al contenido principal" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e7]: Ir al contenido principal
+        - button "Combinación de teclas para acceso directo" [ref=e8]:
+          - generic [ref=e9]: Combinación de teclas para acceso directo
+        - link "Ayuda sobre la accesibilidad externo, se abre en una ventana nueva" [ref=e10] [cursor=pointer]:
+          - /url: https://cloud.google.com/docs/accessibility?hl=es_419
+          - generic [ref=e11]:
+            - text: Ayuda sobre la accesibilidad
+            - generic "externo, se abre en una ventana nueva" [ref=e12]:
+              - img "externo, se abre en una ventana nueva" [ref=e13]:
+                - img [ref=e14]
+        - link "Comentarios sobre accesibilidad externo, se abre en una ventana nueva" [ref=e16] [cursor=pointer]:
+          - /url: https://support.google.com/accessibility/contact/feedback?hl=es_419
+          - generic [ref=e17]:
+            - text: Comentarios sobre accesibilidad
+            - generic "externo, se abre en una ventana nueva" [ref=e18]:
+              - img "externo, se abre en una ventana nueva" [ref=e19]:
+                - img [ref=e20]
+      - banner [ref=e23]:
+        - generic [ref=e24]:
+          - navigation [ref=e27]:
+            - button "Menú de navegación (.)" [ref=e28] [cursor=pointer]:
+              - img [ref=e30]
+          - link "Google Cloud Platform - Página principal" [ref=e32] [cursor=pointer]:
+            - /url: /
+            - generic:
+              - img
+          - button "Actualmente, estás trabajando en My First Project. Presiona Intro para cambiar de proyecto, de carpeta o de organización." [ref=e40]:
+            - generic [ref=e41]:
+              - img [ref=e43]
+              - generic [ref=e46]: My First Project
+        - search "Google Cloud Platform" [ref=e52]:
+          - combobox [ref=e53]:
+            - searchbox "Ingresa una consulta para buscar recursos, documentos, productos y mucho más" [ref=e54]
+          - button "Ver todos los resultados de la búsqueda" [disabled]:
+            - generic:
+              - img
+            - generic: Buscar
+        - generic [ref=e55]:
+          - generic [ref=e56]:
+            - button "Abrir chat de Gemini AI (Alt G)" [ref=e60] [cursor=pointer]:
+              - img [ref=e62]
+            - button "Activar Cloud Shell (G then S)" [ref=e67] [cursor=pointer]:
+              - img [ref=e69]
+            - button "Abrir notificaciones" [ref=e74] [cursor=pointer]:
+              - img [ref=e76]
+            - button "Configuración y utilidades" [ref=e82] [cursor=pointer]:
+              - img [ref=e84]
+          - 'button "Cuenta: Sergio Palomba (sergiopalomba05@gmail.com)" [ref=e90]':
+            - img [ref=e91]
+    - main [ref=e112]:
+      - generic [ref=e131]:
+        - heading "No se encontró la URL" [level=2] [ref=e132]
+        - paragraph [ref=e133]: No encontramos lo que buscabas. Prueba con uno de los siguientes vínculos.
+        - list [ref=e134]:
+          - listitem [ref=e135]:
+            - link "Página principal de Google Cloud" [ref=e136] [cursor=pointer]:
+              - /url: /welcome?project=project-aa5fb956-b08a-4e13-869
+          - listitem [ref=e137]:
+            - link "Documentación de Google Cloud externo, se abre en una ventana nueva" [ref=e138] [cursor=pointer]:
+              - /url: https://docs.cloud.google.com/?hl=es_419
+              - generic [ref=e139]: Documentación de Google Cloud
+              - img "externo, se abre en una ventana nueva" [ref=e140]:
+                - img [ref=e141]
+          - listitem [ref=e143]:
+            - link "Google for Developers externo, se abre en una ventana nueva" [ref=e144] [cursor=pointer]:
+              - /url: http://developers.google.com?hl=es_419
+              - generic [ref=e145]: Google for Developers
+              - img "externo, se abre en una ventana nueva" [ref=e146]:
+                - img [ref=e147]
+  - iframe [ref=e151]:
+    

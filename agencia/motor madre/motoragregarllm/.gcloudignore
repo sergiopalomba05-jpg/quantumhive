@@ -3,12 +3,10 @@ node_modules
 .env.*
 src/
 *.ts
-!dist/
-dist/*.map
-!dist/server.cjs
 tsconfig.json
 vite.config.ts
 README.md
 .git
 .gitignore
 .gcloudignore
+cloudbuild.yaml

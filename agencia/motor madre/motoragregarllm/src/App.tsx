@@ -1346,7 +1346,7 @@ export default function App() {
     setIsStreaming(true);
 
     try {
-      const response = await fetch("/api/chat/stream", {
+      const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -2677,19 +2677,11 @@ export default function App() {
           </div>
         )}
 
-        {/* THE AVATAR (CLICKABLE TO START LIVE CALL) */}
+        {/* THE AVATAR (DECORATIVE - live call only via phone icon) */}
         {!activeOverlay && (
           <div 
-            className="orb-float cursor-pointer"
-            onClick={() => {
-              if (!isLiveCalling) {
-                startLiveCall();
-              } else {
-                endLiveCall();
-              }
-            }}
+            className="orb-float pointer-events-none"
             data-state={isLiveCalling ? "speaking" : "idle"}
-            title="Sol (Toque para llamar)"
           >
             <img 
               src="/avatar-bienvenido.webp" 

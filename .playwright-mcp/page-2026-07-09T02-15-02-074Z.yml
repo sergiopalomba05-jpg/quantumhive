@@ -1,0 +1,251 @@
+- generic [ref=f10e1]:
+  - generic [ref=f10e3]:
+    - generic [ref=f10e4]:
+      - complementary "Omitir vínculos" [ref=f10e846]:
+        - link "Ir al contenido principal" [ref=f10e847] [cursor=pointer]:
+          - /url: /cloud-build/triggers;region=global/add;repoId=GITHUB_APP%2Fsergiopalomba05-jpg%2Fquantumhive?project=project-aa5fb956-b08a-4e13-869
+          - generic [ref=f10e7]: Ir al contenido principal
+        - button "Combinación de teclas para acceso directo" [ref=f10e848]:
+          - generic [ref=f10e9]: Combinación de teclas para acceso directo
+        - link "Ayuda sobre la accesibilidad externo, se abre en una ventana nueva" [ref=f10e849] [cursor=pointer]:
+          - /url: https://cloud.google.com/docs/accessibility?hl=en_US
+          - generic [ref=f10e11]:
+            - text: Ayuda sobre la accesibilidad
+            - generic "externo, se abre en una ventana nueva" [ref=f10e850]:
+              - img "externo, se abre en una ventana nueva" [ref=f10e851]:
+                - img [ref=f10e14]
+        - link "Comentarios sobre accesibilidad externo, se abre en una ventana nueva" [ref=f10e852] [cursor=pointer]:
+          - /url: https://support.google.com/accessibility/contact/feedback?hl=en_US
+          - generic [ref=f10e17]:
+            - text: Comentarios sobre accesibilidad
+            - generic "externo, se abre en una ventana nueva" [ref=f10e853]:
+              - img "externo, se abre en una ventana nueva" [ref=f10e854]:
+                - img [ref=f10e20]
+      - banner [ref=f10e23]:
+        - generic [ref=f10e24]:
+          - navigation [ref=f10e27]:
+            - button "Menú de navegación (.)" [ref=f10e855] [cursor=pointer]:
+              - img [ref=f10e30]
+          - link "Google Cloud Platform - Página principal" [ref=f10e856] [cursor=pointer]:
+            - /url: /?project=project-aa5fb956-b08a-4e13-869
+            - generic:
+              - img
+          - button "Actualmente, estás trabajando en My First Project. Presiona Intro para cambiar de proyecto, de carpeta o de organización." [ref=f10e857]:
+            - generic [ref=f10e41]:
+              - img [ref=f10e43]
+              - generic [ref=f10e46]: My First Project
+        - search "Google Cloud Platform" [ref=f10e858]:
+          - combobox [ref=f10e53]:
+            - searchbox "Ingresa una consulta para buscar recursos, documentos, productos y mucho más" [ref=f10e859]
+          - button "Ver todos los resultados de la búsqueda" [disabled]:
+            - generic:
+              - img
+            - generic: Buscar
+        - generic [ref=f10e55]:
+          - generic [ref=f10e56]:
+            - button "Abrir chat de Gemini AI (Alt G)" [ref=f10e860] [cursor=pointer]:
+              - img [ref=f10e62]
+            - button "Activar Cloud Shell (G then S)" [ref=f10e861] [cursor=pointer]:
+              - img [ref=f10e655]
+            - button "Abrir notificaciones" [ref=f10e862] [cursor=pointer]:
+              - img [ref=f10e619]
+            - button "Configuración y utilidades" [ref=f10e863] [cursor=pointer]:
+              - img [ref=f10e626]
+          - 'button "Cuenta: Sergio Palomba (sergiopalomba05@gmail.com)" [ref=f10e864]':
+            - img [ref=f10e631]
+    - generic [ref=f10e93]:
+      - generic [ref=f10e94]:
+        - status "Comunicación" [ref=f10e865]:
+          - img [ref=f10e639]:
+            - img [ref=f10e640]
+          - generic [ref=f10e642]:
+            - generic [ref=f10e644]: Actualmente, estás generando cargos en tu cuenta de facturación My Billing Account 1 a partir del 10 de junio de 2026.
+            - link "Más información sobre Google Cloud" [ref=f10e866] [cursor=pointer]:
+              - /url: https://cloud.google.com/free/docs/free-cloud-features#understanding-costs
+              - text: Learn more
+          - button "Descartar" [ref=f10e867]:
+            - generic [ref=f10e648]: Descartar
+          - button "Ver los costos en facturación" [ref=f10e868]:
+            - generic [ref=f10e651]: Ver los costos en facturación
+        - navigation "Ruta de navegación" [ref=f10e869]:
+          - link "Cloud Build" [ref=f10e870] [cursor=pointer]:
+            - /url: /cloud-build?project=project-aa5fb956-b08a-4e13-869
+            - img [ref=f10e104]
+            - generic [ref=f10e109]: Cloud Build
+          - list [ref=f10e110]:
+            - listitem [ref=f10e111]:
+              - generic [ref=f10e112]: /
+              - link "Activadores" [ref=f10e871] [cursor=pointer]:
+                - /url: /cloud-build/triggers;region=global?project=project-aa5fb956-b08a-4e13-869
+                - generic [ref=f10e117]: Activadores
+      - generic [ref=f10e135]:
+        - navigation "Cloud Build" [ref=f10e873]:
+          - generic [ref=f10e143]:
+            - list "Panel, 1 de 6 Más opciones Historial, 2 de 6 Más opciones Repositorios, 3 de 6 Más opciones Activadores, 4 de 6 Más opciones Grupos de trabajadores, 5 de 6 Más opciones Permisos, 6 de 6 Más opciones" [ref=f10e874]:
+              - listitem [ref=f10e148]:
+                - generic [ref=f10e151]:
+                  - link "Panel, 1 de 6" [ref=f10e875] [cursor=pointer]:
+                    - /url: /cloud-build/dashboard?project=project-aa5fb956-b08a-4e13-869
+                    - generic [ref=f10e153]:
+                      - img [ref=f10e156]
+                      - generic [ref=f10e158]: Panel
+                  - button "Más opciones" [ref=f10e876] [cursor=pointer]:
+                    - img [ref=f10e162]
+              - listitem [ref=f10e164]:
+                - generic [ref=f10e167]:
+                  - link "Historial, 2 de 6" [ref=f10e877] [cursor=pointer]:
+                    - /url: /cloud-build/builds?project=project-aa5fb956-b08a-4e13-869
+                    - generic [ref=f10e169]:
+                      - img [ref=f10e172]
+                      - generic [ref=f10e174]: Historial
+                  - button "Más opciones" [ref=f10e878] [cursor=pointer]:
+                    - img [ref=f10e178]
+              - listitem [ref=f10e180]:
+                - generic [ref=f10e183]:
+                  - link "Repositorios, 3 de 6" [ref=f10e879] [cursor=pointer]:
+                    - /url: /cloud-build/repositories?project=project-aa5fb956-b08a-4e13-869
+                    - generic [ref=f10e185]:
+                      - img [ref=f10e188]
+                      - generic [ref=f10e190]: Repositorios
+                  - button "Más opciones" [ref=f10e880] [cursor=pointer]:
+                    - img [ref=f10e194]
+              - listitem [ref=f10e196]:
+                - generic [ref=f10e199]:
+                  - link "Activadores, 4 de 6" [ref=f10e881] [cursor=pointer]:
+                    - /url: /cloud-build/triggers?project=project-aa5fb956-b08a-4e13-869
+                    - generic [ref=f10e201]:
+                      - img [ref=f10e204]
+                      - generic [ref=f10e206]: Activadores
+                  - button "Más opciones" [ref=f10e882] [cursor=pointer]:
+                    - img [ref=f10e210]
+              - listitem [ref=f10e212]:
+                - generic [ref=f10e215]:
+                  - link "Grupos de trabajadores, 5 de 6" [ref=f10e883] [cursor=pointer]:
+                    - /url: /cloud-build/worker-pools?project=project-aa5fb956-b08a-4e13-869
+                    - generic [ref=f10e217]:
+                      - img [ref=f10e220]
+                      - generic [ref=f10e222]: Grupos de trabajadores
+                  - button "Más opciones" [ref=f10e884] [cursor=pointer]:
+                    - img [ref=f10e226]
+              - listitem [ref=f10e228]:
+                - generic [ref=f10e231]:
+                  - link "Permisos, 6 de 6" [ref=f10e885] [cursor=pointer]:
+                    - /url: /cloud-build/permissions?project=project-aa5fb956-b08a-4e13-869
+                    - generic [ref=f10e233]:
+                      - img [ref=f10e236]
+                      - generic [ref=f10e238]: Permisos
+                  - button "Más opciones" [ref=f10e886] [cursor=pointer]:
+                    - img [ref=f10e242]
+            - button "Explorar Notas de versión de Cloud Build" [ref=f10e887]:
+              - img [ref=f10e251]:
+                - img [ref=f10e252]
+              - generic [ref=f10e254]: Notas de versión
+            - button "Activar o desactivar el menú de navegación de Cloud Build" [pressed] [ref=f10e888] [cursor=pointer]:
+              - img [ref=f10e259]
+        - main [active] [ref=f10e262]:
+          - generic [ref=f10e988]:
+            - generic [ref=f10e991]:
+              - heading "Activadores" [level=1] [ref=f10e994]:
+                - generic [ref=f10e995]: Activadores
+              - toolbar "Activadores" [ref=f10e998]:
+                - generic [ref=f10e1000]:
+                  - button "Crear activador" [ref=f10e1001] [cursor=pointer]:
+                    - img [ref=f10e1003]
+                    - generic [ref=f10e1005]: Crear activador
+                  - button "Conectar repositorio" [ref=f10e1006]:
+                    - img [ref=f10e1008]
+                    - generic [ref=f10e1012]: Conectar repositorio
+                  - button "Administrar repositorios" [ref=f10e1013] [cursor=pointer]:
+                    - img [ref=f10e1015]
+                    - generic [ref=f10e1017]: Administrar repositorios
+                - button "Abrir o cerrar el Panel de aprendizaje" [ref=f10e891]:
+                  - img [ref=f10e296]:
+                    - img [ref=f10e297]
+                  - generic [ref=f10e299]: Más información
+            - generic [ref=f10e1021]:
+              - paragraph [ref=f10e1023]: Un activador de Cloud Build inicia una compilación de forma automática cada vez que realizas algún cambio en el código fuente o en algún otro evento entrante.
+              - generic [ref=f10e1026]:
+                - generic [ref=f10e1027]:
+                  - img [ref=f10e1029]
+                  - generic [ref=f10e1031]: Filtro
+                  - group "Filtro" [ref=f10e1032]:
+                    - combobox "Filtro" [ref=f10e1034]: Escribir el nombre o valor de la propiedad
+                  - button "Ayuda con el filtrado." [ref=f10e1036] [cursor=pointer]:
+                    - img [ref=f10e1038]
+                - button "Opciones de visualización de columnas..." [ref=f10e1043] [cursor=pointer]:
+                  - img [ref=f10e1045]
+              - grid "Activadores , Navega por la tabla con las teclas de flecha. Ingresa la tecla para interactuar con la celda. Presiona Tab para navegar por la celda. Presiona Escape para salir de la celda." [ref=f10e1050]:
+                - rowgroup [ref=f10e1061]:
+                  - row "Nombre Región Descripción Repositorio Evento Configuración de compilación Estado Ejecutar Acciones" [ref=f10e1062]:
+                    - columnheader "Nombre" [ref=f10e1063]:
+                      - generic [ref=f10e1065] [cursor=pointer]:
+                        - generic [ref=f10e1066]: Nombre
+                        - button "Ordenar por Nombre" [ref=f10e1067]:
+                          - img [ref=f10e1069]
+                    - columnheader "Región" [ref=f10e1071]:
+                      - generic [ref=f10e1073] [cursor=pointer]:
+                        - generic [ref=f10e1074]: Región
+                        - button "Ordenar por Región" [ref=f10e1075]:
+                          - img [ref=f10e1077]
+                    - columnheader "Descripción" [ref=f10e1079]:
+                      - generic [ref=f10e1081] [cursor=pointer]:
+                        - generic [ref=f10e1082]: Descripción
+                        - button "Ordenar por Descripción" [ref=f10e1083]:
+                          - img [ref=f10e1085]
+                    - columnheader "Repositorio" [ref=f10e1087]:
+                      - generic [ref=f10e1089] [cursor=pointer]:
+                        - generic [ref=f10e1090]: Repositorio
+                        - button "Ordenar por Repositorio" [ref=f10e1091]:
+                          - img [ref=f10e1093]
+                    - columnheader "Evento" [ref=f10e1095]:
+                      - generic [ref=f10e1097] [cursor=pointer]:
+                        - generic [ref=f10e1098]: Evento
+                        - button "Ordenar por Evento" [ref=f10e1099]:
+                          - img [ref=f10e1101]
+                    - columnheader "Configuración de compilación" [ref=f10e1103]:
+                      - generic [ref=f10e1105] [cursor=pointer]:
+                        - generic [ref=f10e1106]: Configuración de compilación
+                        - button "Ordenar por Configuración de compilación" [ref=f10e1107]:
+                          - img [ref=f10e1109]
+                    - columnheader "Estado" [ref=f10e1111]:
+                      - generic [ref=f10e1113] [cursor=pointer]:
+                        - generic [ref=f10e1114]: Estado
+                        - button "Ordenar por Estado" [ref=f10e1115]:
+                          - img [ref=f10e1117]
+                    - columnheader "Ejecutar" [ref=f10e1119]
+                    - columnheader "Acciones" [ref=f10e1120]
+                - rowgroup [ref=f10e1121]:
+                  - row "deploy-carta-viva global — GitHub sergiopalomba05-jpg/quantumhive externo, se abre en una ventana nueva Envío a una rama agencia/motor madre/motoragregarllm/cloudbuild.yaml Habilitado Ejecutar Acciones" [ref=f10e1122]:
+                    - rowheader "deploy-carta-viva" [ref=f10e1123]:
+                      - link "deploy-carta-viva" [ref=f10e1125] [cursor=pointer]:
+                        - /url: /cloud-build/triggers;region=global/edit/c5387e0c-e1e0-487d-9dac-19c9df65bbef?project=project-aa5fb956-b08a-4e13-869
+                    - gridcell "global" [ref=f10e1126]
+                    - gridcell "—" [ref=f10e1127]:
+                      - generic [ref=f10e1129]: —
+                    - gridcell "GitHub sergiopalomba05-jpg/quantumhive externo, se abre en una ventana nueva" [ref=f10e1130]:
+                      - generic [ref=f10e1131]:
+                        - button "GitHub" [ref=f10e1133] [cursor=pointer]:
+                          - img [ref=f10e1135]
+                        - link "sergiopalomba05-jpg/quantumhive externo, se abre en una ventana nueva" [ref=f10e1137] [cursor=pointer]:
+                          - /url: https://github.com/sergiopalomba05-jpg/quantumhive
+                          - generic [ref=f10e1138]: sergiopalomba05-jpg/quantumhive
+                          - img "externo, se abre en una ventana nueva" [ref=f10e1139]:
+                            - img [ref=f10e1140]
+                    - gridcell "Envío a una rama" [ref=f10e1142]
+                    - gridcell "agencia/motor madre/motoragregarllm/cloudbuild.yaml" [ref=f10e1143]:
+                      - generic [ref=f10e1144]: agencia/motor madre/motoragregarllm/cloudbuild.yaml
+                    - gridcell "Habilitado" [ref=f10e1145]
+                    - gridcell "Ejecutar" [ref=f10e1146]:
+                      - button "Ejecutar" [ref=f10e1147]:
+                        - generic [ref=f10e1148]: Ejecutar
+                    - gridcell "Acciones" [ref=f10e1149]:
+                      - button "Acciones" [ref=f10e1150] [cursor=pointer]:
+                        - img [ref=f10e1152]
+          - dialog "notificación" [ref=f10e1155]:
+            - generic [ref=f10e1160]:
+              - generic "Se creó “deploy-carta-viva” en sergiopalomba05-jpg/quantumhive." [ref=f10e1162]
+              - button "Cerrar mensaje" [ref=f10e1163] [cursor=pointer]:
+                - img [ref=f10e1165]:
+                  - img [ref=f10e1166]
+  - paragraph [ref=f10e1169]: Activadores – Cloud Build – My First Project – Consola de Google Cloud
+  - paragraph
