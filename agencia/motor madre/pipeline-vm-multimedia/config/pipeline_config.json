@@ -1,0 +1,38 @@
+{
+  "restaurant_name": "la-escaloneta",
+  "avatar_image": "C:\\Users\\sergio\\Desktop\\boveda obsidian\\AVATARES VIDEOS\\bienvenido-sin-fondo.webp",
+  "voice_reference": "C:\\Users\\sergio\\Desktop\\boveda obsidian\\AVATARES VIDEOS\\voz-referencia.wav",
+  "voice_description": "Sol, mujer argentina, tono cálido y profesional",
+  "output_dir": "C:\\Users\\sergio\\Desktop\\boveda obsidian\\agencia\\motor madre\\pipeline-vm-multimedia\\output",
+  "comfyui_url": "http://localhost:8188",
+  "f5tts_url": "http://localhost:8080",
+  "supabase_url": "https://your-project.supabase.co",
+  "supabase_key": "your-anon-key",
+  "supabase_bucket": "avatar-videos",
+  "video_config": {
+    "width": 720,
+    "height": 405,
+    "fps": 30,
+    "format": "webm"
+  },
+  "dishes": [
+    {
+      "id": "milanesa-napolitana",
+      "name": "Milanesa Napolitana",
+      "description": "Milanesa de carne empanizada con jamón, queso mozzarella y salsa de tomate casera. Acompañada de papas fritas.",
+      "price": "$3.800"
+    },
+    {
+      "id": "chivito",
+      "name": "Chivito Canadiense",
+      "description": "Lomo de cerdo a la parrilla con lechuga, tomate, huevo frito, jamón y mayonesa. En pan brioche artesanal.",
+      "price": "$4.200"
+    },
+    {
+      "id": "pizza-muzzarella",
+      "name": "Pizza Muzzarella",
+      "description": "Masa artesanal fermentada 48 horas, salsa de tomate San Marzano, muzzarella de bufala y albahaca fresca.",
+      "price": "$2.900"
+    }
+  ]
+}
