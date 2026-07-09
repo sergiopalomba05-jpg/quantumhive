@@ -216,7 +216,19 @@ async function startServer() {
     console.log(`Server running on http://localhost:${PORT}`);
   });
 
-  const wss = new WebSocketServer({ server });
+  const wss = new WebSocketServer({ noServer: true });
+
+  server.on("upgrade", (req, socket, head) => {
+    const url = req.url || "";
+    console.log("[WS] Upgrade request for:", url);
+    if (url.startsWith("/api/live")) {
+      wss.handleUpgrade(req, socket, head, (clientWs) => {
+        wss.emit("connection", clientWs, req);
+      });
+    } else {
+      socket.destroy();
+    }
+  });
 
   wss.on("connection", async (clientWs, req) => {
     const url = req.url || "";
@@ -250,7 +262,7 @@ async function startServer() {
       // For Live API, we need to use the @google/genai SDK with vertexai: true
       // The official @google-cloud/vertexai doesn't support Live API yet
       console.log("[Live] Importing @google/genai SDK...");
-      const { GoogleGenAI, Modality } = await import("@google/genai");
+      const { GoogleGenAI } = await import("@google/genai");
       console.log("[Live] SDK imported successfully");
 
       const ai = new GoogleGenAI({
@@ -260,15 +272,18 @@ async function startServer() {
       });
       console.log("[Live] GoogleGenAI client created");
 
-      console.log("[Live] Connecting to model: gemini-live-2.5-flash-native-audio");
+      console.log("[Live] Connecting to model: gemini-live-2.5-flash-preview-native-audio");
       const session = await ai.live.connect({
-        model: "gemini-live-2.5-flash-native-audio",
+        model: "gemini-live-2.5-flash-preview-native-audio",
         config: {
-          responseModalities: [Modality.TEXT, Modality.AUDIO],
+          responseModalities: ["audio"],
           speechConfig: {
             voiceConfig: { prebuiltVoiceConfig: { voiceName: "Aoede" } },
           },
-          systemInstruction: buildSystemPrompt() + cartNote + "\n\nSos la mesera virtual Sol para el restaurant, interactuando por llamada de voz en vivo. Respondé de forma sumamente concisa, directa y natural en español rioplatense (voseo). El usuario te está hablando por voz, así que respondé de manera conversacional, muy breve y amigable. Es sumamente importante que mantengas los tags invisibles al final de tus respuestas cuando modifiques el pedido (ej. #PEDIDO# {...}) o muestres la cuenta (ej. #CUENTA#) tal cual como indica el prompt del sistema, para que la app se actualice en pantalla en tiempo real.",
+          systemInstruction: {
+            parts: [{ text: "Sos Sofía, mesera amable de un restaurante. Respondés en español rioplatense casual. Usás voice response. Sé breve." }],
+          },
+          outputAudioTranscription: {},
         },
         callbacks: {
           onopen: () => {
@@ -303,8 +318,8 @@ async function startServer() {
           onerror: (err: any) => {
             console.error("[Live] Callback onerror:", err);
           },
-          onclose: () => {
-            console.log("[Live] Callback onclose fired");
+          onclose: (event: any) => {
+            console.log("[Live] Callback onclose fired:", JSON.stringify(event));
           },
         },
       });
