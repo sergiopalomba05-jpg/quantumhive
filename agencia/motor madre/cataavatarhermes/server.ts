@@ -276,7 +276,7 @@ async function startServer() {
       const session = await ai.live.connect({
         model: "gemini-live-2.5-flash-native-audio",
         config: {
-          responseModalities: ["TEXT", "AUDIO"],
+          responseModalities: ["AUDIO"],
           speechConfig: {
             voiceConfig: { prebuiltVoiceConfig: { voiceName: "Aoede" } },
           },
