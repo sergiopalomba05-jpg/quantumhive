@@ -19,8 +19,6 @@ steps:
       - 'us-central1'
       - '--platform'
       - 'managed'
-      - '--service-account'
-      - '557866434489-compute@developer.gserviceaccount.com'
 
 images:
   - 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/motor-avatares:$BUILD_ID'
