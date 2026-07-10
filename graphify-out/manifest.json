@@ -375,8 +375,8 @@
     "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1781706451.009316,
-    "ast_hash": "83e0e7077228824e87dcd37eb705ba30",
+    "mtime": 1783559809.2177434,
+    "ast_hash": "e37a6a5b8d661275cb3edb4e19cd848d",
     "semantic_hash": ""
   },
   "CLAUDE.md": {
@@ -1367,71 +1367,6 @@
   "agencia/motor madre/motor-madre-final/frontend/vite.config.ts": {
     "mtime": 1783303185.5353823,
     "ast_hash": "38f167cee10c523113ac1395023e5b40",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motoragregarllm/get_state_refs.js": {
-    "mtime": 1783484089.0796726,
-    "ast_hash": "cd32c5a1d851710588dae7a35f846311",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motoragregarllm/metadata.json": {
-    "mtime": 1783484089.0086963,
-    "ast_hash": "8eb01bb2d4f41a8ee77e217f7429f983",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motoragregarllm/package.json": {
-    "mtime": 1783555262.7204554,
-    "ast_hash": "57a9b1b370ba8a68c5961036f25fc8b8",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motoragregarllm/server.py": {
-    "mtime": 1783484089.658491,
-    "ast_hash": "0d553e5277590ddb176dae5dfa558e72",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motoragregarllm/server.ts": {
-    "mtime": 1783555943.4067826,
-    "ast_hash": "4b0de6c33244959478ac7db0bd59cff0",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motoragregarllm/src/App.tsx": {
-    "mtime": 1783553022.7383206,
-    "ast_hash": "6a71941bd9b7724332ecc70e664aaf61",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motoragregarllm/src/main.tsx": {
-    "mtime": 1783484089.8934152,
-    "ast_hash": "2b36426d5ad7e08ef79746aa524f4fb7",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motoragregarllm/src/menuData.ts": {
-    "mtime": 1783484090.1333406,
-    "ast_hash": "bebf070f59236fe7db119d35b31fb4ed",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motoragregarllm/src/systemPrompt.ts": {
-    "mtime": 1783484090.0803542,
-    "ast_hash": "8093e42aa1257c9be9ab942fcf87dfe9",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motoragregarllm/src/types.ts": {
-    "mtime": 1783484090.180621,
-    "ast_hash": "9c6e975dc04b8788639df93a4c8deb64",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motoragregarllm/test.js": {
-    "mtime": 1783484090.4916935,
-    "ast_hash": "17e069818e5af6e6f00c9a845d436a59",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motoragregarllm/tsconfig.json": {
-    "mtime": 1783484090.5416775,
-    "ast_hash": "8827451c4e35790dd3f3538c265e7d15",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motoragregarllm/vite.config.ts": {
-    "mtime": 1783484090.3787315,
-    "ast_hash": "9c319043c25764dfe83b687f74637c6c",
     "semantic_hash": ""
   },
   "agencia/productos/la-escaloneta-3d/metadata.json": {
@@ -3177,26 +3112,6 @@
   "agencia/motor madre/motor-madre-final/frontend/index.html": {
     "mtime": 1783261985.6216922,
     "ast_hash": "c6cdc88c3abec682e37d1f35b7b4ad0b",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motoragregarllm/README.md": {
-    "mtime": 1783484090.642647,
-    "ast_hash": "dc4da96c66cbb425acb0baea60eed654",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motoragregarllm/cloudbuild.yaml": {
-    "mtime": 1783559631.479571,
-    "ast_hash": "cdd60d5bc3a061a86e70c6ae1ba71afc",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motoragregarllm/index.html": {
-    "mtime": 1783484090.2337787,
-    "ast_hash": "c1ddf3dac4807cad3e65657ef972b8ce",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motoragregarllm/server_output.txt": {
-    "mtime": 1783549775.0493493,
-    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
     "semantic_hash": ""
   },
   "agencia/productos/la-escaloneta-3d/README.md": {
@@ -5589,16 +5504,6 @@
     "ast_hash": "00d225ff5f6d106a27ebbd9413692bfc",
     "semantic_hash": ""
   },
-  "agencia/motor madre/motoragregarllm/assets/avatar-bienvenido.webp": {
-    "mtime": 1783551759.4806259,
-    "ast_hash": "8f205059aafb0c2eef3f9f666ca7aa07",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motoragregarllm/public/avatar-bienvenido.webp": {
-    "mtime": 1783551759.4806259,
-    "ast_hash": "8f205059aafb0c2eef3f9f666ca7aa07",
-    "semantic_hash": ""
-  },
   "agencia/productos/la-escaloneta-3d/public/sol_avatar.jpg": {
     "mtime": 1783129638.2378125,
     "ast_hash": "790e9768c63ec1bc6f5e5bbf9e8ab96d",
@@ -5865,13 +5770,13 @@
     "semantic_hash": ""
   },
   "planes-a-llevar-a-cabo/README.md": {
-    "mtime": 1783559169.904002,
-    "ast_hash": "084a36e6aed2e1a0c817777272be114e",
+    "mtime": 1783564434.666815,
+    "ast_hash": "f5b7117eb9af4e85fdcc4a984413a5c0",
     "semantic_hash": ""
   },
   "procesos-aprendidos/README.md": {
-    "mtime": 1783559168.612517,
-    "ast_hash": "9fe77e783f29d116cc026be224527525",
+    "mtime": 1783566945.1123116,
+    "ast_hash": "f216e89d4bf1cce6b32ef61b12454cd2",
     "semantic_hash": ""
   },
   "procesos-aprendidos/pipelines/avatar-video-processing.md": {
@@ -5892,6 +5797,2831 @@
   "procesos-aprendidos/skills/gpu-vm-setup.md": {
     "mtime": 1783546679.25578,
     "ast_hash": "a26c477b392112348dd355735abbcd0a",
+    "semantic_hash": ""
+  },
+  "habilidades-multimedia/pipelines/create_webp.py": {
+    "mtime": 1783559696.2226882,
+    "ast_hash": "843922451df11de80a3845d5c8520756",
+    "semantic_hash": ""
+  },
+  "habilidades-multimedia/pipelines/process-avatar-video.ps1": {
+    "mtime": 1783559696.2236867,
+    "ast_hash": "b75f71322c35af56808cda0a89e34926",
+    "semantic_hash": ""
+  },
+  "habilidades-multimedia/pipelines/remove_bg_local.py": {
+    "mtime": 1783559696.2246869,
+    "ast_hash": "2f74f9caabe8b05b3253750b27c10dba",
+    "semantic_hash": ""
+  },
+  "habilidades-multimedia/pipelines/setup-comfyui-remote.ps1": {
+    "mtime": 1783559696.2256882,
+    "ast_hash": "9730325caa1dc3da24f8871d73a0a18d",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-09T01-18-07-835Z.yml": {
+    "mtime": 1783559887.8395846,
+    "ast_hash": "e878d9444a5ddf9f35348d90ca66c805",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-09T01-18-46-319Z.yml": {
+    "mtime": 1783559926.3336117,
+    "ast_hash": "9e22c201041b351161c64f25669f02b2",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-09T01-19-11-360Z.yml": {
+    "mtime": 1783559951.36314,
+    "ast_hash": "2c551c738fd892afdb2f2d5c7a9d8943",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-09T01-19-37-278Z.yml": {
+    "mtime": 1783559977.2818768,
+    "ast_hash": "5b260bc4d53aebe8b6c8863306d73f19",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-09T02-01-12-374Z.yml": {
+    "mtime": 1783562472.377963,
+    "ast_hash": "4d65abc5156710900cb6b2964984c4e1",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-09T02-01-32-371Z.yml": {
+    "mtime": 1783562492.372846,
+    "ast_hash": "2faffe6787a3583b75e707a8ee26f451",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-09T02-02-25-231Z.yml": {
+    "mtime": 1783562545.2337456,
+    "ast_hash": "988a0528054e88206254c296eccef965",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-09T02-03-08-846Z.yml": {
+    "mtime": 1783562588.8601277,
+    "ast_hash": "1f926985da0b9803a0498dfed176e188",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-09T02-03-55-423Z.yml": {
+    "mtime": 1783562635.4257965,
+    "ast_hash": "731f8ae7994d8a4f9182cdc83ba2add7",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-09T02-04-21-099Z.yml": {
+    "mtime": 1783562661.1021721,
+    "ast_hash": "dd835e103d72ea22f19b547c3c3b420c",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-09T02-12-26-771Z.yml": {
+    "mtime": 1783563146.7747166,
+    "ast_hash": "3790a4592f2d77b646740fcfea346eb6",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-09T02-13-00-008Z.yml": {
+    "mtime": 1783563180.0102239,
+    "ast_hash": "3c76d4567783b392e3a4d08ccc1a71ee",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-09T02-13-22-686Z.yml": {
+    "mtime": 1783563202.6874554,
+    "ast_hash": "617ddb85d7c7102574da7479fb5ab4f2",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-09T02-13-52-818Z.yml": {
+    "mtime": 1783563232.8190212,
+    "ast_hash": "a09a65272dc84aed200106a180676f8a",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-09T02-14-14-237Z.yml": {
+    "mtime": 1783563254.2392159,
+    "ast_hash": "adc6e4e4a9004feb6832fdf5a9254eb1",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-09T02-14-47-739Z.yml": {
+    "mtime": 1783563287.7457554,
+    "ast_hash": "325e0471a34482c8079de7edfd98409f",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-09T02-15-02-074Z.yml": {
+    "mtime": 1783563302.0757062,
+    "ast_hash": "d713abf84b9b47d16f40cf3c407d319e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-de-ingesta-de-cartas/README.md": {
+    "mtime": 1783568169.1358583,
+    "ast_hash": "56f192c3a93fffd75f94371fd4b7ae73",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-de-ingesta-de-cartas/decisions/bloqueos-actuales.md": {
+    "mtime": 1783568344.0801685,
+    "ast_hash": "54c68e88dbf76d3fcafbeece32680074",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-de-ingesta-de-cartas/decisions/reglas-generales.md": {
+    "mtime": 1783568333.3769023,
+    "ast_hash": "504df52456bbf834a1e30d6c811fb8c4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-de-ingesta-de-cartas/fases/01-admin-panel.md": {
+    "mtime": 1783568204.7008803,
+    "ast_hash": "07f67b275e5e9e997d99e2fd79373998",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-de-ingesta-de-cartas/fases/02-extraccion-carta.md": {
+    "mtime": 1783568222.3278131,
+    "ast_hash": "a010d4fb65992c77a8660592dc5f38bf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-de-ingesta-de-cartas/fases/03-fotos-platos.md": {
+    "mtime": 1783568233.1406026,
+    "ast_hash": "45c31bce2f83d0aab2044368f52ea0ad",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-de-ingesta-de-cartas/fases/04-identidad-visual.md": {
+    "mtime": 1783568242.6444595,
+    "ast_hash": "8d49dd55f4db31b461bb040637c19f5f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-de-ingesta-de-cartas/fases/05-crear-avatar.md": {
+    "mtime": 1783568262.5659878,
+    "ast_hash": "9ac343f276b93eaae563e6a94a6dbb6e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-de-ingesta-de-cartas/fases/06-crear-voz.md": {
+    "mtime": 1783568273.3094897,
+    "ast_hash": "147160e5a0b5d9a211dad9a5506c24f2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-de-ingesta-de-cartas/fases/07-videos-por-plato.md": {
+    "mtime": 1783568298.3930118,
+    "ast_hash": "294f006cfd2b041501bf3e88f43d7093",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-de-ingesta-de-cartas/fases/08-ensamblar-carta.md": {
+    "mtime": 1783568311.6167066,
+    "ast_hash": "37fe509bd94d2e6d1532ee29303d92e4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-de-ingesta-de-cartas/roadmap.md": {
+    "mtime": 1783568365.2575736,
+    "ast_hash": "50a85e6c538c776b65a07d3ee19948a3",
+    "semantic_hash": ""
+  },
+  "habilidades-multimedia/README.md": {
+    "mtime": 1783559696.21269,
+    "ast_hash": "44cdcb167f4151a8b4dd8164934fc1ae",
+    "semantic_hash": ""
+  },
+  "habilidades-multimedia/pipelines/avatar-video-processing.md": {
+    "mtime": 1783559696.2156904,
+    "ast_hash": "4e78c2a86586934eb50bae3f6e91b7b9",
+    "semantic_hash": ""
+  },
+  "habilidades-multimedia/pipelines/comfyui-remote-connection.md": {
+    "mtime": 1783559696.2216873,
+    "ast_hash": "81091a5f7647552cb9cabe6d8df7b5b3",
+    "semantic_hash": ""
+  },
+  "habilidades-multimedia/plans/2026-07-08-motor-avatares.md": {
+    "mtime": 1783559696.2286851,
+    "ast_hash": "cff8f03c814456620cb2cde4716cb206",
+    "semantic_hash": ""
+  },
+  "habilidades-multimedia/skills/comfyui-reference-repos.md": {
+    "mtime": 1783559696.2306848,
+    "ast_hash": "d00e9847b87e0dcf9ae5aff06ee6a1ac",
+    "semantic_hash": ""
+  },
+  "habilidades-multimedia/skills/gpu-vm-setup.md": {
+    "mtime": 1783559696.2346885,
+    "ast_hash": "c5b5e3653c97178781947e163e3dd630",
+    "semantic_hash": ""
+  },
+  "habilidades-multimedia/specs/2026-07-08-motor-avatares-design.md": {
+    "mtime": 1783559696.2366817,
+    "ast_hash": "74b843fe800781e2220218849875042f",
+    "semantic_hash": ""
+  },
+  "planes-a-llevar-a-cabo/2026-07-08-motor-llms-arena.md": {
+    "mtime": 1783564419.6869497,
+    "ast_hash": "0439dbe92e2498d5b84e8cbe65699cb3",
+    "semantic_hash": ""
+  },
+  "planes-a-llevar-a-cabo/2026-07-08-motor-voz.md": {
+    "mtime": 1783564367.0612657,
+    "ast_hash": "e2f78ca9c145f7cafbf4a00da8e6c699",
+    "semantic_hash": ""
+  },
+  "planes-a-llevar-a-cabo/2026-07-09-pipeline-creacion-cartas.md": {
+    "mtime": 1783566881.3493612,
+    "ast_hash": "d7b92f9af48bfd21aed5c8ce0307ba58",
+    "semantic_hash": ""
+  },
+  "planes-a-llevar-a-cabo/3 PLANES EN CONVERSACION.txt": {
+    "mtime": 1783564126.840093,
+    "ast_hash": "416dbb42f9ed4b94bfa427ea4dbcbd2e",
+    "semantic_hash": ""
+  },
+  "procesos-aprendidos/deploy-cloud-run-vertex-ai.md": {
+    "mtime": 1783566927.5388565,
+    "ast_hash": "132c6b7d8855aa68b9b3d138f7569111",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-vm-multimedia/config/pipeline_config.json": {
+    "mtime": 1783575061.7294433,
+    "ast_hash": "bb83af43c34bfe50ce33339e71a98294",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-vm-multimedia/instalar-en-vm.ps1": {
+    "mtime": 1783575468.102743,
+    "ast_hash": "917da60d50f82e5c2c9ec14f55249db8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-vm-multimedia/scripts/generate_dish_video.py": {
+    "mtime": 1783575084.2939613,
+    "ast_hash": "496fc20f337bb74b49f82b0d920a97fa",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-vm-multimedia/scripts/upload_supabase.py": {
+    "mtime": 1783575106.877072,
+    "ast_hash": "f99c3aec265a81db1c3ab020f23f8489",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-vm-multimedia/scripts/video_generate.py": {
+    "mtime": 1783575102.6014354,
+    "ast_hash": "588cb8ef2a38cb945d72647231910e0c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-vm-multimedia/scripts/voice_clone.py": {
+    "mtime": 1783575091.4546745,
+    "ast_hash": "a9eaa88f9624ff06b212e385315194ea",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-vm-multimedia/AGENTS.md": {
+    "mtime": 1783575903.3159263,
+    "ast_hash": "1a8bcd5f552ccb0d05ed8b5ecfed52b8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-vm-multimedia/README.md": {
+    "mtime": 1783575127.7077541,
+    "ast_hash": "e665dad44bd4c1c17a44354e38ab19ae",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-vm-multimedia/docs/instalar-f5tts.md": {
+    "mtime": 1783575154.0188,
+    "ast_hash": "b14f8318594e1a500acf620b9b92fb55",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-vm-multimedia/docs/instalar-liveportrait.md": {
+    "mtime": 1783575158.1582065,
+    "ast_hash": "5dd89dd742c59964857bdcd1a8bb98af",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline-vm-multimedia/scripts/requirements.txt": {
+    "mtime": 1783575062.3342721,
+    "ast_hash": "a2964aca87136a78d823b0ea51ba1a1d",
+    "semantic_hash": ""
+  },
+  "VM/instalar-comfyui.ps1": {
+    "mtime": 1783478500.4168932,
+    "ast_hash": "e54af1ae40d5095be8c5ad8207a9fb34",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/get_state_refs.js": {
+    "mtime": 1783484089.0,
+    "ast_hash": "cd32c5a1d851710588dae7a35f846311",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/metadata.json": {
+    "mtime": 1783484089.0,
+    "ast_hash": "8eb01bb2d4f41a8ee77e217f7429f983",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/package.json": {
+    "mtime": 1783555262.0,
+    "ast_hash": "57a9b1b370ba8a68c5961036f25fc8b8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/server.py": {
+    "mtime": 1783484089.0,
+    "ast_hash": "0d553e5277590ddb176dae5dfa558e72",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/server.ts": {
+    "mtime": 1783614771.0709941,
+    "ast_hash": "39f71abaf49d80f2d9f75a3168806022",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/src/App.tsx": {
+    "mtime": 1783649631.683351,
+    "ast_hash": "056b9a14ddebfd2d2e6591925a3f0bdc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/src/main.tsx": {
+    "mtime": 1783484089.0,
+    "ast_hash": "2b36426d5ad7e08ef79746aa524f4fb7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/src/menuData.ts": {
+    "mtime": 1783484090.0,
+    "ast_hash": "bebf070f59236fe7db119d35b31fb4ed",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/src/systemPrompt.ts": {
+    "mtime": 1783484090.0,
+    "ast_hash": "8093e42aa1257c9be9ab942fcf87dfe9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/src/types.ts": {
+    "mtime": 1783484090.0,
+    "ast_hash": "9c6e975dc04b8788639df93a4c8deb64",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/test.js": {
+    "mtime": 1783484090.0,
+    "ast_hash": "17e069818e5af6e6f00c9a845d436a59",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/tsconfig.json": {
+    "mtime": 1783484090.0,
+    "ast_hash": "8827451c4e35790dd3f3538c265e7d15",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/vite.config.ts": {
+    "mtime": 1783484090.0,
+    "ast_hash": "9c319043c25764dfe83b687f74637c6c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/habilidades-multimedia/pipelines/create_webp.py": {
+    "mtime": 1783559696.2226882,
+    "ast_hash": "843922451df11de80a3845d5c8520756",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/habilidades-multimedia/pipelines/process-avatar-video.ps1": {
+    "mtime": 1783559696.2236867,
+    "ast_hash": "b75f71322c35af56808cda0a89e34926",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/habilidades-multimedia/pipelines/remove_bg_local.py": {
+    "mtime": 1783559696.2246869,
+    "ast_hash": "2f74f9caabe8b05b3253750b27c10dba",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/habilidades-multimedia/pipelines/setup-comfyui-remote.ps1": {
+    "mtime": 1783559696.2256882,
+    "ast_hash": "9730325caa1dc3da24f8871d73a0a18d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/get_state_refs.js": {
+    "mtime": 1783484089.0796726,
+    "ast_hash": "cd32c5a1d851710588dae7a35f846311",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/metadata.json": {
+    "mtime": 1783484089.0086963,
+    "ast_hash": "8eb01bb2d4f41a8ee77e217f7429f983",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/package.json": {
+    "mtime": 1783555262.7204554,
+    "ast_hash": "57a9b1b370ba8a68c5961036f25fc8b8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/server.py": {
+    "mtime": 1783484089.658491,
+    "ast_hash": "0d553e5277590ddb176dae5dfa558e72",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/server.ts": {
+    "mtime": 1783577512.0136483,
+    "ast_hash": "2071f3d78993aead307bab15c67a43aa",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/src/App.tsx": {
+    "mtime": 1783571412.5165172,
+    "ast_hash": "957bf760f9246d80064e434bca4b5afc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/src/main.tsx": {
+    "mtime": 1783484089.8934152,
+    "ast_hash": "2b36426d5ad7e08ef79746aa524f4fb7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/src/menuData.ts": {
+    "mtime": 1783484090.1333406,
+    "ast_hash": "bebf070f59236fe7db119d35b31fb4ed",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/src/systemPrompt.ts": {
+    "mtime": 1783484090.0803542,
+    "ast_hash": "8093e42aa1257c9be9ab942fcf87dfe9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/src/types.ts": {
+    "mtime": 1783484090.180621,
+    "ast_hash": "9c6e975dc04b8788639df93a4c8deb64",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/test.js": {
+    "mtime": 1783484090.4916935,
+    "ast_hash": "17e069818e5af6e6f00c9a845d436a59",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/tsconfig.json": {
+    "mtime": 1783484090.5416775,
+    "ast_hash": "8827451c4e35790dd3f3538c265e7d15",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/vite.config.ts": {
+    "mtime": 1783484090.3787315,
+    "ast_hash": "9c319043c25764dfe83b687f74637c6c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/procesos-aprendidos/pipelines/create_webp.py": {
+    "mtime": 1783550963.8103266,
+    "ast_hash": "babee846b417bb09ceff1b5432a0cec5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/procesos-aprendidos/pipelines/process-avatar-video.ps1": {
+    "mtime": 1783544251.8609781,
+    "ast_hash": "c10014fc6d00f6fc9cd19883a516c55d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/procesos-aprendidos/pipelines/remove_bg_local.py": {
+    "mtime": 1783546834.1880014,
+    "ast_hash": "3c0cb986f3ba117b32e3073e2fdcd17b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/procesos-aprendidos/pipelines/setup-comfyui-remote.ps1": {
+    "mtime": 1783544161.9241679,
+    "ast_hash": "a1e76523427ab999f7786b4d18e63217",
+    "semantic_hash": ""
+  },
+  "VM/USUARIO VM WINDOWS/CONTRASE\u00d1A.txt": {
+    "mtime": 1783462338.2094035,
+    "ast_hash": "ac201ee732bbbbf52aedf3b1a6cf6c86",
+    "semantic_hash": ""
+  },
+  "VM/contrase\u00f1a.txt": {
+    "mtime": 1783465122.5702066,
+    "ast_hash": "fc977460754e79a829eaa1ac7eb89d08",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/README.md": {
+    "mtime": 1783484090.0,
+    "ast_hash": "dc4da96c66cbb425acb0baea60eed654",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/cloudbuild-deploy.yaml": {
+    "mtime": 1783573868.0,
+    "ast_hash": "ebb989a78f772da4ac790e1b7b8787b3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/cloudbuild.yaml": {
+    "mtime": 1783650935.6925657,
+    "ast_hash": "3260d930f3125cacc2d4a737a9575735",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/index.html": {
+    "mtime": 1783484090.0,
+    "ast_hash": "c1ddf3dac4807cad3e65657ef972b8ce",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/server_output.txt": {
+    "mtime": 1783549775.0,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/habilidades-multimedia/README.md": {
+    "mtime": 1783559696.21269,
+    "ast_hash": "44cdcb167f4151a8b4dd8164934fc1ae",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/habilidades-multimedia/pipelines/avatar-video-processing.md": {
+    "mtime": 1783559696.2156904,
+    "ast_hash": "4e78c2a86586934eb50bae3f6e91b7b9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/habilidades-multimedia/pipelines/comfyui-remote-connection.md": {
+    "mtime": 1783559696.2216873,
+    "ast_hash": "81091a5f7647552cb9cabe6d8df7b5b3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/habilidades-multimedia/plans/2026-07-08-motor-avatares.md": {
+    "mtime": 1783559696.2286851,
+    "ast_hash": "cff8f03c814456620cb2cde4716cb206",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/habilidades-multimedia/skills/comfyui-reference-repos.md": {
+    "mtime": 1783559696.2306848,
+    "ast_hash": "d00e9847b87e0dcf9ae5aff06ee6a1ac",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/habilidades-multimedia/skills/gpu-vm-setup.md": {
+    "mtime": 1783559696.2346885,
+    "ast_hash": "c5b5e3653c97178781947e163e3dd630",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/habilidades-multimedia/specs/2026-07-08-motor-avatares-design.md": {
+    "mtime": 1783559696.2366817,
+    "ast_hash": "74b843fe800781e2220218849875042f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/README.md": {
+    "mtime": 1783484090.642647,
+    "ast_hash": "dc4da96c66cbb425acb0baea60eed654",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/cloudbuild-deploy.yaml": {
+    "mtime": 1783573868.2640214,
+    "ast_hash": "ebb989a78f772da4ac790e1b7b8787b3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/cloudbuild.yaml": {
+    "mtime": 1783572791.682731,
+    "ast_hash": "69de56dc30278de4a45979c4dbf860a3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/index.html": {
+    "mtime": 1783484090.2337787,
+    "ast_hash": "c1ddf3dac4807cad3e65657ef972b8ce",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/server_output.txt": {
+    "mtime": 1783549775.0493493,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/planes-a-llevar-a-cabo/2026-07-08-motor-avatares-design.md": {
+    "mtime": 1783491367.4062593,
+    "ast_hash": "a832c322c938994efb13288769551da1",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/planes-a-llevar-a-cabo/2026-07-08-motor-avatares.md": {
+    "mtime": 1783491449.1103892,
+    "ast_hash": "7da5c7f01332e9ba34856eff8b293509",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/planes-a-llevar-a-cabo/2026-07-08-motor-llms-arena.md": {
+    "mtime": 1783564419.6869497,
+    "ast_hash": "0439dbe92e2498d5b84e8cbe65699cb3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/planes-a-llevar-a-cabo/2026-07-08-motor-voz.md": {
+    "mtime": 1783564367.0612657,
+    "ast_hash": "e2f78ca9c145f7cafbf4a00da8e6c699",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/planes-a-llevar-a-cabo/2026-07-09-pipeline-creacion-cartas.md": {
+    "mtime": 1783566881.3493612,
+    "ast_hash": "d7b92f9af48bfd21aed5c8ce0307ba58",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/planes-a-llevar-a-cabo/3 PLANES EN CONVERSACION.txt": {
+    "mtime": 1783564126.840093,
+    "ast_hash": "416dbb42f9ed4b94bfa427ea4dbcbd2e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/planes-a-llevar-a-cabo/README.md": {
+    "mtime": 1783564434.666815,
+    "ast_hash": "f5b7117eb9af4e85fdcc4a984413a5c0",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/procesos-aprendidos/README.md": {
+    "mtime": 1783566945.1123116,
+    "ast_hash": "f216e89d4bf1cce6b32ef61b12454cd2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/procesos-aprendidos/deploy-cloud-run-vertex-ai.md": {
+    "mtime": 1783566927.5388565,
+    "ast_hash": "132c6b7d8855aa68b9b3d138f7569111",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/procesos-aprendidos/pipelines/avatar-video-processing.md": {
+    "mtime": 1783546273.963875,
+    "ast_hash": "5fc9fd1dc6ec1e0911fca6ad1f70331b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/procesos-aprendidos/pipelines/comfyui-remote-connection.md": {
+    "mtime": 1783546215.2139356,
+    "ast_hash": "183af82a5bcbbd498d371a0fa72680ad",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/procesos-aprendidos/skills/comfyui-reference-repos.md": {
+    "mtime": 1783546265.795374,
+    "ast_hash": "1ca389686d086942f487c54aee59f4f4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/procesos-aprendidos/skills/gpu-vm-setup.md": {
+    "mtime": 1783546679.25578,
+    "ast_hash": "a26c477b392112348dd355735abbcd0a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/bienvenido a la escaloneta (alpha).webp": {
+    "mtime": 1783478743.6146607,
+    "ast_hash": "2388c583ae8e5c2fa36f222c22dc6a04",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/bienvenido-sin-fondo.webp": {
+    "mtime": 1783551759.4806259,
+    "ast_hash": "8f205059aafb0c2eef3f9f666ca7aa07",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0001.png": {
+    "mtime": 1783549335.691273,
+    "ast_hash": "215a08fe3c81e95bbf22aa16e90c1052",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0002.png": {
+    "mtime": 1783549335.718264,
+    "ast_hash": "bbbba01463a651834d379d842f36fc97",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0003.png": {
+    "mtime": 1783549335.8022385,
+    "ast_hash": "9a2a0f58d696cf566e1b29d625d52771",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0004.png": {
+    "mtime": 1783549335.804236,
+    "ast_hash": "35c1e222354b8b1ebe33ad4f07990772",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0005.png": {
+    "mtime": 1783549336.055156,
+    "ast_hash": "da18fc27b2e56a2fe3d9bdc194d1d862",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0006.png": {
+    "mtime": 1783549336.1001434,
+    "ast_hash": "f6484297ffc6fa3bd176932e71c16532",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0007.png": {
+    "mtime": 1783549336.135131,
+    "ast_hash": "0ad8fce56f944940c44fbc1ef06d2b1b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0008.png": {
+    "mtime": 1783549336.1651225,
+    "ast_hash": "1e37be528ca14086dfa04ff37ce258d3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0009.png": {
+    "mtime": 1783549336.5000155,
+    "ast_hash": "7b60834f1bc7ab0d32e7ffb3f177e055",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0010.png": {
+    "mtime": 1783549336.6209762,
+    "ast_hash": "fa4ccb32e78ea939d36dd91f266961fb",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0011.png": {
+    "mtime": 1783549336.6899548,
+    "ast_hash": "71dc75d7e286d31b8b00d7a550955a0c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0012.png": {
+    "mtime": 1783549336.6969526,
+    "ast_hash": "6542343417f51ab7a291507cfd3213f6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0013.png": {
+    "mtime": 1783549337.034845,
+    "ast_hash": "a9c97cc36bb26c03209f6cdbcfb4188a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0014.png": {
+    "mtime": 1783549337.0358453,
+    "ast_hash": "a99bc0a046470edf6a5120fbf71af274",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0015.png": {
+    "mtime": 1783549337.0508406,
+    "ast_hash": "1fd6e7c953921f8da6da32264aedd259",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0016.png": {
+    "mtime": 1783549337.1358123,
+    "ast_hash": "95ef3098eee112671336ca04d27763ee",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0017.png": {
+    "mtime": 1783549337.4377165,
+    "ast_hash": "d0efa0f890b273878de2e2286e7a4615",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0018.png": {
+    "mtime": 1783549337.438715,
+    "ast_hash": "75a029e189c97048f7109d76eeeb7fbc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0019.png": {
+    "mtime": 1783549337.439715,
+    "ast_hash": "a701f4f70fef3044067a177b0774098a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0020.png": {
+    "mtime": 1783549337.5846698,
+    "ast_hash": "3f1e8f02f899e9dce6af1cea90d02f86",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0021.png": {
+    "mtime": 1783549337.8165958,
+    "ast_hash": "a8ab57bf506235869e55ec8af62f79d7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0022.png": {
+    "mtime": 1783549337.9525528,
+    "ast_hash": "ddf107a3a40e80e1ac4cb1a08455b733",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0023.png": {
+    "mtime": 1783549337.954551,
+    "ast_hash": "407e549a00158015f0f4197984fc703e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0024.png": {
+    "mtime": 1783549337.9895449,
+    "ast_hash": "9da8caff5db00ca89ca333f52afe221c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0025.png": {
+    "mtime": 1783549338.2864454,
+    "ast_hash": "74d1944b7bcbc44cdf35aec7c7cc2728",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0026.png": {
+    "mtime": 1783549338.2874463,
+    "ast_hash": "758daefbc9b0bfae15c0889b4f05a0be",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0027.png": {
+    "mtime": 1783549338.321437,
+    "ast_hash": "a94c25884ba299b0b4b05a48ea0a59df",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0028.png": {
+    "mtime": 1783549338.4044094,
+    "ast_hash": "e183da93946e643c788c39648d0a30f5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0029.png": {
+    "mtime": 1783549338.6723232,
+    "ast_hash": "fe2e314597ecd27bb9e05af73a892bf2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0030.png": {
+    "mtime": 1783549338.7822888,
+    "ast_hash": "21ffcd85a87498a89af5b446e0e0c8b6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0031.png": {
+    "mtime": 1783549338.7912877,
+    "ast_hash": "0034d19b5782b6b263a56e5d698194cf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0032.png": {
+    "mtime": 1783549338.8992517,
+    "ast_hash": "e83ededc10795f3a63d5b3114aff119d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0033.png": {
+    "mtime": 1783549339.2441401,
+    "ast_hash": "6571d9ee2ea767f84fc832d6a8e5c0ab",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0034.png": {
+    "mtime": 1783549339.2721314,
+    "ast_hash": "5b7653a09fa34ecb25126137a355c037",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0035.png": {
+    "mtime": 1783549339.3781,
+    "ast_hash": "71edbe77bfdd9b7729a8a2d47c33647c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0036.png": {
+    "mtime": 1783549339.4530735,
+    "ast_hash": "3d98ef4dc2b19f55ef98831d566b6b94",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0037.png": {
+    "mtime": 1783549339.6969974,
+    "ast_hash": "9c4efff9b2d7da1c68d736df8feda0b3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0038.png": {
+    "mtime": 1783549339.7099922,
+    "ast_hash": "cd8df02897a887e532a82ed77c9e8edf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0039.png": {
+    "mtime": 1783549339.753982,
+    "ast_hash": "fc729f5a75f0d9a4186f7281f870e46c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0040.png": {
+    "mtime": 1783549339.9909024,
+    "ast_hash": "d94b57db5fc3b2d4eb532c260205d039",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0041.png": {
+    "mtime": 1783549340.2828102,
+    "ast_hash": "81a35561a73e202151c63a2ee1f65fe9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0042.png": {
+    "mtime": 1783549340.2848084,
+    "ast_hash": "94b2be6e7a36efcae0de72d16806bf09",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0043.png": {
+    "mtime": 1783549340.3008056,
+    "ast_hash": "99d764ef9ac329c754ec1c15531f8040",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0044.png": {
+    "mtime": 1783549340.408772,
+    "ast_hash": "943e289d675750a98b48b17b8b4ce9dd",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0045.png": {
+    "mtime": 1783549340.75466,
+    "ast_hash": "61b84193a41c9cc029cebf6d6d153b9b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0046.png": {
+    "mtime": 1783549340.7566597,
+    "ast_hash": "84af994907ba2587d11be653b7866514",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0047.png": {
+    "mtime": 1783549340.8676245,
+    "ast_hash": "c4b18929dbfec16371d59a738d11b583",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0048.png": {
+    "mtime": 1783549340.9555962,
+    "ast_hash": "a3941304862d34248650df4e567fd76f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0049.png": {
+    "mtime": 1783549341.1985345,
+    "ast_hash": "5c03e3ec53fa8a8b6ef87ffdbff8be00",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0050.png": {
+    "mtime": 1783549341.2894895,
+    "ast_hash": "33eaec3b08c4ba5fd0ca5cdadb584d4c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0051.png": {
+    "mtime": 1783549341.3514688,
+    "ast_hash": "1d0148f8a5e1a277c15aad82d8ce9d11",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0052.png": {
+    "mtime": 1783549341.4524393,
+    "ast_hash": "b2d15648339abb0e389230e8d2e7cdf2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0053.png": {
+    "mtime": 1783549341.6053917,
+    "ast_hash": "42840b0189ed4efb052d2c6773b0df6a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0054.png": {
+    "mtime": 1783549341.7093554,
+    "ast_hash": "188fa65f622a3926a10300f9a674725a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0055.png": {
+    "mtime": 1783549341.804326,
+    "ast_hash": "6d2f9df0cc0eaa785f0534837f70a807",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0056.png": {
+    "mtime": 1783549341.8673058,
+    "ast_hash": "5f1e41f0a880c392a1bc3a4422002d9f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0057.png": {
+    "mtime": 1783549342.0852342,
+    "ast_hash": "61f01edf9bedb85f012c9519f8a9a543",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0058.png": {
+    "mtime": 1783549342.1532123,
+    "ast_hash": "6f9f99c36a70fd5d7860d8107fc9c66b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0059.png": {
+    "mtime": 1783549342.2321892,
+    "ast_hash": "da71045590e30c0fee8e64327e1cb907",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0060.png": {
+    "mtime": 1783549342.2681756,
+    "ast_hash": "05bf0ff86591e20d932e8ebd475d6a43",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0061.png": {
+    "mtime": 1783549342.4581158,
+    "ast_hash": "16889b33a8b2b1e1f6534ad6a3f86746",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0062.png": {
+    "mtime": 1783549342.6140673,
+    "ast_hash": "96f5ecbc4c86519489ebd86203815956",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0063.png": {
+    "mtime": 1783549342.6460636,
+    "ast_hash": "b69ef8d69ede4edaaf6614777b2f7454",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0064.png": {
+    "mtime": 1783549342.7030368,
+    "ast_hash": "8536a531fd031ce007bec05c89090ed3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0065.png": {
+    "mtime": 1783549342.8709843,
+    "ast_hash": "4fe5dbdcb3fa3fb9dc501b49d5da260b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0066.png": {
+    "mtime": 1783549343.0169413,
+    "ast_hash": "fb3e3868ee035afaeccd5e157179faac",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0067.png": {
+    "mtime": 1783549343.1378992,
+    "ast_hash": "f731cb1af5ba766a36b584042a38e01e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0068.png": {
+    "mtime": 1783549343.1398976,
+    "ast_hash": "a3429120a75b965bbacf9d9244399598",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0069.png": {
+    "mtime": 1783549343.3188417,
+    "ast_hash": "fea5f0f3fa59942d54453a3c425d4e19",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0070.png": {
+    "mtime": 1783549343.4118125,
+    "ast_hash": "5881bb987ecd422e4bdbc2f78441075c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0071.png": {
+    "mtime": 1783549343.5687623,
+    "ast_hash": "38bb4d93371be2784cb7d14a290c10a7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0072.png": {
+    "mtime": 1783549343.5707617,
+    "ast_hash": "fdc928a16ef0c4dcbe62fe57637d7a02",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0073.png": {
+    "mtime": 1783549343.823681,
+    "ast_hash": "a596027e6737d27a45e3fe67d74c0b06",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0074.png": {
+    "mtime": 1783549343.904656,
+    "ast_hash": "aa5d4ed18ecfcbc912e60baab1f2139c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0075.png": {
+    "mtime": 1783549344.0536063,
+    "ast_hash": "918760f8ba16c34fe474834ae6d7c966",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0076.png": {
+    "mtime": 1783549344.1525764,
+    "ast_hash": "8781e572f04a3964ebb01ac819cb4846",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0077.png": {
+    "mtime": 1783549344.4424846,
+    "ast_hash": "0eab6a23c6e409a45491c0dc7cf44e14",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0078.png": {
+    "mtime": 1783549344.52046,
+    "ast_hash": "0a58b636e90fc9f7d510824f30d2bdd7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0079.png": {
+    "mtime": 1783549344.7073984,
+    "ast_hash": "c6d6d9cf152b87dd1e69ea08507108b8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0080.png": {
+    "mtime": 1783549344.7423904,
+    "ast_hash": "7b51307bab0050f19d7a86af11b235c6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0081.png": {
+    "mtime": 1783549345.0562873,
+    "ast_hash": "9afd524fd80b8f43f91978adad0c19be",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0082.png": {
+    "mtime": 1783549345.132265,
+    "ast_hash": "30a2d87cf4004e8974c3ff5b44e5e014",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0083.png": {
+    "mtime": 1783549345.3052113,
+    "ast_hash": "26a22a944f9c04deb0bb1c850180fd30",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0084.png": {
+    "mtime": 1783549345.3092067,
+    "ast_hash": "6017bf2fd404a3ab2634c378d7be9751",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0085.png": {
+    "mtime": 1783549345.6361032,
+    "ast_hash": "61fb94a39fcdd593146b8098191851ca",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0086.png": {
+    "mtime": 1783549345.7590642,
+    "ast_hash": "116efc595c2fb36a2dd3870d501c0236",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0087.png": {
+    "mtime": 1783549345.761064,
+    "ast_hash": "93fdbd294b8fe4d631c54ddf80876b62",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0088.png": {
+    "mtime": 1783549345.905017,
+    "ast_hash": "5ee5abc9e0432bf6ef6e9b3e1e1a8fb0",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0089.png": {
+    "mtime": 1783549346.1741118,
+    "ast_hash": "bc1ac3bcbcb185d74357b81133dbb1bc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0090.png": {
+    "mtime": 1783549346.2300954,
+    "ast_hash": "1e597763a7efe5dfcd1b28182e19d397",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0091.png": {
+    "mtime": 1783549346.2320948,
+    "ast_hash": "9da70faa139b88455ef60924d708e6f5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0092.png": {
+    "mtime": 1783549346.4150364,
+    "ast_hash": "f651fa8017fd14f5f59364aff4f5f811",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0093.png": {
+    "mtime": 1783549346.6599581,
+    "ast_hash": "be6d4eccbba514dd3d0f9d424836cc48",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0094.png": {
+    "mtime": 1783549346.6919496,
+    "ast_hash": "bf6d832c514c03983a5d87f568f53d82",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0095.png": {
+    "mtime": 1783549346.693948,
+    "ast_hash": "29b18d11df115229e2e25dc65119bff4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0096.png": {
+    "mtime": 1783549346.8389018,
+    "ast_hash": "40518cb44448596abe416d83c134d9f8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0097.png": {
+    "mtime": 1783549347.205784,
+    "ast_hash": "85759a3c434dc3afc6d041510d244652",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0098.png": {
+    "mtime": 1783549347.2077832,
+    "ast_hash": "2cde9993ff0bd21739325cb88329875a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0099.png": {
+    "mtime": 1783549347.2087824,
+    "ast_hash": "8bcf983e498cd3d88491594e9092f9cf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0100.png": {
+    "mtime": 1783549347.398722,
+    "ast_hash": "00f1196d25e55fed70c15fdfe62a87d0",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0101.png": {
+    "mtime": 1783549347.7746015,
+    "ast_hash": "1f0a1c8b96bb831f861a997d970543f8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0102.png": {
+    "mtime": 1783549347.8115902,
+    "ast_hash": "8d644f2728c05f26e021cac1733aba27",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0103.png": {
+    "mtime": 1783549347.8385835,
+    "ast_hash": "a346f32a9aef7988891c0770dfc2b0e3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0104.png": {
+    "mtime": 1783549348.0595112,
+    "ast_hash": "156f5c5ccb36214a19596cea6967cb09",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0105.png": {
+    "mtime": 1783549348.4233983,
+    "ast_hash": "72e30bfa8bd89c2d828a077e339d8f3e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0106.png": {
+    "mtime": 1783549348.4243958,
+    "ast_hash": "f046205f595b4bc899f188f1352bd360",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0107.png": {
+    "mtime": 1783549348.4653816,
+    "ast_hash": "f5dfa95474045498997c23df5d053b09",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0108.png": {
+    "mtime": 1783549348.6093369,
+    "ast_hash": "3d7be5dd357fb4176c48168a35827b73",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0109.png": {
+    "mtime": 1783549348.9432306,
+    "ast_hash": "ce508fa15b91ec495115986218a1daef",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0110.png": {
+    "mtime": 1783549348.9922135,
+    "ast_hash": "8e13936836e3c6ea730bfbb87046cd7d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0111.png": {
+    "mtime": 1783549348.9942136,
+    "ast_hash": "f800cfc782ade2ad175ddbcdbf1931d0",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0112.png": {
+    "mtime": 1783549349.1391714,
+    "ast_hash": "860babe076b0e7c01b014b850b69126a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0113.png": {
+    "mtime": 1783549349.3860903,
+    "ast_hash": "025b0cbc6f30302dca8c6d551422db5a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0114.png": {
+    "mtime": 1783549349.5030513,
+    "ast_hash": "ad0c54e04197d953aabbbee3cf95b607",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0115.png": {
+    "mtime": 1783549349.5080497,
+    "ast_hash": "290c8793c981e00b6dbdea89812bc938",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0116.png": {
+    "mtime": 1783549349.7429762,
+    "ast_hash": "20571d4d9f5b4e5556682add8a4c41d1",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0117.png": {
+    "mtime": 1783549350.0698752,
+    "ast_hash": "672f3cdb208640a0a4868b0a1c2adcd9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0118.png": {
+    "mtime": 1783549350.2438178,
+    "ast_hash": "dfb90f3c14d6e73313161f70385c8534",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0119.png": {
+    "mtime": 1783549350.2458143,
+    "ast_hash": "1ba36a830106d19a677de69961f71c8d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0120.png": {
+    "mtime": 1783549350.4937367,
+    "ast_hash": "6ddb3c476502063bb902447ebacbf01f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0121.png": {
+    "mtime": 1783549350.8626173,
+    "ast_hash": "10b556101c5429fc5a8648f6b0abe606",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0122.png": {
+    "mtime": 1783549350.9595878,
+    "ast_hash": "719c8627bc895fbaaf3ccb7df910122c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0123.png": {
+    "mtime": 1783549350.996576,
+    "ast_hash": "2fa0a01dbc665f9a9acaa28591be1679",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0124.png": {
+    "mtime": 1783549351.1105394,
+    "ast_hash": "4e07ad341ae6dc840a5a455be2702d43",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0125.png": {
+    "mtime": 1783549351.4284377,
+    "ast_hash": "0f779ac70af6a8b92f0de2282f62fa93",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0126.png": {
+    "mtime": 1783549351.4564323,
+    "ast_hash": "ba83961eeb6ee149565c25d0c8e46c6d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0127.png": {
+    "mtime": 1783549351.545404,
+    "ast_hash": "6a4d69f3c49d4359f740390053783426",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0128.png": {
+    "mtime": 1783549351.6333728,
+    "ast_hash": "e9c62257dc79f1e89e0552aa06eb7906",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0129.png": {
+    "mtime": 1783549351.9882634,
+    "ast_hash": "02047ec447543bbe98c2685543e5c1e3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0130.png": {
+    "mtime": 1783549351.9902592,
+    "ast_hash": "574b6bf4cfd24096a64952b4bade5722",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0131.png": {
+    "mtime": 1783549352.067247,
+    "ast_hash": "1659126621d06b7f55a4424e677d1d68",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0132.png": {
+    "mtime": 1783549352.1762016,
+    "ast_hash": "e20ddb71ff8aec31d45b0487394c2453",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0133.png": {
+    "mtime": 1783549352.6080625,
+    "ast_hash": "c15ed9288340083c3aa95da8ab448d2e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0134.png": {
+    "mtime": 1783549352.610062,
+    "ast_hash": "9df67125a452b4cc9996c4c60eedaf1f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0135.png": {
+    "mtime": 1783549352.6590474,
+    "ast_hash": "a8b873743b672dcb62092a66c408621b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0136.png": {
+    "mtime": 1783549352.7590156,
+    "ast_hash": "a72a3c342daf9703f22d81b7ac4bf332",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0137.png": {
+    "mtime": 1783549353.3128386,
+    "ast_hash": "31710f6957eb11a2bb887aae316aa2c6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0138.png": {
+    "mtime": 1783549353.3148358,
+    "ast_hash": "ba655bfbc2f1040a83b7cb908e0ae2a8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0139.png": {
+    "mtime": 1783549353.3528254,
+    "ast_hash": "d78dbe676c2cb8f74c410192e7593f39",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0140.png": {
+    "mtime": 1783549353.5447638,
+    "ast_hash": "b1ef1ef1d7034a3e15631044b730cde2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0141.png": {
+    "mtime": 1783549353.842669,
+    "ast_hash": "c3b1f862b9365af013531ce16805e74c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0142.png": {
+    "mtime": 1783549353.8796575,
+    "ast_hash": "350cac890229c113b49f50f86a7089f1",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0143.png": {
+    "mtime": 1783549353.9306407,
+    "ast_hash": "5490fce3da2590eb99e4f347f8590cdc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0144.png": {
+    "mtime": 1783549354.058603,
+    "ast_hash": "1687a42af7531ebba286d63f64d249ae",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0145.png": {
+    "mtime": 1783549354.3475063,
+    "ast_hash": "87ceb4ebc9b61bcff5fd2291d129708b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0146.png": {
+    "mtime": 1783549354.3695016,
+    "ast_hash": "b416986662af8b3d4f9ec3afad3c836b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0147.png": {
+    "mtime": 1783549354.4574728,
+    "ast_hash": "e1b4a36c8eee6534a486d5552f9229bf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0148.png": {
+    "mtime": 1783549354.5404465,
+    "ast_hash": "6a65951de9a1063a5838ea33feef0c14",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0149.png": {
+    "mtime": 1783549354.8133595,
+    "ast_hash": "202c8c9f5df637307835c48136de782a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0150.png": {
+    "mtime": 1783549354.8303525,
+    "ast_hash": "da2116fe7ff22d538af4181f5e107616",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0151.png": {
+    "mtime": 1783549354.9923038,
+    "ast_hash": "ebd7bd0e49fd98bb2649718dfecab568",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0152.png": {
+    "mtime": 1783549355.0452855,
+    "ast_hash": "3a51c3b8808b649027c702ce3548385a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0153.png": {
+    "mtime": 1783549355.2732134,
+    "ast_hash": "3992056fdc40d33b1ee7f7a094fe3e99",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0154.png": {
+    "mtime": 1783549355.2742162,
+    "ast_hash": "2e5d7c94c6196d87813fdf5422cff1df",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0155.png": {
+    "mtime": 1783549355.4771476,
+    "ast_hash": "4dec0fabee04a496b33be14112e28f6b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0156.png": {
+    "mtime": 1783549355.494145,
+    "ast_hash": "f3c2125012af6d9e98b9cc255ddfa29e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0157.png": {
+    "mtime": 1783549355.7650554,
+    "ast_hash": "e62ba9886d27c2db2f3f227a79beb7f9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0158.png": {
+    "mtime": 1783549355.774053,
+    "ast_hash": "92da66edadbedca2c450c2c8f6201e74",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0159.png": {
+    "mtime": 1783549355.9989798,
+    "ast_hash": "52cafed19810ced08c312509a62b0b6f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0160.png": {
+    "mtime": 1783549356.0039778,
+    "ast_hash": "a0bd6131a8e94689d98a6c748b7ce2c6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0161.png": {
+    "mtime": 1783549356.195919,
+    "ast_hash": "74c006b335890f726ef7b27568c2a236",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0162.png": {
+    "mtime": 1783549356.2009163,
+    "ast_hash": "177680b17890a30b671d5be06a705a83",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0163.png": {
+    "mtime": 1783549356.411848,
+    "ast_hash": "3b1fdc7226c027d89bc8758a1bcaccf6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0164.png": {
+    "mtime": 1783549356.4308434,
+    "ast_hash": "c1f459866651202b2d4e8ff884dd52f8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0165.png": {
+    "mtime": 1783549356.6757698,
+    "ast_hash": "7eaaaf0630c8a0548dd59649ba196400",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0166.png": {
+    "mtime": 1783549356.6777637,
+    "ast_hash": "442db4497341517d174791f1745ea744",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0167.png": {
+    "mtime": 1783549356.8427112,
+    "ast_hash": "02f203da845e4c6ac956c170bf35ec3c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0168.png": {
+    "mtime": 1783549356.8737025,
+    "ast_hash": "e95edaac46dbf2a521a98b9356eb12e2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0169.png": {
+    "mtime": 1783549357.0926316,
+    "ast_hash": "c97bdeae3fe716f2045f367f7288ed14",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0170.png": {
+    "mtime": 1783549357.105632,
+    "ast_hash": "98d7d7161fff883c7a0afee394385b0a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0171.png": {
+    "mtime": 1783549357.3325565,
+    "ast_hash": "d871abd046017c57c69c1c332868f5bc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0172.png": {
+    "mtime": 1783549357.337559,
+    "ast_hash": "3d39778d85c4bc1d398ccca10afdfcf7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0173.png": {
+    "mtime": 1783549357.5984719,
+    "ast_hash": "00b8056fa6e4a0e163889d20dd5ff0de",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0174.png": {
+    "mtime": 1783549357.6064754,
+    "ast_hash": "564e34fa0bddd9881ef693f471bbf979",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0175.png": {
+    "mtime": 1783549357.8074038,
+    "ast_hash": "42e7c5cae716ada703cf62283c00fa80",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0176.png": {
+    "mtime": 1783549357.8094034,
+    "ast_hash": "343fcd435fb5daa8dd56c0b3de098dbb",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0177.png": {
+    "mtime": 1783549358.059323,
+    "ast_hash": "5e3039409d12c1a5c23b44f0b5efd7d2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0178.png": {
+    "mtime": 1783549358.1133058,
+    "ast_hash": "17c075afb7117a982ba524aa6cf7bd02",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0179.png": {
+    "mtime": 1783549358.2642603,
+    "ast_hash": "f99795cf384f33b7fa9fb623460ac222",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0180.png": {
+    "mtime": 1783549358.2662585,
+    "ast_hash": "e208d45a37fd8f366846cea8c39371a4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0181.png": {
+    "mtime": 1783549358.6551344,
+    "ast_hash": "79c03912952ff3ac0adc796427941602",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0182.png": {
+    "mtime": 1783549358.6561332,
+    "ast_hash": "db92f3b5a07fe38c5ce1831b73280942",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0183.png": {
+    "mtime": 1783549358.9320457,
+    "ast_hash": "6c24bbbb4ef88c919afed38f937ff44d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0184.png": {
+    "mtime": 1783549358.9440417,
+    "ast_hash": "846bfbf52c70db46ba0e1d0d2bfcabe0",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0185.png": {
+    "mtime": 1783549359.3269188,
+    "ast_hash": "52e5500803a1815fb17dfe1dd2638493",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0186.png": {
+    "mtime": 1783549359.345914,
+    "ast_hash": "5a4d6f1b183e4a13c916685e408ae6ce",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0187.png": {
+    "mtime": 1783549359.6008334,
+    "ast_hash": "536fcf4817721cfba34974bc7ecb5a2c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0188.png": {
+    "mtime": 1783549359.6318223,
+    "ast_hash": "293c788c7f735fd59423fcce3d7a782a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0189.png": {
+    "mtime": 1783549360.0287013,
+    "ast_hash": "b0b53d47e19639269ab330e7e247d171",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0190.png": {
+    "mtime": 1783549360.1136684,
+    "ast_hash": "5c397cf95624d2a975289dbcda19284c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0191.png": {
+    "mtime": 1783549360.2656188,
+    "ast_hash": "c5872a8729dcb91dda1896e30746e775",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0192.png": {
+    "mtime": 1783549360.266621,
+    "ast_hash": "6727932803fad91eb8629cad404ec32f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0193.png": {
+    "mtime": 1783549360.580521,
+    "ast_hash": "732e03a2816adaaca4e3cf03dbd6f2e5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0194.png": {
+    "mtime": 1783549360.600515,
+    "ast_hash": "529e305c58417453e46f5465722c9e55",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0195.png": {
+    "mtime": 1783549360.7654626,
+    "ast_hash": "c5b368b2b8d0f74cdc16ee2c3cd6c31f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0196.png": {
+    "mtime": 1783549360.7764592,
+    "ast_hash": "5d5d292c308cf6cd8deb3130e007896f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0197.png": {
+    "mtime": 1783549361.0783617,
+    "ast_hash": "d7789792526457eccb0bb4b1212c90ef",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0198.png": {
+    "mtime": 1783549361.0883572,
+    "ast_hash": "e79aed1dee3aa08a45b14aae9273ebac",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0199.png": {
+    "mtime": 1783549361.3292823,
+    "ast_hash": "b836bc8f728a9f55cea2dfafad66c11e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0200.png": {
+    "mtime": 1783549361.3312814,
+    "ast_hash": "9f47015abd73f5c1e27aea01136f3bd9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0201.png": {
+    "mtime": 1783549361.6121945,
+    "ast_hash": "7ad4ab5f25c0b44e0d7888dbf8e31059",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0202.png": {
+    "mtime": 1783549361.6291854,
+    "ast_hash": "50bb803e886b64c633cdb77d93cce407",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0203.png": {
+    "mtime": 1783549361.8621094,
+    "ast_hash": "4c3a112846a7644caa83d6d31174ee86",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0204.png": {
+    "mtime": 1783549361.8641107,
+    "ast_hash": "c029815b621201d35afeecf5ace95494",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0205.png": {
+    "mtime": 1783549362.1120343,
+    "ast_hash": "5487029adb8c496ac8b1131d9c7204a4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0206.png": {
+    "mtime": 1783549362.1140337,
+    "ast_hash": "949146699e723b8167c853688c830269",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0207.png": {
+    "mtime": 1783549362.267983,
+    "ast_hash": "d004defa3a176267a056e973ce68bab9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0208.png": {
+    "mtime": 1783549362.270988,
+    "ast_hash": "7645c93dc18724b49e933f25733c6188",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0209.png": {
+    "mtime": 1783549362.499906,
+    "ast_hash": "78f367abbb9a7b8b4471d2763258ef4e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0210.png": {
+    "mtime": 1783549362.594877,
+    "ast_hash": "3ba333821a964a76602077710aaea7b9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0211.png": {
+    "mtime": 1783549362.6778512,
+    "ast_hash": "5b87e67d1ade34b00a3451ef1431460b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0212.png": {
+    "mtime": 1783549362.685849,
+    "ast_hash": "e1ac549fcc2d9219f9bc5392d7b10f04",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0213.png": {
+    "mtime": 1783549362.9417665,
+    "ast_hash": "280cd61bdeb2042ef5e5ad88962f3221",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0214.png": {
+    "mtime": 1783549362.973759,
+    "ast_hash": "4080fc1cec50c9b42b565c2087ae44a2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0215.png": {
+    "mtime": 1783549363.114715,
+    "ast_hash": "ef19a96c8a8b9c340f2c243d7552286e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0216.png": {
+    "mtime": 1783549363.1157107,
+    "ast_hash": "3807b473f94286734c6c86527aafdec2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/frame_0217.png": {
+    "mtime": 1783549363.317647,
+    "ast_hash": "35c26d68e129a50e4ad2dc94e0d5dada",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0001.png": {
+    "mtime": 1783547221.280185,
+    "ast_hash": "d072a2f479b361ddc4d9a4e297698f38",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0002.png": {
+    "mtime": 1783547233.466682,
+    "ast_hash": "119888f146f1d2c55c1df9284549af28",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0003.png": {
+    "mtime": 1783547244.4751513,
+    "ast_hash": "dff62095110567d72b6280106ed222eb",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0004.png": {
+    "mtime": 1783547255.6203258,
+    "ast_hash": "dfa7ff81ed48c0d77bd9722fcf53eb0d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0005.png": {
+    "mtime": 1783547266.5285501,
+    "ast_hash": "6c5a3cc6ba8042b5a64454adcfbc6703",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0006.png": {
+    "mtime": 1783547278.1515846,
+    "ast_hash": "27595225a134f40647d818dee48d23af",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0007.png": {
+    "mtime": 1783547289.937466,
+    "ast_hash": "6e87211485c4849fbe7d62458e7896bd",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0008.png": {
+    "mtime": 1783547302.5045757,
+    "ast_hash": "2b8414002238a6cd5431350bbf9a7f3c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0009.png": {
+    "mtime": 1783547314.4923134,
+    "ast_hash": "0bd762b2e852191de8e64a153c61537a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0010.png": {
+    "mtime": 1783547325.475949,
+    "ast_hash": "063ae792497dbf930fbadfaab23f0587",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0011.png": {
+    "mtime": 1783547341.1040256,
+    "ast_hash": "30b15001b4ea9075e1b9ade8413a7af8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0012.png": {
+    "mtime": 1783547352.7511036,
+    "ast_hash": "50381dadcce4a120d63726685b61c3c7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0013.png": {
+    "mtime": 1783547365.028411,
+    "ast_hash": "3b7a39b3382a2d2550f6c2456f6ae55c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0014.png": {
+    "mtime": 1783547375.9436045,
+    "ast_hash": "b9c4109a5a384ba57ff958daa042c3fa",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0015.png": {
+    "mtime": 1783547387.3299553,
+    "ast_hash": "fbaace416e32287282a97221e6eb39a9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0016.png": {
+    "mtime": 1783547399.1901155,
+    "ast_hash": "aea175fd5552cf64bd87608371131a12",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0017.png": {
+    "mtime": 1783547410.6393068,
+    "ast_hash": "ed0a0dc9cb364d720b7da5eded9ebea4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0018.png": {
+    "mtime": 1783547422.005206,
+    "ast_hash": "66331c4d4ccb65c51ff45614643b9598",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0019.png": {
+    "mtime": 1783547433.297538,
+    "ast_hash": "8f491aef40ea702618ce53992dac8241",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0020.png": {
+    "mtime": 1783547444.4572105,
+    "ast_hash": "ad5232b9a7a4fd9825ec205d7e5a7755",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0021.png": {
+    "mtime": 1783547455.9197657,
+    "ast_hash": "2077e46de1df34b727b5e47130d3562f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0022.png": {
+    "mtime": 1783547466.4143894,
+    "ast_hash": "77e790f2db652273fb92ec379569fe4b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0023.png": {
+    "mtime": 1783547477.639974,
+    "ast_hash": "67f59509e3bdbe4bfe7924c0b5060d2b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0024.png": {
+    "mtime": 1783547489.0706756,
+    "ast_hash": "5366795f098eee6798c4f564bf358045",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0025.png": {
+    "mtime": 1783547499.9870167,
+    "ast_hash": "85a9217a1ddecb031b2317b210789084",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0026.png": {
+    "mtime": 1783547511.3721244,
+    "ast_hash": "d6900ac8089e57dfb1bcb2af24c094a6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0027.png": {
+    "mtime": 1783547522.692506,
+    "ast_hash": "662f06b9b50cb6663d30655186a13b3a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0028.png": {
+    "mtime": 1783547533.6370976,
+    "ast_hash": "1a8f54ebe94e099a16b4b525a67ba298",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0029.png": {
+    "mtime": 1783547545.2831373,
+    "ast_hash": "00a63755da70bc7cd8801a776d5b678d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0030.png": {
+    "mtime": 1783547555.617872,
+    "ast_hash": "88733b711a1fe399f13ca69e24b4118f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0031.png": {
+    "mtime": 1783547570.659801,
+    "ast_hash": "f009316dd415731283a2d2514d01f4c7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0032.png": {
+    "mtime": 1783547585.1311142,
+    "ast_hash": "8946796fe8a92a58bd00223bd9fd795b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0033.png": {
+    "mtime": 1783547593.4542675,
+    "ast_hash": "4a8f8f9b113c3529f441fafcd4946093",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0034.png": {
+    "mtime": 1783547607.4786017,
+    "ast_hash": "6cc5c5e19d8e5bc5de056b8e5613f748",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0035.png": {
+    "mtime": 1783547621.32824,
+    "ast_hash": "dc35492e4f3b177dd248eac526eadc79",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0036.png": {
+    "mtime": 1783547635.6551802,
+    "ast_hash": "d32e8f243b6b0961fb6184f268242ed4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0037.png": {
+    "mtime": 1783547640.6106603,
+    "ast_hash": "9d5a10e1ab0147026bbe836e663b0e41",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0038.png": {
+    "mtime": 1783547647.841355,
+    "ast_hash": "15fbbf13db668de949f7a0001e7b84b8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0039.png": {
+    "mtime": 1783547653.3289053,
+    "ast_hash": "a0ead991df155895ce6b447d892c5ec9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0040.png": {
+    "mtime": 1783547661.5023193,
+    "ast_hash": "09c6bf80f6075af1e0a0a08c7a0784ae",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0041.png": {
+    "mtime": 1783547679.0787153,
+    "ast_hash": "55361fe774311b5f06473cc676c454b2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0042.png": {
+    "mtime": 1783547697.8767233,
+    "ast_hash": "bf08c6c17566a62fe344e7d6c768eacf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0043.png": {
+    "mtime": 1783547710.4097528,
+    "ast_hash": "f5f77cfeea5ca7e0efa4deb44b9011d4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0044.png": {
+    "mtime": 1783547725.0190706,
+    "ast_hash": "53dce31eaf61a51aacede1cceb33c978",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0045.png": {
+    "mtime": 1783547745.4620676,
+    "ast_hash": "b67ef31add12c52e1c7848eec9bbd30e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0046.png": {
+    "mtime": 1783547759.4796433,
+    "ast_hash": "c3c67fcb1abf8ca4cf67095779ff6073",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0047.png": {
+    "mtime": 1783547772.6894293,
+    "ast_hash": "7b221a6a013227da07570d02800f8468",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0048.png": {
+    "mtime": 1783547782.1374173,
+    "ast_hash": "d1a7c887ad6061db329f388c5eb699a6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0049.png": {
+    "mtime": 1783547793.7067316,
+    "ast_hash": "ac0506a1577e4ede5a91aa9a4236bc56",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0050.png": {
+    "mtime": 1783547803.8235068,
+    "ast_hash": "1df2935ab68d073dbc5b4d2f420ab246",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0051.png": {
+    "mtime": 1783547813.3984523,
+    "ast_hash": "7a7961b63022eaa7d2c7fc90a5c4db2c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0052.png": {
+    "mtime": 1783547823.0233831,
+    "ast_hash": "1988c939c1b5af6b4868c163d902cc24",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0053.png": {
+    "mtime": 1783547832.9862072,
+    "ast_hash": "519c9700b20bc5428d2ee3c2521db74a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0054.png": {
+    "mtime": 1783547842.7211065,
+    "ast_hash": "8de6be6a987fc23c0e097c9dabedc8d1",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0055.png": {
+    "mtime": 1783547853.113824,
+    "ast_hash": "1647f3cffb986c27cb62a20ccbbf7824",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0056.png": {
+    "mtime": 1783547863.156622,
+    "ast_hash": "2dd64d2f68a7927589259c5d86948737",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0057.png": {
+    "mtime": 1783547873.0184977,
+    "ast_hash": "8aba2d0a3a7d5138d2ccf6c02020decc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0058.png": {
+    "mtime": 1783547883.4951358,
+    "ast_hash": "7c09992d0d0a1e7419343d6ee56ee8df",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0059.png": {
+    "mtime": 1783547893.8288424,
+    "ast_hash": "1c065be739274a914bdefc0609171286",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0060.png": {
+    "mtime": 1783547904.254537,
+    "ast_hash": "3769caefeedc70156b70e3d1a7ef992d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0061.png": {
+    "mtime": 1783547914.4742808,
+    "ast_hash": "7a39128114a68571e1af3ec151766c76",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0062.png": {
+    "mtime": 1783547924.2511628,
+    "ast_hash": "fbbbd90fd4459115167d45eecebc721d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0063.png": {
+    "mtime": 1783547942.5103405,
+    "ast_hash": "d2b3f30c1653d89880e6d29a42aa02e4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0064.png": {
+    "mtime": 1783547958.7841775,
+    "ast_hash": "14c1690a3e07a3761f5e3adc8cbb46c3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0065.png": {
+    "mtime": 1783547973.7953925,
+    "ast_hash": "e2e2b0485dca20292a1c92c016639da9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0066.png": {
+    "mtime": 1783547989.837287,
+    "ast_hash": "563e6e308a6e32a5fb2769a61666181a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0067.png": {
+    "mtime": 1783548005.8361778,
+    "ast_hash": "c353e9c9b6509ed693d46b2adc2031f3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0068.png": {
+    "mtime": 1783548023.0591996,
+    "ast_hash": "85647171926205e50fc503f95d2c3655",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0069.png": {
+    "mtime": 1783548038.1134534,
+    "ast_hash": "e0a652b5cb8c037120539de0d2cccf57",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0070.png": {
+    "mtime": 1783548052.488868,
+    "ast_hash": "a5253ca0c93e5b20b4ee90a07357089b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0071.png": {
+    "mtime": 1783548068.495381,
+    "ast_hash": "b26f69140f408f959ba31775e5316bf9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0072.png": {
+    "mtime": 1783548088.338052,
+    "ast_hash": "ac661f54b150ee112c061cff6ecd0d87",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0073.png": {
+    "mtime": 1783548104.7758117,
+    "ast_hash": "d90475340a156d23887059754a7801bf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0074.png": {
+    "mtime": 1783548118.876316,
+    "ast_hash": "6cc59de2c6401c878c5e9f323e5b9c05",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0075.png": {
+    "mtime": 1783548133.2787244,
+    "ast_hash": "b03315fc49ea883e5f84f046681633eb",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0076.png": {
+    "mtime": 1783548147.8001199,
+    "ast_hash": "0834259aa334516fccf46d2e209e19d3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0077.png": {
+    "mtime": 1783548161.5597324,
+    "ast_hash": "55c3e958c8d72e72087dd7303f1d2f9c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0078.png": {
+    "mtime": 1783548175.4772966,
+    "ast_hash": "0739d7646136d3509d7e8dcf4f3cb700",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0079.png": {
+    "mtime": 1783548189.9784603,
+    "ast_hash": "b3b9836ba0b2cd7dce08675f37d49de8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0080.png": {
+    "mtime": 1783548203.4112322,
+    "ast_hash": "a7bbcb2646127edc73b208f543b8be13",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0081.png": {
+    "mtime": 1783548218.032087,
+    "ast_hash": "39873b9588169a6df12da9447c710b5b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0082.png": {
+    "mtime": 1783548243.8419523,
+    "ast_hash": "0f380d24255a2dbd5f1ba50611cf05b7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0083.png": {
+    "mtime": 1783548259.8119404,
+    "ast_hash": "0abf990829679ff75b79dd571fd708e2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0084.png": {
+    "mtime": 1783548276.8095503,
+    "ast_hash": "176c83a3583e80b7ab431a7c0ecc0529",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0085.png": {
+    "mtime": 1783548293.240827,
+    "ast_hash": "3dfad3cf563284a5cb77070b2f40c3f2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0086.png": {
+    "mtime": 1783548310.545311,
+    "ast_hash": "4b674c3add595639c427ef7a0a2748e7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0087.png": {
+    "mtime": 1783548325.3985858,
+    "ast_hash": "216e3daaf84420f9fb6af3005d12b1ab",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0088.png": {
+    "mtime": 1783548352.521929,
+    "ast_hash": "ef2c6fc23ca221e313a3c350730fd6ba",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0089.png": {
+    "mtime": 1783548379.4238696,
+    "ast_hash": "8adb6ac2a4bb262a9d22232ec6bb9201",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0090.png": {
+    "mtime": 1783548400.64062,
+    "ast_hash": "e49a9fafb874b59083f32136be9be90a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0091.png": {
+    "mtime": 1783548420.3098607,
+    "ast_hash": "c181b3fc268a38fb15ac4048cb486841",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0092.png": {
+    "mtime": 1783548443.115703,
+    "ast_hash": "1495be01b19198d30ea51e14ee052e0d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0093.png": {
+    "mtime": 1783548467.7168627,
+    "ast_hash": "20d7d77ea7e61b9d2a21b94512e41380",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0094.png": {
+    "mtime": 1783548490.7480643,
+    "ast_hash": "a7e098c4304b498cadea7e3cc45ee1a6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0095.png": {
+    "mtime": 1783548509.4597223,
+    "ast_hash": "b7c0e504b791b86be7528b4a0d4fef64",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0096.png": {
+    "mtime": 1783548528.0547943,
+    "ast_hash": "059fbcbee9ee524f8e72ca0ea137b70b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0097.png": {
+    "mtime": 1783548546.066658,
+    "ast_hash": "812d1d1fa3255ba4a745a565091d9dcf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0098.png": {
+    "mtime": 1783548564.5722702,
+    "ast_hash": "1d0b2f73a10a91618db3adcb09a64869",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0099.png": {
+    "mtime": 1783548580.2413254,
+    "ast_hash": "7381a6bfa2d581443400f59a29488556",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0100.png": {
+    "mtime": 1783548594.6167428,
+    "ast_hash": "0b6e6e9cd844b649e360225859d31856",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0101.png": {
+    "mtime": 1783548608.2159655,
+    "ast_hash": "90fc290ad9d736a58bee288bb851150d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0102.png": {
+    "mtime": 1783548623.9989307,
+    "ast_hash": "5f199537f0e48b72d69121552d429b81",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0103.png": {
+    "mtime": 1783548639.7739012,
+    "ast_hash": "1307c338fcb7168a67d666774b92ed1a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0104.png": {
+    "mtime": 1783548654.164344,
+    "ast_hash": "ecf4fbe48dd713d511c11c9a8643717a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0105.png": {
+    "mtime": 1783548669.0377185,
+    "ast_hash": "f05060efac60437b52896b4992699fdb",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0106.png": {
+    "mtime": 1783548683.8380027,
+    "ast_hash": "1d6f9f0ff43a13e18bcc9cb011013a0e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0107.png": {
+    "mtime": 1783548703.3507824,
+    "ast_hash": "ba3a0a290ff09720daa43b0eda5b7210",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0108.png": {
+    "mtime": 1783548723.4704528,
+    "ast_hash": "a0aa38ad1b2b059792ee85b7b1d4291e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0109.png": {
+    "mtime": 1783548741.5687928,
+    "ast_hash": "5d1e56fe64da3700db1e1617227579ee",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0110.png": {
+    "mtime": 1783548756.390066,
+    "ast_hash": "15ef80b1f3eafa10517c6ed98a4353e7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0111.png": {
+    "mtime": 1783548770.8314893,
+    "ast_hash": "f17a7fb67563175e76be00cb2455eb42",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0112.png": {
+    "mtime": 1783548785.5298028,
+    "ast_hash": "e309dcee0b82f0cc4389318812039a69",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0113.png": {
+    "mtime": 1783548799.8922544,
+    "ast_hash": "b9b26ff9c8b7993d9f60002bae555bd4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0114.png": {
+    "mtime": 1783548814.2816682,
+    "ast_hash": "98218a6c7cfc8e224b7d8dcee3fa3ef5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0115.png": {
+    "mtime": 1783548828.4421494,
+    "ast_hash": "0f836825d8ce326d42c053b6d3da6e4f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0116.png": {
+    "mtime": 1783548843.0265088,
+    "ast_hash": "16c5d7700c7bb47b39f9a5bd43c35674",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0117.png": {
+    "mtime": 1783548856.8430955,
+    "ast_hash": "69b77e18e54507319d5cc0c3571d44ab",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0118.png": {
+    "mtime": 1783548870.9296284,
+    "ast_hash": "eb39a4f19140d26fa158eecb9887990b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0119.png": {
+    "mtime": 1783548884.7602265,
+    "ast_hash": "065f7c71499518704a4d86cf395f52b4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0120.png": {
+    "mtime": 1783548900.543719,
+    "ast_hash": "c621fba674ce893591114999a5d73825",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0121.png": {
+    "mtime": 1783548915.3010132,
+    "ast_hash": "16f776c304210af12737b5eb1e40c4a8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0122.png": {
+    "mtime": 1783548929.5584683,
+    "ast_hash": "6e72860c5c2f91f18e23ff57ec32cf71",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0123.png": {
+    "mtime": 1783548944.5007038,
+    "ast_hash": "95077f930d7ae49fdcaa2166b7af112f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0124.png": {
+    "mtime": 1783548958.6942415,
+    "ast_hash": "9909d9add231dd7036d6a39efaa4d0ab",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0125.png": {
+    "mtime": 1783548972.3599198,
+    "ast_hash": "ebc1e607ac178e56b52f97d5a9810205",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0126.png": {
+    "mtime": 1783548987.0512362,
+    "ast_hash": "3a15de68667485fbf1ddb47b70e40ddf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0127.png": {
+    "mtime": 1783549002.8611958,
+    "ast_hash": "a14e94fabfa462fe6c42d6a58e35cc79",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0128.png": {
+    "mtime": 1783549018.2123034,
+    "ast_hash": "b2ed0fd282b05df49cb1f3a736b53a26",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0129.png": {
+    "mtime": 1783549032.7076795,
+    "ast_hash": "83459769381403089a747fecae33d7f2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0130.png": {
+    "mtime": 1783549047.6709101,
+    "ast_hash": "fef8a16da55ce1778480a699f1d42bbb",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0131.png": {
+    "mtime": 1783549061.9363608,
+    "ast_hash": "94eb53c57735274f0640e4ccfb6ee40e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0132.png": {
+    "mtime": 1783549076.6396756,
+    "ast_hash": "28828cbf9ebc739a90cfa8e582a40347",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0133.png": {
+    "mtime": 1783549091.3569956,
+    "ast_hash": "3fb27ccf0b3237727250d09ec2c9a82a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0134.png": {
+    "mtime": 1783549106.454383,
+    "ast_hash": "08d0cb10ce55c324b4acabd8dd2e4831",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0135.png": {
+    "mtime": 1783549120.6774015,
+    "ast_hash": "510da5b66c0fa9829684859262bdf055",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0136.png": {
+    "mtime": 1783549135.3867097,
+    "ast_hash": "1193d9860ddf9fe0e3dda9383e8ce8f6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0137.png": {
+    "mtime": 1783549149.8308463,
+    "ast_hash": "fec48b3448640949aad08472ac4c7f81",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0138.png": {
+    "mtime": 1783549164.6882703,
+    "ast_hash": "965077002436128902e03609a9e5601e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0139.png": {
+    "mtime": 1783549178.5538518,
+    "ast_hash": "53ad03a257f98ab87c152e4822f4dd60",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0140.png": {
+    "mtime": 1783549193.3731267,
+    "ast_hash": "4db25369c7a8d9a5aea250878f0837cf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0141.png": {
+    "mtime": 1783549207.9884684,
+    "ast_hash": "e74c83a62e82e69b169378b0b78336e0",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0142.png": {
+    "mtime": 1783549222.515835,
+    "ast_hash": "f4b0329e908f06c10104d49970d4bb24",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0143.png": {
+    "mtime": 1783549237.1641688,
+    "ast_hash": "2ae18b04f61dc8fcd874eb438a03bdf1",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0144.png": {
+    "mtime": 1783549251.4156222,
+    "ast_hash": "c373604b59ba4b0f7a7c59706d519e69",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0145.png": {
+    "mtime": 1783549265.5051296,
+    "ast_hash": "3c7b3e0e03cb43e07c897b96fdd93584",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0146.png": {
+    "mtime": 1783549272.7738464,
+    "ast_hash": "67c0d43732e6d01973d1ef3c014cf35f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0147.png": {
+    "mtime": 1783549286.6762955,
+    "ast_hash": "c60480cb7a4412c6b021ee2ee239c324",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0148.png": {
+    "mtime": 1783549299.6021745,
+    "ast_hash": "a928c6164e21f391b4aa917504742b36",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0149.png": {
+    "mtime": 1783549312.7059975,
+    "ast_hash": "69d6af69b32f7edb87e1576c39c10da5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0150.png": {
+    "mtime": 1783549326.9984398,
+    "ast_hash": "953df7232b28cf188369cfdb7f348f8b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0151.png": {
+    "mtime": 1783549347.1108136,
+    "ast_hash": "73d76b28d2d0092507b499b62944f134",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0152.png": {
+    "mtime": 1783549367.3143725,
+    "ast_hash": "62a206ed47b9bb1af391ee6937ab98f6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0153.png": {
+    "mtime": 1783549384.1412635,
+    "ast_hash": "4e4c20504c8d12c7b168eadede32811e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0154.png": {
+    "mtime": 1783549399.2320547,
+    "ast_hash": "d3e7218117f55cedd4aadb14658466f5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0155.png": {
+    "mtime": 1783549413.4915097,
+    "ast_hash": "1167eb83e1704a52424ae0ae177a2986",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0156.png": {
+    "mtime": 1783549428.225811,
+    "ast_hash": "bd89fe69e4463572d03f6fb5e750f1ad",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0157.png": {
+    "mtime": 1783549442.4493077,
+    "ast_hash": "8db18f9ff1eaaac089645cd6e0d3f413",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0158.png": {
+    "mtime": 1783549456.6431005,
+    "ast_hash": "281afb64adf8586e3ff36c94f0c8f5b7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0159.png": {
+    "mtime": 1783549470.974545,
+    "ast_hash": "7aaf7a2acfa6200860337438a3ca1516",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0160.png": {
+    "mtime": 1783549486.4736066,
+    "ast_hash": "faba5d9fbbb0d1e0248de2311817230c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0161.png": {
+    "mtime": 1783549501.6338024,
+    "ast_hash": "07dce62f1b947e210d35085c01728fd1",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0162.png": {
+    "mtime": 1783549515.4873865,
+    "ast_hash": "65f5069739beb60c455a2bf3a4f6542a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0163.png": {
+    "mtime": 1783549529.5588994,
+    "ast_hash": "1e398681a40bf6f153ec5e9750bc296b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0164.png": {
+    "mtime": 1783549543.7525966,
+    "ast_hash": "ac3915a77a7c856de92003e16b93b3db",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0165.png": {
+    "mtime": 1783549558.2055237,
+    "ast_hash": "e9932a2c8cfb933a6076180f7f65aa67",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0166.png": {
+    "mtime": 1783549572.8298595,
+    "ast_hash": "21a5cbdf781c8aaf96d731ca8638a31c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0167.png": {
+    "mtime": 1783549586.8204234,
+    "ast_hash": "60c0b84358d219740d1d9197eedea37c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0168.png": {
+    "mtime": 1783549600.6535504,
+    "ast_hash": "7bdd6e1fd6a392de647cc4f17fb7c780",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0169.png": {
+    "mtime": 1783549614.4296741,
+    "ast_hash": "43fbad3f52322e6d08af53ef0d856e5d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0170.png": {
+    "mtime": 1783549629.2769387,
+    "ast_hash": "3d9a8f6a12d30bc4590476bd90074fcc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0171.png": {
+    "mtime": 1783549643.061543,
+    "ast_hash": "09bea3af2a73b551b8ef194e608de735",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0172.png": {
+    "mtime": 1783549656.4352798,
+    "ast_hash": "6b6febeb6cb2817eea39790269fc6290",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0173.png": {
+    "mtime": 1783549669.4391365,
+    "ast_hash": "a85719818ca4933592b14e6b2f458ec0",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0174.png": {
+    "mtime": 1783549683.3512194,
+    "ast_hash": "69cab4cc0d27a52608d3da35659a8ecd",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0175.png": {
+    "mtime": 1783549696.8359797,
+    "ast_hash": "ff154344dad30388d2f0003197381052",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0176.png": {
+    "mtime": 1783549710.8297935,
+    "ast_hash": "0366c68231e817210ed3912e5ae5eba0",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0177.png": {
+    "mtime": 1783549724.903306,
+    "ast_hash": "8467a7d7bf2e68651f4d90c0205fea40",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0178.png": {
+    "mtime": 1783549737.874686,
+    "ast_hash": "6566630d39bbe5d5ab656670c82a4e69",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0179.png": {
+    "mtime": 1783549751.5698314,
+    "ast_hash": "feaac9bcaaa4907a1b7d1a8ceb3bd6d1",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0180.png": {
+    "mtime": 1783549764.6206703,
+    "ast_hash": "0715a14be08245ce040397805bb2be65",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0181.png": {
+    "mtime": 1783549778.5921052,
+    "ast_hash": "168adc75992d27a9376b88348eebce74",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0182.png": {
+    "mtime": 1783549792.298813,
+    "ast_hash": "dfe9481a203c1a4185c8be3f26c32f0f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0183.png": {
+    "mtime": 1783549805.353716,
+    "ast_hash": "e368be822ffefe90a5c8c5757f7642ea",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0184.png": {
+    "mtime": 1783549819.6481578,
+    "ast_hash": "ef1344e8a1e8c472e4db38c333467660",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0185.png": {
+    "mtime": 1783549833.803645,
+    "ast_hash": "466c4ad3338db400d50e65d2c9e259dc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0186.png": {
+    "mtime": 1783549847.5062785,
+    "ast_hash": "5b4bc4cac8f519af181eba70165f563d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0187.png": {
+    "mtime": 1783549861.566995,
+    "ast_hash": "1f8abf6c68532d493df08032da5542f0",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0188.png": {
+    "mtime": 1783549875.920731,
+    "ast_hash": "5af9a1c17818ec48de774bc7802c54b9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0189.png": {
+    "mtime": 1783549889.8940172,
+    "ast_hash": "b0d4c41c6b74a2c63740bf02a3cea861",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0190.png": {
+    "mtime": 1783549903.999537,
+    "ast_hash": "38291868e86dc368597d842d21f5ee12",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0191.png": {
+    "mtime": 1783549918.0295763,
+    "ast_hash": "7f8bc20443651f9f9079db2828b77f34",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0192.png": {
+    "mtime": 1783549932.068101,
+    "ast_hash": "616ee491996f24245b238821008ed74b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0193.png": {
+    "mtime": 1783549946.6674492,
+    "ast_hash": "65e4f2f142740e6394343086c6f14f0b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0194.png": {
+    "mtime": 1783549960.4070666,
+    "ast_hash": "6bb4dd273e0dbc03e48b0304b8fe164b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0195.png": {
+    "mtime": 1783549974.6695206,
+    "ast_hash": "eb4bf190ed336d90b8fe0caeeb9c341f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0196.png": {
+    "mtime": 1783549988.928974,
+    "ast_hash": "17ee8c5ccbaefdb704a69183aa06ec3c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0197.png": {
+    "mtime": 1783550002.639112,
+    "ast_hash": "0fd6b1b3bd775d2f1f2590c1ef44a11c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0198.png": {
+    "mtime": 1783550016.4757016,
+    "ast_hash": "aece92c27f0d7505777822895af8a653",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0199.png": {
+    "mtime": 1783550030.5082293,
+    "ast_hash": "ffe239233a2befe774390c1d0bf8d554",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0200.png": {
+    "mtime": 1783550044.5257914,
+    "ast_hash": "028eb8dd30b1daf949e8d176c5943b1a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0201.png": {
+    "mtime": 1783550058.5409257,
+    "ast_hash": "1fb6e5fa9fc7666212db43c0fb1f9722",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0202.png": {
+    "mtime": 1783550072.8468883,
+    "ast_hash": "ad0aa34fb628dbc559e7a96194ac7b61",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0203.png": {
+    "mtime": 1783550086.1381624,
+    "ast_hash": "b3c2bd32fdbd9e1f13b9d1eade1fe3df",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0204.png": {
+    "mtime": 1783550099.2919984,
+    "ast_hash": "31307acc928cc03fd7f3a4ae286002e6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0205.png": {
+    "mtime": 1783550112.605753,
+    "ast_hash": "b50ce7ed578dd63c20075a0fdc97e5d2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0206.png": {
+    "mtime": 1783550125.7585597,
+    "ast_hash": "f98fb045e8883ec13ee4a8438c6a4578",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0207.png": {
+    "mtime": 1783550139.131297,
+    "ast_hash": "dd2a7da3152a503c8592943440672c28",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0208.png": {
+    "mtime": 1783550152.2321224,
+    "ast_hash": "dfec11c5b6c9fbbc0a39b78cd907d5d8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0209.png": {
+    "mtime": 1783550165.7668066,
+    "ast_hash": "16da1bfd5017ff660ec830754b033f61",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0210.png": {
+    "mtime": 1783550178.8856237,
+    "ast_hash": "af06efd9b866ab88bf2375c2598cf5e9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0211.png": {
+    "mtime": 1783550193.3939972,
+    "ast_hash": "10ec219c61df5fedc233741188513d9a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0212.png": {
+    "mtime": 1783550207.3450725,
+    "ast_hash": "bc11e1ec013c25b3e22c0750a1905b2c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0213.png": {
+    "mtime": 1783550220.6928146,
+    "ast_hash": "48cd04e5579d5de0156ac3f213eb9903",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0214.png": {
+    "mtime": 1783550233.8966067,
+    "ast_hash": "45f505f29e02b3f44f8f9596ed30561a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0215.png": {
+    "mtime": 1783550247.0344589,
+    "ast_hash": "1189452c62a0d406bbafe1ed31bf3233",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0216.png": {
+    "mtime": 1783550260.3842087,
+    "ast_hash": "80e7720778c1b2996d5e4c42dcbb3fca",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/frames/nobg_frame_0217.png": {
+    "mtime": 1783550274.0898473,
+    "ast_hash": "54f6610cc789faf0b107533084a38375",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/test_small.webp": {
+    "mtime": 1783551655.6822047,
+    "ast_hash": "fabf1cf07096c82096154155e9b897d1",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/assets/avatar-bienvenido.webp": {
+    "mtime": 1783551759.0,
+    "ast_hash": "8f205059aafb0c2eef3f9f666ca7aa07",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/cataavatarhermes/public/avatar-bienvenido.webp": {
+    "mtime": 1783551759.0,
+    "ast_hash": "8f205059aafb0c2eef3f9f666ca7aa07",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/assets/avatar-bienvenido.webp": {
+    "mtime": 1783551759.4806259,
+    "ast_hash": "8f205059aafb0c2eef3f9f666ca7aa07",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares/public/avatar-bienvenido.webp": {
+    "mtime": 1783551759.4806259,
+    "ast_hash": "8f205059aafb0c2eef3f9f666ca7aa07",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/AVATARES VIDEOS/bienbenido a la escaloneta.mp4": {
+    "mtime": 1783147927.3789015,
+    "ast_hash": "8bc32d97bdc8f9a678b72a46de61c2c5",
     "semantic_hash": ""
   }
 }

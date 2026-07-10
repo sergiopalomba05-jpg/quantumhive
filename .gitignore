@@ -86,3 +86,6 @@ agencia/clientes/*/*.db
 
 # PWA del catálogo: config local con la key publishable — no al repo
 agencia/productos/catalogo-pwa/config.js
+
+# Credenciales / conexión a VM (repo público — JAMÁS al repo)
+VM/
