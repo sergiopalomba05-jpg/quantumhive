@@ -23,6 +23,7 @@ procesos-aprendidos/
 ## Deploy
 
 - `deploy-cloud-run-vertex-ai.md` - Deploy de motor de avatares en Cloud Run con Vertex AI (Gemini 2.5 Flash + Live API)
+- `live-api-avatar.md` - Avatar de voz con Gemini Live API (native audio) en PWA + Cloud Run: armado paso a paso + bugs conocidos (responseModalities TEXT+AUDIO, WebViews duras Xiaomi/Huawei, PERMISSION_DENIED en actAs de Cloud Run)
 
 ## Skills
 
