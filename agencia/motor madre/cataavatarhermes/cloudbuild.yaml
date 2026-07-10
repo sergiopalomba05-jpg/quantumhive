@@ -1,11 +1,11 @@
 steps:
   # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/motor-avatares:$COMMIT_SHA', '.']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/motor-avatares:$BUILD_ID', '.']
 
   # Push the container image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/motor-avatares:$COMMIT_SHA']
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/motor-avatares:$BUILD_ID']
 
   # Deploy container image to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -14,7 +14,7 @@ steps:
       - 'deploy'
       - 'motor-avatares'
       - '--image'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/motor-avatares:$COMMIT_SHA'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/motor-avatares:$BUILD_ID'
       - '--region'
       - 'us-central1'
       - '--platform'
@@ -23,6 +23,6 @@ steps:
       - '557866434489-compute@developer.gserviceaccount.com'
 
 images:
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/motor-avatares:$COMMIT_SHA'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/motor-avatares:$BUILD_ID'
 
 timeout: '600s'
