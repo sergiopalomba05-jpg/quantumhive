@@ -89,3 +89,7 @@ agencia/productos/catalogo-pwa/config.js
 
 # Credenciales / conexión a VM (repo público — JAMÁS al repo)
 VM/
+
+# Dependencias instaladas (no al repo)
+agencia/motor madre/paperclip-ai/
+agencia/motor madre/openjarvis/
