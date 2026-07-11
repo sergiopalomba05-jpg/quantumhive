@@ -1681,3 +1681,194 @@ body.keyboard-open #ratingSheet { top: 8px; bottom: auto; }
 .star-flash-anim {
   animation: starFlash 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+
+/* ========================
+   VIDEO CALL OVERLAY
+   ======================== */
+
+.video-call-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #0a0705;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.video-call-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+  max-width: 600px;
+  padding: 16px;
+  flex: 1;
+  min-height: 0;
+  max-height: calc(100dvh - 160px);
+}
+
+.video-call-avatar,
+.video-call-user {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #120b08;
+  border: 2px solid rgba(201,168,106,0.2);
+  min-height: 180px;
+}
+
+.video-call-avatar {
+  background: radial-gradient(circle at 50% 50%, #1c1410 0%, #0a0705 100%);
+  border-color: rgba(201,168,106,0.3);
+}
+
+.video-call-avatar-orb {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.video-call-avatar-orb[data-state="speaking"] {
+  animation: avatarPulse 1s ease-in-out infinite;
+}
+
+@keyframes avatarPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.video-call-avatar-label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #C9A86A;
+  background: rgba(10,7,5,0.8);
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid rgba(201,168,106,0.3);
+}
+
+.video-call-speaking-indicator {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+  height: 16px;
+}
+
+.video-call-speaking-indicator span {
+  width: 3px;
+  background: #C9A86A;
+  border-radius: 2px;
+  animation: speakingBar 0.6s ease-in-out infinite alternate;
+}
+
+.video-call-speaking-indicator span:nth-child(1) { height: 6px; animation-delay: 0s; }
+.video-call-speaking-indicator span:nth-child(2) { height: 12px; animation-delay: 0.15s; }
+.video-call-speaking-indicator span:nth-child(3) { height: 8px; animation-delay: 0.3s; }
+
+@keyframes speakingBar {
+  from { height: 4px; }
+  to { height: 16px; }
+}
+
+.video-call-user video {
+  background: #000;
+}
+
+.video-call-camera-off {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #120b08;
+  color: #6b5b4a;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.video-call-transcript {
+  width: 100%;
+  max-width: 600px;
+  padding: 12px 20px;
+  margin: 0 16px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #F4ECD8;
+  background: rgba(26,18,14,0.9);
+  border: 1px solid rgba(201,168,106,0.2);
+  border-radius: 12px;
+  text-align: center;
+  max-height: 60px;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.video-call-controls {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.video-call-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #F4ECD8;
+  border: 2px solid rgba(201,168,106,0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.video-call-btn:hover {
+  transform: scale(1.1);
+  border-color: rgba(201,168,106,0.6);
+}
+
+.video-call-btn:active {
+  transform: scale(0.95);
+}
+
+@media (max-width: 480px) {
+  .video-call-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 8px;
+    max-height: calc(100dvh - 140px);
+  }
+  .video-call-avatar,
+  .video-call-user {
+    min-height: 140px;
+  }
+  .video-call-avatar-orb {
+    width: 60px;
+    height: 60px;
+  }
+}

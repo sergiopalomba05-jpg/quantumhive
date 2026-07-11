@@ -19,7 +19,11 @@ import {
   Zap,
   Search,
   MessageSquare,
-  Star
+  Star,
+  Video,
+  VideoOff,
+  Camera,
+  CameraOff
 } from "lucide-react";
 
 export const featuredDishes = [
@@ -260,6 +264,8 @@ export default function App() {
 
   const [isLiveCalling, setIsLiveCalling] = useState(false);
   const [liveCallMuted, setLiveCallMuted] = useState(false);
+  const [isVideoCall, setIsVideoCall] = useState(false);
+  const [cameraEnabled, setCameraEnabled] = useState(true);
 
   // Live Call references
   const liveWsRef = useRef<WebSocket | null>(null);
@@ -271,6 +277,11 @@ export default function App() {
   const liveNextStartTimeRef = useRef<number>(0);
   const liveCallMutedRef = useRef<boolean>(false);
   const liveHighlightTimeoutRef = useRef<any>(null);
+  const liveVideoStreamRef = useRef<MediaStream | null>(null);
+  const liveVideoIntervalRef = useRef<any>(null);
+  const liveVideoCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const liveVideoEnabledRef = useRef<boolean>(true);
+  const liveUserVideoRef = useRef<HTMLVideoElement | null>(null);
 
   // Expanded dish card states
   const [expandedDishIds, setExpandedDishIds] = useState<Record<string, boolean>>({});
@@ -1576,6 +1587,18 @@ export default function App() {
     setLiveCallMuted(prev => !prev);
   };
 
+  const toggleCamera = () => {
+    const newState = !cameraEnabled;
+    setCameraEnabled(newState);
+    liveVideoEnabledRef.current = newState;
+    // Silenciar/activar track de video
+    if (liveMediaStreamRef.current) {
+      liveMediaStreamRef.current.getVideoTracks().forEach(track => {
+        track.enabled = newState;
+      });
+    }
+  };
+
   const stopLivePlayback = () => {
     liveScheduledSourcesRef.current.forEach(source => {
       try {
@@ -1632,11 +1655,10 @@ export default function App() {
     }
   };
 
-  const startLiveCall = async () => {
+  const startLiveCall = async (withVideo = false) => {
     try {
       stopCurrentAudio();
 
-      // Despertar audio DENTRO del gesto del click, antes de cualquier await
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
       const inputCtx = new AudioContextClass({ sampleRate: 16000 });
       const outputCtx = new AudioContextClass({ sampleRate: 24000 });
@@ -1645,10 +1667,31 @@ export default function App() {
       liveNextStartTimeRef.current = 0;
       if (inputCtx.state === 'suspended') await inputCtx.resume();
       if (outputCtx.state === 'suspended') await outputCtx.resume();
-      warmUpOutput(outputCtx); // silent buffer hack para WebViews duras
+      warmUpOutput(outputCtx);
 
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Pedir micrófono (+ cámara si es videollamada)
+      const mediaConstraints: MediaStreamConstraints = withVideo
+        ? { audio: true, video: { facingMode: "user", width: { ideal: 320 }, height: { ideal: 240 } } }
+        : { audio: true };
+      const stream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
       liveMediaStreamRef.current = stream;
+
+      // Si hay video, configurar el stream de video
+      if (withVideo) {
+        const videoTrack = stream.getVideoTracks()[0];
+        if (videoTrack) {
+          // Crear stream separado solo con video para el <video> element
+          const videoStream = new MediaStream([videoTrack]);
+          liveVideoStreamRef.current = videoStream;
+          liveVideoEnabledRef.current = true;
+
+          // Canvas oculto para capturar frames JPEG
+          const canvas = document.createElement("canvas");
+          canvas.width = 320;
+          canvas.height = 240;
+          liveVideoCanvasRef.current = canvas;
+        }
+      }
 
       const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
       const host = window.location.host;
@@ -1657,11 +1700,14 @@ export default function App() {
       liveWsRef.current = ws;
 
       setIsLiveCalling(true);
+      setIsVideoCall(withVideo);
+      setCameraEnabled(true);
       setLiveCallMuted(false);
       setSolState("listening");
       setLiveTranscript("");
       liveTextAccumulatorRef.current = "";
 
+      // Audio processing
       const source = inputCtx.createMediaStreamSource(stream);
       const processor = inputCtx.createScriptProcessor(4096, 1, 1);
       liveAudioProcessorRef.current = processor;
@@ -1678,12 +1724,42 @@ export default function App() {
         }
       };
 
+      // Video frame capture (1 fps)
+      if (withVideo && liveVideoCanvasRef.current) {
+        const videoEl = liveUserVideoRef.current;
+        const canvas = liveVideoCanvasRef.current;
+        const ctx = canvas.getContext("2d");
+
+        // Esperar a que el video element esté listo
+        const startVideoCapture = () => {
+          if (!videoEl || !ctx || !ws || ws.readyState !== WebSocket.OPEN) return;
+
+          liveVideoIntervalRef.current = setInterval(() => {
+            if (ws.readyState === WebSocket.OPEN && liveVideoEnabledRef.current && videoEl.readyState >= 2) {
+              canvas.width = videoEl.videoWidth || 320;
+              canvas.height = videoEl.videoHeight || 240;
+              ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+              const base64 = canvas.toDataURL("image/jpeg", 0.6).split(",")[1];
+              if (base64) {
+                ws.send(JSON.stringify({ video: base64 }));
+              }
+            }
+          }, 1000);
+        };
+
+        // Dar tiempo al video para que empiece, luego iniciar captura
+        setTimeout(startVideoCapture, 500);
+      }
+
       ws.onmessage = (event) => {
         try {
           const msg = JSON.parse(event.data);
           if (msg.connected) {
-            // Disparar el saludo de la IA: ella habla primero al entrar al live
-            ws.send(JSON.stringify({ text: "Saludá al cliente diciendo exactamente: 'Hola, si te escucho'. Después preguntale en qué podés ayudarlo hoy." }));
+            if (withVideo) {
+              ws.send(JSON.stringify({ text: "Estoy viendo al cliente por la cámara. Saludalo con mucha onda, decile que sí la estás viendo, y hacelo un cumplido personal sobre su aspecto. Sé natural, como si lo vieras en el restaurante." }));
+            } else {
+              ws.send(JSON.stringify({ text: "Saludá al cliente diciendo exactamente: 'Hola, si te escucho'. Después preguntale en qué podés ayudarlo hoy." }));
+            }
             return;
           }
           if (msg.error) {
@@ -1709,7 +1785,6 @@ export default function App() {
             }
             setLiveTranscript(cleanSubText.trim());
 
-            // Real-time autoguide highlighting while Sol is speaking
             const match = findMentionedDish(cleanSubText);
             if (match && guidedDishId !== match.item.id) {
               scrollToSection(match.secId);
@@ -1726,7 +1801,6 @@ export default function App() {
             const rawReply = liveTextAccumulatorRef.current;
             let cleanReply = rawReply;
 
-            // Extract #PEDIDO# directive
             const pedidoIdx = rawReply.indexOf("#PEDIDO#");
             if (pedidoIdx >= 0) {
               const jsonStr = extractJsonBlock(rawReply.slice(pedidoIdx + 8), "{");
@@ -1741,7 +1815,6 @@ export default function App() {
               cleanReply = cleanReply.slice(0, pedidoIdx);
             }
 
-            // Extract #CHIPS# directive
             const chipsIdx = rawReply.indexOf("#CHIPS#");
             if (chipsIdx >= 0) {
               const jsonStr = extractJsonBlock(rawReply.slice(chipsIdx + 7), "[");
@@ -1754,7 +1827,6 @@ export default function App() {
               cleanReply = cleanReply.slice(0, chipsIdx);
             }
 
-            // Extract #CUENTA# directive
             if (rawReply.includes("#CUENTA#")) {
               cleanReply = cleanReply.replace("#CUENTA#", "");
               setTimeout(() => setActiveOverlay("order"), 2000);
@@ -1799,14 +1871,19 @@ export default function App() {
       };
 
     } catch (err) {
-      console.error("Error starting voice live call:", err);
-      triggerToast("No se pudo iniciar la llamada: asegurate de dar permisos al micrófono.");
+      console.error("Error starting live call:", err);
+      const msg = withVideo
+        ? "No se pudo iniciar la videollamada: asegurate de dar permisos a cámara y micrófono."
+        : "No se pudo iniciar la llamada: asegurate de dar permisos al micrófono.";
+      triggerToast(msg);
       endLiveCall();
     }
   };
 
   const endLiveCall = () => {
     setIsLiveCalling(false);
+    setIsVideoCall(false);
+    setCameraEnabled(false);
     setSolState("idle");
     setLiveTranscript("");
     liveTextAccumulatorRef.current = "";
@@ -1826,6 +1903,21 @@ export default function App() {
       } catch (e) {}
       liveMediaStreamRef.current = null;
     }
+
+    if (liveVideoStreamRef.current) {
+      try {
+        liveVideoStreamRef.current.getTracks().forEach(track => track.stop());
+      } catch (e) {}
+      liveVideoStreamRef.current = null;
+    }
+
+    if (liveVideoIntervalRef.current) {
+      clearInterval(liveVideoIntervalRef.current);
+      liveVideoIntervalRef.current = null;
+    }
+
+    liveVideoCanvasRef.current = null;
+    liveVideoEnabledRef.current = false;
 
     if (liveAudioProcessorRef.current) {
       try {
@@ -2183,6 +2275,20 @@ export default function App() {
             >
               {isLiveCalling ? <Square className="h-3.5 w-3.5 fill-current" /> : <Phone className="h-3.5 w-3.5 text-amber-500" />}
               <span className="hidden sm:inline">{isLiveCalling ? "Llamando" : "Llamar"}</span>
+            </button>
+            <button 
+              onClick={() => {
+                if (!isLiveCalling) {
+                  startLiveCall(true);
+                } else {
+                  endLiveCall();
+                }
+              }}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-full ${isVideoCall ? "bg-red-600 text-white animate-pulse border-red-400" : "bg-[#1A120E] text-stone-300 border-[#C9A86A]/35 hover:bg-stone-800"} border transition-all shadow-md text-xs font-bold select-none cursor-pointer`}
+              title="Videollamada"
+            >
+              {isVideoCall ? <Square className="h-3.5 w-3.5 fill-current" /> : <Video className="h-3.5 w-3.5 text-amber-500" />}
+              <span className="hidden sm:inline">{isVideoCall ? "Finalizar" : "Video"}</span>
             </button>
             <button 
               onClick={() => setActiveOverlay("chat")}
@@ -3254,6 +3360,80 @@ export default function App() {
                   Sí, salir
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* --- VIDEO CALL OVERLAY --- */}
+        {isLiveCalling && isVideoCall && (
+          <div className="video-call-overlay">
+            {/* Video grid */}
+            <div className="video-call-grid">
+              {/* Avatar de Sol */}
+              <div className="video-call-avatar">
+                <div className="video-call-avatar-orb" data-state={solState}>
+                  <img 
+                    src="/avatar-bienvenido.webp" 
+                    alt="Avatar Sol" 
+                    style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '50%' }}
+                  />
+                </div>
+                <span className="video-call-avatar-label">Sol</span>
+                {solState === "speaking" && (
+                  <div className="video-call-speaking-indicator">
+                    <span></span><span></span><span></span>
+                  </div>
+                )}
+              </div>
+
+              {/* Video del usuario */}
+              <div className="video-call-user">
+                <video
+                  ref={(el) => { liveUserVideoRef.current = el; }}
+                  autoPlay
+                  playsInline
+                  muted
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '16px', transform: 'scaleX(-1)' }}
+                />
+                {!cameraEnabled && (
+                  <div className="video-call-camera-off">
+                    <CameraOff className="h-10 w-10 text-stone-500" />
+                    <span>Cámara apagada</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Transcript */}
+            {liveTranscript && (
+              <div className="video-call-transcript">
+                {liveTranscript}
+              </div>
+            )}
+
+            {/* Controles */}
+            <div className="video-call-controls">
+              <button 
+                onClick={toggleLiveCallMute}
+                className={`video-call-btn ${liveCallMuted ? "bg-red-600" : "bg-stone-800"}`}
+                title={liveCallMuted ? "Activar micrófono" : "Silenciar"}
+              >
+                {liveCallMuted ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
+              </button>
+              <button 
+                onClick={toggleCamera}
+                className={`video-call-btn ${!cameraEnabled ? "bg-red-600" : "bg-stone-800"}`}
+                title={cameraEnabled ? "Apagar cámara" : "Prender cámara"}
+              >
+                {cameraEnabled ? <Camera className="h-5 w-5" /> : <CameraOff className="h-5 w-5" />}
+              </button>
+              <button 
+                onClick={endLiveCall}
+                className="video-call-btn bg-red-700 hover:bg-red-600"
+                title="Finalizar videollamada"
+              >
+                <PhoneOff className="h-5 w-5" />
+              </button>
             </div>
           </div>
         )}

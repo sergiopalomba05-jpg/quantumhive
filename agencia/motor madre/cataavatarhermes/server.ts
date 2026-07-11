@@ -74,7 +74,7 @@ async function startServer() {
       vertex_ai: true,
       project: projectId,
       location: location,
-      gemini_model: "gemini-2.5-flash",
+      gemini_model: "gemini-2.5-flash-preview",
     });
   });
 
@@ -272,16 +272,16 @@ async function startServer() {
       });
       console.log("[Live] GoogleGenAI client created");
 
-      console.log("[Live] Connecting to model: gemini-live-2.5-flash-native-audio");
+      console.log("[Live] Connecting to model: gemini-live-2.5-flash-preview");
       const session = await ai.live.connect({
-        model: "gemini-live-2.5-flash-native-audio",
+        model: "gemini-live-2.5-flash-preview",
         config: {
           responseModalities: ["AUDIO"],
           speechConfig: {
             voiceConfig: { prebuiltVoiceConfig: { voiceName: "Aoede" } },
           },
           systemInstruction: {
-            parts: [{ text: "Sos Sofía, mesera amable de un restaurante. Respondés en español rioplatense casual. Usás voice response. Sé breve." }],
+            parts: [{ text: "Sos la mesera de La Escaloneta, un restaurante en Buenos Aires. Respondés en español rioplatense casual, con onda. Sé breve y cálida. IMPORTANTE: Si el cliente activa la cámara, vas a poder VERLO. Cuando esto pase, saludalo con mucha onda, decile que sí la estás viendo, y hacelo un cumplido personal sobre su aspecto (su ropa, su estilo, su sonrisa, lo que veas). Sé natural, como si lo vieras en persona en el restaurante." }],
           },
           outputAudioTranscription: {},
         },
@@ -338,6 +338,11 @@ async function startServer() {
           if (parsed.audio) {
             session.sendRealtimeInput({
               audio: { data: parsed.audio, mimeType: "audio/pcm;rate=16000" },
+            });
+          }
+          if (parsed.video) {
+            session.sendRealtimeInput({
+              media: { mimeType: "image/jpeg", data: parsed.video },
             });
           }
           if (parsed.text) {
