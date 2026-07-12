@@ -1,0 +1,173 @@
+{
+  "25": {
+    "class_type": "AudioEncoderEncode",
+    "inputs": {}
+  },
+  "16": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "IsReadOnly": "default",
+      "IsFixedSize": "wan",
+      "Count": "umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+    }
+  },
+  "130": {
+    "class_type": "WanInfiniteTalkToVideo",
+    "inputs": {
+      "IsFixedSize": 832,
+      "Values": 1,
+      "Count": "two_speakers",
+      "IsReadOnly": 480,
+      "Keys": 9,
+      "IsSynchronized": 81
+    }
+  },
+  "113": {
+    "class_type": "AudioConcat",
+    "inputs": {
+      "Count": "after"
+    }
+  },
+  "145": {
+    "class_type": "16c4feb3-9adc-4bfd-ab30-e57cab73ffbf",
+    "inputs": {}
+  },
+  "119": {
+    "class_type": "VAEDecode",
+    "inputs": {}
+  },
+  "90": {
+    "class_type": "LoadAudio",
+    "inputs": {
+      "IsReadOnly": null,
+      "IsFixedSize": null,
+      "Count": "audio_speaker2_man.mp3"
+    }
+  },
+  "33": {
+    "class_type": "LoraLoaderModelOnly",
+    "inputs": {
+      "Count": "lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors",
+      "IsFixedSize": 1
+    }
+  },
+  "32": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "Count": "two_character_talking.png",
+      "IsFixedSize": "image"
+    }
+  },
+  "124": {
+    "class_type": "VAEDecode",
+    "inputs": {}
+  },
+  "93": {
+    "class_type": "AudioEncoderEncode",
+    "inputs": {}
+  },
+  "24": {
+    "class_type": "LoadAudio",
+    "inputs": {
+      "IsReadOnly": null,
+      "IsFixedSize": null,
+      "Count": "audio_speaker1_woman.mp3"
+    }
+  },
+  "26": {
+    "class_type": "AudioEncoderLoader",
+    "inputs": {
+      "Count": "wav2vec2-chinese-base_fp16.safetensors"
+    }
+  },
+  "13": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "Count": "Wan2_1-I2V-14B-480p_fp8_e4m3fn_scaled_KJ.safetensors",
+      "IsFixedSize": "default"
+    }
+  },
+  "127": {
+    "class_type": "ImageBatch",
+    "inputs": {}
+  },
+  "137": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "Count": "two_character_talking.png",
+      "IsFixedSize": "image"
+    }
+  },
+  "112": {
+    "class_type": "ModelPatchLoader",
+    "inputs": {
+      "Count": "wan2.1_infiniteTalk_multi_fp16.safetensors"
+    }
+  },
+  "126": {
+    "class_type": "ImageFromBatch",
+    "inputs": {
+      "Count": 0,
+      "IsFixedSize": 4096
+    }
+  },
+  "29": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "Count": "Wan2_1_VAE_bf16.safetensors"
+    }
+  },
+  "141": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "IsReadOnly": "auto",
+      "IsFixedSize": "auto",
+      "Count": "video/ComfyUI"
+    }
+  },
+  "14": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "Count": "The camera zooms in. Two characters are talking."
+    }
+  },
+  "140": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "Count": 25
+    }
+  },
+  "129": {
+    "class_type": "WanInfiniteTalkToVideo",
+    "inputs": {
+      "IsFixedSize": 832,
+      "Values": 1,
+      "Count": "two_speakers",
+      "IsReadOnly": 480,
+      "Keys": 9,
+      "IsSynchronized": 81
+    }
+  },
+  "162": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "IsReadOnly": "auto",
+      "IsFixedSize": "auto",
+      "Count": "video/ComfyUI"
+    }
+  },
+  "146": {
+    "class_type": "58374208-7916-4582-9f02-035a4536f14b",
+    "inputs": {}
+  },
+  "17": {
+    "class_type": "ConditioningZeroOut",
+    "inputs": {}
+  },
+  "138": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "Count": 25
+    }
+  }
+}

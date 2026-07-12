@@ -1,20 +1,22 @@
 #!/usr/bin/env python3
-"""Fallback: analiza un video corto con Gemini (lo VE y lo ESCUCHA) y devuelve JSON
-estructurado para catalogar. Usalo solo si Hermes no le pasa el video a su cerebro Gemini
-de forma nativa. Solo stdlib.
+"""Fallback: analiza un video corto con Gemini via Vertex AI (lo VE y lo ESCUCHA) y devuelve
+JSON estructurado para catalogar. Usalo solo si Hermes no le pasa el video a su cerebro
+de forma nativa.
 
-Requiere en el entorno: GEMINI_API_KEY (o GOOGLE_API_KEY).
+Requiere en el entorno: VERTEX_PROJECT_ID, VERTEX_LOCATION (o GOOGLE_CLOUD_PROJECT).
+Autenticación: ADC de la VM de GCP (Application Default Credentials).
+
 Modelo: gemini-2.5-pro (configurable con GEMINI_INGESTA_MODEL).
 Manda el video inline en base64 → sirve para reels < ~18 MB (el Bot API de Telegram ya
 limita a 20 MB). Para videos más grandes habría que usar la Files API (no incluido acá).
 
 Uso:  python analizar_video.py <ruta_video>
 """
-import os, sys, json, base64, mimetypes, urllib.request, urllib.error
+import os, sys, json
 
-KEY = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+PROJECT = os.environ.get("VERTEX_PROJECT_ID") or os.environ.get("GOOGLE_CLOUD_PROJECT", "")
+LOCATION = os.environ.get("VERTEX_LOCATION", "us-central1")
 MODEL = os.environ.get("GEMINI_INGESTA_MODEL", "gemini-2.5-pro")
-BASE = "https://generativelanguage.googleapis.com/v1beta"
 
 PROMPT = (
     "Sos el catalogador de QuantumHive. Mirá y escuchá este reel de una herramienta de IA "
@@ -26,37 +28,38 @@ PROMPT = (
 
 
 def main():
-    if not KEY:
-        sys.exit("ERROR: falta GEMINI_API_KEY / GOOGLE_API_KEY en el entorno.")
+    if not PROJECT:
+        sys.exit("ERROR: falta VERTEX_PROJECT_ID / GOOGLE_CLOUD_PROJECT en el entorno.")
     if len(sys.argv) < 2:
         sys.exit("Uso: python analizar_video.py <ruta_video>")
+
+    try:
+        from google import genai
+        from google.genai import types
+    except ImportError:
+        sys.exit("ERROR: falta google-genai. Instalá con: pip install google-genai")
+
     ruta = sys.argv[1]
     with open(ruta, "rb") as f:
         data = f.read()
+
+    import mimetypes
     mime = mimetypes.guess_type(ruta)[0] or "video/mp4"
-    payload = {
-        "contents": [{
-            "parts": [
-                {"inline_data": {"mime_type": mime, "data": base64.b64encode(data).decode("ascii")}},
-                {"text": PROMPT},
-            ]
-        }],
-        "generationConfig": {"response_mime_type": "application/json"},
-    }
-    url = f"{BASE}/models/{MODEL}:generateContent?key={KEY}"
-    req = urllib.request.Request(
-        url, data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json"}, method="POST")
-    try:
-        with urllib.request.urlopen(req) as r:
-            resp = json.loads(r.read().decode("utf-8"))
-    except urllib.error.HTTPError as e:
-        sys.exit(f"ERROR Gemini {e.code}: {e.read().decode('utf-8')}")
-    try:
-        text = resp["candidates"][0]["content"]["parts"][0]["text"]
-    except (KeyError, IndexError):
-        sys.exit("ERROR: respuesta inesperada de Gemini:\n" + json.dumps(resp, ensure_ascii=False))
-    print(text)  # ya es JSON (response_mime_type=application/json)
+
+    client = genai.Client(vertexai=True, project=PROJECT, location=LOCATION)
+
+    response = client.models.generate_content(
+        model=MODEL,
+        contents=[
+            types.Part.from_bytes(data=data, mime_type=mime),
+            PROMPT,
+        ],
+        config=types.GenerateContentConfig(
+            response_mime_type="application/json",
+        ),
+    )
+
+    print(response.text)
 
 
 if __name__ == "__main__":
