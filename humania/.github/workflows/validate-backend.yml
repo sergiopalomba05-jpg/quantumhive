@@ -1,0 +1,50 @@
+name: Validate Backend
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'humania/backend/**'
+  pull_request:
+    paths:
+      - 'humania/backend/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        working-directory: humania/backend
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt
+          pip install ruff mypy
+
+      - name: Lint with ruff
+        working-directory: humania/backend
+        run: |
+          source .venv/bin/activate
+          ruff check .
+          ruff format --check .
+
+      - name: Type check with mypy
+        working-directory: humania/backend
+        run: |
+          source .venv/bin/activate
+          mypy . --ignore-missing-imports
+
+      - name: Test imports
+        working-directory: humania/backend
+        run: |
+          source .venv/bin/activate
+          python -c "from main import app; print('FastAPI app loaded successfully')"

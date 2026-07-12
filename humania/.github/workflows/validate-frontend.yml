@@ -1,0 +1,35 @@
+name: Validate Frontend
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'humania/frontend/**'
+  pull_request:
+    paths:
+      - 'humania/frontend/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: humania/frontend
+        run: npm ci
+
+      - name: Type check
+        working-directory: humania/frontend
+        run: npm run lint
+
+      - name: Build
+        working-directory: humania/frontend
+        run: npm run build
