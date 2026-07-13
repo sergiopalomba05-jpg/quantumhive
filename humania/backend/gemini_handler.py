@@ -28,6 +28,7 @@ class GeminiLiveHandler:
         )
         self.session = None
         self.audio_queue: asyncio.Queue = asyncio.Queue()
+        self.connected = False
 
     async def connect(self):
         """Establish connection with Gemini Live API."""
@@ -46,7 +47,7 @@ class GeminiLiveHandler:
                 system_instruction=types.Content(
                     parts=[types.Part(text=self.system_prompt)]
                 ),
-                output_audio_transcription=types.OutputAudioTranscriptionConfig(),
+                output_audio_transcription=types.AudioTranscriptionConfig(),
             ),
             callbacks={
                 "onopen": lambda: print("[Gemini] Connection opened"),
@@ -55,6 +56,7 @@ class GeminiLiveHandler:
                 "onclose": lambda e: print(f"[Gemini] Connection closed: {e}"),
             },
         )
+        self.connected = True
         print("[Gemini] Connected successfully")
 
     def _on_message(self, message):
@@ -112,4 +114,5 @@ class GeminiLiveHandler:
         if self.session:
             await self.session.close()
             self.session = None
+            self.connected = False
             print("[Gemini] Connection closed")
