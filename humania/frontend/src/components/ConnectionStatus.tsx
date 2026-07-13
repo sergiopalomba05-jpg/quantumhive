@@ -9,7 +9,7 @@ interface ConnectionStatusProps {
 export default function ConnectionStatus({
   isConnected,
   isConnecting,
-  state
+  state,
 }: ConnectionStatusProps) {
   const getStatusColor = () => {
     if (isConnecting) return '#f59e0b'
@@ -17,33 +17,17 @@ export default function ConnectionStatus({
     return '#ef4444'
   }
 
-  const getStatusText = () => {
-    if (isConnecting) return 'Conectando...'
-    if (isConnected) return 'Conectado'
-    return 'Desconectado'
-  }
-
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      gap: '8px',
-      marginTop: '24px'
-    }}>
-      <div style={{
-        width: '8px',
-        height: '8px',
-        borderRadius: '50%',
-        background: getStatusColor(),
-        boxShadow: `0 0 8px ${getStatusColor()}`
-      }} />
-      <span style={{
-        fontSize: '12px',
-        color: 'rgba(255,255,255,0.6)',
-        textTransform: 'uppercase',
-        letterSpacing: '1px'
-      }}>
-        {getStatusText()}
+    <div className="flex items-center gap-2">
+      <div
+        className="w-2 h-2 rounded-full"
+        style={{
+          background: getStatusColor(),
+          boxShadow: `0 0 8px ${getStatusColor()}`,
+        }}
+      />
+      <span className="text-[10px] text-white/40 uppercase tracking-wider font-mono">
+        {isConnecting ? 'Conectando...' : isConnected ? 'Conectado' : 'Offline'}
       </span>
     </div>
   )
