@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from config import get_settings
 from ws_manager import manager
 from avatar_pipeline import AvatarPipeline
+from lip_sync import LatentSyncEngine
 from models import CompanionConfig
 
 settings = get_settings()
@@ -20,55 +21,55 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Pre-loaded shared engine (loaded once at startup, shared across sessions)
+lip_sync_engine: LatentSyncEngine = None
+
 # Active pipelines per session
 pipelines: dict[str, AvatarPipeline] = {}
 
 
+@app.on_event("startup")
+async def startup():
+    global lip_sync_engine
+    print("[Server] Loading LatentSync engine (this takes ~30s on first start)...")
+    lip_sync_engine = LatentSyncEngine(settings.avatar_image_path)
+    print("[Server] LatentSync ready. Server fully started.")
+
+
 @app.get("/health")
 async def health():
-    """Health check endpoint."""
     return {
         "status": "ok",
         "service": "humania",
         "gpu": "cuda:0",
         "model": settings.gemini_model,
+        "latentsync": lip_sync_engine is not None and lip_sync_engine.ready,
     }
 
 
 @app.get("/api/config")
 async def get_config():
-    """Get companion configuration."""
     config = CompanionConfig()
     return config.dict()
 
 
 @app.websocket("/ws/companion")
 async def companion_websocket(websocket: WebSocket):
-    """
-    WebSocket endpoint for the companion avatar.
-    
-    Protocol:
-    - Client sends: {"audio": "base64..."} or {"text": "..."}
-    - Server sends: {"audio": "...", "frame": "...", "text": "...", "turnComplete": true}
-    """
     session_id = str(uuid.uuid4())
-    pipeline = AvatarPipeline(session_id)
+    pipeline = AvatarPipeline(session_id, lip_sync_engine)
 
     try:
         await manager.connect(websocket, session_id)
         await pipeline.start()
         pipelines[session_id] = pipeline
 
-        # Notify client connection is ready
         await manager.send_json(session_id, {
             "connected": True,
             "session_id": session_id
         })
 
-        # Start pipeline run loop
         run_task = asyncio.create_task(pipeline.run())
 
-        # Handle incoming messages from client
         while True:
             try:
                 data = await websocket.receive_json()
@@ -77,7 +78,6 @@ async def companion_websocket(websocket: WebSocket):
                     await pipeline.process_audio(data["audio"])
 
                 elif "text" in data:
-                    # Convert text to audio via Gemini
                     await pipeline.gemini.send_text(data["text"])
 
                 elif "ping" in data:
@@ -102,7 +102,6 @@ async def companion_websocket(websocket: WebSocket):
 
 @app.get("/api/sessions")
 async def list_sessions():
-    """List active sessions."""
     return {
         "active": len(pipelines),
         "sessions": list(pipelines.keys())

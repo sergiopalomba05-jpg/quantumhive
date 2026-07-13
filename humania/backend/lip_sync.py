@@ -1,7 +1,6 @@
 import asyncio
 import base64
 import io
-import math
 import os
 import sys
 import time
@@ -20,9 +19,7 @@ if LATENTSYNC_PATH not in sys.path:
 class LatentSyncEngine:
     """
     LatentSync 1.6 lip-sync engine for real-time streaming.
-
-    Loads Whisper + VAE + UNet once, then generates lip-synced frames
-    from audio chunks using a sliding window approach.
+    Models are loaded ONCE at server startup, not per-connection.
     """
 
     def __init__(
@@ -115,19 +112,6 @@ class LatentSyncEngine:
         reference_face: torch.Tensor,
         audio_features: list,
     ) -> list:
-        """
-        Generate lip-synced frames for one chunk of audio.
-
-        Args:
-            reference_face: tensor (C, H, W) reference face
-            audio_features: list of audio feature tensors
-
-        Returns:
-            list of numpy arrays (HWC uint8)
-        """
-        from einops import rearrange
-        from latentsync.utils.util import zero_rank_log
-
         with torch.no_grad():
             self.unet.eval()
 
@@ -177,6 +161,7 @@ class LatentSyncEngine:
             decoded = self.decode_latents(latents)
             decoded = self._paste_back(decoded, ref_pixel_values, masks)
 
+            from einops import rearrange
             frames = rearrange(decoded, "f c h w -> f h w c")
             frames = (frames / 2 + 0.5).clamp(0, 1)
             frames = (frames * 255).to(torch.uint8).cpu().numpy()
@@ -238,15 +223,7 @@ class LatentSyncEngine:
     async def generate_stream(
         self, audio_stream: AsyncGenerator[bytes, None]
     ) -> AsyncGenerator[str, None]:
-        """
-        Stream lip-synced frames from audio chunks.
-
-        Each audio chunk should be ~1600 samples (100ms at 16kHz).
-        Frames are generated in batches of `num_frames`.
-
-        Yields:
-            base64 JPEG frame strings
-        """
+        """Stream lip-synced frames from audio chunks."""
         import soundfile as sf
 
         reference_image = Image.open(self.avatar_image_path).resize(
