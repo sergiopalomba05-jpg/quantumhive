@@ -1,0 +1,43 @@
+{
+  "comfyui": {
+    "base_url": "http://127.0.0.1:8188",
+    "workflow_path": "config/comfyui_workflow_api.json",
+    "input_dir": "C:/Users/sergio/AppData/Local/Comfy-Desktop/ComfyUI-Installs/multimedia quantum/ComfyUI/input",
+    "output_dir": "C:/Users/sergio/AppData/Local/Comfy-Desktop/ComfyUI-Installs/multimedia quantum/ComfyUI/output",
+    "client_id": "pipeline-ingesta-menus",
+    "poll_seconds": 2,
+    "timeout_seconds": 3600,
+    "node_inputs": {
+      "audio_node_id": "3",
+      "audio_input_name": "audio",
+      "image_node_id": "13",
+      "image_input_name": "image",
+      "save_node_id": "15",
+      "save_prefix_input_name": "filename_prefix"
+    }
+  },
+  "tts": {
+    "mode": "command",
+    "reference_audio": "assets/voice/voz-cartesia.mp3",
+    "command_template": "\".\\.venv\\Scripts\\python.exe\" \".\\src\\f5_clone_tts.py\" --text-file \"$script_file\" --output \"$audio_path\"",
+    "notes": "F5-TTS clona voz argentina desde assets/voice/sol_ar_v1_ref.wav. El entorno pesado vive en D:/ai-pipeline-ingesta-menus."
+  },
+  "assets": {
+    "avatar_source": "assets/avatar/sol_v1_green.png"
+  },
+  "paths": {
+    "missing_jobs": "output/cache/render_test_entradas_only.jsonl",
+    "work_dir": "output/work",
+    "global_video_dir": "global_cache/videos",
+    "global_cache": "cache/global_avatar_cache.json",
+    "generation_report": "output/reports/video_generation_report.json"
+  },
+  "ffmpeg": {
+    "binary": "imageio-ffmpeg",
+    "green_key": "0x00FF00",
+    "similarity": "0.18",
+    "blend": "0.04",
+    "crf": "26",
+    "audio_bitrate": "96k"
+  }
+}

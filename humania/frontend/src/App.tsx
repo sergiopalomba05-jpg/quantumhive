@@ -4,6 +4,7 @@ import TranslationPanel from './components/TranslationPanel'
 import ControlsBar from './components/ControlsBar'
 import SettingsDrawer from './components/SettingsDrawer'
 import { useWebSocket } from './hooks/useWebSocket'
+import { useWebRTC } from './hooks/useWebRTC'
 import { useAudioCapture } from './hooks/useAudioCapture'
 import { useAudioPlayback } from './hooks/useAudioPlayback'
 import { useAvatarRenderer } from './hooks/useAvatarRenderer'
@@ -28,6 +29,8 @@ export default function App() {
   const [isMuted, setIsMuted] = useState(false)
   const [isVideoOff, setIsVideoOff] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [useWebRTCMode, setUseWebRTCMode] = useState(false)
+  const [sessionId, setSessionId] = useState<string | null>(null)
 
   const transcriptRef = useRef('')
 
@@ -40,6 +43,14 @@ export default function App() {
     sendText,
     lastMessage,
   } = useWebSocket()
+
+  const {
+    isConnected: webrtcConnected,
+    isConnecting: webrtcConnecting,
+    connect: connectWebRTC,
+    disconnect: disconnectWebRTC,
+    addFrame: addFrameWebRTC,
+  } = useWebRTC()
 
   const { currentFrame, addFrame, clearFrames } = useAvatarRenderer()
   const { playGeminiAudio, stopAll: stopAudio } = useAudioPlayback()
@@ -67,6 +78,7 @@ export default function App() {
 
     if (msg.connected) {
       console.log('[Pipeline] Connected')
+      setSessionId(msg.session_id)
     }
 
     if (msg.audio) {
@@ -75,7 +87,13 @@ export default function App() {
     }
 
     if (msg.frame) {
-      addFrame(msg.frame)
+      if (useWebRTCMode && webrtcConnected) {
+        // Send frame via WebRTC
+        addFrameWebRTC(msg.frame)
+      } else {
+        // Use WebSocket frame rendering
+        addFrame(msg.frame)
+      }
     }
 
     if (msg.text) {
@@ -98,24 +116,46 @@ export default function App() {
       transcriptRef.current = ''
       setTimeout(() => setState('idle'), 500)
     }
-  }, [lastMessage, addFrame, playGeminiAudio])
+  }, [lastMessage, addFrame, addFrameWebRTC, playGeminiAudio, useWebRTCMode, webrtcConnected])
 
   const handleStartCall = useCallback(async () => {
     clearFrames()
     await connect()
     setState('listening')
     startListening()
-  }, [connect, startListening, clearFrames])
+
+    // Set source image for WebRTC
+    if (useWebRTCMode && sessionId) {
+      try {
+        const response = await fetch('/avatar/dominus_medio_cuerpo_neutro_v01.png')
+        const blob = await response.blob()
+        const reader = new FileReader()
+        reader.onload = async () => {
+          const base64 = (reader.result as string).split(',')[1]
+          await fetch(`/api/webrtc/source-image/${sessionId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: base64 }),
+          })
+        }
+        reader.readAsDataURL(blob)
+      } catch (error) {
+        console.error('[WebRTC] Error setting source image:', error)
+      }
+    }
+  }, [connect, startListening, clearFrames, useWebRTCMode, sessionId])
 
   const handleEndCall = useCallback(() => {
     stopListening()
     disconnect()
+    disconnectWebRTC()
     stopAudio()
     clearFrames()
     setState('idle')
     setSubtitles([])
+    setSessionId(null)
     transcriptRef.current = ''
-  }, [stopListening, disconnect, stopAudio, clearFrames])
+  }, [stopListening, disconnect, disconnectWebRTC, stopAudio, clearFrames])
 
   const handleSendMessage = useCallback((text: string) => {
     setSubtitles((prev) => [...prev, {
@@ -161,7 +201,9 @@ export default function App() {
           {isConnected && (
             <div className="flex items-center gap-2 px-3 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.04)' }}>
               <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-[10px] text-white/40 font-mono">LIVE</span>
+              <span className="text-[10px] text-white/40 font-mono">
+                {useWebRTCMode ? 'WEBRTC' : 'LIVE'}
+              </span>
             </div>
           )}
 
@@ -182,6 +224,7 @@ export default function App() {
         <AvatarCanvas
           frame={currentFrame}
           isSpeaking={state === 'speaking'}
+          useWebRTC={useWebRTCMode}
         />
 
         <div className="mt-6 mb-2">

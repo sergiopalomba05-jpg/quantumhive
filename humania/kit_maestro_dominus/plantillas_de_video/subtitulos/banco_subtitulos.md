@@ -1,0 +1,35 @@
+# Banco de subtitulos
+
+```text
+DE CARTA ESTATICA
+A MESERO VIRTUAL
+```
+
+```text
+ATIENDE
+RECOMIENDA
+GUIA PEDIDOS
+```
+
+```text
+DATOS REALES
+DEL NEGOCIO
+```
+
+```text
+CLIENTES
+QUE VUELVEN
+```
+
+```text
+WHATSAPP
+DELIVERY
+RESERVAS
+```
+
+```text
+MAS CONTROL
+MAS VENTA
+MAS RETENCION
+```
+

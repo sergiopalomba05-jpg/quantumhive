@@ -1,0 +1,6 @@
+{
+  "name": "human-ia",
+  "description": "Acompañante virtual premium de inteligencia suprema con diseño negro y dorado tecnológico, microchips dorados y traducción e interacción neuronal fluida en tiempo real.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

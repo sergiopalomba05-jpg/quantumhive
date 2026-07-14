@@ -3,10 +3,18 @@ import { useRef, useEffect, useState } from 'react'
 interface AvatarCanvasProps {
   frame: string | null
   isSpeaking: boolean
+  useWebRTC?: boolean
+  webrtcStream?: MediaStream | null
 }
 
-export default function AvatarCanvas({ frame, isSpeaking }: AvatarCanvasProps) {
+export default function AvatarCanvas({ 
+  frame, 
+  isSpeaking, 
+  useWebRTC = false,
+  webrtcStream 
+}: AvatarCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
   const [idleImage, setIdleImage] = useState<HTMLImageElement | null>(null)
   const [breathPhase, setBreathPhase] = useState(0)
 
@@ -31,6 +39,13 @@ export default function AvatarCanvas({ frame, isSpeaking }: AvatarCanvasProps) {
     return () => cancelAnimationFrame(frame)
   }, [isSpeaking])
 
+  // WebRTC video stream handling
+  useEffect(() => {
+    if (useWebRTC && webrtcStream && videoRef.current) {
+      videoRef.current.srcObject = webrtcStream
+    }
+  }, [useWebRTC, webrtcStream])
+
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -40,7 +55,7 @@ export default function AvatarCanvas({ frame, isSpeaking }: AvatarCanvasProps) {
     ctx.clearRect(0, 0, 512, 512)
 
     if (frame) {
-      // Show lip-synced frame from LatentSync
+      // Show lip-synced frame from backend
       const img = new Image()
       img.onload = () => {
         ctx.drawImage(img, 0, 0, 512, 512)
@@ -83,12 +98,27 @@ export default function AvatarCanvas({ frame, isSpeaking }: AvatarCanvasProps) {
           transition: 'all 0.4s ease',
         }}
       >
-        <canvas
-          ref={canvasRef}
-          width={512}
-          height={512}
-          className="w-full h-full object-cover"
-        />
+        {/* WebRTC video stream */}
+        {useWebRTC && (
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            muted
+            className="w-full h-full object-cover"
+            style={{ display: webrtcStream ? 'block' : 'none' }}
+          />
+        )}
+
+        {/* Canvas for WebSocket frames */}
+        {!useWebRTC && (
+          <canvas
+            ref={canvasRef}
+            width={512}
+            height={512}
+            className="w-full h-full object-cover"
+          />
+        )}
 
         {/* Scanline effect when speaking */}
         {isSpeaking && (

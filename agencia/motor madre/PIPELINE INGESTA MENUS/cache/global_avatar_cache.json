@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "description": "Cache global del avatar. Los assets aca pueden ser reutilizados por cualquier restaurante.",
+  "assets": [
+    {
+      "global_asset_key": "3afdcd6ab200061ace3b584641e522f132eb91860931dace8d77f38c9a7d098d",
+      "canonical_id": "connector_welcome",
+      "kind": "connector",
+      "name": "Bienvenida",
+      "avatar_id": "sol",
+      "avatar_version": "v1",
+      "voice_id": "sol_ar_v1",
+      "render_profile": "webm-alpha-v1",
+      "language": "es-AR",
+      "video_path": "global_cache/videos/sol/v1/connector_welcome.webm"
+    },
+    {
+      "global_asset_key": "42bb8cfa1401c22e09fcaa35001b7a3170e36e081467c88a4d46fe2c4fd40736",
+      "canonical_id": "connector_entradas",
+      "kind": "connector",
+      "name": "Entradas",
+      "avatar_id": "sol",
+      "avatar_version": "v1",
+      "voice_id": "sol_ar_v1",
+      "render_profile": "webm-alpha-v1",
+      "language": "es-AR",
+      "video_path": "global_cache/videos/sol/v1/connector_entradas.webm"
+    },
+    {
+      "global_asset_key": "manual_hq_connector_welcome",
+      "canonical_id": "connector_welcome",
+      "kind": "connector",
+      "name": "Bienvenida",
+      "avatar_id": "sol",
+      "avatar_version": "v1",
+      "voice_id": "sol_ar_v1",
+      "render_profile": "webm-alpha-v1",
+      "language": "es-AR",
+      "video_path": "global_cache/videos/sol/v1/connector_welcome.webm"
+    }
+  ]
+}
