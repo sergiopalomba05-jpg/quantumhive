@@ -83,3 +83,13 @@ connector_welcome
 ```
 
 Si ese resultado queda bien, se habilita batch.
+
+## Postproceso Veo
+
+Para masters MP4 generados por Veo con fondo chroma, convertir a WebM alpha normalizado:
+
+```bash
+python src/postprocess_veo_avatar.py --input output/work/veo_chroma_v2/connector_welcome.mp4 --output global_cache/videos/sol/v1/connector_welcome.webm --key-black-edges
+```
+
+`--key-black-edges` solo debe usarse cuando Veo haya agregado bordes o paneles negros casi puros. Si afecta pelo/ropa, correr sin ese flag y regenerar el master con chroma mas limpio.
