@@ -361,6 +361,59 @@ sin manos
 sin sombras ni gradientes en verde
 ```
 
+## Arquitectura Corregida Del Master
+
+No crear dos masters visuales independientes para idle y speaking.
+
+Crear un unico master visual aprobado:
+
+```txt
+agencia/motor madre/PIPELINE INGESTA MENUS/assets/avatar/sol/v2/masters/sol_v2_master_base.mkv
+```
+
+Tambien se puede exportar un preview MP4, pero el archivo fuente de produccion debe ser lossless o casi lossless.
+
+Uso obligatorio:
+
+```txt
+idle     -> reproducir sol_v2_master_base directamente, sin MuseTalk y sin audio
+speaking -> loop/recorte controlado de sol_v2_master_base a la duracion del WAV, luego MuseTalk 1.5
+```
+
+Razon: evita diferencias entre idle y speaking en identidad, escala, pose, hombros, broche, texto, blazer y encuadre.
+
+La creacion del master base debe animar solamente rostro, ojos, labios en posicion neutral y, si es estrictamente necesario, una region minima del cuello. Fondo, blazer, camisa, hombros, broche, logo y texto QuantumHive deben permanecer congelados y recomponerse desde la imagen original con una mascara facial suave.
+
+No confiar en el verde generado por ningun modelo. Despues de animar, segmentar a Sol, recomponer cada frame sobre RGB(0,255,0) exacto y validar matematicamente que el fondo sea uniforme.
+
+Formato preferido del master:
+
+```txt
+1. Secuencia PNG lossless
+2. FFV1 lossless en MKV
+3. Fallback: H.264 CRF 0 con pix_fmt yuv444p
+```
+
+No usar H.264 yuv420p comprimido como fuente definitiva para chromakey porque contamina bordes verdes alrededor de pelo, orejas y hombros.
+
+Movimiento del master base:
+
+```txt
+duracion: 6 a 8 segundos
+fps: 25
+boca cerrada neutral
+uno o dos parpadeos naturales
+mirada directa
+respiracion casi imperceptible
+cabeza casi fija
+hombros inmoviles
+sin zoom
+sin cambio de escala
+sin movimiento de camara
+```
+
+El primer y ultimo frame deben ser compatibles. No usar ping-pong si hay parpadeo, porque produciria un parpadeo invertido.
+
 ## Siguiente Implementacion En Codigo
 
 No se comenzo todavia la modificacion del pipeline. Pendiente:
@@ -368,7 +421,7 @@ No se comenzo todavia la modificacion del pipeline. Pendiente:
 1. Crear `src/avatar_engines/`.
 2. Crear `MuseTalkEngine`.
 3. Mantener `LegacyComfyUIEngine`.
-4. Cambiar `generate_avatar_videos.py` solo para seleccionar motor configurable.
+4. Cambiar `generate_avatar_videos.py` solo para seleccionar motor configurable usando `sol_v2_master_base`.
 5. Agregar `script_hash` a cache global.
 6. Eliminar `colorkey` negro del flujo productivo.
 7. Agregar QC automatico.
@@ -409,3 +462,4 @@ No usar `git reset --hard` salvo autorizacion explicita.
 - No usar `colorkey=0x000000`; perfora el blazer negro.
 - Usar el WAV original como audio final del WebM.
 - No guardar en cache global renders sin QC aprobado.
+- Usar un unico master base para idle y speaking; no crear masters visuales independientes.
