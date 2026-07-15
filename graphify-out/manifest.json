@@ -435,9 +435,9 @@
     "semantic_hash": ""
   },
   "agencia/core/README.md": {
-    "mtime": 1781585497.096903,
-    "ast_hash": "69ad57c1dbc25b8cb51236bbe55aca0d",
-    "semantic_hash": "69ad57c1dbc25b8cb51236bbe55aca0d"
+    "mtime": 1784150923.5234785,
+    "ast_hash": "acb60229c12991a677cc25dc43c99e88",
+    "semantic_hash": ""
   },
   "agencia/core/hermes/README.md": {
     "mtime": 1781585497.1048992,
@@ -870,8 +870,8 @@
     "semantic_hash": ""
   },
   "agi/hermes/skills/catalogador/scripts/analizar_video.py": {
-    "mtime": 1782160216.0659077,
-    "ast_hash": "4375de5aa392ff15f69fda8f8be41265",
+    "mtime": 1784150991.805792,
+    "ast_hash": "23b163a7e94753f031f6844efe9be5b1",
     "semantic_hash": ""
   },
   "agi/hermes/skills/catalogador/scripts/catalogo.py": {
@@ -910,8 +910,8 @@
     "semantic_hash": ""
   },
   "agi/hermes/skills/catalogador/SKILL.md": {
-    "mtime": 1782173888.289688,
-    "ast_hash": "d2321089086b898bc1415ab4a73c52ff",
+    "mtime": 1784150991.805792,
+    "ast_hash": "fd36c214c8448611693d548f36557415",
     "semantic_hash": ""
   },
   "agi/hermes/skills/consultar-catalogo/SKILL.md": {
@@ -6105,13 +6105,13 @@
     "semantic_hash": ""
   },
   "agencia/motor madre/cataavatarhermes/server.ts": {
-    "mtime": 1783614771.0709941,
-    "ast_hash": "39f71abaf49d80f2d9f75a3168806022",
+    "mtime": 1783781281.086743,
+    "ast_hash": "c99deb5b0993efdfaf120f138a76beec",
     "semantic_hash": ""
   },
   "agencia/motor madre/cataavatarhermes/src/App.tsx": {
-    "mtime": 1783649631.683351,
-    "ast_hash": "056b9a14ddebfd2d2e6591925a3f0bdc",
+    "mtime": 1783781281.0947442,
+    "ast_hash": "12369019f529427bc6e35cd129f858e3",
     "semantic_hash": ""
   },
   "agencia/motor madre/cataavatarhermes/src/main.tsx": {
@@ -6275,8 +6275,8 @@
     "semantic_hash": ""
   },
   "agencia/motor madre/cataavatarhermes/cloudbuild.yaml": {
-    "mtime": 1783650935.6925657,
-    "ast_hash": "3260d930f3125cacc2d4a737a9575735",
+    "mtime": 1783654710.8250303,
+    "ast_hash": "4cbd79e3682a33183180c4c660cf65c6",
     "semantic_hash": ""
   },
   "agencia/motor madre/cataavatarhermes/index.html": {
@@ -6385,8 +6385,8 @@
     "semantic_hash": ""
   },
   "agencia/motor madre/procesos-aprendidos/README.md": {
-    "mtime": 1783566945.1123116,
-    "ast_hash": "f216e89d4bf1cce6b32ef61b12454cd2",
+    "mtime": 1783663897.011528,
+    "ast_hash": "e3538c00d6f503da56e1d1a8b2096872",
     "semantic_hash": ""
   },
   "agencia/motor madre/procesos-aprendidos/deploy-cloud-run-vertex-ai.md": {
@@ -8622,6 +8622,4601 @@
   "agencia/motor madre/AVATARES VIDEOS/bienbenido a la escaloneta.mp4": {
     "mtime": 1783147927.3789015,
     "ast_hash": "8bc32d97bdc8f9a678b72a46de61c2c5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/procesos-aprendidos/live-api-avatar.md": {
+    "mtime": 1783663851.6879761,
+    "ast_hash": "36089842c164796e68fcdaabcba2f0ff",
+    "semantic_hash": ""
+  },
+  "agencia/core/hermes/vertex-proxy/server.py": {
+    "mtime": 1783718053.7974327,
+    "ast_hash": "4c340d773b1c6b19f408ce06bc967c09",
+    "semantic_hash": ""
+  },
+  "hero-class-state.json": {
+    "mtime": 1783691082.874061,
+    "ast_hash": "290dc82701d3cae64e65c835f50e4ad0",
+    "semantic_hash": ""
+  },
+  "hero-compact-metrics.json": {
+    "mtime": 1783692621.3161032,
+    "ast_hash": "b3b8bf330be1cded99c45136aaaeea93",
+    "semantic_hash": ""
+  },
+  "hero-final-metrics.json": {
+    "mtime": 1783692483.658007,
+    "ast_hash": "d9d1e68f53fa69137b791099c6991f32",
+    "semantic_hash": ""
+  },
+  "hero-h1-style-after-fix.json": {
+    "mtime": 1783691188.418727,
+    "ast_hash": "872e32eccaba3b7b39ee97002e1ecb07",
+    "semantic_hash": ""
+  },
+  "hero-h1-style.json": {
+    "mtime": 1783691045.9032612,
+    "ast_hash": "d43419d9058d6055782f1a789357b63f",
+    "semantic_hash": ""
+  },
+  "hero-wide-metrics.json": {
+    "mtime": 1783692295.4006896,
+    "ast_hash": "466371bc6d82042622cbf6e029285343",
+    "semantic_hash": ""
+  },
+  "landing/script.js": {
+    "mtime": 1783694087.2947848,
+    "ast_hash": "955b3a244f2b6155944bebae706f0b72",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T08-15-59-278Z.yml": {
+    "mtime": 1783671359.2962444,
+    "ast_hash": "56008edfd4853b9444c90a7d00b6785d",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T08-20-22-341Z.yml": {
+    "mtime": 1783671622.3513465,
+    "ast_hash": "c843788de5ab5ca71ca8f96e29154492",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T08-27-25-048Z.yml": {
+    "mtime": 1783672045.052425,
+    "ast_hash": "d2a2bb7f46890d96f6fbbe6ff5224167",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T08-36-24-494Z.yml": {
+    "mtime": 1783672584.5053883,
+    "ast_hash": "9013c199c47bc143c53a4b20bee097bc",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T08-37-49-871Z.yml": {
+    "mtime": 1783672669.8784695,
+    "ast_hash": "8d5002dc98176ab3d8ec79fdfd793de8",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T13-30-44-619Z.yml": {
+    "mtime": 1783690244.6216395,
+    "ast_hash": "017c2c6657b84bf799b118618c9b1c48",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T13-41-38-721Z.yml": {
+    "mtime": 1783690898.7167945,
+    "ast_hash": "52126aa1340fc2ca2a2084e4bdae1f4b",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T13-43-02-637Z.yml": {
+    "mtime": 1783690982.645286,
+    "ast_hash": "52126aa1340fc2ca2a2084e4bdae1f4b",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T13-46-13-940Z.yml": {
+    "mtime": 1783691173.9437554,
+    "ast_hash": "537ff3dd4f3981d842a4d7650f265595",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T13-46-14-280Z.yml": {
+    "mtime": 1783691174.2859437,
+    "ast_hash": "537ff3dd4f3981d842a4d7650f265595",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T13-48-10-039Z.yml": {
+    "mtime": 1783691290.040551,
+    "ast_hash": "6fba388cc29e2eb980e63c0d71b1b271",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T13-52-23-310Z.yml": {
+    "mtime": 1783691543.3205283,
+    "ast_hash": "dbdeabcfc9b7d260036685f17f62c1de",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T13-52-57-154Z.yml": {
+    "mtime": 1783691577.1622636,
+    "ast_hash": "dbdeabcfc9b7d260036685f17f62c1de",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T14-04-11-040Z.yml": {
+    "mtime": 1783692251.0410113,
+    "ast_hash": "7e0f11b99cc57ad0e449f22c107af665",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T14-04-11-695Z.yml": {
+    "mtime": 1783692251.6933362,
+    "ast_hash": "7e0f11b99cc57ad0e449f22c107af665",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T14-08-03-483Z.yml": {
+    "mtime": 1783692483.486062,
+    "ast_hash": "4251a04b00b708009a02eec889a5afa6",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T14-08-03-626Z.yml": {
+    "mtime": 1783692483.6300147,
+    "ast_hash": "4251a04b00b708009a02eec889a5afa6",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T14-09-50-946Z.yml": {
+    "mtime": 1783692591.036914,
+    "ast_hash": "697853ba5c7586797451172060067e8f",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T14-09-59-861Z.yml": {
+    "mtime": 1783692599.863226,
+    "ast_hash": "037f4df13656af367078dda28573c549",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T14-11-13-862Z.yml": {
+    "mtime": 1783692673.8701632,
+    "ast_hash": "037f4df13656af367078dda28573c549",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-10T14-35-17-249Z.yml": {
+    "mtime": 1783694117.260467,
+    "ast_hash": "d57787a511bdf072f4cb1662b240b4a9",
+    "semantic_hash": ""
+  },
+  ".superpowers/brainstorm/session-20260710045503/content/hero-manifesto.html": {
+    "mtime": 1783670496.9825053,
+    "ast_hash": "5dd272840b2f5ea47713c5d3a285c2b7",
+    "semantic_hash": ""
+  },
+  ".superpowers/brainstorm/session-20260710045503/content/opening.html": {
+    "mtime": 1783670122.732099,
+    "ast_hash": "32c6bd0ea07e8c5e1ec1e165c6fb5f6b",
+    "semantic_hash": ""
+  },
+  ".superpowers/brainstorm/session-20260710045503/content/visual-style.html": {
+    "mtime": 1783670222.0327184,
+    "ast_hash": "956094c06022956b16e90ae471906b2c",
+    "semantic_hash": ""
+  },
+  "agencia/core/hermes/vertex-proxy/requirements.txt": {
+    "mtime": 1783717474.7760878,
+    "ast_hash": "6f2864f150ef72c6234c7adeffca1554",
+    "semantic_hash": ""
+  },
+  "landing-console-final.txt": {
+    "mtime": 1783672058.344445,
+    "ast_hash": "043c7b22e14e6bb0375c6e1d21a5615b",
+    "semantic_hash": ""
+  },
+  "landing-console.txt": {
+    "mtime": 1783671738.662351,
+    "ast_hash": "5007e9f1fc12d782d108dae7addba2b5",
+    "semantic_hash": ""
+  },
+  "landing-final-three-console.txt": {
+    "mtime": 1783690897.076784,
+    "ast_hash": "043c7b22e14e6bb0375c6e1d21a5615b",
+    "semantic_hash": ""
+  },
+  "landing-loop-chip-console.txt": {
+    "mtime": 1783694115.3605647,
+    "ast_hash": "043c7b22e14e6bb0375c6e1d21a5615b",
+    "semantic_hash": ""
+  },
+  "landing-mix-console.txt": {
+    "mtime": 1783672605.5170639,
+    "ast_hash": "043c7b22e14e6bb0375c6e1d21a5615b",
+    "semantic_hash": ""
+  },
+  "landing-video-bg-console.txt": {
+    "mtime": 1783690243.8878748,
+    "ast_hash": "043c7b22e14e6bb0375c6e1d21a5615b",
+    "semantic_hash": ""
+  },
+  "landing-wide-console.txt": {
+    "mtime": 1783692251.164159,
+    "ast_hash": "043c7b22e14e6bb0375c6e1d21a5615b",
+    "semantic_hash": ""
+  },
+  "landing/index.html": {
+    "mtime": 1784136165.94117,
+    "ast_hash": "69bfd793e698ea0ef81c8f0292ce5f05",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/Gemini-Generated-Image-nngh5fnngh5fnngh.png": {
+    "mtime": 1783693795.9169078,
+    "ast_hash": "9198c911e8673fed9cf51a7faa706661",
+    "semantic_hash": ""
+  },
+  "VISUAL/Create_a_visual_storyboard_for_202607091303.jpeg": {
+    "mtime": 1783613023.5421085,
+    "ast_hash": "cb7a3d83cfc60ebf7377b7778da293bd",
+    "semantic_hash": ""
+  },
+  "VISUAL/Storyboard_for_QuantumHive_Intro_202607091304.jpeg": {
+    "mtime": 1783613049.7435539,
+    "ast_hash": "a52e2590c63c1915c428143b04153fee",
+    "semantic_hash": ""
+  },
+  "avatar-mesera-virtual/Captura de pantalla 2026-07-03 220328.png": {
+    "mtime": 1783127013.2143526,
+    "ast_hash": "a591f8efedbd4bc5619cf185d24d59f5",
+    "semantic_hash": ""
+  },
+  "avatar-mesera-virtual/ChatGPT Image 10 jul 2026, 05_53_24 p.m..png": {
+    "mtime": 1783716804.810011,
+    "ast_hash": "5467d56fad2ea08387505f5c065034ab",
+    "semantic_hash": ""
+  },
+  "avatar-mesera-virtual/descarga.png": {
+    "mtime": 1783128167.0836482,
+    "ast_hash": "41a474130a75723b299a2a6070bc7481",
+    "semantic_hash": ""
+  },
+  "card-hover-detail.png": {
+    "mtime": 1783691600.4431274,
+    "ast_hash": "578b58ab311ef57b18b29bef5570ec91",
+    "semantic_hash": ""
+  },
+  "landing-after-entry.png": {
+    "mtime": 1783691003.7373788,
+    "ast_hash": "ef668a5e1b457dcea3bd00e9773d6f09",
+    "semantic_hash": ""
+  },
+  "landing-final-three.png": {
+    "mtime": 1783690939.1154015,
+    "ast_hash": "4eec3b37a3db9fa0b51fde9460c64964",
+    "semantic_hash": ""
+  },
+  "landing-lower.png": {
+    "mtime": 1783671715.0733235,
+    "ast_hash": "8627299ae029558b03641a8119b67dca",
+    "semantic_hash": ""
+  },
+  "landing-mid.png": {
+    "mtime": 1783671685.7929225,
+    "ast_hash": "43391a7b1cd49a9d7e02028f5bcb634d",
+    "semantic_hash": ""
+  },
+  "landing-mix-hero.png": {
+    "mtime": 1783672605.3570523,
+    "ast_hash": "69b68063c393651e852acb3e3cd48fa0",
+    "semantic_hash": ""
+  },
+  "landing-modal.png": {
+    "mtime": 1783672682.2500694,
+    "ast_hash": "001abb1524743247024b2f5a95d91512",
+    "semantic_hash": ""
+  },
+  "landing-viewport.png": {
+    "mtime": 1783671647.5351164,
+    "ast_hash": "b3b53f9f7d8b6053058cd2ada1d135b9",
+    "semantic_hash": ""
+  },
+  "landing/assets/microchip-bg-01.jpeg": {
+    "mtime": 1783613049.7435539,
+    "ast_hash": "a52e2590c63c1915c428143b04153fee",
+    "semantic_hash": ""
+  },
+  "landing/assets/microchip-bg-02.jpeg": {
+    "mtime": 1783613023.5421085,
+    "ast_hash": "cb7a3d83cfc60ebf7377b7778da293bd",
+    "semantic_hash": ""
+  },
+  "landing/assets/quantumhive_isotipo.png": {
+    "mtime": 1782675658.0,
+    "ast_hash": "777a2ba994bafdc55f8497d994d48044",
+    "semantic_hash": ""
+  },
+  "landing/assets/quantumhive_isotipo_recortado.png": {
+    "mtime": 1782675658.0,
+    "ast_hash": "da8eb1a7496293de3d63e26762a5fe98",
+    "semantic_hash": ""
+  },
+  "VISUAL/Agents_working_on_holographic_in\u2026_202607091245.mp4": {
+    "mtime": 1783611917.0538628,
+    "ast_hash": "ab75af4a7a7f546c0e74228f2585b4b0",
+    "semantic_hash": ""
+  },
+  "VISUAL/Agents_working_on_holographic_in\u2026_202607091259.mp4": {
+    "mtime": 1783612753.0335493,
+    "ast_hash": "61e0ea6f2795b9b4f9ad389c2cbbe9d1",
+    "semantic_hash": ""
+  },
+  "VISUAL/descarga (5).mp4": {
+    "mtime": 1783609111.6850953,
+    "ast_hash": "5173f6015d91028747e58151ad67bda8",
+    "semantic_hash": ""
+  },
+  "VISUAL/intro unida.mp4": {
+    "mtime": 1783619792.9758883,
+    "ast_hash": "ba5c65ecc27f1d4fa3fece8f189ef216",
+    "semantic_hash": ""
+  },
+  "landing/assets/intro-unida.mp4": {
+    "mtime": 1783619792.9758883,
+    "ast_hash": "ba5c65ecc27f1d4fa3fece8f189ef216",
+    "semantic_hash": ""
+  },
+  "landing/policy.json": {
+    "mtime": 1784098443.70733,
+    "ast_hash": "46ce7da879f2dbc7d7b5241b9957f7fe",
+    "semantic_hash": ""
+  },
+  "paquete-pipeline-avatar-minimo/config/video_generation.json": {
+    "mtime": 1784150992.980777,
+    "ast_hash": "e0f8fc0cf137dc8f81f0e244f7f75f6d",
+    "semantic_hash": ""
+  },
+  "paquete-pipeline-avatar-minimo/install/instalar-en-vm.ps1": {
+    "mtime": 1784150993.021592,
+    "ast_hash": "d49539d6fc3d28d4c332007473adbfed",
+    "semantic_hash": ""
+  },
+  "paquete-pipeline-avatar-minimo/src/generate_avatar_videos.py": {
+    "mtime": 1784150993.0235906,
+    "ast_hash": "cc3bd4e72336b87b44241e866d9154ec",
+    "semantic_hash": ""
+  },
+  "paquete-pipeline-avatar-minimo/src/generate_veo_google_cloud.py": {
+    "mtime": 1784150993.0255914,
+    "ast_hash": "a56a361d25f777714d4631c14a2cd80d",
+    "semantic_hash": ""
+  },
+  "paquete-pipeline-avatar-minimo/src/postprocess_veo_avatar.py": {
+    "mtime": 1784150993.027596,
+    "ast_hash": "78f09e22f30f0c38abac40143e979faa",
+    "semantic_hash": ""
+  },
+  "paquete-pipeline-avatar-minimo/src/resolve_global_cache.py": {
+    "mtime": 1784150993.0285907,
+    "ast_hash": "900cba405bf5bae0974617a5b68306ed",
+    "semantic_hash": ""
+  },
+  "paquete-pipeline-avatar-minimo/workflows/comfyui_workflow_api.json": {
+    "mtime": 1784150993.030589,
+    "ast_hash": "c4ebccdff4df89470943a2a2a9681700",
+    "semantic_hash": ""
+  },
+  "paquete-pipeline-avatar-minimo/workflows/workflow_infinitetalk_funcional_reducido.json": {
+    "mtime": 1784150993.0315876,
+    "ast_hash": "8e2f73497ff3b3d6d19c0eed662ed0e1",
+    "semantic_hash": ""
+  },
+  "landing/empleados-virtuales/gastronomia/carta-viva/index.html": {
+    "mtime": 1784134333.291849,
+    "ast_hash": "24a8831151ac11135a2546c4cc0325a8",
+    "semantic_hash": ""
+  },
+  "paquete-pipeline-avatar-minimo/README_PAQUETE.md": {
+    "mtime": 1784150992.9651518,
+    "ast_hash": "9e41e59e8ba55b4b148453fac78203d6",
+    "semantic_hash": ""
+  },
+  "paquete-pipeline-avatar-minimo/install/requirements.txt": {
+    "mtime": 1784150993.0225935,
+    "ast_hash": "887d5c5e5431d9c2fc0a0f924812fb47",
+    "semantic_hash": ""
+  },
+  "planes-a-llevar-a-cabo/ROADMAP-INFRA-COMFYUI.md": {
+    "mtime": 1783875488.2090077,
+    "ast_hash": "f5ba7a6ee36d5a5459853a61927017a1",
+    "semantic_hash": ""
+  },
+  "paquete-pipeline-avatar-minimo/assets/sol_v1_green.png": {
+    "mtime": 1784150992.980777,
+    "ast_hash": "e7a48ba9537cca0cbea057366115812f",
+    "semantic_hash": ""
+  },
+  "paquete-pipeline-avatar-minimo/assets/sol_ar_v1_ref.wav": {
+    "mtime": 1784150992.980777,
+    "ast_hash": "60a07ddcbd0de758d2a49c21a0c12902",
+    "semantic_hash": ""
+  },
+  "paquete-pipeline-avatar-minimo/failed_results/infinitetalk_connector_entradas_failed_master.mp4": {
+    "mtime": 1784150992.980777,
+    "ast_hash": "bae2935b9207fb698772b1f9eeecbbe1",
+    "semantic_hash": ""
+  },
+  "paquete-pipeline-avatar-minimo/failed_results/veo_connector_welcome_failed.mp4": {
+    "mtime": 1784150993.0195935,
+    "ast_hash": "a3d88a01881353b7f1bad805e51ef4ac",
+    "semantic_hash": ""
+  },
+  "AVATARES VIDEOS/convert_t5.py": {
+    "mtime": 1784150984.2124581,
+    "ast_hash": "93660bf5cf34abde6a5ba8f6c932b452",
+    "semantic_hash": ""
+  },
+  "AVATARES VIDEOS/workflows/infinitetalk_api.json": {
+    "mtime": 1784150984.2460575,
+    "ast_hash": "58e7d140b64bcf5a857029ad9f5a44d4",
+    "semantic_hash": ""
+  },
+  "AVATARES VIDEOS/workflows/infinitetalk_clean.json": {
+    "mtime": 1784150984.2470567,
+    "ast_hash": "8e2f73497ff3b3d6d19c0eed662ed0e1",
+    "semantic_hash": ""
+  },
+  "AVATARES VIDEOS/workflows/infinitetalk_minimal.json": {
+    "mtime": 1784150984.248056,
+    "ast_hash": "d4ca8c00bdeaf8e0354635014d5d309b",
+    "semantic_hash": ""
+  },
+  "AVATARES VIDEOS/workflows/infinitetalk_prueba_tacos.json": {
+    "mtime": 1784150984.2490554,
+    "ast_hash": "05fa0ff979fd3ea076b07fba4942feac",
+    "semantic_hash": ""
+  },
+  "AVATARES VIDEOS/workflows/infinitetalk_simple_api.json": {
+    "mtime": 1784150984.2500556,
+    "ast_hash": "838a77d3f9289f04933b3a8ab847cf96",
+    "semantic_hash": ""
+  },
+  "AVATARES VIDEOS/workflows/infinitetalk_test.json": {
+    "mtime": 1784150984.2520535,
+    "ast_hash": "4e03f7ff7ac9a7b108f62b86636e1d0b",
+    "semantic_hash": ""
+  },
+  "AVATARES VIDEOS/workflows/official_api.json": {
+    "mtime": 1784150984.2530556,
+    "ast_hash": "c21a11afe869bb97bd2f0055e0479219",
+    "semantic_hash": ""
+  },
+  "AVATARES VIDEOS/workflows/official_fixed.json": {
+    "mtime": 1784150984.257055,
+    "ast_hash": "69b3f73f8c9941782b98b4faeb46846a",
+    "semantic_hash": ""
+  },
+  "AVATARES VIDEOS/workflows/official_infinitetalk.json": {
+    "mtime": 1784150984.2590537,
+    "ast_hash": "4e03f7ff7ac9a7b108f62b86636e1d0b",
+    "semantic_hash": ""
+  },
+  "AVATARES VIDEOS/workflows/run_test.py": {
+    "mtime": 1784150984.2600527,
+    "ast_hash": "b50eb36192b0281f6bdb93af770b2509",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/cache/global_avatar_cache.json": {
+    "mtime": 1784150984.3683426,
+    "ast_hash": "d78cd2209ab997f50d52ef7863480d5b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/config/comfyui_workflow_api.json": {
+    "mtime": 1784150984.3683426,
+    "ast_hash": "c4ebccdff4df89470943a2a2a9681700",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/config/video_generation.json": {
+    "mtime": 1784150984.3683426,
+    "ast_hash": "e0f8fc0cf137dc8f81f0e244f7f75f6d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/src/f5_clone_tts.py": {
+    "mtime": 1784150984.4938533,
+    "ast_hash": "81c86587874d9c9a6ea00d32cef52d72",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/src/generate_avatar_videos.py": {
+    "mtime": 1784150984.4938533,
+    "ast_hash": "cc3bd4e72336b87b44241e866d9154ec",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/src/generate_veo_google_cloud.py": {
+    "mtime": 1784150984.5094798,
+    "ast_hash": "a56a361d25f777714d4631c14a2cd80d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/src/ingest_menu.py": {
+    "mtime": 1784150984.5094798,
+    "ast_hash": "abc3687466ff375c05394c27483ba23e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/src/piper_tts.py": {
+    "mtime": 1784150984.5094798,
+    "ast_hash": "0b46e6752767fca2e9f6e15350f6e392",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/src/postprocess_veo_avatar.py": {
+    "mtime": 1784150984.5094798,
+    "ast_hash": "78f09e22f30f0c38abac40143e979faa",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/src/resolve_global_cache.py": {
+    "mtime": 1784150984.5094798,
+    "ast_hash": "900cba405bf5bae0974617a5b68306ed",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/docs/procesos-aprendidos/pipelines/create_webp.py": {
+    "mtime": 1784150990.655072,
+    "ast_hash": "843922451df11de80a3845d5c8520756",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/docs/procesos-aprendidos/pipelines/process-avatar-video.ps1": {
+    "mtime": 1784150990.655072,
+    "ast_hash": "b75f71322c35af56808cda0a89e34926",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/docs/procesos-aprendidos/pipelines/remove_bg_local.py": {
+    "mtime": 1784150990.655072,
+    "ast_hash": "2f74f9caabe8b05b3253750b27c10dba",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/docs/procesos-aprendidos/pipelines/setup-comfyui-remote.ps1": {
+    "mtime": 1784150990.655072,
+    "ast_hash": "9730325caa1dc3da24f8871d73a0a18d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/get_state_refs.js": {
+    "mtime": 1784150990.7598586,
+    "ast_hash": "52515361739f842ccfa737e56d3656ce",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/metadata.json": {
+    "mtime": 1784150990.7598586,
+    "ast_hash": "07aba4ba13e5988919040c0427ca2708",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/package.json": {
+    "mtime": 1784150990.7598586,
+    "ast_hash": "c7434dcee7c8add85e8bd23593ddf4de",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/server.py": {
+    "mtime": 1784150990.8220627,
+    "ast_hash": "22e478a600f19e6107266db9a0fdda90",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/server.ts": {
+    "mtime": 1784150990.8220627,
+    "ast_hash": "c99deb5b0993efdfaf120f138a76beec",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/src/App.tsx": {
+    "mtime": 1784150990.8220627,
+    "ast_hash": "12369019f529427bc6e35cd129f858e3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/src/main.tsx": {
+    "mtime": 1784150990.8220627,
+    "ast_hash": "a0bcc3ffa5e95e1965f94969ab488283",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/src/menuData.ts": {
+    "mtime": 1784150990.8376875,
+    "ast_hash": "c39fc67b6bbb36151afb61712bbff370",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/src/systemPrompt.ts": {
+    "mtime": 1784150990.8376875,
+    "ast_hash": "ab87d0547e54390c351179492ebc5173",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/src/types.ts": {
+    "mtime": 1784150990.8376875,
+    "ast_hash": "589d170be46b06fb8db4adb11d030fd2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/test.js": {
+    "mtime": 1784150990.8376875,
+    "ast_hash": "491dce918db60bd6399771152ca0fe38",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/tsconfig.json": {
+    "mtime": 1784150990.8376875,
+    "ast_hash": "aca6cdac13db39d03d9b95866834d84f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/vite.config.ts": {
+    "mtime": 1784150990.8376875,
+    "ast_hash": "cfc596836379397756c305b60b69ba06",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/get_state_refs.js": {
+    "mtime": 1784150990.8689384,
+    "ast_hash": "52515361739f842ccfa737e56d3656ce",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/metadata.json": {
+    "mtime": 1784150990.8689384,
+    "ast_hash": "07aba4ba13e5988919040c0427ca2708",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/package.json": {
+    "mtime": 1784150990.8852546,
+    "ast_hash": "c7434dcee7c8add85e8bd23593ddf4de",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/server.py": {
+    "mtime": 1784150990.9465907,
+    "ast_hash": "22e478a600f19e6107266db9a0fdda90",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/server.ts": {
+    "mtime": 1784150990.9465907,
+    "ast_hash": "c99deb5b0993efdfaf120f138a76beec",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/src/App.tsx": {
+    "mtime": 1784150990.9465907,
+    "ast_hash": "9cb7096437cb7f334a7c594db073aabe",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/src/main.tsx": {
+    "mtime": 1784150990.9622202,
+    "ast_hash": "a0bcc3ffa5e95e1965f94969ab488283",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/src/menuData.ts": {
+    "mtime": 1784150990.9622202,
+    "ast_hash": "c39fc67b6bbb36151afb61712bbff370",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/src/systemPrompt.ts": {
+    "mtime": 1784150990.9622202,
+    "ast_hash": "ab87d0547e54390c351179492ebc5173",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/src/types.ts": {
+    "mtime": 1784150990.9622202,
+    "ast_hash": "589d170be46b06fb8db4adb11d030fd2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/test.js": {
+    "mtime": 1784150990.9622202,
+    "ast_hash": "491dce918db60bd6399771152ca0fe38",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/tsconfig.json": {
+    "mtime": 1784150990.9622202,
+    "ast_hash": "aca6cdac13db39d03d9b95866834d84f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/vite.config.ts": {
+    "mtime": 1784150990.9622202,
+    "ast_hash": "cfc596836379397756c305b60b69ba06",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline de ingesta creacion de avatares/workflow_infinitetalk_funcional_reducido.json": {
+    "mtime": 1784150990.977841,
+    "ast_hash": "8e2f73497ff3b3d6d19c0eed662ed0e1",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/habilidades/pipelines/create_webp.py": {
+    "mtime": 1784150990.993464,
+    "ast_hash": "843922451df11de80a3845d5c8520756",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/habilidades/pipelines/process-avatar-video.ps1": {
+    "mtime": 1784150990.993464,
+    "ast_hash": "b75f71322c35af56808cda0a89e34926",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/habilidades/pipelines/remove_bg_local.py": {
+    "mtime": 1784150990.993464,
+    "ast_hash": "2f74f9caabe8b05b3253750b27c10dba",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/habilidades/pipelines/setup-comfyui-remote.ps1": {
+    "mtime": 1784150990.993464,
+    "ast_hash": "9730325caa1dc3da24f8871d73a0a18d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/vm-multimedia/config/pipeline_config.json": {
+    "mtime": 1784150991.0304184,
+    "ast_hash": "ea253afd55e793353a7bff2a22ee39c4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/vm-multimedia/instalar-en-vm.ps1": {
+    "mtime": 1784150991.0304184,
+    "ast_hash": "d49539d6fc3d28d4c332007473adbfed",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/vm-multimedia/scripts/generate_dish_video.py": {
+    "mtime": 1784150991.046043,
+    "ast_hash": "c2a3541824d025994e6b969da34555dc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/vm-multimedia/scripts/upload_supabase.py": {
+    "mtime": 1784150991.046043,
+    "ast_hash": "eadf87bd3d46de9ad35331ebec49e5d9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/vm-multimedia/scripts/video_generate.py": {
+    "mtime": 1784150991.046043,
+    "ast_hash": "7e6a5abf3c2d27555440da80d1d2cb18",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/vm-multimedia/scripts/voice_clone.py": {
+    "mtime": 1784150991.046043,
+    "ast_hash": "d6a0aa2821bf41e3c14c69d959c055e6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/fronted-pre/metadata.json": {
+    "mtime": 1784150991.0616672,
+    "ast_hash": "685ebf29201c29d20a29013b40ed3c7c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/fronted-pre/package.json": {
+    "mtime": 1784150991.0616672,
+    "ast_hash": "109c2bc6bb03042f07fcb69c051701f5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/fronted-pre/server.ts": {
+    "mtime": 1784150991.0616672,
+    "ast_hash": "fc49d35ffeca696f539df61d56beb12e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/fronted-pre/src/App.tsx": {
+    "mtime": 1784150991.0616672,
+    "ast_hash": "ace347ac95bf84bf10b4e07e499f328f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/fronted-pre/src/components/MenuCard.tsx": {
+    "mtime": 1784150991.0929205,
+    "ast_hash": "9cacf32f873c3910ba4008d892d8f297",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/fronted-pre/src/components/OrderSheet.tsx": {
+    "mtime": 1784150991.0929205,
+    "ast_hash": "b3331543b28b58055b89d8a07f219e4e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/fronted-pre/src/components/RatingModal.tsx": {
+    "mtime": 1784150991.0929205,
+    "ast_hash": "be228ae6df71da157e099aaa65d9a8ca",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/fronted-pre/src/components/VirtualWaitress.tsx": {
+    "mtime": 1784150991.0929205,
+    "ast_hash": "89655e916325f80aa269cf04c6ab6145",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/fronted-pre/src/imageMap.ts": {
+    "mtime": 1784150991.0929205,
+    "ast_hash": "9eb1b49607108dc4fbd26891ee84c404",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/fronted-pre/src/main.tsx": {
+    "mtime": 1784150991.0929205,
+    "ast_hash": "a0bcc3ffa5e95e1965f94969ab488283",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/fronted-pre/src/menu.json": {
+    "mtime": 1784150991.0929205,
+    "ast_hash": "0feecfdfd3f4b542a67572a247ffc74f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/fronted-pre/src/types.ts": {
+    "mtime": 1784150991.108543,
+    "ast_hash": "e9c97872858b6e428dad90f7be2afa99",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/fronted-pre/tsconfig.json": {
+    "mtime": 1784150991.108543,
+    "ast_hash": "aca6cdac13db39d03d9b95866834d84f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/fronted-pre/vite.config.ts": {
+    "mtime": 1784150991.108543,
+    "ast_hash": "cfc596836379397756c305b60b69ba06",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/kansas/app.py": {
+    "mtime": 1784150991.181458,
+    "ast_hash": "4d7aef050a8604065adca45532254b4f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/metadata.json": {
+    "mtime": 1784150991.2447493,
+    "ast_hash": "685ebf29201c29d20a29013b40ed3c7c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/package.json": {
+    "mtime": 1784150991.3184423,
+    "ast_hash": "37ffea9e71d1e746ee26b7db81a07b3f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/server.hf.ts": {
+    "mtime": 1784150991.383916,
+    "ast_hash": "104d1080364087567fc187e9c1d75510",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/server.ts": {
+    "mtime": 1784150991.383916,
+    "ast_hash": "3a104b284aa0cd584ec6240b7215f6d4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/src/App.tsx": {
+    "mtime": 1784150991.3995404,
+    "ast_hash": "1a8ec34e4987d33a64f48dfd22f4d9fb",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/src/components/MenuCard.tsx": {
+    "mtime": 1784150991.415167,
+    "ast_hash": "9cacf32f873c3910ba4008d892d8f297",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/src/components/OrderSheet.tsx": {
+    "mtime": 1784150991.415167,
+    "ast_hash": "b3331543b28b58055b89d8a07f219e4e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/src/components/RatingModal.tsx": {
+    "mtime": 1784150991.415167,
+    "ast_hash": "be228ae6df71da157e099aaa65d9a8ca",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/src/components/SolScene.tsx": {
+    "mtime": 1784150991.4307904,
+    "ast_hash": "10ce699678f6ea918ba715322f3dc2d6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/src/components/VirtualWaitress.tsx": {
+    "mtime": 1784150991.4307904,
+    "ast_hash": "89655e916325f80aa269cf04c6ab6145",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/src/imageMap.ts": {
+    "mtime": 1784150991.4307904,
+    "ast_hash": "9eb1b49607108dc4fbd26891ee84c404",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/src/main.tsx": {
+    "mtime": 1784150991.4464166,
+    "ast_hash": "a0bcc3ffa5e95e1965f94969ab488283",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/src/menu.json": {
+    "mtime": 1784150991.4464166,
+    "ast_hash": "0feecfdfd3f4b542a67572a247ffc74f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/src/types.ts": {
+    "mtime": 1784150991.4464166,
+    "ast_hash": "e9c97872858b6e428dad90f7be2afa99",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/tsconfig.json": {
+    "mtime": 1784150991.4464166,
+    "ast_hash": "aca6cdac13db39d03d9b95866834d84f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/vite.config.ts": {
+    "mtime": 1784150991.4464166,
+    "ast_hash": "cfc596836379397756c305b60b69ba06",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/get_state_refs.js": {
+    "mtime": 1784150991.5401654,
+    "ast_hash": "52515361739f842ccfa737e56d3656ce",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/metadata.json": {
+    "mtime": 1784150991.5557914,
+    "ast_hash": "07aba4ba13e5988919040c0427ca2708",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/package.json": {
+    "mtime": 1784150991.5557914,
+    "ast_hash": "c7434dcee7c8add85e8bd23593ddf4de",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/server.py": {
+    "mtime": 1784150991.665166,
+    "ast_hash": "22e478a600f19e6107266db9a0fdda90",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/server.ts": {
+    "mtime": 1784150991.665166,
+    "ast_hash": "f47bb800f4c791243074b454f0773cc8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/src/App.tsx": {
+    "mtime": 1784150991.665166,
+    "ast_hash": "f0b5caf5d82ae5297e33175ee9c0f09a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/src/main.tsx": {
+    "mtime": 1784150991.6807914,
+    "ast_hash": "a0bcc3ffa5e95e1965f94969ab488283",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/src/menuData.ts": {
+    "mtime": 1784150991.6807914,
+    "ast_hash": "c39fc67b6bbb36151afb61712bbff370",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/src/systemPrompt.ts": {
+    "mtime": 1784150991.6807914,
+    "ast_hash": "ab87d0547e54390c351179492ebc5173",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/src/types.ts": {
+    "mtime": 1784150991.6807914,
+    "ast_hash": "589d170be46b06fb8db4adb11d030fd2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/test.js": {
+    "mtime": 1784150991.6807914,
+    "ast_hash": "491dce918db60bd6399771152ca0fe38",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/tsconfig.json": {
+    "mtime": 1784150991.6807914,
+    "ast_hash": "aca6cdac13db39d03d9b95866834d84f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/vite.config.ts": {
+    "mtime": 1784150991.6807914,
+    "ast_hash": "cfc596836379397756c305b60b69ba06",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/backend/app.py": {
+    "mtime": 1784150991.6964176,
+    "ast_hash": "1e86a4d59cfeed8388b7d4196f329a11",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/backend/test_genai.py": {
+    "mtime": 1784150991.712044,
+    "ast_hash": "64797e9ac6e9fd31c146c5a5629019ee",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/metadata.json": {
+    "mtime": 1784150991.7276683,
+    "ast_hash": "685ebf29201c29d20a29013b40ed3c7c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/package.json": {
+    "mtime": 1784150991.7276683,
+    "ast_hash": "73edecef6eedfea34ace7f1d14015dc1",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/src/App.tsx": {
+    "mtime": 1784150991.743297,
+    "ast_hash": "2685965fc22ee25301e6d4c62668cc6d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/src/components/MenuCard.tsx": {
+    "mtime": 1784150991.7745464,
+    "ast_hash": "9cacf32f873c3910ba4008d892d8f297",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/src/components/OrderSheet.tsx": {
+    "mtime": 1784150991.7745464,
+    "ast_hash": "b3331543b28b58055b89d8a07f219e4e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/src/components/RatingModal.tsx": {
+    "mtime": 1784150991.7745464,
+    "ast_hash": "be228ae6df71da157e099aaa65d9a8ca",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/src/components/VideoAvatar.tsx": {
+    "mtime": 1784150991.7745464,
+    "ast_hash": "e7571fdfa4adbefca6f40675b83e2e15",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/src/hooks/useLiveAudio.ts": {
+    "mtime": 1784150991.7745464,
+    "ast_hash": "1805f430bd64fa546f1ef2f08cd7001c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/src/imageMap.ts": {
+    "mtime": 1784150991.7745464,
+    "ast_hash": "9eb1b49607108dc4fbd26891ee84c404",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/src/main.tsx": {
+    "mtime": 1784150991.7901654,
+    "ast_hash": "a0bcc3ffa5e95e1965f94969ab488283",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/src/menu.json": {
+    "mtime": 1784150991.7901654,
+    "ast_hash": "0feecfdfd3f4b542a67572a247ffc74f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/src/types.ts": {
+    "mtime": 1784150991.7901654,
+    "ast_hash": "e9c97872858b6e428dad90f7be2afa99",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/tsconfig.json": {
+    "mtime": 1784150991.7901654,
+    "ast_hash": "aca6cdac13db39d03d9b95866834d84f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/vite.config.ts": {
+    "mtime": 1784150991.7901654,
+    "ast_hash": "aa638d887f209daf82715fd7439fcc88",
+    "semantic_hash": ""
+  },
+  "conectar-hermes-gcloud.ps1": {
+    "mtime": 1784150991.805792,
+    "ast_hash": "7abdd33a0ca2df98b95b4c43c1e984e4",
+    "semantic_hash": ""
+  },
+  "humania/backend/avatar_pipeline.py": {
+    "mtime": 1784150991.8214152,
+    "ast_hash": "4c88336057cf93634df3e4594cc56902",
+    "semantic_hash": ""
+  },
+  "humania/backend/config.py": {
+    "mtime": 1784150923.618846,
+    "ast_hash": "944c89f3ead231af2e040666e65c2781",
+    "semantic_hash": ""
+  },
+  "humania/backend/gemini_handler.py": {
+    "mtime": 1784150991.8214152,
+    "ast_hash": "33f8b0943874b0ad197588d3c9535126",
+    "semantic_hash": ""
+  },
+  "humania/backend/lip_sync.py": {
+    "mtime": 1784150991.8214152,
+    "ast_hash": "90dd8704075930ae1ff086aef27c47dd",
+    "semantic_hash": ""
+  },
+  "humania/backend/liveportrait_engine.py": {
+    "mtime": 1784150991.8214152,
+    "ast_hash": "84ea73182fd8e8ba50c2d2823c24d3cc",
+    "semantic_hash": ""
+  },
+  "humania/backend/main.py": {
+    "mtime": 1784150991.8214152,
+    "ast_hash": "e000967b2ffe562fcc112671b61cbb2c",
+    "semantic_hash": ""
+  },
+  "humania/backend/models.py": {
+    "mtime": 1784150923.618846,
+    "ast_hash": "160005c55d4d185b09621a694cb1934a",
+    "semantic_hash": ""
+  },
+  "humania/backend/musetalk_engine.py": {
+    "mtime": 1784150991.8214152,
+    "ast_hash": "0ae7f6a38604978d28861020e21cba3c",
+    "semantic_hash": ""
+  },
+  "humania/backend/procedural_idle.py": {
+    "mtime": 1784150991.8214152,
+    "ast_hash": "9cd3d2c8265eb783b7c0c2b99faea8ce",
+    "semantic_hash": ""
+  },
+  "humania/backend/webrtc_manager.py": {
+    "mtime": 1784150991.8214152,
+    "ast_hash": "7f83b132f12c2c4d34ed6d22a41e60bd",
+    "semantic_hash": ""
+  },
+  "humania/backend/ws_manager.py": {
+    "mtime": 1784150923.6344728,
+    "ast_hash": "ac931200eb17228b740b0e0febbc6299",
+    "semantic_hash": ""
+  },
+  "humania/frontend/package.json": {
+    "mtime": 1784150991.8682911,
+    "ast_hash": "5c0d9b8b22a631937bf2eb6db61f92da",
+    "semantic_hash": ""
+  },
+  "humania/frontend/src/App.tsx": {
+    "mtime": 1784150992.1445334,
+    "ast_hash": "0904fee5ccc405481b87fd329702d47c",
+    "semantic_hash": ""
+  },
+  "humania/frontend/src/components/AvatarCanvas.tsx": {
+    "mtime": 1784150992.1455326,
+    "ast_hash": "f0fc8507544a3cda45e47f618fe38d6e",
+    "semantic_hash": ""
+  },
+  "humania/frontend/src/components/ChatInput.tsx": {
+    "mtime": 1784150992.146535,
+    "ast_hash": "1de4b669996257d36968990109f5c061",
+    "semantic_hash": ""
+  },
+  "humania/frontend/src/components/ConnectionStatus.tsx": {
+    "mtime": 1784150992.147532,
+    "ast_hash": "104fc99f93f9f48817ad47784f4b6b26",
+    "semantic_hash": ""
+  },
+  "humania/frontend/src/components/ControlsBar.tsx": {
+    "mtime": 1784150992.1485324,
+    "ast_hash": "436af447e87a11a21246b50b25c371f7",
+    "semantic_hash": ""
+  },
+  "humania/frontend/src/components/SettingsDrawer.tsx": {
+    "mtime": 1784150992.1495318,
+    "ast_hash": "7459c1e504febdd7896df67f5c5dcf37",
+    "semantic_hash": ""
+  },
+  "humania/frontend/src/components/TranslationPanel.tsx": {
+    "mtime": 1784150992.150532,
+    "ast_hash": "b613e8b8ccf69ddf12e50da7a7253660",
+    "semantic_hash": ""
+  },
+  "humania/frontend/src/hooks/useAudioCapture.ts": {
+    "mtime": 1784150992.15253,
+    "ast_hash": "ae52e118ed58b603c4ebc7e8913e68b5",
+    "semantic_hash": ""
+  },
+  "humania/frontend/src/hooks/useAudioPlayback.ts": {
+    "mtime": 1784150992.1535327,
+    "ast_hash": "7ff2bc019916fa37162eccd9c43f2491",
+    "semantic_hash": ""
+  },
+  "humania/frontend/src/hooks/useAvatarRenderer.ts": {
+    "mtime": 1784150923.6657226,
+    "ast_hash": "0f2809d6dc10174944c393a16af69dd2",
+    "semantic_hash": ""
+  },
+  "humania/frontend/src/hooks/useWebRTC.ts": {
+    "mtime": 1784150992.1545293,
+    "ast_hash": "a43a3e3a787a498936d739e7f6af7b8d",
+    "semantic_hash": ""
+  },
+  "humania/frontend/src/hooks/useWebSocket.ts": {
+    "mtime": 1784150992.1555295,
+    "ast_hash": "40c9f7481bb7805ce1702ce1faab8700",
+    "semantic_hash": ""
+  },
+  "humania/frontend/src/main.tsx": {
+    "mtime": 1784150923.6657226,
+    "ast_hash": "e80e4c3caacc644aeb6da38f585650b4",
+    "semantic_hash": ""
+  },
+  "humania/frontend/src/types.ts": {
+    "mtime": 1784150992.1675262,
+    "ast_hash": "641d1f6b171068d94cecfb76f43c2220",
+    "semantic_hash": ""
+  },
+  "humania/frontend/tsconfig.json": {
+    "mtime": 1784150992.168525,
+    "ast_hash": "fa8ae1942556f8ec94e64fce007902f1",
+    "semantic_hash": ""
+  },
+  "humania/frontend/vite.config.ts": {
+    "mtime": 1784150992.170524,
+    "ast_hash": "1c498343471662dbefc040b2431eed71",
+    "semantic_hash": ""
+  },
+  "humania/human-ia-fronted/metadata.json": {
+    "mtime": 1784150992.1785223,
+    "ast_hash": "46ef6cf9186dfba5c3034c1cef852d70",
+    "semantic_hash": ""
+  },
+  "humania/human-ia-fronted/package.json": {
+    "mtime": 1784150992.1795223,
+    "ast_hash": "109c2bc6bb03042f07fcb69c051701f5",
+    "semantic_hash": ""
+  },
+  "humania/human-ia-fronted/server.ts": {
+    "mtime": 1784150992.1805217,
+    "ast_hash": "e72d86fc8f0df42e0272b047a5d74271",
+    "semantic_hash": ""
+  },
+  "humania/human-ia-fronted/src/App.tsx": {
+    "mtime": 1784150992.1825223,
+    "ast_hash": "565057230cf2ba026dec525a6b1447c7",
+    "semantic_hash": ""
+  },
+  "humania/human-ia-fronted/src/components/ControlsBar.tsx": {
+    "mtime": 1784150992.1835203,
+    "ast_hash": "dde34a7bd7bedb0f2cb12846194489b8",
+    "semantic_hash": ""
+  },
+  "humania/human-ia-fronted/src/components/SettingsDrawer.tsx": {
+    "mtime": 1784150992.1855202,
+    "ast_hash": "e4ae08e980a244766f69314379df0c46",
+    "semantic_hash": ""
+  },
+  "humania/human-ia-fronted/src/components/TranslationPanel.tsx": {
+    "mtime": 1784150992.1865191,
+    "ast_hash": "09bf2f2a5e7a4d16dffa1516ae511cf3",
+    "semantic_hash": ""
+  },
+  "humania/human-ia-fronted/src/components/VideoContainer.tsx": {
+    "mtime": 1784150992.1875193,
+    "ast_hash": "75251ad4da72a566b61b00b96805d2b8",
+    "semantic_hash": ""
+  },
+  "humania/human-ia-fronted/src/hooks/useWebRTC.ts": {
+    "mtime": 1784150992.1895182,
+    "ast_hash": "ab30e3c3926d8da7c366ccd0d546eb6a",
+    "semantic_hash": ""
+  },
+  "humania/human-ia-fronted/src/main.tsx": {
+    "mtime": 1784150992.1965184,
+    "ast_hash": "a0bcc3ffa5e95e1965f94969ab488283",
+    "semantic_hash": ""
+  },
+  "humania/human-ia-fronted/src/types.ts": {
+    "mtime": 1784150992.197518,
+    "ast_hash": "fe63edf6b478de8a60fd21d2ff0a3c69",
+    "semantic_hash": ""
+  },
+  "humania/human-ia-fronted/tsconfig.json": {
+    "mtime": 1784150992.1985157,
+    "ast_hash": "aca6cdac13db39d03d9b95866834d84f",
+    "semantic_hash": ""
+  },
+  "humania/human-ia-fronted/vite.config.ts": {
+    "mtime": 1784150992.2005143,
+    "ast_hash": "cfc596836379397756c305b60b69ba06",
+    "semantic_hash": ""
+  },
+  "humania/metadata.json": {
+    "mtime": 1784150992.9298587,
+    "ast_hash": "46ef6cf9186dfba5c3034c1cef852d70",
+    "semantic_hash": ""
+  },
+  "humania/package.json": {
+    "mtime": 1784150992.930858,
+    "ast_hash": "109c2bc6bb03042f07fcb69c051701f5",
+    "semantic_hash": ""
+  },
+  "humania/server.ts": {
+    "mtime": 1784150992.9322345,
+    "ast_hash": "e72d86fc8f0df42e0272b047a5d74271",
+    "semantic_hash": ""
+  },
+  "humania/setup.sh": {
+    "mtime": 1784150923.6657226,
+    "ast_hash": "f630fec5ebdc38898828b8a1f2777935",
+    "semantic_hash": ""
+  },
+  "humania/src/App.tsx": {
+    "mtime": 1784150992.9336705,
+    "ast_hash": "565057230cf2ba026dec525a6b1447c7",
+    "semantic_hash": ""
+  },
+  "humania/src/components/ControlsBar.tsx": {
+    "mtime": 1784150992.9346697,
+    "ast_hash": "dde34a7bd7bedb0f2cb12846194489b8",
+    "semantic_hash": ""
+  },
+  "humania/src/components/SettingsDrawer.tsx": {
+    "mtime": 1784150992.935669,
+    "ast_hash": "e4ae08e980a244766f69314379df0c46",
+    "semantic_hash": ""
+  },
+  "humania/src/components/TranslationPanel.tsx": {
+    "mtime": 1784150992.9366686,
+    "ast_hash": "09bf2f2a5e7a4d16dffa1516ae511cf3",
+    "semantic_hash": ""
+  },
+  "humania/src/components/VideoContainer.tsx": {
+    "mtime": 1784150992.9376688,
+    "ast_hash": "75251ad4da72a566b61b00b96805d2b8",
+    "semantic_hash": ""
+  },
+  "humania/src/hooks/useWebRTC.ts": {
+    "mtime": 1784150992.9396665,
+    "ast_hash": "ab30e3c3926d8da7c366ccd0d546eb6a",
+    "semantic_hash": ""
+  },
+  "humania/src/main.tsx": {
+    "mtime": 1784150992.9426658,
+    "ast_hash": "a0bcc3ffa5e95e1965f94969ab488283",
+    "semantic_hash": ""
+  },
+  "humania/src/types.ts": {
+    "mtime": 1784150992.944666,
+    "ast_hash": "fe63edf6b478de8a60fd21d2ff0a3c69",
+    "semantic_hash": ""
+  },
+  "humania/test_composited.py": {
+    "mtime": 1784150992.9456673,
+    "ast_hash": "4c706d5a5b8441e5529bf3251e83af85",
+    "semantic_hash": ""
+  },
+  "humania/test_ws.py": {
+    "mtime": 1784150992.9466693,
+    "ast_hash": "add7064857aabe888eecc702c673f65c",
+    "semantic_hash": ""
+  },
+  "humania/tsconfig.json": {
+    "mtime": 1784150992.9476664,
+    "ast_hash": "aca6cdac13db39d03d9b95866834d84f",
+    "semantic_hash": ""
+  },
+  "humania/vite.config.ts": {
+    "mtime": 1784150992.948666,
+    "ast_hash": "cfc596836379397756c305b60b69ba06",
+    "semantic_hash": ""
+  },
+  "opencode.json": {
+    "mtime": 1784150992.9495263,
+    "ast_hash": "d2ef197e11c024b7c2528f9215726ae6",
+    "semantic_hash": ""
+  },
+  "scripts/sync-all-branches.ps1": {
+    "mtime": 1784151040.930256,
+    "ast_hash": "85ed8f4b0be477c3fe40c7f11661edbc",
+    "semantic_hash": ""
+  },
+  "AI Agents/2026-07-11 - AI Orchestration - Deep Dive.md": {
+    "mtime": 1784150984.1811378,
+    "ast_hash": "ba14cea06a9346ea4a64222bd8aad2e1",
+    "semantic_hash": ""
+  },
+  "AI Agents/2026-07-11 - AI Orchestration - Summary.md": {
+    "mtime": 1784150984.1811378,
+    "ast_hash": "72e38d3dd33f55c7d4d15125e227c68d",
+    "semantic_hash": ""
+  },
+  "AI Agents/2026-07-11 - LLM Agents - Deep Dive.md": {
+    "mtime": 1784150984.1811378,
+    "ast_hash": "f97229bb8aebba9f58d4a8167d97166c",
+    "semantic_hash": ""
+  },
+  "AI Agents/2026-07-11 - LLM Agents - Summary.md": {
+    "mtime": 1784150984.1811378,
+    "ast_hash": "87861f9724145a2592d2b895d442258e",
+    "semantic_hash": ""
+  },
+  "AI Agents/AI Agents MOC.md": {
+    "mtime": 1784150984.1811378,
+    "ast_hash": "40a71ac012e5e94c461cece038c21272",
+    "semantic_hash": ""
+  },
+  "Automation/2026-07-11 - API Integration - Deep Dive.md": {
+    "mtime": 1784150984.263333,
+    "ast_hash": "cee855dd344f0c6ae718f607477f77e5",
+    "semantic_hash": ""
+  },
+  "Automation/2026-07-11 - API Integration - Summary.md": {
+    "mtime": 1784150984.264331,
+    "ast_hash": "8c9c7320a15e3fb0a2dd256a378679e9",
+    "semantic_hash": ""
+  },
+  "Automation/2026-07-11 - GitHub Actions - Deep Dive.md": {
+    "mtime": 1784150984.2653317,
+    "ast_hash": "aae740f52df7b4600e4b801d7665d89e",
+    "semantic_hash": ""
+  },
+  "Automation/2026-07-11 - GitHub Actions - Summary.md": {
+    "mtime": 1784150984.266331,
+    "ast_hash": "71fd58019bf45d167a23cf7d67573917",
+    "semantic_hash": ""
+  },
+  "Automation/2026-07-11 - n8n - Deep Dive.md": {
+    "mtime": 1784150984.2673306,
+    "ast_hash": "ad6f93fdef1db896fd2005aad75ef090",
+    "semantic_hash": ""
+  },
+  "Automation/2026-07-11 - n8n - Summary.md": {
+    "mtime": 1784150984.268331,
+    "ast_hash": "012fcebfbe508e22d672eb13026058c5",
+    "semantic_hash": ""
+  },
+  "Automation/Automation MOC.md": {
+    "mtime": 1784150984.268331,
+    "ast_hash": "4399016cd07b1fd43d1db0cbaa392675",
+    "semantic_hash": ""
+  },
+  "Business/2026-07-11 - E-commerce - Deep Dive.md": {
+    "mtime": 1784150984.2733288,
+    "ast_hash": "b241dcc3b90714e770f3b9b10fd64c0a",
+    "semantic_hash": ""
+  },
+  "Business/2026-07-11 - E-commerce - Summary.md": {
+    "mtime": 1784150984.274332,
+    "ast_hash": "c65ed2c18640dc2b0d80b7a05d42c33a",
+    "semantic_hash": ""
+  },
+  "Business/2026-07-11 - Marketing - Deep Dive.md": {
+    "mtime": 1784150984.2753286,
+    "ast_hash": "fad7b64bec77479f31ace0973edea4aa",
+    "semantic_hash": ""
+  },
+  "Business/2026-07-11 - Marketing - Summary.md": {
+    "mtime": 1784150984.276329,
+    "ast_hash": "be4cf6f096019e2a7ffe17b6b89db085",
+    "semantic_hash": ""
+  },
+  "Business/2026-07-11 - Sales Funnel - Deep Dive.md": {
+    "mtime": 1784150984.2773273,
+    "ast_hash": "a544474e477f51c26d50b6232abc55c2",
+    "semantic_hash": ""
+  },
+  "Business/2026-07-11 - Sales Funnel - Summary.md": {
+    "mtime": 1784150984.278824,
+    "ast_hash": "de8fad321694c76acef82c36806eddd7",
+    "semantic_hash": ""
+  },
+  "Business/2026-07-11 - Supply Chain - Deep Dive.md": {
+    "mtime": 1784150984.278824,
+    "ast_hash": "86d0c315418bfef66f365b4c62538efd",
+    "semantic_hash": ""
+  },
+  "Business/2026-07-11 - Supply Chain - Summary.md": {
+    "mtime": 1784150984.278824,
+    "ast_hash": "a9c09bf998c9291f73566d9f1c600681",
+    "semantic_hash": ""
+  },
+  "Business/Business MOC.md": {
+    "mtime": 1784150984.278824,
+    "ast_hash": "a9e7b0a88ba92480d6efdf31c913ba68",
+    "semantic_hash": ""
+  },
+  "Coding/2026-07-11 - Docker - Deep Dive.md": {
+    "mtime": 1784150984.278824,
+    "ast_hash": "35c4a61a5952f7fb1a094ed0471a719e",
+    "semantic_hash": ""
+  },
+  "Coding/2026-07-11 - Docker - Summary.md": {
+    "mtime": 1784150984.278824,
+    "ast_hash": "0863bdd3a32bbffdf3cfe01fbced50b8",
+    "semantic_hash": ""
+  },
+  "Coding/2026-07-11 - FastAPI - Deep Dive.md": {
+    "mtime": 1784150984.278824,
+    "ast_hash": "0037a1b7a9ba4e6b3c2325bd2fb54a98",
+    "semantic_hash": ""
+  },
+  "Coding/2026-07-11 - FastAPI - Summary.md": {
+    "mtime": 1784150984.278824,
+    "ast_hash": "0098107450383a653069599cd3b329f0",
+    "semantic_hash": ""
+  },
+  "Coding/2026-07-11 - Python - Deep Dive.md": {
+    "mtime": 1784150984.278824,
+    "ast_hash": "dc688a6e740347eb61eb7c90671e4426",
+    "semantic_hash": ""
+  },
+  "Coding/2026-07-11 - Python - Summary.md": {
+    "mtime": 1784150984.278824,
+    "ast_hash": "d0906c30826714f86b5436af55c38bcb",
+    "semantic_hash": ""
+  },
+  "Coding/2026-07-11 - System Design - Deep Dive.md": {
+    "mtime": 1784150984.278824,
+    "ast_hash": "b9a4e0bdb4cb1c80b4db4696fe094b94",
+    "semantic_hash": ""
+  },
+  "Coding/2026-07-11 - System Design - Summary.md": {
+    "mtime": 1784150984.278824,
+    "ast_hash": "25ac3a8f81f3170eb6ddca0f03db343b",
+    "semantic_hash": ""
+  },
+  "Coding/Coding MOC.md": {
+    "mtime": 1784150984.278824,
+    "ast_hash": "2afb6b76f8707c9b70b039f785fe5397",
+    "semantic_hash": ""
+  },
+  "DevOps/2026-07-11 - Networking - Deep Dive.md": {
+    "mtime": 1784150984.2944498,
+    "ast_hash": "93d01f5e43c9ff52639d06da66920b29",
+    "semantic_hash": ""
+  },
+  "DevOps/2026-07-11 - Networking - Summary.md": {
+    "mtime": 1784150984.2944498,
+    "ast_hash": "ba7e95c1f8c8b351038ed2307fe922c4",
+    "semantic_hash": ""
+  },
+  "DevOps/2026-07-11 - SSH - Deep Dive.md": {
+    "mtime": 1784150984.2944498,
+    "ast_hash": "51451485fb0e09d74c623586bcad2b5a",
+    "semantic_hash": ""
+  },
+  "DevOps/2026-07-11 - SSH - Summary.md": {
+    "mtime": 1784150984.2944498,
+    "ast_hash": "f1ebdbd6c92c6a403695a0098eace51c",
+    "semantic_hash": ""
+  },
+  "DevOps/2026-07-11 - Security - Deep Dive.md": {
+    "mtime": 1784150984.2944498,
+    "ast_hash": "3c43648909e202fdf1b3740b91e249b6",
+    "semantic_hash": ""
+  },
+  "DevOps/2026-07-11 - Security - Summary.md": {
+    "mtime": 1784150984.2944498,
+    "ast_hash": "0b0fea54cdab697228cc2d6f9349c825",
+    "semantic_hash": ""
+  },
+  "DevOps/DevOps MOC.md": {
+    "mtime": 1784150984.3100743,
+    "ast_hash": "efd88392edf268718f4d9d9b8707fdcd",
+    "semantic_hash": ""
+  },
+  "_BrainFeeder Logs/Run 1 - 2026-07-11.md": {
+    "mtime": 1784150984.3257012,
+    "ast_hash": "d66c41ffee67639a0e05755c053684d8",
+    "semantic_hash": ""
+  },
+  "_BrainFeeder Logs/Run 2 - 2026-07-11.md": {
+    "mtime": 1784150984.3257012,
+    "ast_hash": "2c40735240a92ededf13704663525e2e",
+    "semantic_hash": ""
+  },
+  "_BrainFeeder Logs/Run 3 - 2026-07-11.md": {
+    "mtime": 1784150984.3257012,
+    "ast_hash": "996efd806f25fd98bc5558179455e55a",
+    "semantic_hash": ""
+  },
+  "_BrainFeeder Logs/Weekly Report - 2026-07-11.md": {
+    "mtime": 1784150984.3257012,
+    "ast_hash": "709672e77641827401262bf25c9c2a20",
+    "semantic_hash": ""
+  },
+  "agencia/core/AGENTS.md": {
+    "mtime": 1784150923.522478,
+    "ast_hash": "6869c4239c7df613a0ffb16bf8078d03",
+    "semantic_hash": ""
+  },
+  "agencia/core/hermes/AGENTS.md": {
+    "mtime": 1784150923.5354748,
+    "ast_hash": "9e09f3680781f104a2232eb34a983e61",
+    "semantic_hash": ""
+  },
+  "agencia/core/investigador/AGENTS.md": {
+    "mtime": 1784150923.536509,
+    "ast_hash": "064e8f36c32d359a6806747959127a8a",
+    "semantic_hash": ""
+  },
+  "agencia/core/voz/AGENTS.md": {
+    "mtime": 1784150923.5384727,
+    "ast_hash": "0d5dd7bd463e216c608203b386c768d4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/BRF_PIPELINE_INGESTA_MENUS.md": {
+    "mtime": 1784150984.3257012,
+    "ast_hash": "6f4ab216590f3a52f74a2a00a94c0541",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/NECESARIO_PARA_PRIMER_RENDER.md": {
+    "mtime": 1784150984.3257012,
+    "ast_hash": "1393649a0aadb1a432d79edc21df43fa",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/PIPELINE_DEFINITIVO.md": {
+    "mtime": 1784150984.3413243,
+    "ast_hash": "554492031617ff1485b78b52eb32738d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/README.md": {
+    "mtime": 1784150984.3413243,
+    "ast_hash": "4d929bec84a56a80a9d99d4a87a82766",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/VIDEO_GENERATION_PIPELINE.md": {
+    "mtime": 1784150984.3413243,
+    "ast_hash": "092523aad3f6cd7984ef71d45506229c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/docs/avatar-musetalk-vm-handoff.md": {
+    "mtime": 1784150984.3683426,
+    "ast_hash": "64cb633dc67a59158c411b09023783dd",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/inputs/menus/menu_ejemplo.txt": {
+    "mtime": 1784150984.4938533,
+    "ast_hash": "11c0f804523d246d7eaeacbc7e266487",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/docs/planes/2026-07-08-motor-avatares-design.md": {
+    "mtime": 1784150990.6238246,
+    "ast_hash": "74b843fe800781e2220218849875042f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/docs/planes/2026-07-08-motor-avatares.md": {
+    "mtime": 1784150990.639447,
+    "ast_hash": "cff8f03c814456620cb2cde4716cb206",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/docs/planes/2026-07-08-motor-llms-arena.md": {
+    "mtime": 1784150990.639447,
+    "ast_hash": "973134ae2e3ab89f5225734f8982fa0d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/docs/planes/2026-07-08-motor-voz.md": {
+    "mtime": 1784150990.639447,
+    "ast_hash": "7ad37da9049750f9c15d2cf1bab9faa6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/docs/planes/2026-07-09-pipeline-creacion-cartas.md": {
+    "mtime": 1784150990.639447,
+    "ast_hash": "b9f4530b7b18e3605bffdb950b9c13e5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/docs/planes/3 PLANES EN CONVERSACION.txt": {
+    "mtime": 1784150990.639447,
+    "ast_hash": "416dbb42f9ed4b94bfa427ea4dbcbd2e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/docs/planes/README.md": {
+    "mtime": 1784150990.639447,
+    "ast_hash": "105c1f8b78f5fc70b288646a268a441f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/docs/procesos-aprendidos/README.md": {
+    "mtime": 1784150990.639447,
+    "ast_hash": "ac82e4342261fed18b8454800b1619e0",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/docs/procesos-aprendidos/deploy-cloud-run-vertex-ai.md": {
+    "mtime": 1784150990.639447,
+    "ast_hash": "87b6cc133eef4d293d68c70c22a8d7b8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/docs/procesos-aprendidos/live-api-avatar.md": {
+    "mtime": 1784150990.655072,
+    "ast_hash": "dd37313fd5578c60980d9a0bd9c57087",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/docs/procesos-aprendidos/pipelines/avatar-video-processing.md": {
+    "mtime": 1784150990.655072,
+    "ast_hash": "4e78c2a86586934eb50bae3f6e91b7b9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/docs/procesos-aprendidos/pipelines/comfyui-remote-connection.md": {
+    "mtime": 1784150990.655072,
+    "ast_hash": "81091a5f7647552cb9cabe6d8df7b5b3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/docs/procesos-aprendidos/skills/comfyui-reference-repos.md": {
+    "mtime": 1784150990.6706972,
+    "ast_hash": "d00e9847b87e0dcf9ae5aff06ee6a1ac",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/docs/procesos-aprendidos/skills/gpu-vm-setup.md": {
+    "mtime": 1784150990.6706972,
+    "ast_hash": "c5b5e3653c97178781947e163e3dd630",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/README.md": {
+    "mtime": 1784150990.6869247,
+    "ast_hash": "ebb85803dd00444f1cb7a9d929fd39ff",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/cloudbuild-deploy.yaml": {
+    "mtime": 1784150990.7442353,
+    "ast_hash": "310ceecfcdfd5da8668e03c5b463fe0f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/cloudbuild.yaml": {
+    "mtime": 1784150990.7442353,
+    "ast_hash": "c2493f1f4a2a37ffd79721b352575ab6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/index.html": {
+    "mtime": 1784150990.7598586,
+    "ast_hash": "ab26bd0dac18c0c7749e215ef2df8044",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/server_output.txt": {
+    "mtime": 1784150990.8220627,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/README.md": {
+    "mtime": 1784150990.8533127,
+    "ast_hash": "ebb85803dd00444f1cb7a9d929fd39ff",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/cloudbuild-deploy.yaml": {
+    "mtime": 1784150990.8533127,
+    "ast_hash": "310ceecfcdfd5da8668e03c5b463fe0f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/cloudbuild-video-test.yaml": {
+    "mtime": 1784150990.8533127,
+    "ast_hash": "ffbf24c595996e106be7fef63e47bd5a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/cloudbuild.yaml": {
+    "mtime": 1784150990.8533127,
+    "ast_hash": "c2493f1f4a2a37ffd79721b352575ab6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/index.html": {
+    "mtime": 1784150990.8689384,
+    "ast_hash": "ab26bd0dac18c0c7749e215ef2df8044",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline de ingesta creacion de avatares/CONFIG_VALIDADA.md": {
+    "mtime": 1784150990.9622202,
+    "ast_hash": "cf421c0f74cc3c7a53bc9482937aec0a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline de ingesta creacion de avatares/INGESTA_MASIVA.md": {
+    "mtime": 1784150990.977841,
+    "ast_hash": "4d606327056fc2fe84717a8864559ecf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline de ingesta creacion de avatares/README.md": {
+    "mtime": 1784150990.977841,
+    "ast_hash": "962ce8c35d5ce326ea8306ad302d35ca",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipeline de ingesta creacion de avatares/TROUBLESHOOTING.md": {
+    "mtime": 1784150990.977841,
+    "ast_hash": "274420b27131796af767d4b97b8a18f5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/avatares-persistentes/BRF_PIPELINE_AVATARES_PERSISTENTES.md": {
+    "mtime": 1784150990.977841,
+    "ast_hash": "69b465011644dedff56c80965601d06b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/habilidades/README.md": {
+    "mtime": 1784150990.977841,
+    "ast_hash": "44cdcb167f4151a8b4dd8164934fc1ae",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/habilidades/pipelines/avatar-video-processing.md": {
+    "mtime": 1784150990.977841,
+    "ast_hash": "4e78c2a86586934eb50bae3f6e91b7b9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/habilidades/pipelines/comfyui-remote-connection.md": {
+    "mtime": 1784150990.977841,
+    "ast_hash": "81091a5f7647552cb9cabe6d8df7b5b3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/habilidades/plans/2026-07-08-motor-avatares.md": {
+    "mtime": 1784150990.9995608,
+    "ast_hash": "cff8f03c814456620cb2cde4716cb206",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/habilidades/skills/comfyui-reference-repos.md": {
+    "mtime": 1784150991.0005593,
+    "ast_hash": "d00e9847b87e0dcf9ae5aff06ee6a1ac",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/habilidades/skills/gpu-vm-setup.md": {
+    "mtime": 1784150991.0015583,
+    "ast_hash": "c5b5e3653c97178781947e163e3dd630",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/habilidades/specs/2026-07-08-motor-avatares-design.md": {
+    "mtime": 1784150991.0035574,
+    "ast_hash": "74b843fe800781e2220218849875042f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/ingesta-cartas/README.md": {
+    "mtime": 1784150991.0095568,
+    "ast_hash": "64e37e97f66fbe6daf55988e4ec3c9d2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/ingesta-cartas/decisions/bloqueos-actuales.md": {
+    "mtime": 1784150991.0125554,
+    "ast_hash": "c440ecfd90a377eeb8197bfdb9f3b07f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/ingesta-cartas/decisions/reglas-generales.md": {
+    "mtime": 1784150991.013556,
+    "ast_hash": "afae0e7fb3393ea52c541622cdc5131d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/ingesta-cartas/fases/01-admin-panel.md": {
+    "mtime": 1784150991.0147915,
+    "ast_hash": "e2dda5f7d5404d9db3d9e34fb37815e3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/ingesta-cartas/fases/02-extraccion-carta.md": {
+    "mtime": 1784150991.0147915,
+    "ast_hash": "410da1da68bba3c1b60bf87f408824d6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/ingesta-cartas/fases/03-fotos-platos.md": {
+    "mtime": 1784150991.0147915,
+    "ast_hash": "223a3f7efbba7b0651b4b68e046a585a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/ingesta-cartas/fases/04-identidad-visual.md": {
+    "mtime": 1784150991.0147915,
+    "ast_hash": "f43c961fa11f6ec005cbb853ef28a610",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/ingesta-cartas/fases/05-crear-avatar.md": {
+    "mtime": 1784150991.0147915,
+    "ast_hash": "3bde2e0738ef986832394cc1aba9d14f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/ingesta-cartas/fases/06-crear-voz.md": {
+    "mtime": 1784150991.0147915,
+    "ast_hash": "44d10b3776e4ec9285cc2b6551718354",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/ingesta-cartas/fases/07-videos-por-plato.md": {
+    "mtime": 1784150991.0147915,
+    "ast_hash": "047bad22975b1762aebe706f31db9d52",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/ingesta-cartas/fases/08-ensamblar-carta.md": {
+    "mtime": 1784150991.0147915,
+    "ast_hash": "c9639a571babea9151e8c0b6896025b7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/ingesta-cartas/roadmap.md": {
+    "mtime": 1784150991.0304184,
+    "ast_hash": "0dd9f202bc0dad175acd8a6b760bfa48",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/vm-multimedia/AGENTS.md": {
+    "mtime": 1784150991.0304184,
+    "ast_hash": "d2067aa1b16163a024cb924a3807016e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/vm-multimedia/README.md": {
+    "mtime": 1784150991.0304184,
+    "ast_hash": "3c0ca340761ec9ab0dac4219181ca6b5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/vm-multimedia/docs/instalar-f5tts.md": {
+    "mtime": 1784150991.0304184,
+    "ast_hash": "571edfcbc193947f47e51857d07fb761",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/vm-multimedia/docs/instalar-liveportrait.md": {
+    "mtime": 1784150991.0304184,
+    "ast_hash": "119ccf96548f326480014d25fb336b5c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/pipelines/vm-multimedia/scripts/requirements.txt": {
+    "mtime": 1784150991.046043,
+    "ast_hash": "887d5c5e5431d9c2fc0a0f924812fb47",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/fronted-pre/README.md": {
+    "mtime": 1784150991.046043,
+    "ast_hash": "1ba719be67f0bc155e6aabadb4ae3466",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/fronted-pre/index.html": {
+    "mtime": 1784150991.0616672,
+    "ast_hash": "f10d287108a715d7981a85d55a4c7dfe",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/kansas/README.md": {
+    "mtime": 1784150991.1345825,
+    "ast_hash": "8c1dc2b02b58a53125418d467d71eb18",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/kansas/requirements.txt": {
+    "mtime": 1784150991.181458,
+    "ast_hash": "9965dd43acf16db7f1f0bfb768653524",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/README.md": {
+    "mtime": 1784150991.2291224,
+    "ast_hash": "c07bed49715e5f2cec4a1e1b5e464115",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/index.html": {
+    "mtime": 1784150991.2447493,
+    "ast_hash": "f10d287108a715d7981a85d55a4c7dfe",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/README.md": {
+    "mtime": 1784150991.4620419,
+    "ast_hash": "ebb85803dd00444f1cb7a9d929fd39ff",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/cloudbuild-deploy.yaml": {
+    "mtime": 1784150991.5245495,
+    "ast_hash": "310ceecfcdfd5da8668e03c5b463fe0f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/cloudbuild.yaml": {
+    "mtime": 1784150991.5401654,
+    "ast_hash": "fdf8bd8c70bb0cbefb69bed76bc0e8d7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/index.html": {
+    "mtime": 1784150991.5557914,
+    "ast_hash": "ab26bd0dac18c0c7749e215ef2df8044",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/server_output.txt": {
+    "mtime": 1784150991.665166,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/backend/requirements.txt": {
+    "mtime": 1784150991.712044,
+    "ast_hash": "3b08b190875f6f3b2fd575183dd19a69",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/README.md": {
+    "mtime": 1784150991.7276683,
+    "ast_hash": "1ba719be67f0bc155e6aabadb4ae3466",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/index.html": {
+    "mtime": 1784150991.7276683,
+    "ast_hash": "f10d287108a715d7981a85d55a4c7dfe",
+    "semantic_hash": ""
+  },
+  "agencia/pwa-agentes/AGENTS.md": {
+    "mtime": 1784150923.6091278,
+    "ast_hash": "6bb747b4dd37c5778c36148486ea4a97",
+    "semantic_hash": ""
+  },
+  "agi/hermes/SOUL.md": {
+    "mtime": 1784150991.805792,
+    "ast_hash": "4c34f60883dd45fceefd79970ec7594c",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-07-12-fase2-ingesta-hermes.md": {
+    "mtime": 1784150991.8214152,
+    "ast_hash": "a71f33bbf85217c74a2d2c336cd05280",
+    "semantic_hash": ""
+  },
+  "humania/.github/workflows/deploy-cloud-run.yml": {
+    "mtime": 1784150923.6091278,
+    "ast_hash": "1f3e58f6198ae452efb4cdb232747189",
+    "semantic_hash": ""
+  },
+  "humania/.github/workflows/deploy-frontend.yml": {
+    "mtime": 1784150923.6158125,
+    "ast_hash": "d6e1516ca8945160cc826d60f38651b5",
+    "semantic_hash": ""
+  },
+  "humania/.github/workflows/validate-backend.yml": {
+    "mtime": 1784150923.6178105,
+    "ast_hash": "fb86084879ee97880a1d058b9a049bcc",
+    "semantic_hash": ""
+  },
+  "humania/.github/workflows/validate-frontend.yml": {
+    "mtime": 1784150923.618846,
+    "ast_hash": "718fcfc3a9a3b9f2399224274100ce6c",
+    "semantic_hash": ""
+  },
+  "humania/PLAN.md": {
+    "mtime": 1784150923.618846,
+    "ast_hash": "89805af76097d503c5390bb624a88a4e",
+    "semantic_hash": ""
+  },
+  "humania/README.md": {
+    "mtime": 1784150923.618846,
+    "ast_hash": "a06fb077ca0362cadbc0f5e6795bdc9a",
+    "semantic_hash": ""
+  },
+  "humania/backend/requirements.txt": {
+    "mtime": 1784150991.8214152,
+    "ast_hash": "3a7bdba950e02eab83322f04088e130d",
+    "semantic_hash": ""
+  },
+  "humania/cloudbuild.yaml": {
+    "mtime": 1784150923.6344728,
+    "ast_hash": "6c99a3dab0f2ee48d0708f1149bdbe9a",
+    "semantic_hash": ""
+  },
+  "humania/docker-compose.yml": {
+    "mtime": 1784150923.6344728,
+    "ast_hash": "414224f7870d1d24ecc49a537a9a5939",
+    "semantic_hash": ""
+  },
+  "humania/frontend/index.html": {
+    "mtime": 1784150991.852666,
+    "ast_hash": "993257db846459488f629d7b4bc4c468",
+    "semantic_hash": ""
+  },
+  "humania/human-ia-fronted/README.md": {
+    "mtime": 1784150992.176527,
+    "ast_hash": "5887f6e3c7c37edf1a75ba828db7e8ea",
+    "semantic_hash": ""
+  },
+  "humania/human-ia-fronted/index.html": {
+    "mtime": 1784150992.1775231,
+    "ast_hash": "f10d287108a715d7981a85d55a4c7dfe",
+    "semantic_hash": ""
+  },
+  "humania/index.html": {
+    "mtime": 1784150992.2015142,
+    "ast_hash": "f10d287108a715d7981a85d55a4c7dfe",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/00_leeme_dominus.md": {
+    "mtime": 1784150992.202515,
+    "ast_hash": "06e86092aa1255e2d3cf1f100e481df6",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/01_reglas_de_identidad.md": {
+    "mtime": 1784150992.2035134,
+    "ast_hash": "f13c6243e47aab64c632aee021c31046",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/02_nombres_de_archivos.md": {
+    "mtime": 1784150992.2055137,
+    "ast_hash": "81c737e4f20d694fa5094c685c652ed1",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/03_guia_de_uso_en_video.md": {
+    "mtime": 1784150992.2055137,
+    "ast_hash": "a50e029bdb0c35e2106e060529f9a0d0",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/04_estilo_de_subtitulos.md": {
+    "mtime": 1784150992.2105124,
+    "ast_hash": "2c606acfebf91982139c346714ffbf87",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/05_prompt_maestro_dominus.md": {
+    "mtime": 1784150992.215511,
+    "ast_hash": "119ae97a044ebd227a13415b394ab7eb",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/06_lista_de_assets.md": {
+    "mtime": 1784150992.2165096,
+    "ast_hash": "6d462cde1d7421c24fc9e1ddcd4f7a65",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/plantillas_de_video/cierre_y_cta/banco_cta.md": {
+    "mtime": 1784150992.8821542,
+    "ast_hash": "8718fc54625ad7afede83d17b288fd6b",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/plantillas_de_video/comerciales/estructura_comercial.md": {
+    "mtime": 1784150992.8841531,
+    "ast_hash": "f3872216312ba885e22f6d243d677c2b",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/plantillas_de_video/explicativos/estructura_explicativo.md": {
+    "mtime": 1784150992.8871522,
+    "ast_hash": "d2db78b95e960fe91295928f546ed721",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/plantillas_de_video/ganchos/ganchos_mesero_virtual.md": {
+    "mtime": 1784150992.8891516,
+    "ast_hash": "5bdc859ce531847e1c98baa479732b1a",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/plantillas_de_video/subtitulos/banco_subtitulos.md": {
+    "mtime": 1784150992.9288588,
+    "ast_hash": "646256a6cb2ea788d7b371d000e9af39",
+    "semantic_hash": ""
+  },
+  "trading/2026-07-11 - Algorithmic Trading - Deep Dive.md": {
+    "mtime": 1784150993.0333142,
+    "ast_hash": "db82e956b804e6d65103d91c72d2f45a",
+    "semantic_hash": ""
+  },
+  "trading/2026-07-11 - Algorithmic Trading - Summary.md": {
+    "mtime": 1784150993.0343132,
+    "ast_hash": "e61d349703c47c8e6fac72b01cf91756",
+    "semantic_hash": ""
+  },
+  "trading/2026-07-11 - Trading Psychology - Deep Dive.md": {
+    "mtime": 1784150993.0353138,
+    "ast_hash": "2ddb211472eccfdb47e8f7d428e53f01",
+    "semantic_hash": ""
+  },
+  "trading/2026-07-11 - Trading Psychology - Summary.md": {
+    "mtime": 1784150993.0363133,
+    "ast_hash": "38723a855e9d6a4cc3ffe4df9756dca7",
+    "semantic_hash": ""
+  },
+  "trading/Trading MOC.md": {
+    "mtime": 1784150993.0363133,
+    "ast_hash": "4c3da285393dfd4de8ccab70964d253d",
+    "semantic_hash": ""
+  },
+  "AVATARES VIDEOS/Captura de pantalla 2026-07-03 220328.png": {
+    "mtime": 1784150984.196761,
+    "ast_hash": "a591f8efedbd4bc5619cf185d24d59f5",
+    "semantic_hash": ""
+  },
+  "AVATARES VIDEOS/ChatGPT Image 10 jul 2026, 05_53_24 p.m..png": {
+    "mtime": 1784150984.2124581,
+    "ast_hash": "5467d56fad2ea08387505f5c065034ab",
+    "semantic_hash": ""
+  },
+  "AVATARES VIDEOS/descarga.png": {
+    "mtime": 1784150984.228012,
+    "ast_hash": "41a474130a75723b299a2a6070bc7481",
+    "semantic_hash": ""
+  },
+  "AVATARES VIDEOS/workflows/avatar_test.png": {
+    "mtime": 1784150984.2450566,
+    "ast_hash": "a591f8efedbd4bc5619cf185d24d59f5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/assets/avatar/sol_v1_green.png": {
+    "mtime": 1784150984.3413243,
+    "ast_hash": "e7a48ba9537cca0cbea057366115812f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/bienvenido a la escaloneta (alpha).webp": {
+    "mtime": 1784150984.6250434,
+    "ast_hash": "2388c583ae8e5c2fa36f222c22dc6a04",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/bienvenido-sin-fondo.webp": {
+    "mtime": 1784150984.7031655,
+    "ast_hash": "8f205059aafb0c2eef3f9f666ca7aa07",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0001.png": {
+    "mtime": 1784150984.7344165,
+    "ast_hash": "215a08fe3c81e95bbf22aa16e90c1052",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0002.png": {
+    "mtime": 1784150984.7344165,
+    "ast_hash": "bbbba01463a651834d379d842f36fc97",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0003.png": {
+    "mtime": 1784150984.7500398,
+    "ast_hash": "9a2a0f58d696cf566e1b29d625d52771",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0004.png": {
+    "mtime": 1784150984.7656658,
+    "ast_hash": "35c1e222354b8b1ebe33ad4f07990772",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0005.png": {
+    "mtime": 1784150984.7812915,
+    "ast_hash": "da18fc27b2e56a2fe3d9bdc194d1d862",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0006.png": {
+    "mtime": 1784150984.796916,
+    "ast_hash": "f6484297ffc6fa3bd176932e71c16532",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0007.png": {
+    "mtime": 1784150984.796916,
+    "ast_hash": "0ad8fce56f944940c44fbc1ef06d2b1b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0008.png": {
+    "mtime": 1784150984.8125412,
+    "ast_hash": "1e37be528ca14086dfa04ff37ce258d3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0009.png": {
+    "mtime": 1784150984.8281653,
+    "ast_hash": "7b60834f1bc7ab0d32e7ffb3f177e055",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0010.png": {
+    "mtime": 1784150984.8437922,
+    "ast_hash": "fa4ccb32e78ea939d36dd91f266961fb",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0011.png": {
+    "mtime": 1784150984.8594162,
+    "ast_hash": "71dc75d7e286d31b8b00d7a550955a0c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0012.png": {
+    "mtime": 1784150984.8766508,
+    "ast_hash": "6542343417f51ab7a291507cfd3213f6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0013.png": {
+    "mtime": 1784150984.8926487,
+    "ast_hash": "a9c97cc36bb26c03209f6cdbcfb4188a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0014.png": {
+    "mtime": 1784150984.9016836,
+    "ast_hash": "a99bc0a046470edf6a5120fbf71af274",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0015.png": {
+    "mtime": 1784150984.9136815,
+    "ast_hash": "1fd6e7c953921f8da6da32264aedd259",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0016.png": {
+    "mtime": 1784150984.9262223,
+    "ast_hash": "95ef3098eee112671336ca04d27763ee",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0017.png": {
+    "mtime": 1784150984.9354997,
+    "ast_hash": "d0efa0f890b273878de2e2286e7a4615",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0018.png": {
+    "mtime": 1784150984.945497,
+    "ast_hash": "75a029e189c97048f7109d76eeeb7fbc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0019.png": {
+    "mtime": 1784150984.9579637,
+    "ast_hash": "a701f4f70fef3044067a177b0774098a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0020.png": {
+    "mtime": 1784150984.961467,
+    "ast_hash": "3f1e8f02f899e9dce6af1cea90d02f86",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0021.png": {
+    "mtime": 1784150984.9770937,
+    "ast_hash": "a8ab57bf506235869e55ec8af62f79d7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0022.png": {
+    "mtime": 1784150984.9770937,
+    "ast_hash": "ddf107a3a40e80e1ac4cb1a08455b733",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0023.png": {
+    "mtime": 1784150984.9927173,
+    "ast_hash": "407e549a00158015f0f4197984fc703e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0024.png": {
+    "mtime": 1784150985.008343,
+    "ast_hash": "9da8caff5db00ca89ca333f52afe221c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0025.png": {
+    "mtime": 1784150985.0239682,
+    "ast_hash": "74d1944b7bcbc44cdf35aec7c7cc2728",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0026.png": {
+    "mtime": 1784150985.0395927,
+    "ast_hash": "758daefbc9b0bfae15c0889b4f05a0be",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0027.png": {
+    "mtime": 1784150985.0395927,
+    "ast_hash": "a94c25884ba299b0b4b05a48ea0a59df",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0028.png": {
+    "mtime": 1784150985.0552182,
+    "ast_hash": "e183da93946e643c788c39648d0a30f5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0029.png": {
+    "mtime": 1784150985.070858,
+    "ast_hash": "fe2e314597ecd27bb9e05af73a892bf2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0030.png": {
+    "mtime": 1784150985.086468,
+    "ast_hash": "21ffcd85a87498a89af5b446e0e0c8b6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0031.png": {
+    "mtime": 1784150985.102093,
+    "ast_hash": "0034d19b5782b6b263a56e5d698194cf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0032.png": {
+    "mtime": 1784150985.1177175,
+    "ast_hash": "e83ededc10795f3a63d5b3114aff119d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0033.png": {
+    "mtime": 1784150985.133342,
+    "ast_hash": "6571d9ee2ea767f84fc832d6a8e5c0ab",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0034.png": {
+    "mtime": 1784150985.1386623,
+    "ast_hash": "5b7653a09fa34ecb25126137a355c037",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0035.png": {
+    "mtime": 1784150985.158945,
+    "ast_hash": "71edbe77bfdd9b7729a8a2d47c33647c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0036.png": {
+    "mtime": 1784150985.1689408,
+    "ast_hash": "3d98ef4dc2b19f55ef98831d566b6b94",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0037.png": {
+    "mtime": 1784150985.1839366,
+    "ast_hash": "9c4efff9b2d7da1c68d736df8feda0b3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0038.png": {
+    "mtime": 1784150985.1959324,
+    "ast_hash": "cd8df02897a887e532a82ed77c9e8edf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0039.png": {
+    "mtime": 1784150985.20793,
+    "ast_hash": "fc729f5a75f0d9a4186f7281f870e46c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0040.png": {
+    "mtime": 1784150985.2189276,
+    "ast_hash": "d94b57db5fc3b2d4eb532c260205d039",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0041.png": {
+    "mtime": 1784150985.2319226,
+    "ast_hash": "81a35561a73e202151c63a2ee1f65fe9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0042.png": {
+    "mtime": 1784150985.2429173,
+    "ast_hash": "94b2be6e7a36efcae0de72d16806bf09",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0043.png": {
+    "mtime": 1784150985.2539148,
+    "ast_hash": "99d764ef9ac329c754ec1c15531f8040",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0044.png": {
+    "mtime": 1784150985.2659109,
+    "ast_hash": "943e289d675750a98b48b17b8b4ce9dd",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0045.png": {
+    "mtime": 1784150985.2789066,
+    "ast_hash": "61b84193a41c9cc029cebf6d6d153b9b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0046.png": {
+    "mtime": 1784150985.2919042,
+    "ast_hash": "84af994907ba2587d11be653b7866514",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0047.png": {
+    "mtime": 1784150985.302899,
+    "ast_hash": "c4b18929dbfec16371d59a738d11b583",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0048.png": {
+    "mtime": 1784150985.316896,
+    "ast_hash": "a3941304862d34248650df4e567fd76f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0049.png": {
+    "mtime": 1784150985.3295808,
+    "ast_hash": "5c03e3ec53fa8a8b6ef87ffdbff8be00",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0050.png": {
+    "mtime": 1784150985.340744,
+    "ast_hash": "33eaec3b08c4ba5fd0ca5cdadb584d4c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0051.png": {
+    "mtime": 1784150985.3517349,
+    "ast_hash": "1d0148f8a5e1a277c15aad82d8ce9d11",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0052.png": {
+    "mtime": 1784150985.3657296,
+    "ast_hash": "b2d15648339abb0e389230e8d2e7cdf2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0053.png": {
+    "mtime": 1784150985.3777306,
+    "ast_hash": "42840b0189ed4efb052d2c6773b0df6a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0054.png": {
+    "mtime": 1784150985.3907223,
+    "ast_hash": "188fa65f622a3926a10300f9a674725a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0055.png": {
+    "mtime": 1784150985.4007196,
+    "ast_hash": "6d2f9df0cc0eaa785f0534837f70a807",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0056.png": {
+    "mtime": 1784150985.415714,
+    "ast_hash": "5f1e41f0a880c392a1bc3a4422002d9f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0057.png": {
+    "mtime": 1784150985.427648,
+    "ast_hash": "61f01edf9bedb85f012c9519f8a9a543",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0058.png": {
+    "mtime": 1784150985.4426444,
+    "ast_hash": "6f9f99c36a70fd5d7860d8107fc9c66b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0059.png": {
+    "mtime": 1784150985.4526417,
+    "ast_hash": "da71045590e30c0fee8e64327e1cb907",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0060.png": {
+    "mtime": 1784150985.4666362,
+    "ast_hash": "05bf0ff86591e20d932e8ebd475d6a43",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0061.png": {
+    "mtime": 1784150985.4826324,
+    "ast_hash": "16889b33a8b2b1e1f6534ad6a3f86746",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0062.png": {
+    "mtime": 1784150985.4986258,
+    "ast_hash": "96f5ecbc4c86519489ebd86203815956",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0063.png": {
+    "mtime": 1784150985.5116212,
+    "ast_hash": "b69ef8d69ede4edaaf6614777b2f7454",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0064.png": {
+    "mtime": 1784150985.5236216,
+    "ast_hash": "8536a531fd031ce007bec05c89090ed3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0065.png": {
+    "mtime": 1784150985.5346146,
+    "ast_hash": "4fe5dbdcb3fa3fb9dc501b49d5da260b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0066.png": {
+    "mtime": 1784150985.5466094,
+    "ast_hash": "fb3e3868ee035afaeccd5e157179faac",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0067.png": {
+    "mtime": 1784150985.56293,
+    "ast_hash": "f731cb1af5ba766a36b584042a38e01e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0068.png": {
+    "mtime": 1784150985.5739286,
+    "ast_hash": "a3429120a75b965bbacf9d9244399598",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0069.png": {
+    "mtime": 1784150985.5839243,
+    "ast_hash": "fea5f0f3fa59942d54453a3c425d4e19",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0070.png": {
+    "mtime": 1784150985.59492,
+    "ast_hash": "5881bb987ecd422e4bdbc2f78441075c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0071.png": {
+    "mtime": 1784150985.6123707,
+    "ast_hash": "38bb4d93371be2784cb7d14a290c10a7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0072.png": {
+    "mtime": 1784150985.6243682,
+    "ast_hash": "fdc928a16ef0c4dcbe62fe57637d7a02",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0073.png": {
+    "mtime": 1784150985.6333647,
+    "ast_hash": "a596027e6737d27a45e3fe67d74c0b06",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0074.png": {
+    "mtime": 1784150985.645354,
+    "ast_hash": "aa5d4ed18ecfcbc912e60baab1f2139c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0075.png": {
+    "mtime": 1784150985.658351,
+    "ast_hash": "918760f8ba16c34fe474834ae6d7c966",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0076.png": {
+    "mtime": 1784150985.6852255,
+    "ast_hash": "8781e572f04a3964ebb01ac819cb4846",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0077.png": {
+    "mtime": 1784150985.905682,
+    "ast_hash": "0eab6a23c6e409a45491c0dc7cf44e14",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0078.png": {
+    "mtime": 1784150985.9186783,
+    "ast_hash": "0a58b636e90fc9f7d510824f30d2bdd7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0079.png": {
+    "mtime": 1784150985.9336765,
+    "ast_hash": "c6d6d9cf152b87dd1e69ea08507108b8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0080.png": {
+    "mtime": 1784150985.9472437,
+    "ast_hash": "7b51307bab0050f19d7a86af11b235c6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0081.png": {
+    "mtime": 1784150985.961242,
+    "ast_hash": "9afd524fd80b8f43f91978adad0c19be",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0082.png": {
+    "mtime": 1784150985.9782362,
+    "ast_hash": "30a2d87cf4004e8974c3ff5b44e5e014",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0083.png": {
+    "mtime": 1784150985.993462,
+    "ast_hash": "26a22a944f9c04deb0bb1c850180fd30",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0084.png": {
+    "mtime": 1784150986.007461,
+    "ast_hash": "6017bf2fd404a3ab2634c378d7be9751",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0085.png": {
+    "mtime": 1784150986.0204546,
+    "ast_hash": "61fb94a39fcdd593146b8098191851ca",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0086.png": {
+    "mtime": 1784150986.0424483,
+    "ast_hash": "116efc595c2fb36a2dd3870d501c0236",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0087.png": {
+    "mtime": 1784150986.0564415,
+    "ast_hash": "93fdbd294b8fe4d631c54ddf80876b62",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0088.png": {
+    "mtime": 1784150986.0684378,
+    "ast_hash": "5ee5abc9e0432bf6ef6e9b3e1e1a8fb0",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0089.png": {
+    "mtime": 1784150986.086433,
+    "ast_hash": "bc1ac3bcbcb185d74357b81133dbb1bc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0090.png": {
+    "mtime": 1784150986.101429,
+    "ast_hash": "1e597763a7efe5dfcd1b28182e19d397",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0091.png": {
+    "mtime": 1784150986.1164248,
+    "ast_hash": "9da70faa139b88455ef60924d708e6f5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0092.png": {
+    "mtime": 1784150986.1304717,
+    "ast_hash": "f651fa8017fd14f5f59364aff4f5f811",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0093.png": {
+    "mtime": 1784150986.1348023,
+    "ast_hash": "be6d4eccbba514dd3d0f9d424836cc48",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0094.png": {
+    "mtime": 1784150986.1598403,
+    "ast_hash": "bf6d832c514c03983a5d87f568f53d82",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0095.png": {
+    "mtime": 1784150986.1659105,
+    "ast_hash": "29b18d11df115229e2e25dc65119bff4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0096.png": {
+    "mtime": 1784150986.1815364,
+    "ast_hash": "40518cb44448596abe416d83c134d9f8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0097.png": {
+    "mtime": 1784150986.1815364,
+    "ast_hash": "85759a3c434dc3afc6d041510d244652",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0098.png": {
+    "mtime": 1784150986.197161,
+    "ast_hash": "2cde9993ff0bd21739325cb88329875a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0099.png": {
+    "mtime": 1784150986.2149582,
+    "ast_hash": "8bcf983e498cd3d88491594e9092f9cf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0100.png": {
+    "mtime": 1784150986.2269566,
+    "ast_hash": "00f1196d25e55fed70c15fdfe62a87d0",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0101.png": {
+    "mtime": 1784150986.2355278,
+    "ast_hash": "1f0a1c8b96bb831f861a997d970543f8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0102.png": {
+    "mtime": 1784150986.2461388,
+    "ast_hash": "8d644f2728c05f26e021cac1733aba27",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0103.png": {
+    "mtime": 1784150986.2617638,
+    "ast_hash": "a346f32a9aef7988891c0770dfc2b0e3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0104.png": {
+    "mtime": 1784150986.2617638,
+    "ast_hash": "156f5c5ccb36214a19596cea6967cb09",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0105.png": {
+    "mtime": 1784150986.27739,
+    "ast_hash": "72e30bfa8bd89c2d828a077e339d8f3e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0106.png": {
+    "mtime": 1784150986.2889433,
+    "ast_hash": "f046205f595b4bc899f188f1352bd360",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0107.png": {
+    "mtime": 1784150986.2889433,
+    "ast_hash": "f5dfa95474045498997c23df5d053b09",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0108.png": {
+    "mtime": 1784150986.304568,
+    "ast_hash": "3d7be5dd357fb4176c48168a35827b73",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0109.png": {
+    "mtime": 1784150986.320194,
+    "ast_hash": "ce508fa15b91ec495115986218a1daef",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0110.png": {
+    "mtime": 1784150986.320194,
+    "ast_hash": "8e13936836e3c6ea730bfbb87046cd7d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0111.png": {
+    "mtime": 1784150986.343965,
+    "ast_hash": "f800cfc782ade2ad175ddbcdbf1931d0",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0112.png": {
+    "mtime": 1784150986.3519623,
+    "ast_hash": "860babe076b0e7c01b014b850b69126a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0113.png": {
+    "mtime": 1784150986.3549075,
+    "ast_hash": "025b0cbc6f30302dca8c6d551422db5a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0114.png": {
+    "mtime": 1784150986.3705347,
+    "ast_hash": "ad0c54e04197d953aabbbee3cf95b607",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0115.png": {
+    "mtime": 1784150986.3705347,
+    "ast_hash": "290c8793c981e00b6dbdea89812bc938",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0116.png": {
+    "mtime": 1784150986.386158,
+    "ast_hash": "20571d4d9f5b4e5556682add8a4c41d1",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0117.png": {
+    "mtime": 1784150986.4017835,
+    "ast_hash": "672f3cdb208640a0a4868b0a1c2adcd9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0118.png": {
+    "mtime": 1784150986.4017835,
+    "ast_hash": "dfb90f3c14d6e73313161f70385c8534",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0119.png": {
+    "mtime": 1784150986.4174082,
+    "ast_hash": "1ba36a830106d19a677de69961f71c8d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0120.png": {
+    "mtime": 1784150986.433159,
+    "ast_hash": "6ddb3c476502063bb902447ebacbf01f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0121.png": {
+    "mtime": 1784150986.4441583,
+    "ast_hash": "10b556101c5429fc5a8648f6b0abe606",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0122.png": {
+    "mtime": 1784150986.4514241,
+    "ast_hash": "719c8627bc895fbaaf3ccb7df910122c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0123.png": {
+    "mtime": 1784150986.4614217,
+    "ast_hash": "2fa0a01dbc665f9a9acaa28591be1679",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0124.png": {
+    "mtime": 1784150986.4624565,
+    "ast_hash": "4e07ad341ae6dc840a5a455be2702d43",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0125.png": {
+    "mtime": 1784150986.478083,
+    "ast_hash": "0f779ac70af6a8b92f0de2282f62fa93",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0126.png": {
+    "mtime": 1784150986.478083,
+    "ast_hash": "ba83961eeb6ee149565c25d0c8e46c6d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0127.png": {
+    "mtime": 1784150986.4937248,
+    "ast_hash": "6a4d69f3c49d4359f740390053783426",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0128.png": {
+    "mtime": 1784150986.4937248,
+    "ast_hash": "e9c62257dc79f1e89e0552aa06eb7906",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0129.png": {
+    "mtime": 1784150986.5093346,
+    "ast_hash": "02047ec447543bbe98c2685543e5c1e3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0130.png": {
+    "mtime": 1784150986.524959,
+    "ast_hash": "574b6bf4cfd24096a64952b4bade5722",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0131.png": {
+    "mtime": 1784150986.5405967,
+    "ast_hash": "1659126621d06b7f55a4424e677d1d68",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0132.png": {
+    "mtime": 1784150986.5493581,
+    "ast_hash": "e20ddb71ff8aec31d45b0487394c2453",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0133.png": {
+    "mtime": 1784150986.5599954,
+    "ast_hash": "c15ed9288340083c3aa95da8ab448d2e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0134.png": {
+    "mtime": 1784150986.5679946,
+    "ast_hash": "9df67125a452b4cc9996c4c60eedaf1f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0135.png": {
+    "mtime": 1784150986.5710876,
+    "ast_hash": "a8b873743b672dcb62092a66c408621b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0136.png": {
+    "mtime": 1784150986.5867157,
+    "ast_hash": "a72a3c342daf9703f22d81b7ac4bf332",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0137.png": {
+    "mtime": 1784150986.5867157,
+    "ast_hash": "31710f6957eb11a2bb887aae316aa2c6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0138.png": {
+    "mtime": 1784150986.6023388,
+    "ast_hash": "ba655bfbc2f1040a83b7cb908e0ae2a8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0139.png": {
+    "mtime": 1784150986.6179633,
+    "ast_hash": "d78dbe676c2cb8f74c410192e7593f39",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0140.png": {
+    "mtime": 1784150986.6179633,
+    "ast_hash": "b1ef1ef1d7034a3e15631044b730cde2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0141.png": {
+    "mtime": 1784150986.6336067,
+    "ast_hash": "c3b1f862b9365af013531ce16805e74c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0142.png": {
+    "mtime": 1784150986.6492147,
+    "ast_hash": "350cac890229c113b49f50f86a7089f1",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0143.png": {
+    "mtime": 1784150986.6492147,
+    "ast_hash": "5490fce3da2590eb99e4f347f8590cdc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0144.png": {
+    "mtime": 1784150986.667914,
+    "ast_hash": "1687a42af7531ebba286d63f64d249ae",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0145.png": {
+    "mtime": 1784150986.67891,
+    "ast_hash": "87ceb4ebc9b61bcff5fd2291d129708b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0146.png": {
+    "mtime": 1784150986.6809497,
+    "ast_hash": "b416986662af8b3d4f9ec3afad3c836b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0147.png": {
+    "mtime": 1784150986.6965766,
+    "ast_hash": "e1b4a36c8eee6534a486d5552f9229bf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0148.png": {
+    "mtime": 1784150986.6965766,
+    "ast_hash": "6a65951de9a1063a5838ea33feef0c14",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0149.png": {
+    "mtime": 1784150986.712201,
+    "ast_hash": "202c8c9f5df637307835c48136de782a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0150.png": {
+    "mtime": 1784150986.727825,
+    "ast_hash": "da2116fe7ff22d538af4181f5e107616",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0151.png": {
+    "mtime": 1784150986.727825,
+    "ast_hash": "ebd7bd0e49fd98bb2649718dfecab568",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0152.png": {
+    "mtime": 1784150986.7434535,
+    "ast_hash": "3a51c3b8808b649027c702ce3548385a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0153.png": {
+    "mtime": 1784150986.7611406,
+    "ast_hash": "3992056fdc40d33b1ee7f7a094fe3e99",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0154.png": {
+    "mtime": 1784150986.768137,
+    "ast_hash": "2e5d7c94c6196d87813fdf5422cff1df",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0155.png": {
+    "mtime": 1784150986.7801337,
+    "ast_hash": "4dec0fabee04a496b33be14112e28f6b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0156.png": {
+    "mtime": 1784150986.7911303,
+    "ast_hash": "f3c2125012af6d9e98b9cc255ddfa29e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0157.png": {
+    "mtime": 1784150986.7938375,
+    "ast_hash": "e62ba9886d27c2db2f3f227a79beb7f9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0158.png": {
+    "mtime": 1784150986.8094645,
+    "ast_hash": "92da66edadbedca2c450c2c8f6201e74",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0159.png": {
+    "mtime": 1784150986.8250892,
+    "ast_hash": "52cafed19810ced08c312509a62b0b6f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0160.png": {
+    "mtime": 1784150986.8250892,
+    "ast_hash": "a0bd6131a8e94689d98a6c748b7ce2c6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0161.png": {
+    "mtime": 1784150986.8407173,
+    "ast_hash": "74c006b335890f726ef7b27568c2a236",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0162.png": {
+    "mtime": 1784150986.8563435,
+    "ast_hash": "177680b17890a30b671d5be06a705a83",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0163.png": {
+    "mtime": 1784150986.8563435,
+    "ast_hash": "3b1fdc7226c027d89bc8758a1bcaccf6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0164.png": {
+    "mtime": 1784150986.8719633,
+    "ast_hash": "c1f459866651202b2d4e8ff884dd52f8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0165.png": {
+    "mtime": 1784150986.8926985,
+    "ast_hash": "7eaaaf0630c8a0548dd59649ba196400",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0166.png": {
+    "mtime": 1784150986.8997238,
+    "ast_hash": "442db4497341517d174791f1745ea744",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0167.png": {
+    "mtime": 1784150986.8997238,
+    "ast_hash": "02f203da845e4c6ac956c170bf35ec3c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0168.png": {
+    "mtime": 1784150986.9153495,
+    "ast_hash": "e95edaac46dbf2a521a98b9356eb12e2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0169.png": {
+    "mtime": 1784150986.9309747,
+    "ast_hash": "c97bdeae3fe716f2045f367f7288ed14",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0170.png": {
+    "mtime": 1784150986.9309747,
+    "ast_hash": "98d7d7161fff883c7a0afee394385b0a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0171.png": {
+    "mtime": 1784150986.9466004,
+    "ast_hash": "d871abd046017c57c69c1c332868f5bc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0172.png": {
+    "mtime": 1784150986.9622252,
+    "ast_hash": "3d39778d85c4bc1d398ccca10afdfcf7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0173.png": {
+    "mtime": 1784150986.9778538,
+    "ast_hash": "00b8056fa6e4a0e163889d20dd5ff0de",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0174.png": {
+    "mtime": 1784150986.9778538,
+    "ast_hash": "564e34fa0bddd9881ef693f471bbf979",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0175.png": {
+    "mtime": 1784150986.9986415,
+    "ast_hash": "42e7c5cae716ada703cf62283c00fa80",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0176.png": {
+    "mtime": 1784150987.0086384,
+    "ast_hash": "343fcd435fb5daa8dd56c0b3de098dbb",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0177.png": {
+    "mtime": 1784150987.0273473,
+    "ast_hash": "5e3039409d12c1a5c23b44f0b5efd7d2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0178.png": {
+    "mtime": 1784150987.089851,
+    "ast_hash": "17c075afb7117a982ba524aa6cf7bd02",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0179.png": {
+    "mtime": 1784150987.1347132,
+    "ast_hash": "f99795cf384f33b7fa9fb623460ac222",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0180.png": {
+    "mtime": 1784150987.2172787,
+    "ast_hash": "e208d45a37fd8f366846cea8c39371a4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0181.png": {
+    "mtime": 1784150987.2439916,
+    "ast_hash": "79c03912952ff3ac0adc796427941602",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0182.png": {
+    "mtime": 1784150987.2439916,
+    "ast_hash": "db92f3b5a07fe38c5ce1831b73280942",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0183.png": {
+    "mtime": 1784150987.2596178,
+    "ast_hash": "6c24bbbb4ef88c919afed38f937ff44d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0184.png": {
+    "mtime": 1784150987.2596178,
+    "ast_hash": "846bfbf52c70db46ba0e1d0d2bfcabe0",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0185.png": {
+    "mtime": 1784150987.2752402,
+    "ast_hash": "52e5500803a1815fb17dfe1dd2638493",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0186.png": {
+    "mtime": 1784150987.2908695,
+    "ast_hash": "5a4d6f1b183e4a13c916685e408ae6ce",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0187.png": {
+    "mtime": 1784150987.2908695,
+    "ast_hash": "536fcf4817721cfba34974bc7ecb5a2c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0188.png": {
+    "mtime": 1784150987.3064919,
+    "ast_hash": "293c788c7f735fd59423fcce3d7a782a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0189.png": {
+    "mtime": 1784150987.3064919,
+    "ast_hash": "b0b53d47e19639269ab330e7e247d171",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0190.png": {
+    "mtime": 1784150987.3290515,
+    "ast_hash": "5c397cf95624d2a975289dbcda19284c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0191.png": {
+    "mtime": 1784150987.336049,
+    "ast_hash": "c5872a8729dcb91dda1896e30746e775",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0192.png": {
+    "mtime": 1784150987.3370893,
+    "ast_hash": "6727932803fad91eb8629cad404ec32f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0193.png": {
+    "mtime": 1784150987.3527162,
+    "ast_hash": "732e03a2816adaaca4e3cf03dbd6f2e5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0194.png": {
+    "mtime": 1784150987.3527162,
+    "ast_hash": "529e305c58417453e46f5465722c9e55",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0195.png": {
+    "mtime": 1784150987.3712845,
+    "ast_hash": "c5b368b2b8d0f74cdc16ee2c3cd6c31f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0196.png": {
+    "mtime": 1784150987.3814921,
+    "ast_hash": "5d5d292c308cf6cd8deb3130e007896f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0197.png": {
+    "mtime": 1784150987.3971229,
+    "ast_hash": "d7789792526457eccb0bb4b1212c90ef",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0198.png": {
+    "mtime": 1784150987.3971229,
+    "ast_hash": "e79aed1dee3aa08a45b14aae9273ebac",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0199.png": {
+    "mtime": 1784150987.4127474,
+    "ast_hash": "b836bc8f728a9f55cea2dfafad66c11e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0200.png": {
+    "mtime": 1784150987.4283729,
+    "ast_hash": "9f47015abd73f5c1e27aea01136f3bd9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0201.png": {
+    "mtime": 1784150987.4439986,
+    "ast_hash": "7ad4ab5f25c0b44e0d7888dbf8e31059",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0202.png": {
+    "mtime": 1784150987.452739,
+    "ast_hash": "50bb803e886b64c633cdb77d93cce407",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0203.png": {
+    "mtime": 1784150987.4627657,
+    "ast_hash": "4c3a112846a7644caa83d6d31174ee86",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0204.png": {
+    "mtime": 1784150987.4783921,
+    "ast_hash": "c029815b621201d35afeecf5ace95494",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0205.png": {
+    "mtime": 1784150987.4783921,
+    "ast_hash": "5487029adb8c496ac8b1131d9c7204a4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0206.png": {
+    "mtime": 1784150987.4940176,
+    "ast_hash": "949146699e723b8167c853688c830269",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0207.png": {
+    "mtime": 1784150987.4940176,
+    "ast_hash": "d004defa3a176267a056e973ce68bab9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0208.png": {
+    "mtime": 1784150987.5193403,
+    "ast_hash": "7645c93dc18724b49e933f25733c6188",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0209.png": {
+    "mtime": 1784150987.5313354,
+    "ast_hash": "78f367abbb9a7b8b4471d2763258ef4e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0210.png": {
+    "mtime": 1784150987.543993,
+    "ast_hash": "3ba333821a964a76602077710aaea7b9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0211.png": {
+    "mtime": 1784150987.559618,
+    "ast_hash": "5b87e67d1ade34b00a3451ef1431460b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0212.png": {
+    "mtime": 1784150987.5752428,
+    "ast_hash": "e1ac549fcc2d9219f9bc5392d7b10f04",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0213.png": {
+    "mtime": 1784150987.5908668,
+    "ast_hash": "280cd61bdeb2042ef5e5ad88962f3221",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0214.png": {
+    "mtime": 1784150987.6064932,
+    "ast_hash": "4080fc1cec50c9b42b565c2087ae44a2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0215.png": {
+    "mtime": 1784150987.6221168,
+    "ast_hash": "ef19a96c8a8b9c340f2c243d7552286e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0216.png": {
+    "mtime": 1784150987.6377416,
+    "ast_hash": "3807b473f94286734c6c86527aafdec2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/frame_0217.png": {
+    "mtime": 1784150987.6377416,
+    "ast_hash": "35c26d68e129a50e4ad2dc94e0d5dada",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0001.png": {
+    "mtime": 1784150987.6533692,
+    "ast_hash": "d072a2f479b361ddc4d9a4e297698f38",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0002.png": {
+    "mtime": 1784150987.6689925,
+    "ast_hash": "119888f146f1d2c55c1df9284549af28",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0003.png": {
+    "mtime": 1784150987.6689925,
+    "ast_hash": "dff62095110567d72b6280106ed222eb",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0004.png": {
+    "mtime": 1784150987.6846168,
+    "ast_hash": "dfa7ff81ed48c0d77bd9722fcf53eb0d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0005.png": {
+    "mtime": 1784150987.7002418,
+    "ast_hash": "6c5a3cc6ba8042b5a64454adcfbc6703",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0006.png": {
+    "mtime": 1784150987.7248123,
+    "ast_hash": "27595225a134f40647d818dee48d23af",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0007.png": {
+    "mtime": 1784150987.735801,
+    "ast_hash": "6e87211485c4849fbe7d62458e7896bd",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0008.png": {
+    "mtime": 1784150987.745795,
+    "ast_hash": "2b8414002238a6cd5431350bbf9a7f3c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0009.png": {
+    "mtime": 1784150987.74825,
+    "ast_hash": "0bd762b2e852191de8e64a153c61537a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0010.png": {
+    "mtime": 1784150987.7638736,
+    "ast_hash": "063ae792497dbf930fbadfaab23f0587",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0011.png": {
+    "mtime": 1784150987.7638736,
+    "ast_hash": "30b15001b4ea9075e1b9ade8413a7af8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0012.png": {
+    "mtime": 1784150987.77959,
+    "ast_hash": "50381dadcce4a120d63726685b61c3c7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0013.png": {
+    "mtime": 1784150987.7951252,
+    "ast_hash": "3b7a39b3382a2d2550f6c2456f6ae55c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0014.png": {
+    "mtime": 1784150987.7951252,
+    "ast_hash": "b9c4109a5a384ba57ff958daa042c3fa",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0015.png": {
+    "mtime": 1784150987.8107495,
+    "ast_hash": "fbaace416e32287282a97221e6eb39a9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0016.png": {
+    "mtime": 1784150987.8263755,
+    "ast_hash": "aea175fd5552cf64bd87608371131a12",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0017.png": {
+    "mtime": 1784150987.841999,
+    "ast_hash": "ed0a0dc9cb364d720b7da5eded9ebea4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0018.png": {
+    "mtime": 1784150987.841999,
+    "ast_hash": "66331c4d4ccb65c51ff45614643b9598",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0019.png": {
+    "mtime": 1784150987.8732584,
+    "ast_hash": "8f491aef40ea702618ce53992dac8241",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0020.png": {
+    "mtime": 1784150987.8888745,
+    "ast_hash": "ad5232b9a7a4fd9825ec205d7e5a7755",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0021.png": {
+    "mtime": 1784150987.9044983,
+    "ast_hash": "2077e46de1df34b727b5e47130d3562f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0022.png": {
+    "mtime": 1784150987.9201252,
+    "ast_hash": "77e790f2db652273fb92ec379569fe4b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0023.png": {
+    "mtime": 1784150987.9201252,
+    "ast_hash": "67f59509e3bdbe4bfe7924c0b5060d2b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0024.png": {
+    "mtime": 1784150987.935748,
+    "ast_hash": "5366795f098eee6798c4f564bf358045",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0025.png": {
+    "mtime": 1784150987.9534986,
+    "ast_hash": "85a9217a1ddecb031b2317b210789084",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0026.png": {
+    "mtime": 1784150987.9644966,
+    "ast_hash": "d6900ac8089e57dfb1bcb2af24c094a6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0027.png": {
+    "mtime": 1784150987.9754932,
+    "ast_hash": "662f06b9b50cb6663d30655186a13b3a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0028.png": {
+    "mtime": 1784150987.985489,
+    "ast_hash": "1a8f54ebe94e099a16b4b525a67ba298",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0029.png": {
+    "mtime": 1784150988.0034838,
+    "ast_hash": "00a63755da70bc7cd8801a776d5b678d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0030.png": {
+    "mtime": 1784150988.0144804,
+    "ast_hash": "88733b711a1fe399f13ca69e24b4118f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0031.png": {
+    "mtime": 1784150988.0254767,
+    "ast_hash": "f009316dd415731283a2d2514d01f4c7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0032.png": {
+    "mtime": 1784150988.0344734,
+    "ast_hash": "8946796fe8a92a58bd00223bd9fd795b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0033.png": {
+    "mtime": 1784150988.0514681,
+    "ast_hash": "4a8f8f9b113c3529f441fafcd4946093",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0034.png": {
+    "mtime": 1784150988.0664632,
+    "ast_hash": "6cc5c5e19d8e5bc5de056b8e5613f748",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0035.png": {
+    "mtime": 1784150988.0834577,
+    "ast_hash": "dc35492e4f3b177dd248eac526eadc79",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0036.png": {
+    "mtime": 1784150988.0964544,
+    "ast_hash": "d32e8f243b6b0961fb6184f268242ed4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0037.png": {
+    "mtime": 1784150988.1314418,
+    "ast_hash": "9d5a10e1ab0147026bbe836e663b0e41",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0038.png": {
+    "mtime": 1784150988.1444407,
+    "ast_hash": "15fbbf13db668de949f7a0001e7b84b8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0039.png": {
+    "mtime": 1784150988.158434,
+    "ast_hash": "a0ead991df155895ce6b447d892c5ec9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0040.png": {
+    "mtime": 1784150988.1684327,
+    "ast_hash": "09c6bf80f6075af1e0a0a08c7a0784ae",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0041.png": {
+    "mtime": 1784150988.1924245,
+    "ast_hash": "55361fe774311b5f06473cc676c454b2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0042.png": {
+    "mtime": 1784150988.2014236,
+    "ast_hash": "bf08c6c17566a62fe344e7d6c768eacf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0043.png": {
+    "mtime": 1784150988.214416,
+    "ast_hash": "f5f77cfeea5ca7e0efa4deb44b9011d4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0044.png": {
+    "mtime": 1784150988.2294114,
+    "ast_hash": "53dce31eaf61a51aacede1cceb33c978",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0045.png": {
+    "mtime": 1784150988.242409,
+    "ast_hash": "b67ef31add12c52e1c7848eec9bbd30e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0046.png": {
+    "mtime": 1784150988.2673993,
+    "ast_hash": "c3c67fcb1abf8ca4cf67095779ff6073",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0047.png": {
+    "mtime": 1784150988.2783947,
+    "ast_hash": "7b221a6a013227da07570d02800f8468",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0048.png": {
+    "mtime": 1784150988.2878585,
+    "ast_hash": "d1a7c887ad6061db329f388c5eb699a6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0049.png": {
+    "mtime": 1784150988.3018541,
+    "ast_hash": "ac0506a1577e4ede5a91aa9a4236bc56",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0050.png": {
+    "mtime": 1784150988.325849,
+    "ast_hash": "1df2935ab68d073dbc5b4d2f420ab246",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0051.png": {
+    "mtime": 1784150988.337843,
+    "ast_hash": "7a7961b63022eaa7d2c7fc90a5c4db2c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0052.png": {
+    "mtime": 1784150988.3508384,
+    "ast_hash": "1988c939c1b5af6b4868c163d902cc24",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0053.png": {
+    "mtime": 1784150988.3628361,
+    "ast_hash": "519c9700b20bc5428d2ee3c2521db74a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0054.png": {
+    "mtime": 1784150988.3878264,
+    "ast_hash": "8de6be6a987fc23c0e097c9dabedc8d1",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0055.png": {
+    "mtime": 1784150988.4518056,
+    "ast_hash": "1647f3cffb986c27cb62a20ccbbf7824",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0056.png": {
+    "mtime": 1784150988.5147872,
+    "ast_hash": "2dd64d2f68a7927589259c5d86948737",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0057.png": {
+    "mtime": 1784150988.5407841,
+    "ast_hash": "8aba2d0a3a7d5138d2ccf6c02020decc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0058.png": {
+    "mtime": 1784150988.5867639,
+    "ast_hash": "7c09992d0d0a1e7419343d6ee56ee8df",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0059.png": {
+    "mtime": 1784150988.5997603,
+    "ast_hash": "1c065be739274a914bdefc0609171286",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0060.png": {
+    "mtime": 1784150988.6117554,
+    "ast_hash": "3769caefeedc70156b70e3d1a7ef992d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0061.png": {
+    "mtime": 1784150988.6277504,
+    "ast_hash": "7a39128114a68571e1af3ec151766c76",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0062.png": {
+    "mtime": 1784150988.6487424,
+    "ast_hash": "fbbbd90fd4459115167d45eecebc721d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0063.png": {
+    "mtime": 1784150988.6617386,
+    "ast_hash": "d2b3f30c1653d89880e6d29a42aa02e4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0064.png": {
+    "mtime": 1784150988.6757357,
+    "ast_hash": "14c1690a3e07a3761f5e3adc8cbb46c3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0065.png": {
+    "mtime": 1784150988.685732,
+    "ast_hash": "e2e2b0485dca20292a1c92c016639da9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0066.png": {
+    "mtime": 1784150988.7027266,
+    "ast_hash": "563e6e308a6e32a5fb2769a61666181a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0067.png": {
+    "mtime": 1784150988.7147238,
+    "ast_hash": "c353e9c9b6509ed693d46b2adc2031f3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0068.png": {
+    "mtime": 1784150988.726721,
+    "ast_hash": "85647171926205e50fc503f95d2c3655",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0069.png": {
+    "mtime": 1784150988.7357178,
+    "ast_hash": "e0a652b5cb8c037120539de0d2cccf57",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0070.png": {
+    "mtime": 1784150988.7507107,
+    "ast_hash": "a5253ca0c93e5b20b4ee90a07357089b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0071.png": {
+    "mtime": 1784150988.764706,
+    "ast_hash": "b26f69140f408f959ba31775e5316bf9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0072.png": {
+    "mtime": 1784150988.7777033,
+    "ast_hash": "ac661f54b150ee112c061cff6ecd0d87",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0073.png": {
+    "mtime": 1784150988.7876985,
+    "ast_hash": "d90475340a156d23887059754a7801bf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0074.png": {
+    "mtime": 1784150988.7996953,
+    "ast_hash": "6cc59de2c6401c878c5e9f323e5b9c05",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0075.png": {
+    "mtime": 1784150988.81569,
+    "ast_hash": "b03315fc49ea883e5f84f046681633eb",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0076.png": {
+    "mtime": 1784150988.8272262,
+    "ast_hash": "0834259aa334516fccf46d2e209e19d3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0077.png": {
+    "mtime": 1784150988.8362207,
+    "ast_hash": "55c3e958c8d72e72087dd7303f1d2f9c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0078.png": {
+    "mtime": 1784150988.8482165,
+    "ast_hash": "0739d7646136d3509d7e8dcf4f3cb700",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0079.png": {
+    "mtime": 1784150988.8605626,
+    "ast_hash": "b3b9836ba0b2cd7dce08675f37d49de8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0080.png": {
+    "mtime": 1784150988.8696692,
+    "ast_hash": "a7bbcb2646127edc73b208f543b8be13",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0081.png": {
+    "mtime": 1784150988.881664,
+    "ast_hash": "39873b9588169a6df12da9447c710b5b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0082.png": {
+    "mtime": 1784150988.89336,
+    "ast_hash": "0f380d24255a2dbd5f1ba50611cf05b7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0083.png": {
+    "mtime": 1784150988.9043543,
+    "ast_hash": "0abf990829679ff75b79dd571fd708e2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0084.png": {
+    "mtime": 1784150988.9153514,
+    "ast_hash": "176c83a3583e80b7ab431a7c0ecc0529",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0085.png": {
+    "mtime": 1784150988.9263515,
+    "ast_hash": "3dfad3cf563284a5cb77070b2f40c3f2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0086.png": {
+    "mtime": 1784150988.9353442,
+    "ast_hash": "4b674c3add595639c427ef7a0a2748e7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0087.png": {
+    "mtime": 1784150988.9463418,
+    "ast_hash": "216e3daaf84420f9fb6af3005d12b1ab",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0088.png": {
+    "mtime": 1784150988.9573374,
+    "ast_hash": "ef2c6fc23ca221e313a3c350730fd6ba",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0089.png": {
+    "mtime": 1784150988.9683354,
+    "ast_hash": "8adb6ac2a4bb262a9d22232ec6bb9201",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0090.png": {
+    "mtime": 1784150988.9797237,
+    "ast_hash": "e49a9fafb874b59083f32136be9be90a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0091.png": {
+    "mtime": 1784150988.9917254,
+    "ast_hash": "c181b3fc268a38fb15ac4048cb486841",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0092.png": {
+    "mtime": 1784150989.0197093,
+    "ast_hash": "1495be01b19198d30ea51e14ee052e0d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0093.png": {
+    "mtime": 1784150989.0427024,
+    "ast_hash": "20d7d77ea7e61b9d2a21b94512e41380",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0094.png": {
+    "mtime": 1784150989.0526998,
+    "ast_hash": "a7e098c4304b498cadea7e3cc45ee1a6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0095.png": {
+    "mtime": 1784150989.061698,
+    "ast_hash": "b7c0e504b791b86be7528b4a0d4fef64",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0096.png": {
+    "mtime": 1784150989.0716934,
+    "ast_hash": "059fbcbee9ee524f8e72ca0ea137b70b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0097.png": {
+    "mtime": 1784150989.0836895,
+    "ast_hash": "812d1d1fa3255ba4a745a565091d9dcf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0098.png": {
+    "mtime": 1784150989.0936873,
+    "ast_hash": "1d0b2f73a10a91618db3adcb09a64869",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0099.png": {
+    "mtime": 1784150989.103684,
+    "ast_hash": "7381a6bfa2d581443400f59a29488556",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0100.png": {
+    "mtime": 1784150989.11468,
+    "ast_hash": "0b6e6e9cd844b649e360225859d31856",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0101.png": {
+    "mtime": 1784150989.1271927,
+    "ast_hash": "90fc290ad9d736a58bee288bb851150d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0102.png": {
+    "mtime": 1784150989.1361883,
+    "ast_hash": "5f199537f0e48b72d69121552d429b81",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0103.png": {
+    "mtime": 1784150989.1481872,
+    "ast_hash": "1307c338fcb7168a67d666774b92ed1a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0104.png": {
+    "mtime": 1784150989.1601863,
+    "ast_hash": "ecf4fbe48dd713d511c11c9a8643717a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0105.png": {
+    "mtime": 1784150989.1691773,
+    "ast_hash": "f05060efac60437b52896b4992699fdb",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0106.png": {
+    "mtime": 1784150989.182173,
+    "ast_hash": "1d6f9f0ff43a13e18bcc9cb011013a0e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0107.png": {
+    "mtime": 1784150989.1931696,
+    "ast_hash": "ba3a0a290ff09720daa43b0eda5b7210",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0108.png": {
+    "mtime": 1784150989.2021668,
+    "ast_hash": "a0aa38ad1b2b059792ee85b7b1d4291e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0109.png": {
+    "mtime": 1784150989.213166,
+    "ast_hash": "5d1e56fe64da3700db1e1617227579ee",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0110.png": {
+    "mtime": 1784150989.2301593,
+    "ast_hash": "15ef80b1f3eafa10517c6ed98a4353e7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0111.png": {
+    "mtime": 1784150989.244161,
+    "ast_hash": "f17a7fb67563175e76be00cb2455eb42",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0112.png": {
+    "mtime": 1784150989.2571504,
+    "ast_hash": "e309dcee0b82f0cc4389318812039a69",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0113.png": {
+    "mtime": 1784150989.267147,
+    "ast_hash": "b9b26ff9c8b7993d9f60002bae555bd4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0114.png": {
+    "mtime": 1784150989.278147,
+    "ast_hash": "98218a6c7cfc8e224b7d8dcee3fa3ef5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0115.png": {
+    "mtime": 1784150989.2861407,
+    "ast_hash": "0f836825d8ce326d42c053b6d3da6e4f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0116.png": {
+    "mtime": 1784150989.302135,
+    "ast_hash": "16c5d7700c7bb47b39f9a5bd43c35674",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0117.png": {
+    "mtime": 1784150989.3141325,
+    "ast_hash": "69b77e18e54507319d5cc0c3571d44ab",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0118.png": {
+    "mtime": 1784150989.3251326,
+    "ast_hash": "eb39a4f19140d26fa158eecb9887990b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0119.png": {
+    "mtime": 1784150989.3341255,
+    "ast_hash": "065f7c71499518704a4d86cf395f52b4",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0120.png": {
+    "mtime": 1784150989.344122,
+    "ast_hash": "c621fba674ce893591114999a5d73825",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0121.png": {
+    "mtime": 1784150989.3531187,
+    "ast_hash": "16f776c304210af12737b5eb1e40c4a8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0122.png": {
+    "mtime": 1784150989.3641155,
+    "ast_hash": "6e72860c5c2f91f18e23ff57ec32cf71",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0123.png": {
+    "mtime": 1784150989.3761134,
+    "ast_hash": "95077f930d7ae49fdcaa2166b7af112f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0124.png": {
+    "mtime": 1784150989.396108,
+    "ast_hash": "9909d9add231dd7036d6a39efaa4d0ab",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0125.png": {
+    "mtime": 1784150989.4051025,
+    "ast_hash": "ebc1e607ac178e56b52f97d5a9810205",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0126.png": {
+    "mtime": 1784150989.4210968,
+    "ast_hash": "3a15de68667485fbf1ddb47b70e40ddf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0127.png": {
+    "mtime": 1784150989.4320939,
+    "ast_hash": "a14e94fabfa462fe6c42d6a58e35cc79",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0128.png": {
+    "mtime": 1784150989.4430938,
+    "ast_hash": "b2ed0fd282b05df49cb1f3a736b53a26",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0129.png": {
+    "mtime": 1784150989.452088,
+    "ast_hash": "83459769381403089a747fecae33d7f2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0130.png": {
+    "mtime": 1784150989.4680839,
+    "ast_hash": "fef8a16da55ce1778480a699f1d42bbb",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0131.png": {
+    "mtime": 1784150989.4791563,
+    "ast_hash": "94eb53c57735274f0640e4ccfb6ee40e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0132.png": {
+    "mtime": 1784150989.4951558,
+    "ast_hash": "28828cbf9ebc739a90cfa8e582a40347",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0133.png": {
+    "mtime": 1784150989.5041509,
+    "ast_hash": "3fb27ccf0b3237727250d09ec2c9a82a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0134.png": {
+    "mtime": 1784150989.5191448,
+    "ast_hash": "08d0cb10ce55c324b4acabd8dd2e4831",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0135.png": {
+    "mtime": 1784150989.530141,
+    "ast_hash": "510da5b66c0fa9829684859262bdf055",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0136.png": {
+    "mtime": 1784150989.5391376,
+    "ast_hash": "1193d9860ddf9fe0e3dda9383e8ce8f6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0137.png": {
+    "mtime": 1784150989.5501344,
+    "ast_hash": "fec48b3448640949aad08472ac4c7f81",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0138.png": {
+    "mtime": 1784150989.5661287,
+    "ast_hash": "965077002436128902e03609a9e5601e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0139.png": {
+    "mtime": 1784150989.5775068,
+    "ast_hash": "53ad03a257f98ab87c152e4822f4dd60",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0140.png": {
+    "mtime": 1784150989.585594,
+    "ast_hash": "4db25369c7a8d9a5aea250878f0837cf",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0141.png": {
+    "mtime": 1784150989.5965667,
+    "ast_hash": "e74c83a62e82e69b169378b0b78336e0",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0142.png": {
+    "mtime": 1784150989.6051025,
+    "ast_hash": "f4b0329e908f06c10104d49970d4bb24",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0143.png": {
+    "mtime": 1784150989.6181781,
+    "ast_hash": "2ae18b04f61dc8fcd874eb438a03bdf1",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0144.png": {
+    "mtime": 1784150989.632177,
+    "ast_hash": "c373604b59ba4b0f7a7c59706d519e69",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0145.png": {
+    "mtime": 1784150989.645955,
+    "ast_hash": "3c7b3e0e03cb43e07c897b96fdd93584",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0146.png": {
+    "mtime": 1784150989.6550374,
+    "ast_hash": "67c0d43732e6d01973d1ef3c014cf35f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0147.png": {
+    "mtime": 1784150989.6670325,
+    "ast_hash": "c60480cb7a4412c6b021ee2ee239c324",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0148.png": {
+    "mtime": 1784150989.679217,
+    "ast_hash": "a928c6164e21f391b4aa917504742b36",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0149.png": {
+    "mtime": 1784150989.6880932,
+    "ast_hash": "69d6af69b32f7edb87e1576c39c10da5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0150.png": {
+    "mtime": 1784150989.7020895,
+    "ast_hash": "953df7232b28cf188369cfdb7f348f8b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0151.png": {
+    "mtime": 1784150989.7130854,
+    "ast_hash": "73d76b28d2d0092507b499b62944f134",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0152.png": {
+    "mtime": 1784150989.7216697,
+    "ast_hash": "62a206ed47b9bb1af391ee6937ab98f6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0153.png": {
+    "mtime": 1784150989.7321434,
+    "ast_hash": "4e4c20504c8d12c7b168eadede32811e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0154.png": {
+    "mtime": 1784150989.743141,
+    "ast_hash": "d3e7218117f55cedd4aadb14658466f5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0155.png": {
+    "mtime": 1784150989.7521367,
+    "ast_hash": "1167eb83e1704a52424ae0ae177a2986",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0156.png": {
+    "mtime": 1784150989.8019018,
+    "ast_hash": "bd89fe69e4463572d03f6fb5e750f1ad",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0157.png": {
+    "mtime": 1784150989.851427,
+    "ast_hash": "8db18f9ff1eaaac089645cd6e0d3f413",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0158.png": {
+    "mtime": 1784150990.052791,
+    "ast_hash": "281afb64adf8586e3ff36c94f0c8f5b7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0159.png": {
+    "mtime": 1784150990.0698676,
+    "ast_hash": "7aaf7a2acfa6200860337438a3ca1516",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0160.png": {
+    "mtime": 1784150990.0809476,
+    "ast_hash": "faba5d9fbbb0d1e0248de2311817230c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0161.png": {
+    "mtime": 1784150990.0880182,
+    "ast_hash": "07dce62f1b947e210d35085c01728fd1",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0162.png": {
+    "mtime": 1784150990.098016,
+    "ast_hash": "65f5069739beb60c455a2bf3a4f6542a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0163.png": {
+    "mtime": 1784150990.1070876,
+    "ast_hash": "1e398681a40bf6f153ec5e9750bc296b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0164.png": {
+    "mtime": 1784150990.1170785,
+    "ast_hash": "ac3915a77a7c856de92003e16b93b3db",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0165.png": {
+    "mtime": 1784150990.1261675,
+    "ast_hash": "e9932a2c8cfb933a6076180f7f65aa67",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0166.png": {
+    "mtime": 1784150990.1341646,
+    "ast_hash": "21a5cbdf781c8aaf96d731ca8638a31c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0167.png": {
+    "mtime": 1784150990.1441646,
+    "ast_hash": "60c0b84358d219740d1d9197eedea37c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0168.png": {
+    "mtime": 1784150990.1502025,
+    "ast_hash": "7bdd6e1fd6a392de647cc4f17fb7c780",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0169.png": {
+    "mtime": 1784150990.1502025,
+    "ast_hash": "43fbad3f52322e6d08af53ef0d856e5d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0170.png": {
+    "mtime": 1784150990.1658287,
+    "ast_hash": "3d9a8f6a12d30bc4590476bd90074fcc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0171.png": {
+    "mtime": 1784150990.181455,
+    "ast_hash": "09bea3af2a73b551b8ef194e608de735",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0172.png": {
+    "mtime": 1784150990.181455,
+    "ast_hash": "6b6febeb6cb2817eea39790269fc6290",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0173.png": {
+    "mtime": 1784150990.1970785,
+    "ast_hash": "a85719818ca4933592b14e6b2f458ec0",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0174.png": {
+    "mtime": 1784150990.1970785,
+    "ast_hash": "69cab4cc0d27a52608d3da35659a8ecd",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0175.png": {
+    "mtime": 1784150990.2127025,
+    "ast_hash": "ff154344dad30388d2f0003197381052",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0176.png": {
+    "mtime": 1784150990.228328,
+    "ast_hash": "0366c68231e817210ed3912e5ae5eba0",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0177.png": {
+    "mtime": 1784150990.228328,
+    "ast_hash": "8467a7d7bf2e68651f4d90c0205fea40",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0178.png": {
+    "mtime": 1784150990.2455466,
+    "ast_hash": "6566630d39bbe5d5ab656670c82a4e69",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0179.png": {
+    "mtime": 1784150990.2525403,
+    "ast_hash": "feaac9bcaaa4907a1b7d1a8ceb3bd6d1",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0180.png": {
+    "mtime": 1784150990.2618146,
+    "ast_hash": "0715a14be08245ce040397805bb2be65",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0181.png": {
+    "mtime": 1784150990.2618146,
+    "ast_hash": "168adc75992d27a9376b88348eebce74",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0182.png": {
+    "mtime": 1784150990.2774444,
+    "ast_hash": "dfe9481a203c1a4185c8be3f26c32f0f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0183.png": {
+    "mtime": 1784150990.2774444,
+    "ast_hash": "e368be822ffefe90a5c8c5757f7642ea",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0184.png": {
+    "mtime": 1784150990.2930646,
+    "ast_hash": "ef1344e8a1e8c472e4db38c333467660",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0185.png": {
+    "mtime": 1784150990.2930646,
+    "ast_hash": "466c4ad3338db400d50e65d2c9e259dc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0186.png": {
+    "mtime": 1784150990.3086903,
+    "ast_hash": "5b4bc4cac8f519af181eba70165f563d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0187.png": {
+    "mtime": 1784150990.3243155,
+    "ast_hash": "1f8abf6c68532d493df08032da5542f0",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0188.png": {
+    "mtime": 1784150990.3243155,
+    "ast_hash": "5af9a1c17818ec48de774bc7802c54b9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0189.png": {
+    "mtime": 1784150990.3399398,
+    "ast_hash": "b0d4c41c6b74a2c63740bf02a3cea861",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0190.png": {
+    "mtime": 1784150990.3399398,
+    "ast_hash": "38291868e86dc368597d842d21f5ee12",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0191.png": {
+    "mtime": 1784150990.361669,
+    "ast_hash": "7f8bc20443651f9f9079db2828b77f34",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0192.png": {
+    "mtime": 1784150990.3686998,
+    "ast_hash": "616ee491996f24245b238821008ed74b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0193.png": {
+    "mtime": 1784150990.3686998,
+    "ast_hash": "65e4f2f142740e6394343086c6f14f0b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0194.png": {
+    "mtime": 1784150990.3843307,
+    "ast_hash": "6bb4dd273e0dbc03e48b0304b8fe164b",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0195.png": {
+    "mtime": 1784150990.3843307,
+    "ast_hash": "eb4bf190ed336d90b8fe0caeeb9c341f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0196.png": {
+    "mtime": 1784150990.3999507,
+    "ast_hash": "17ee8c5ccbaefdb704a69183aa06ec3c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0197.png": {
+    "mtime": 1784150990.3999507,
+    "ast_hash": "0fd6b1b3bd775d2f1f2590c1ef44a11c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0198.png": {
+    "mtime": 1784150990.415576,
+    "ast_hash": "aece92c27f0d7505777822895af8a653",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0199.png": {
+    "mtime": 1784150990.4312024,
+    "ast_hash": "ffe239233a2befe774390c1d0bf8d554",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0200.png": {
+    "mtime": 1784150990.4312024,
+    "ast_hash": "028eb8dd30b1daf949e8d176c5943b1a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0201.png": {
+    "mtime": 1784150990.446826,
+    "ast_hash": "1fb6e5fa9fc7666212db43c0fb1f9722",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0202.png": {
+    "mtime": 1784150990.446826,
+    "ast_hash": "ad0aa34fb628dbc559e7a96194ac7b61",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0203.png": {
+    "mtime": 1784150990.4679477,
+    "ast_hash": "b3c2bd32fdbd9e1f13b9d1eade1fe3df",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0204.png": {
+    "mtime": 1784150990.4779477,
+    "ast_hash": "31307acc928cc03fd7f3a4ae286002e6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0205.png": {
+    "mtime": 1784150990.485423,
+    "ast_hash": "b50ce7ed578dd63c20075a0fdc97e5d2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0206.png": {
+    "mtime": 1784150990.4944205,
+    "ast_hash": "f98fb045e8883ec13ee4a8438c6a4578",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0207.png": {
+    "mtime": 1784150990.4957612,
+    "ast_hash": "dd2a7da3152a503c8592943440672c28",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0208.png": {
+    "mtime": 1784150990.4957612,
+    "ast_hash": "dfec11c5b6c9fbbc0a39b78cd907d5d8",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0209.png": {
+    "mtime": 1784150990.5113883,
+    "ast_hash": "16da1bfd5017ff660ec830754b033f61",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0210.png": {
+    "mtime": 1784150990.5270138,
+    "ast_hash": "af06efd9b866ab88bf2375c2598cf5e9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0211.png": {
+    "mtime": 1784150990.5270138,
+    "ast_hash": "10ec219c61df5fedc233741188513d9a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0212.png": {
+    "mtime": 1784150990.5426407,
+    "ast_hash": "bc11e1ec013c25b3e22c0750a1905b2c",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0213.png": {
+    "mtime": 1784150990.5528438,
+    "ast_hash": "48cd04e5579d5de0156ac3f213eb9903",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0214.png": {
+    "mtime": 1784150990.56384,
+    "ast_hash": "45f505f29e02b3f44f8f9596ed30561a",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0215.png": {
+    "mtime": 1784150990.5708368,
+    "ast_hash": "1189452c62a0d406bbafe1ed31bf3233",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0216.png": {
+    "mtime": 1784150990.581165,
+    "ast_hash": "80e7720778c1b2996d5e4c42dcbb3fca",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/frames/nobg_frame_0217.png": {
+    "mtime": 1784150990.5871973,
+    "ast_hash": "54f6610cc789faf0b107533084a38375",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/test_small.webp": {
+    "mtime": 1784150990.6238246,
+    "ast_hash": "fabf1cf07096c82096154155e9b897d1",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/assets/avatar-bienvenido.webp": {
+    "mtime": 1784150990.7442353,
+    "ast_hash": "8f205059aafb0c2eef3f9f666ca7aa07",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/public/avatar-bienvenido.webp": {
+    "mtime": 1784150990.8064363,
+    "ast_hash": "8f205059aafb0c2eef3f9f666ca7aa07",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/fronted-pre/src/assets/images/sol_3d_avatar_1783115354185.jpg": {
+    "mtime": 1784150991.0772963,
+    "ast_hash": "790e9768c63ec1bc6f5e5bbf9e8ab96d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/fronted-pre/src/assets/images/sol_avatar_1783114987445.jpg": {
+    "mtime": 1784150991.0929205,
+    "ast_hash": "00d225ff5f6d106a27ebbd9413692bfc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/public/sol_avatar.jpg": {
+    "mtime": 1784150991.368294,
+    "ast_hash": "790e9768c63ec1bc6f5e5bbf9e8ab96d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/src/assets/images/sol_3d_avatar_1783115354185.jpg": {
+    "mtime": 1784150991.3995404,
+    "ast_hash": "790e9768c63ec1bc6f5e5bbf9e8ab96d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/src/assets/images/sol_avatar_1783114987445.jpg": {
+    "mtime": 1784150991.415167,
+    "ast_hash": "00d225ff5f6d106a27ebbd9413692bfc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/assets/avatar-bienvenido.webp": {
+    "mtime": 1784150991.5245495,
+    "ast_hash": "8f205059aafb0c2eef3f9f666ca7aa07",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-avatares/public/avatar-bienvenido.webp": {
+    "mtime": 1784150991.665166,
+    "ast_hash": "8f205059aafb0c2eef3f9f666ca7aa07",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/src/assets/images/sol_3d_avatar_1783115354185.jpg": {
+    "mtime": 1784150991.7589164,
+    "ast_hash": "790e9768c63ec1bc6f5e5bbf9e8ab96d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/src/assets/images/sol_avatar_1783114987445.jpg": {
+    "mtime": 1784150991.7745464,
+    "ast_hash": "00d225ff5f6d106a27ebbd9413692bfc",
+    "semantic_hash": ""
+  },
+  "humania/config/avatar/dominus_reference.png": {
+    "mtime": 1784150991.852666,
+    "ast_hash": "9e2bd859af2a9952c50771bda9471e2b",
+    "semantic_hash": ""
+  },
+  "humania/frontend/public/avatar/dominus_cuerpo_completo_institucional_v01.png": {
+    "mtime": 1784150991.883956,
+    "ast_hash": "6a3f5f63a2a24bd1cc0a69d6bc8f0275",
+    "semantic_hash": ""
+  },
+  "humania/frontend/public/avatar/dominus_cuerpo_completo_relajado_premium_v01.png": {
+    "mtime": 1784150991.89954,
+    "ast_hash": "8babbff5f1df19ad1e882d4f192c809c",
+    "semantic_hash": ""
+  },
+  "humania/frontend/public/avatar/dominus_medio_cuerpo_brazos_cruzados_v01.png": {
+    "mtime": 1784150991.9307923,
+    "ast_hash": "626368b374e9febc970bf3d6249401cb",
+    "semantic_hash": ""
+  },
+  "humania/frontend/public/avatar/dominus_medio_cuerpo_explicando_dos_manos_v01.png": {
+    "mtime": 1784150991.9464154,
+    "ast_hash": "2fe7b30761659d658c79bc687deb78a7",
+    "semantic_hash": ""
+  },
+  "humania/frontend/public/avatar/dominus_medio_cuerpo_mano_abierta_v01.png": {
+    "mtime": 1784150991.9776661,
+    "ast_hash": "7c97a706ab4e5b83760998d136b967c5",
+    "semantic_hash": ""
+  },
+  "humania/frontend/public/avatar/dominus_medio_cuerpo_neutro_v01.png": {
+    "mtime": 1784150991.9932916,
+    "ast_hash": "9e2bd859af2a9952c50771bda9471e2b",
+    "semantic_hash": ""
+  },
+  "humania/frontend/public/avatar/dominus_medio_cuerpo_senalando_abajo_cta_v01.png": {
+    "mtime": 1784150992.024543,
+    "ast_hash": "389fc024d94bb516efd1aed8c26fe150",
+    "semantic_hash": ""
+  },
+  "humania/frontend/public/avatar/dominus_medio_cuerpo_senalando_derecha_v01.png": {
+    "mtime": 1784150992.0557916,
+    "ast_hash": "9904335d70b7573dcf420ed633664026",
+    "semantic_hash": ""
+  },
+  "humania/frontend/public/avatar/dominus_medio_cuerpo_senalando_izquierda_v01.png": {
+    "mtime": 1784150992.0714152,
+    "ast_hash": "e60144cc16d23d95b16cc7a46ff6341e",
+    "semantic_hash": ""
+  },
+  "humania/frontend/public/avatar/dominus_primer_plano_serio_v01.png": {
+    "mtime": 1784150992.1026654,
+    "ast_hash": "9aa15238f5728c57d306089e82d78b93",
+    "semantic_hash": ""
+  },
+  "humania/frontend/public/avatar/dominus_primer_plano_sonrisa_confiada_v01.png": {
+    "mtime": 1784150992.1395369,
+    "ast_hash": "81bd3af1745be426b5e491b768571da9",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/Create_a_visual_storyboard_for_202607091303.jpeg": {
+    "mtime": 1784150992.2315056,
+    "ast_hash": "cb7a3d83cfc60ebf7377b7778da293bd",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/Storyboard_for_QuantumHive_Intro_202607091304.jpeg": {
+    "mtime": 1784150992.2445016,
+    "ast_hash": "a52e2590c63c1915c428143b04153fee",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/a968347f-2b30-4034-9f71-e5c8a112f8e3.png": {
+    "mtime": 1784150992.2844915,
+    "ast_hash": "bbfb0b015b6c32bcd9cb154ad5dd6edd",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/imagenes_dominus/cuerpo_completo/dominus_cuerpo_completo_institucional_v01.png": {
+    "mtime": 1784150992.3054836,
+    "ast_hash": "6a3f5f63a2a24bd1cc0a69d6bc8f0275",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/imagenes_dominus/cuerpo_completo/dominus_cuerpo_completo_relajado_premium_v01.png": {
+    "mtime": 1784150992.3224764,
+    "ast_hash": "8babbff5f1df19ad1e882d4f192c809c",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/imagenes_dominus/medio_cuerpo/dominus_medio_cuerpo_brazos_cruzados_v01.png": {
+    "mtime": 1784150992.3454733,
+    "ast_hash": "626368b374e9febc970bf3d6249401cb",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/imagenes_dominus/medio_cuerpo/dominus_medio_cuerpo_explicando_dos_manos_v01.png": {
+    "mtime": 1784150992.3614662,
+    "ast_hash": "2fe7b30761659d658c79bc687deb78a7",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/imagenes_dominus/medio_cuerpo/dominus_medio_cuerpo_mano_abierta_v01.png": {
+    "mtime": 1784150992.3764648,
+    "ast_hash": "7c97a706ab4e5b83760998d136b967c5",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/imagenes_dominus/medio_cuerpo/dominus_medio_cuerpo_neutro_v01.png": {
+    "mtime": 1784150992.3994524,
+    "ast_hash": "9e2bd859af2a9952c50771bda9471e2b",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/imagenes_dominus/medio_cuerpo/dominus_medio_cuerpo_senalando_abajo_cta_v01.png": {
+    "mtime": 1784150992.419445,
+    "ast_hash": "389fc024d94bb516efd1aed8c26fe150",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/imagenes_dominus/medio_cuerpo/dominus_medio_cuerpo_senalando_derecha_v01.png": {
+    "mtime": 1784150992.4334414,
+    "ast_hash": "9904335d70b7573dcf420ed633664026",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/imagenes_dominus/medio_cuerpo/dominus_medio_cuerpo_senalando_izquierda_v01.png": {
+    "mtime": 1784150992.4544337,
+    "ast_hash": "e60144cc16d23d95b16cc7a46ff6341e",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/imagenes_dominus/originales_descargados/guerrero_futurista_con_traje_cibernetico.png": {
+    "mtime": 1784150992.4986613,
+    "ast_hash": "73678cda1a261e5aa8a5da95fb41cc2c",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/imagenes_dominus/originales_descargados/hombre_cibernetico_con_traje_negro.png": {
+    "mtime": 1784150992.801978,
+    "ast_hash": "4c2f11655be0c1d797b216f96b9dc94c",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/imagenes_dominus/originales_descargados/hombre_futurista_con_traje_y_ciberarmadura.png": {
+    "mtime": 1784150992.828502,
+    "ast_hash": "dc12019c67c9fd64cfe71b37df8a59b6",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/imagenes_dominus/preview_verificacion/preview_transparencia_pack_completo.jpg": {
+    "mtime": 1784150992.834496,
+    "ast_hash": "5bfbc22a1a5a6bc8df4af4db8aa506de",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/imagenes_dominus/primer_plano/dominus_primer_plano_serio_v01.png": {
+    "mtime": 1784150992.8535843,
+    "ast_hash": "9aa15238f5728c57d306089e82d78b93",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/imagenes_dominus/primer_plano/dominus_primer_plano_sonrisa_confiada_v01.png": {
+    "mtime": 1784150992.870157,
+    "ast_hash": "81bd3af1745be426b5e491b768571da9",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/plantillas_de_video/ganchos/placa_mesero_virtual_dominus_v01.png": {
+    "mtime": 1784150992.9113264,
+    "ast_hash": "01a372133a8adc3c87471580233c96a2",
+    "semantic_hash": ""
+  },
+  "humania/kit_maestro_dominus/plantillas_de_video/ganchos/placa_mesero_virtual_dominus_v02.png": {
+    "mtime": 1784150992.926859,
+    "ast_hash": "4078f9155d206d92c9d463de52c6ae48",
+    "semantic_hash": ""
+  },
+  "AVATARES VIDEOS/workflows/test_audio.mp3": {
+    "mtime": 1784150984.261331,
+    "ast_hash": "4a209cb8e04720084d1040cdd2eaea4d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/assets/voice/sol_ar_v1_ref.wav": {
+    "mtime": 1784150984.366309,
+    "ast_hash": "60a07ddcbd0de758d2a49c21a0c12902",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/assets/voice/voz-cartesia.mp3": {
+    "mtime": 1784150984.3683426,
+    "ast_hash": "359fb3c696efacde1eaf656f212b4cc5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/global_cache/videos/sol/v1/connector_entradas.mp4": {
+    "mtime": 1784150984.3995948,
+    "ast_hash": "2c169aeec73b8c018042d83d0fc39318",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/global_cache/videos/sol/v1/connector_entradas.webm": {
+    "mtime": 1784150984.430844,
+    "ast_hash": "acb1c23e16da478ea28f64a508168554",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/global_cache/videos/sol/v1/connector_idle.webm": {
+    "mtime": 1784150984.4519165,
+    "ast_hash": "1b2c57e484a5ac6fe6aa3a16711ff22e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/global_cache/videos/sol/v1/connector_welcome.mp4": {
+    "mtime": 1784150984.465912,
+    "ast_hash": "76434d5109b9ac276622c86a6402744e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/PIPELINE INGESTA MENUS/global_cache/videos/sol/v1/connector_welcome.webm": {
+    "mtime": 1784150984.4938533,
+    "ast_hash": "7fd14c7d0ec015fddf7faabe8ca54bc7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/assets/avatares-videos/bienbenido a la escaloneta.mp4": {
+    "mtime": 1784150984.525106,
+    "ast_hash": "8bc32d97bdc8f9a678b72a46de61c2c5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/public/avatar-videos/sol/v1/connector_entradas.webm": {
+    "mtime": 1784150990.9112482,
+    "ast_hash": "acb1c23e16da478ea28f64a508168554",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/public/avatar-videos/sol/v1/connector_idle.webm": {
+    "mtime": 1784150990.915339,
+    "ast_hash": "1b2c57e484a5ac6fe6aa3a16711ff22e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/public/avatar-videos/sol/v1/connector_welcome.webm": {
+    "mtime": 1784150990.9465907,
+    "ast_hash": "7fd14c7d0ec015fddf7faabe8ca54bc7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/bienbenido a la escaloneta.mp4": {
+    "mtime": 1784150991.2447493,
+    "ast_hash": "8bc32d97bdc8f9a678b72a46de61c2c5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/public/sol_video.mp4": {
+    "mtime": 1784150991.383916,
+    "ast_hash": "8bc32d97bdc8f9a678b72a46de61c2c5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/public/sol_video_nobg.mp4": {
+    "mtime": 1784150991.383916,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/public/sol_video.mp4": {
+    "mtime": 1784150991.743297,
+    "ast_hash": "8bc32d97bdc8f9a678b72a46de61c2c5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/versiones-obsoletas/motor-madre-final/frontend/public/sol_video_nobg.mp4": {
+    "mtime": 1784150991.743297,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/voz-cartesia.mp3": {
+    "mtime": 1784150991.7901654,
+    "ast_hash": "359fb3c696efacde1eaf656f212b4cc5",
     "semantic_hash": ""
   }
 }
