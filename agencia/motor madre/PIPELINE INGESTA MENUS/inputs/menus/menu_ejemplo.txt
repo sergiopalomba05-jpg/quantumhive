@@ -1,0 +1,14 @@
+ENTRADAS
+Dip de Espinaca y Queso - Dip de espinaca con salsa blanca y queso 27300
+Papas Rusticas - Papas con salsa de la casa 18500
+
+PRINCIPALES
+Hamburguesa Clasica - Carne, queso, lechuga y tomate 22900
+Milanesa Napolitana - Milanesa con salsa, jamon y queso 31500
+
+BEBIDAS
+Limonada 8500
+Agua Mineral 4500
+
+POSTRES
+Flan Casero - Con dulce de leche 10500

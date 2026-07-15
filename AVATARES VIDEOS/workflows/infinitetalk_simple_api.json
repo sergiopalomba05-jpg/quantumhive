@@ -1,0 +1,133 @@
+{
+  "1": {
+    "class_type": "WanVideoModelLoader",
+    "inputs": {
+      "model_name": "wan2.1-i2v-14b-480p-Q4_K_M.gguf",
+      "precision": "default",
+      "device": "gpu"
+    }
+  },
+  "2": {
+    "class_type": "WanVideoVAELoader",
+    "inputs": {
+      "model_name": "Wan2_1_VAE_bf16.safetensors"
+    }
+  },
+  "3": {
+    "class_type": "LoadWanVideoT5TextEncoder",
+    "inputs": {
+      "model_name": "umt5-xxl-enc-fp8_e4m3fn.safetensors",
+      "precision": "fp8_e4m3fn"
+    }
+  },
+  "4": {
+    "class_type": "WanVideoClipVisionEncode",
+    "inputs": {
+      "clip_vision_name": "clip_vision_h.safetensors",
+      "image": ["10", 0]
+    }
+  },
+  "5": {
+    "class_type": "AudioEncoderLoader",
+    "inputs": {
+      "model_name": "wav2vec2-chinese-base_fp16.safetensors"
+    }
+  },
+  "6": {
+    "class_type": "MelBandRoFormerModelLoader",
+    "inputs": {
+      "model_name": "MelBandRoformer_fp16.safetensors"
+    }
+  },
+  "7": {
+    "class_type": "MultiTalkModelLoader",
+    "inputs": {
+      "model_name": "Wan2_1-InfiniteTalk_Single_Q4_K_M.gguf"
+    }
+  },
+  "10": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "avatar_test.png",
+      "upload": "image"
+    }
+  },
+  "11": {
+    "class_type": "LoadAudio",
+    "inputs": {
+      "audio": "test_audio.mp3",
+      "upload": "audio"
+    }
+  },
+  "12": {
+    "class_type": "AudioEncoderEncode",
+    "inputs": {
+      "audio_encoder": ["5", 0],
+      "audio": ["11", 0]
+    }
+  },
+  "13": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "A female restaurant hostess with brown hair, wearing a white shirt, standing in a warm restaurant setting, speaking naturally with subtle body movements",
+      "clip": ["3", 0]
+    }
+  },
+  "14": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "blurry, low quality, distorted face, bad anatomy, watermark",
+      "clip": ["3", 0]
+    }
+  },
+  "15": {
+    "class_type": "WanInfiniteTalkToVideo",
+    "inputs": {
+      "model": ["1", 0],
+      "vae": ["2", 0],
+      "positive": ["13", 0],
+      "negative": ["14", 0],
+      "clip_vision_output": ["4", 0],
+      "start_image": ["10", 0],
+      "audio_encoder_output_1": ["12", 0],
+      "width": 480,
+      "height": 832,
+      "num_frames": 81,
+      "steps": 20,
+      "cfg": 3.0,
+      "mode": "single"
+    }
+  },
+  "16": {
+    "class_type": "WanVideoSampler",
+    "inputs": {
+      "model": ["15", 0],
+      "positive": ["13", 0],
+      "negative": ["14", 0],
+      "latent_image": ["15", 1],
+      "seed": 42,
+      "steps": 20,
+      "cfg": 3.0,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "denoise": 1.0
+    }
+  },
+  "17": {
+    "class_type": "WanVideoDecode",
+    "inputs": {
+      "vae": ["2", 0],
+      "samples": ["16", 0]
+    }
+  },
+  "18": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "images": ["17", 0],
+      "filename_prefix": "infinitetalk_test",
+      "format": "video/h264-mp4",
+      "codec": "h264",
+      "quality": 85
+    }
+  }
+}

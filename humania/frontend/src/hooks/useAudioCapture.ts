@@ -1,25 +1,48 @@
 import { useState, useCallback, useRef } from 'react'
 
+interface UseAudioCaptureProps {
+  onAudioChunk: (base64: string) => void
+  enabled?: boolean
+}
+
 interface UseAudioCaptureReturn {
   isListening: boolean
   startListening: () => Promise<void>
   stopListening: () => void
 }
 
-export function useAudioCapture(): UseAudioCaptureReturn {
+export function useAudioCapture({ onAudioChunk, enabled = true }: UseAudioCaptureProps): UseAudioCaptureReturn {
   const [isListening, setIsListening] = useState(false)
   const streamRef = useRef<MediaStream | null>(null)
   const processorRef = useRef<ScriptProcessorNode | null>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
+  const workletNodeRef = useRef<AudioWorkletNode | null>(null)
+
+  const float32ToBase64 = useCallback((float32Array: Float32Array): string => {
+    const int16 = new Int16Array(float32Array.length)
+    for (let i = 0; i < float32Array.length; i++) {
+      const s = Math.max(-1, Math.min(1, float32Array[i]))
+      int16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF
+    }
+    const bytes = new Uint8Array(int16.buffer)
+    let binary = ''
+    for (let i = 0; i < bytes.length; i++) {
+      binary += String.fromCharCode(bytes[i])
+    }
+    return btoa(binary)
+  }, [])
 
   const startListening = useCallback(async () => {
+    if (!enabled) return
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           sampleRate: 16000,
           channelCount: 1,
           echoCancellation: true,
-          noiseSuppression: true
+          noiseSuppression: true,
+          autoGainControl: true,
         }
       })
 
@@ -37,17 +60,17 @@ export function useAudioCapture(): UseAudioCaptureReturn {
 
       processor.onaudioprocess = (event) => {
         const audioData = event.inputBuffer.getChannelData(0)
-        // TODO: Send audio chunks to WebSocket
-        // Convert Float32Array to base64 and send
+        const base64 = float32ToBase64(audioData)
+        onAudioChunk(base64)
       }
 
       setIsListening(true)
-      console.log('[Audio] Listening started')
+      console.log('[Audio] Listening at 16kHz mono')
     } catch (error) {
-      console.error('[Audio] Error starting capture:', error)
+      console.error('[Audio] Capture error:', error)
       throw error
     }
-  }, [])
+  }, [enabled, onAudioChunk, float32ToBase64])
 
   const stopListening = useCallback(() => {
     if (processorRef.current) {
@@ -66,7 +89,7 @@ export function useAudioCapture(): UseAudioCaptureReturn {
     }
 
     setIsListening(false)
-    console.log('[Audio] Listening stopped')
+    console.log('[Audio] Stopped')
   }, [])
 
   return {

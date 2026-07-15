@@ -11,7 +11,7 @@ Cuando Sergio manda un reel/video de una herramienta de IA, o un link, o te dice
 
 ## Variables de entorno (van en el `.env` de Hermes, nunca al repo)
 - `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` — para escribir en el catálogo.
-- `GEMINI_API_KEY` (o `GOOGLE_API_KEY`) — ya configurada; la usa el fallback de video.
+- `VERTEX_PROJECT_ID`, `VERTEX_LOCATION` — Vertex AI (ADC de la VM de GCP, NO API key).
 
 ## Procedimiento
 1. **Analizá el video** con tu visión + audio (Gemini es multimodal nativo): sacá `nombre`,

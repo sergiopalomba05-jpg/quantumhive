@@ -93,3 +93,22 @@ VM/
 # Dependencias instaladas (no al repo)
 agencia/motor madre/paperclip-ai/
 agencia/motor madre/openjarvis/
+agencia/motor madre/ai-town/
+agencia/motor madre/quantumhive-town/
+
+# Secretos y artefactos pesados locales
+humania/humania-deployer-key.json
+humania/latentsync/
+
+# Pipeline de videos: trackear codigo/assets finales, no outputs crudos ni entornos/modelos pesados
+agencia/motor madre/PIPELINE INGESTA MENUS/output/
+agencia/motor madre/PIPELINE INGESTA MENUS/models/
+agencia/motor madre/PIPELINE INGESTA MENUS/.venv/
+
+# Clon de prueba Cloud Run: no subir dependencias/build/temp
+agencia/motor madre/motor-avatares-video-test/node_modules/
+agencia/motor madre/motor-avatares-video-test/dist/
+agencia/motor madre/motor-avatares-video-test/.tmp-build/
+agencia/motor madre/motor-avatares-video-test/assets/avatar-bienvenido.webp
+agencia/motor madre/motor-avatares-video-test/public/avatar-bienvenido.webp
+agencia/motor madre/motor-avatares-video-test/public/avatar-videos/**/*.mp4
