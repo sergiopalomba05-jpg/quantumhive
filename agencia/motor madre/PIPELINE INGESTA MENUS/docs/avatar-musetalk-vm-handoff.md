@@ -154,39 +154,26 @@ Motivo: el `download_weights.bat` oficial intento subir `huggingface_hub` a `1.2
 
 ## Pesos / Checkpoints
 
-Los pesos NO quedaron completos.
+Los pesos quedaron completos en esta VM despues de retomar la descarga controlada.
 
-Descarga iniciada pero interrumpida en:
-
-```txt
-models\musetalkV15\unet.pth
-```
-
-Archivos confirmados presentes:
+Archivos verificados:
 
 ```txt
-D:\ai-runtime\musetalk-v15\MuseTalk\models\.gitattributes
-D:\ai-runtime\musetalk-v15\MuseTalk\models\README.md
-D:\ai-runtime\musetalk-v15\MuseTalk\models\musetalk\musetalk.json
-D:\ai-runtime\musetalk-v15\MuseTalk\models\musetalkV15\musetalk.json
+D:\ai-runtime\musetalk-v15\MuseTalk\models\musetalkV15\unet.pth                         3400074924 bytes
+D:\ai-runtime\musetalk-v15\MuseTalk\models\musetalkV15\musetalk.json                    748 bytes
+D:\ai-runtime\musetalk-v15\MuseTalk\models\sd-vae\config.json                           547 bytes
+D:\ai-runtime\musetalk-v15\MuseTalk\models\sd-vae\diffusion_pytorch_model.bin           334707217 bytes
+D:\ai-runtime\musetalk-v15\MuseTalk\models\whisper\config.json                          1983 bytes
+D:\ai-runtime\musetalk-v15\MuseTalk\models\whisper\pytorch_model.bin                    151095027 bytes
+D:\ai-runtime\musetalk-v15\MuseTalk\models\whisper\preprocessor_config.json             184990 bytes
+D:\ai-runtime\musetalk-v15\MuseTalk\models\dwpose\dw-ll_ucoco_384.pth                   406878486 bytes
+D:\ai-runtime\musetalk-v15\MuseTalk\models\syncnet\latentsync_syncnet.pt                1488019828 bytes
+D:\ai-runtime\musetalk-v15\MuseTalk\models\face-parse-bisent\79999_iter.pth             53289463 bytes
+D:\ai-runtime\musetalk-v15\MuseTalk\models\face-parse-bisent\resnet18-5c106cde.pth      46827520 bytes
 ```
 
-Faltan como minimo:
-
-```txt
-D:\ai-runtime\musetalk-v15\MuseTalk\models\musetalkV15\unet.pth
-D:\ai-runtime\musetalk-v15\MuseTalk\models\sd-vae\config.json
-D:\ai-runtime\musetalk-v15\MuseTalk\models\sd-vae\diffusion_pytorch_model.bin
-D:\ai-runtime\musetalk-v15\MuseTalk\models\whisper\config.json
-D:\ai-runtime\musetalk-v15\MuseTalk\models\whisper\pytorch_model.bin
-D:\ai-runtime\musetalk-v15\MuseTalk\models\whisper\preprocessor_config.json
-D:\ai-runtime\musetalk-v15\MuseTalk\models\dwpose\dw-ll_ucoco_384.pth
-D:\ai-runtime\musetalk-v15\MuseTalk\models\syncnet\latentsync_syncnet.pt
-D:\ai-runtime\musetalk-v15\MuseTalk\models\face-parse-bisent\79999_iter.pth
-D:\ai-runtime\musetalk-v15\MuseTalk\models\face-parse-bisent\resnet18-5c106cde.pth
-```
-
-Si el snapshot del disco D conserva parciales, se puede reanudar. Si no, descargar de cero.
+Si el snapshot del disco D conserva esta carpeta, no hace falta volver a descargar pesos.
+Si no conserva D, usar `install/musetalk-v15/install-musetalk-v15.ps1` para reconstruir.
 
 ## Comandos Para Continuar En La Nueva VM
 
@@ -268,6 +255,7 @@ Variables para no usar C:
 $env:HF_HOME = "D:\ai-runtime\musetalk-v15\hf-home"
 $env:HUGGINGFACE_HUB_CACHE = "D:\ai-runtime\musetalk-v15\hf-cache"
 $env:XDG_CACHE_HOME = "D:\ai-runtime\musetalk-v15\xdg-cache"
+$env:TORCH_HOME = "D:\ai-runtime\musetalk-v15\torch-cache"
 $env:TEMP = "D:\ai-runtime\musetalk-v15\tmp"
 $env:TMP = "D:\ai-runtime\musetalk-v15\tmp"
 ```
@@ -310,6 +298,14 @@ Descargar face-parse-bisent:
 
 ### 7. Healthcheck Despues De Pesos
 
+Desde el repo tambien se puede ejecutar:
+
+```powershell
+& "C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\PIPELINE INGESTA MENUS\install\musetalk-v15\healthcheck-musetalk-v15.ps1"
+```
+
+O manualmente:
+
 Desde:
 
 ```powershell
@@ -331,6 +327,8 @@ Test-Path "D:\ai-runtime\musetalk-v15\MuseTalk\models\whisper\pytorch_model.bin"
 Test-Path "D:\ai-runtime\musetalk-v15\MuseTalk\models\dwpose\dw-ll_ucoco_384.pth"
 Test-Path "D:\ai-runtime\musetalk-v15\MuseTalk\models\face-parse-bisent\79999_iter.pth"
 ```
+
+Nota: una ejecucion de `python -m scripts.inference --help` puede disparar la descarga del detector S3FD de `face_alignment`. Siempre definir `TORCH_HOME=D:\ai-runtime\musetalk-v15\torch-cache` antes de ejecutar scripts de MuseTalk para no llenar `C:`.
 
 ## Imagen Nueva De Sol V2
 

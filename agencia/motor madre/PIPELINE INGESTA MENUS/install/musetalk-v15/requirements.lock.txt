@@ -1,0 +1,39 @@
+# MuseTalk 1.5 runtime lock - generated from the working D: VM setup.
+# Python: CPython 3.10.20
+# MuseTalk repo: https://github.com/TMElyralab/MuseTalk.git
+# MuseTalk commit: 0a89dec45a0192b824e3cf4daf96c239440c5ed8
+
+torch==2.0.1+cu118
+torchvision==0.15.2+cu118
+torchaudio==2.0.2+cu118
+
+diffusers==0.30.2
+accelerate==0.28.0
+numpy==1.23.5
+tensorflow==2.12.0
+tensorboard==2.12.0
+opencv-python==4.9.0.80
+soundfile==0.12.1
+transformers==4.39.2
+huggingface_hub==0.30.2
+librosa==0.11.0
+einops==0.8.1
+gradio==5.24.0
+gdown==6.1.0
+imageio==2.37.3
+imageio-ffmpeg==0.6.0
+omegaconf==2.3.1
+ffmpeg-python==0.2.0
+moviepy==1.0.3
+
+openmim==0.3.9
+mmengine==0.10.7
+mmcv==2.0.1
+mmdet==3.1.0
+mmpose==1.1.0
+chumpy==0.70
+xtcocotools==1.14.3
+
+# Compatibility pins after openmim installs older rich.
+typer==0.12.5
+rich==13.4.2
