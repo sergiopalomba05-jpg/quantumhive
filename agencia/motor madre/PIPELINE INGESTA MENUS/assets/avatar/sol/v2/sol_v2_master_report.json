@@ -1,0 +1,59 @@
+{
+  "source_path": "assets\\avatar\\sol\\v2\\sol_v2_master_neutral_source.png",
+  "normalized_path": "assets\\avatar\\sol\\v2\\sol_v2_master_neutral.png",
+  "mask_path": "assets\\avatar\\sol\\v2\\sol_v2_master_mask.png",
+  "target_width": 720,
+  "target_height": 1280,
+  "source_width": 1536,
+  "source_height": 1024,
+  "source_sha256": "c36729cf3b04f3fceca648f8c597ff0a6a75fd58dd97d14728e26d1c37d3965d",
+  "normalized_sha256": "7fe0b7cc5d1a5f467c9bdc63ebaf3154b9fb712a6b15f52256dd3919efa488b0",
+  "mask_sha256": "449b70a537cdfdd97a77d26a938a848a663fbf177432044402aca2cb6af789fa",
+  "placement": {
+    "source_foreground_bbox": [
+      388,
+      50,
+      1152,
+      1013
+    ],
+    "normalized_foreground_bbox": [
+      35,
+      452,
+      685,
+      1271
+    ],
+    "scale": 0.85,
+    "paste_xy": [
+      20,
+      437
+    ],
+    "foreground_area_pixels": 315227,
+    "foreground_center": [
+      360.0,
+      861.5
+    ]
+  },
+  "background": {
+    "background_pixel_count": 605017,
+    "background_exact_green_percent": 100.0,
+    "background_mean_rgb": [
+      0.0,
+      255.0,
+      0.0
+    ],
+    "background_std_rgb": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "background_max_abs_delta_from_green": 0
+  },
+  "validation": {
+    "background_is_exact_green": true,
+    "resolution_ok": true
+  },
+  "master_base_path": "assets\\avatar\\sol\\v2\\masters\\sol_v2_master_base.mkv",
+  "master_preview_path": "assets\\avatar\\sol\\v2\\masters\\sol_v2_master_idle.mp4",
+  "master_base_sha256": "d13be679a3978927655ced228a541ccddb8abcc83c493bdb682ceaeadd987270",
+  "master_preview_sha256": "280611897e92bef395a38fb54bb0e61ce0bb3dea0a044ca80914382a00e60c13"
+}

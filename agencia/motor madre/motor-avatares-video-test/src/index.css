@@ -40,20 +40,31 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 
 .avatar-alpha-video {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
   object-position: center bottom;
   border-radius: 0;
   display: block;
-  opacity: 0;
+  opacity: 1;
   background: transparent;
   transform: scale(1.02);
   transform-origin: center bottom;
 }
 
-.avatar-alpha-video.ready {
+.avatar-speaking-video {
+  opacity: 0;
+  transition: opacity 120ms linear;
+}
+
+.avatar-speaking-video.ready {
   opacity: 1;
+}
+
+.orb-float.speaking-ready .avatar-idle-video {
+  opacity: 0;
 }
 
 /* ============================================================

@@ -142,6 +142,13 @@ FFmpeg disponible por `imageio_ffmpeg`:
 D:\ai-runtime\musetalk-v15\.venv\lib\site-packages\imageio_ffmpeg\binaries\ffmpeg-win-x86_64-v7.1.exe
 ```
 
+FFmpeg completo con `ffprobe` instalado para LivePortrait y validaciones:
+
+```txt
+D:\tools\ffmpeg\ffmpeg-8.1.2-essentials_build\bin\ffmpeg.exe
+D:\tools\ffmpeg\ffmpeg-8.1.2-essentials_build\bin\ffprobe.exe
+```
+
 `pip check` quedo limpio despues de ajustar:
 
 ```txt
@@ -332,18 +339,25 @@ Nota: una ejecucion de `python -m scripts.inference --help` puede disparar la de
 
 ## Imagen Nueva De Sol V2
 
-La imagen neutral nueva fue enviada en chat, pero aun no quedo guardada como archivo en el repo.
+La imagen neutral nueva ya quedo guardada en el repo.
 
-En la nueva VM, guardarla en:
+Fuente aprobada:
 
 ```txt
 agencia/motor madre/PIPELINE INGESTA MENUS/assets/avatar/sol/v2/sol_v2_master_neutral_source.png
 ```
 
-Luego crear por preprocesamiento determinista:
+Imagen normalizada creada por preprocesamiento determinista:
 
 ```txt
 agencia/motor madre/PIPELINE INGESTA MENUS/assets/avatar/sol/v2/sol_v2_master_neutral.png
+```
+
+Mascara y reporte:
+
+```txt
+agencia/motor madre/PIPELINE INGESTA MENUS/assets/avatar/sol/v2/sol_v2_master_mask.png
+agencia/motor madre/PIPELINE INGESTA MENUS/assets/avatar/sol/v2/sol_v2_master_report.json
 ```
 
 Requisitos:
@@ -385,6 +399,79 @@ Razon: evita diferencias entre idle y speaking en identidad, escala, pose, hombr
 La creacion del master base debe animar solamente rostro, ojos, labios en posicion neutral y, si es estrictamente necesario, una region minima del cuello. Fondo, blazer, camisa, hombros, broche, logo y texto QuantumHive deben permanecer congelados y recomponerse desde la imagen original con una mascara facial suave.
 
 No confiar en el verde generado por ningun modelo. Despues de animar, segmentar a Sol, recomponer cada frame sobre RGB(0,255,0) exacto y validar matematicamente que el fondo sea uniforme.
+
+## LivePortrait Para Master Sol V2
+
+Runtime verificado:
+
+```txt
+D:\LivePortrait
+D:\LivePortrait\.venv
+Python 3.10.20
+torch 2.3.0+cu118
+CUDA disponible: True
+GPU: NVIDIA L4
+opencv-python: 4.10.0
+pip check: No broken requirements found.
+```
+
+Comando de verificacion:
+
+```powershell
+& "D:\LivePortrait\.venv\Scripts\python.exe" -m pip check
+& "D:\LivePortrait\.venv\Scripts\python.exe" -c "import torch, cv2, tyro; print(torch.__version__, torch.cuda.is_available(), torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'none'); print(cv2.__version__)"
+$env:TORCH_HOME='D:\LivePortrait\torch-cache'; & "D:\LivePortrait\.venv\Scripts\python.exe" inference.py -h
+```
+
+LivePortrait requiere `ffmpeg` y `ffprobe` en PATH. Usar:
+
+```powershell
+$env:PATH='D:\tools\ffmpeg\ffmpeg-8.1.2-essentials_build\bin;' + $env:PATH
+```
+
+Comando usado para generar el candidato expresivo:
+
+```powershell
+$env:PATH='D:\tools\ffmpeg\ffmpeg-8.1.2-essentials_build\bin;' + $env:PATH
+$env:TORCH_HOME='D:\LivePortrait\torch-cache'
+$env:TEMP='D:\LivePortrait\tmp'
+$env:TMP='D:\LivePortrait\tmp'
+$env:PYTHONIOENCODING='utf-8'
+$env:PYTHONUTF8='1'
+& "D:\LivePortrait\.venv\Scripts\python.exe" inference.py -s "C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\PIPELINE INGESTA MENUS\assets\avatar\sol\v2\sol_v2_master_neutral.png" -d "D:\LivePortrait\assets\examples\driving\d0.mp4" -o "C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\PIPELINE INGESTA MENUS\output\liveportrait_sol_v2" --animation-region exp --driving-multiplier 0.55 --flag-stitching --flag-pasteback --flag-normalize-lip --source-max-dim 1280
+```
+
+Nota Windows: sin `PYTHONIOENCODING=utf-8` / `PYTHONUTF8=1`, LivePortrait puede fallar por `UnicodeEncodeError` al imprimir el emoji del progreso.
+
+Postproceso para construir el master FFV1 desde la salida LivePortrait:
+
+```powershell
+cd "C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\PIPELINE INGESTA MENUS"
+& "D:\LivePortrait\.venv\Scripts\python.exe" "src\build_sol_v2_master_from_liveportrait.py" --ffmpeg "D:\tools\ffmpeg\ffmpeg-8.1.2-essentials_build\bin\ffmpeg.exe"
+```
+
+Resultado tecnico validado:
+
+```txt
+assets/avatar/sol/v2/masters/sol_v2_master_base.mkv
+assets/avatar/sol/v2/masters/sol_v2_master_idle.mp4
+assets/avatar/sol/v2/masters/sol_v2_master_build_report.json
+output/liveportrait_sol_v2/sol_v2_master_contact.jpg
+```
+
+Propiedades:
+
+```txt
+codec: FFV1
+pix_fmt: bgr0
+resolucion: 720x1280
+fps: 25
+duracion: 6.16s
+frames: 154
+fondo fuera de mascara: RGB(0,255,0) exacto, 100%, delta 0
+```
+
+Estado: candidato tecnico validado, pendiente de aprobacion visual humana. Revisar `output/liveportrait_sol_v2/sol_v2_master_contact.jpg` y `assets/avatar/sol/v2/masters/sol_v2_master_idle.mp4` antes de integrarlo a MuseTalk.
 
 Formato preferido del master:
 
@@ -436,6 +523,106 @@ connector_idle
 connector_welcome: "Hola, bienvenidos a La Escaloneta. Soy Sol, tu mesera virtual."
 connector_entradas: "Excelente, te sugiero estas entradas."
 ```
+
+## Estado MVP Cloud Run - 2026-07-16
+
+Servicio test deployado:
+
+```txt
+motor-avatares-video-test
+URL publica: https://motor-avatares-video-test-557866434489.us-central1.run.app
+Revision activa: motor-avatares-video-test-00015-l67
+```
+
+Validaciones ejecutadas:
+
+```powershell
+npm run lint
+npm run build
+gcloud builds submit --config "cloudbuild-video-test.yaml" .
+```
+
+Assets publicos versionables en la app test:
+
+```txt
+public/avatar-videos/sol/v1/connector_idle_final_1.webm
+public/avatar-videos/sol/v1/connector_idle_final_hair.webm
+public/avatar-videos/sol/v1/connector_look_left_final.webm
+public/avatar-videos/sol/v1/connector_look_right_final.webm
+public/avatar-videos/sol/v1/connector_taking_order_final.webm
+public/avatar-videos/sol/v1/connector_welcome.webm
+public/avatar-videos/sol/v1/connector_entradas_izquierda.webm
+```
+
+Propiedades verificadas para los clips de gesto/idle finales:
+
+```txt
+codec: VP9 WebM
+resolucion: 720x1280
+alpha: TAG:alpha_mode=1
+audio: 0 streams para idles/gestos, para evitar doble audio
+```
+
+Mapeo de interacciones en `motor-avatares-video-test/src/App.tsx`:
+
+```txt
+idle base             -> connector_idle_final_1.webm
+idle alternativo      -> connector_idle_final_hair.webm
+chip lado izquierdo   -> connector_look_left_final.webm
+chip lado derecho     -> connector_look_right_final.webm
+agregar al pedido     -> connector_taking_order_final.webm
+bienvenida            -> connector_welcome.webm
+Entradas              -> connector_entradas_izquierda.webm
+```
+
+Texto visible/audio de bienvenida:
+
+```txt
+Bienvenidos a La Escaloneta. Soy tu mesera virtual. ¿Qué vas a elegir hoy?
+```
+
+Texto Entradas:
+
+```txt
+Excelente elección. Te recomiendo estas entradas. Arranquemos por esta primera opción.
+```
+
+Fuentes locales usadas para esta tanda, no mover ni borrar:
+
+```txt
+C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\idle 1.mp4
+C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\idle acomodandose el pelo.mp4
+C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\mirando a la derecha.mp4
+C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\mirando  a la izquiera.mp4
+C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\tomando pedido.mp4
+```
+
+Decision sobre clips `hablando 1/2/3.mp4`:
+
+```txt
+No conectarlos por ahora. Ya traen boca muy activa y pueden pelearse con TTS/MuseTalk.
+Usarlos solo como referencia visual o para una prueba aislada con audio fijo.
+```
+
+Comando de conversion base para idles/gestos verticales sin audio:
+
+```powershell
+$filter = "scale=720:1280:force_original_aspect_ratio=decrease:flags=lanczos,pad=720:1280:(ow-iw)/2:(oh-ih)/2:color=0x00FF00,format=rgba,chromakey=0x00FF00:0.28:0.08,despill=type=green:mix=0.85:expand=0.35,format=yuva420p"
+ffmpeg -y -i input.mp4 -map 0:v:0 -vf $filter -c:v libvpx-vp9 -pix_fmt yuva420p -auto-alt-ref 0 -b:v 0 -crf 28 -an output.webm
+```
+
+Comando de conversion para el clip horizontal `mirando izquierda`:
+
+```powershell
+ffmpeg -y -i "mirando  a la izquiera.mp4" -map 0:v:0 -vf "crop=608:1080:656:0,scale=720:1280:flags=lanczos,format=rgba,chromakey=0x00FF00:0.28:0.08,despill=type=green:mix=0.85:expand=0.35,format=yuva420p" -c:v libvpx-vp9 -pix_fmt yuva420p -auto-alt-ref 0 -b:v 0 -crf 28 -an connector_look_left_final.webm
+```
+
+Notas de producto pendientes:
+
+- QA visual humana de los gestos en celular real.
+- Ajustar timing: el clip `tomando pedido` dura 10s y puede sentirse largo si el TTS termina antes.
+- Decidir si los chips de chat dentro del panel deben disparar tambien mirada lateral o quedar neutros.
+- Mantener `connector_idle.webm` viejo fuera del flujo base; existe solo como asset legado.
 
 ## Rollback
 

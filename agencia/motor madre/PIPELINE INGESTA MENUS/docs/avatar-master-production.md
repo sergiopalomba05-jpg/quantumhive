@@ -125,6 +125,39 @@ Preferido:
 
 La version MP4 H.264 normal puede existir solo como preview.
 
+## Master Candidato Actual
+
+Artefactos generados:
+
+```txt
+assets/avatar/sol/v2/masters/sol_v2_master_base.mkv
+assets/avatar/sol/v2/masters/sol_v2_master_idle.mp4
+assets/avatar/sol/v2/masters/sol_v2_master_build_report.json
+output/liveportrait_sol_v2/sol_v2_master_contact.jpg
+```
+
+Propiedades verificadas:
+
+```txt
+codec: FFV1
+pix_fmt: bgr0
+resolucion: 720x1280
+fps: 25
+duracion: 6.16s
+frames: 154
+fondo fuera de mascara: RGB(0,255,0) exacto, 100%, delta 0
+```
+
+Origen:
+
+```txt
+LivePortrait source: assets/avatar/sol/v2/sol_v2_master_neutral.png
+LivePortrait driving: D:\LivePortrait\assets\examples\driving\d0.mp4
+Postproceso: src/build_sol_v2_master_from_liveportrait.py
+```
+
+Estado: candidato tecnico validado, pendiente de aprobacion visual humana. Como se genero un loop ping-pong desde un driving de 3.12s, revisar especialmente que no haya parpadeo invertido ni sonrisa rara al volver.
+
 ## Movimiento Del Master
 
 Duracion:

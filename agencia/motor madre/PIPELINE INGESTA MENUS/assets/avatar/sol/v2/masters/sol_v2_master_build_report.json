@@ -1,0 +1,22 @@
+{
+  "input_path": "output\\liveportrait_sol_v2\\sol_v2_master_neutral--d0.mp4",
+  "mask_path": "assets\\avatar\\sol\\v2\\sol_v2_master_mask.png",
+  "master_path": "assets\\avatar\\sol\\v2\\masters\\sol_v2_master_base.mkv",
+  "preview_path": "assets\\avatar\\sol\\v2\\masters\\sol_v2_master_idle.mp4",
+  "source_fps": 25.0,
+  "target_fps": 25,
+  "source_frames": 78,
+  "master_frames": 154,
+  "master_duration_seconds": 6.16,
+  "width": 720,
+  "height": 1280,
+  "background": {
+    "background_exact_green_percent_min": 100.0,
+    "background_exact_green_percent_mean": 100.0,
+    "background_max_abs_delta_from_green_max": 0
+  },
+  "input_sha256": "ebef18421fe4e9b817ab61cc959a422f114585fdfd94da050f547cee5f9d6522",
+  "mask_sha256": "ff242fb05f33557544a9f5aea3fec7be60ccdeb1a88110038f9392e7acc4b2d5",
+  "master_sha256": "540f468787a736d0e758841f3f1750feaeb3e477eb25af73f81912aae2d27523",
+  "preview_sha256": "39da38ab8058dd5a0fc48e486173a322337e4776d41f8b647af7373207cadfd2"
+}

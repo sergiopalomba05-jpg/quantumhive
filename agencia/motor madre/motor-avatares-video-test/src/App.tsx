@@ -54,12 +54,27 @@ export const featuredDishes = [
 ];
 
 const avatarVideoByKey: Record<string, string> = {
-  connector_idle: "/avatar-videos/sol/v1/connector_idle.webm",
+  connector_idle: "/avatar-videos/sol/v1/connector_idle_final_1.webm",
+  connector_idle_final_1: "/avatar-videos/sol/v1/connector_idle_final_1.webm",
+  connector_idle_final_hair: "/avatar-videos/sol/v1/connector_idle_final_hair.webm",
+  connector_idle_loop1: "/avatar-videos/sol/v1/connector_idle_loop1.webm",
+  connector_idle_loop3: "/avatar-videos/sol/v1/connector_idle_loop3.webm",
+  connector_idle_loop4: "/avatar-videos/sol/v1/connector_idle_loop4.webm",
+  connector_look_left_final: "/avatar-videos/sol/v1/connector_look_left_final.webm",
+  connector_look_right_final: "/avatar-videos/sol/v1/connector_look_right_final.webm",
+  connector_taking_order_final: "/avatar-videos/sol/v1/connector_taking_order_final.webm",
+  connector_entradas_izquierda: "/avatar-videos/sol/v1/connector_entradas_izquierda.webm",
   connector_welcome: "/avatar-videos/sol/v1/connector_welcome.webm",
   connector_entradas: "/avatar-videos/sol/v1/connector_entradas.webm"
 };
 
+const entradasIntroText = "Excelente elección. Te recomiendo estas entradas. Arranquemos por esta primera opción.";
+
 const idleAvatarVideo = avatarVideoByKey.connector_idle;
+const idleAvatarVariants = [
+  { key: "connector_idle_final_1", src: avatarVideoByKey.connector_idle_final_1 },
+  { key: "connector_idle_final_hair", src: avatarVideoByKey.connector_idle_final_hair }
+];
 
 const getDishAllergens = (it: any, sectionId: string): string[] => {
   const allergens: string[] = [];
@@ -388,11 +403,17 @@ export default function App() {
   const [inputValue, setInputValue] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const [solState, setSolState] = useState<"idle" | "listening" | "thinking" | "speaking">("idle");
-  const [activeAvatarKey, setActiveAvatarKey] = useState("connector_idle");
-  const [activeAvatarVideo, setActiveAvatarVideo] = useState<string | null>(idleAvatarVideo);
-  const [avatarPlayId, setAvatarPlayId] = useState(0);
-  const [avatarVideoReady, setAvatarVideoReady] = useState(false);
-  const avatarVideoRef = useRef<HTMLVideoElement | null>(null);
+  const [speakingAvatarKey, setSpeakingAvatarKey] = useState<string | null>(null);
+  const [speakingAvatarVideo, setSpeakingAvatarVideo] = useState<string | null>(null);
+  const [speakingPlayId, setSpeakingPlayId] = useState(0);
+  const [speakingVideoReady, setSpeakingVideoReady] = useState(false);
+  const [idleAvatarKey, setIdleAvatarKey] = useState("connector_idle");
+  const [currentIdleAvatarVideo, setCurrentIdleAvatarVideo] = useState(idleAvatarVideo);
+  const [idleCycleNonce, setIdleCycleNonce] = useState(0);
+  const idleAvatarVideoRef = useRef<HTMLVideoElement | null>(null);
+  const speakingAvatarVideoRef = useRef<HTMLVideoElement | null>(null);
+  const idleVariantIndexRef = useRef(0);
+  const idleInactivityTimeoutRef = useRef<any>(null);
   const [contextChips, setContextChips] = useState<string[]>([
     "¿Cuál es la especialidad?",
     "¿Qué tenés para picar?",
@@ -428,23 +449,19 @@ export default function App() {
     const src = avatarVideoByKey[key];
     if (!src) return;
     setSolState("speaking");
-    setAvatarVideoReady(false);
-    setActiveAvatarKey(key);
-    setActiveAvatarVideo(src);
-    setAvatarPlayId((value) => value + 1);
+    setSpeakingVideoReady(false);
+    setSpeakingAvatarKey(key);
+    setSpeakingAvatarVideo(src);
+    setSpeakingPlayId((value) => value + 1);
   };
 
-  useEffect(() => {
-    if (!activeAvatarVideo || !avatarVideoRef.current) return;
-    const video = avatarVideoRef.current;
-    video.currentTime = 0;
-    const playPromise = video.play();
-    if (playPromise) {
-      playPromise.catch(() => {
-        setSolState("idle");
-      });
+  const playGuidedChipLook = (side?: "left" | "right") => {
+    if (side === "left") {
+      playAvatarClip("connector_look_left_final");
+    } else if (side === "right") {
+      playAvatarClip("connector_look_right_final");
     }
-  }, [activeAvatarVideo]);
+  };
 
   const getGuidedFlowInfo = () => {
     // Helper to get short name with emoji
@@ -785,8 +802,11 @@ export default function App() {
     }, 150);
   };
 
-  const handleGuidedChipClick = (action: string, text: string, dishId?: string, price?: number, name?: string) => {
+  const handleGuidedChipClick = (action: string, text: string, dishId?: string, price?: number, name?: string, chipSide?: "left" | "right") => {
     stopCurrentAudio();
+    if (action !== "start_entradas") {
+      playGuidedChipLook(chipSide);
+    }
 
     // 1. Handle Dish Recommendation Click
     if (dishId) {
@@ -815,20 +835,17 @@ export default function App() {
 
     // 2. Handle Navigation / Flows
     if (action === "start_entradas") {
-      playAvatarClip("connector_entradas");
-      converse("Excelente, para entradas te recomiendo que empecemos con algo rico para compartir.", false);
+      playAvatarClip("connector_entradas_izquierda");
+      setHistory(prev => [...prev, { role: "model", text: entradasIntroText }]);
       setGuidedStep("entrada_recs");
       setGuidedAlternativeIndex(0);
       setDrinkAlcoholChoice(null);
       setDrinkSubcategoryChoice(null);
       setActiveSection("sec-entradas");
       setTimeout(() => {
-        const container = document.getElementById("cartaBody");
-        const element = document.getElementById("sec-entradas");
-        if (container && element) {
-          container.scrollTo({ top: element.offsetTop - 80, behavior: "smooth" });
-        }
-      }, 100);
+        const firstEntrada = menuData.menu.find(s => s.id === "entradas")?.items[0];
+        if (firstEntrada?.id) scrollToDish(firstEntrada.id);
+      }, 180);
     } else if (action === "start_principales") {
       converse("Para el plato principal tenemos opciones increíbles a la parrilla y pastas caseras.", false);
       setGuidedStep("principal_recs");
@@ -1054,6 +1071,45 @@ export default function App() {
   const chatFeedEndRef = useRef<HTMLDivElement | null>(null);
   const historyListEndRef = useRef<HTMLDivElement | null>(null);
 
+  useEffect(() => {
+    const clearIdleTimeout = () => {
+      if (idleInactivityTimeoutRef.current) {
+        clearTimeout(idleInactivityTimeoutRef.current);
+        idleInactivityTimeoutRef.current = null;
+      }
+    };
+
+    const canPlayIdleVariant = !activeOverlay && !speakingAvatarVideo && solState !== "speaking";
+
+    const scheduleIdleVariant = (delay = 12000) => {
+      clearIdleTimeout();
+      if (!canPlayIdleVariant) return;
+
+      idleInactivityTimeoutRef.current = setTimeout(() => {
+        const next = idleAvatarVariants[idleVariantIndexRef.current % idleAvatarVariants.length];
+        idleVariantIndexRef.current += 1;
+        setIdleAvatarKey(next.key);
+        setCurrentIdleAvatarVideo(next.src);
+      }, delay);
+    };
+
+    const markActivity = () => {
+      setIdleAvatarKey("connector_idle");
+      setCurrentIdleAvatarVideo(idleAvatarVideo);
+      scheduleIdleVariant();
+    };
+
+    markActivity();
+
+    const events = ["pointerdown", "keydown", "wheel", "touchstart"] as const;
+    events.forEach((eventName) => window.addEventListener(eventName, markActivity, { passive: true }));
+
+    return () => {
+      clearIdleTimeout();
+      events.forEach((eventName) => window.removeEventListener(eventName, markActivity));
+    };
+  }, [activeOverlay, speakingAvatarVideo, solState, idleCycleNonce]);
+
   // --- FLAT SECTIONS LIST FOR NAVIGATION ---
   const sectionsList: Array<{ id: string; name: string; items: MenuItem[]; note?: string }> = [];
   
@@ -1251,6 +1307,7 @@ export default function App() {
     triggerToast(`Sumado: ${name}`);
 
     stopCurrentAudio();
+    playAvatarClip("connector_taking_order_final");
     const isDrink = id.includes("bebidas") || id.includes("cervezas") || id.includes("cocktails") || id.includes("mocktails") || id.includes("champagne") || id.includes("vinos");
     const isDessert = id.includes("postres");
     
@@ -1350,7 +1407,18 @@ export default function App() {
   const handleContextChipClick = (text: string) => {
     stopCurrentAudio();
     if (text.toLowerCase().includes("picar") || text.toLowerCase().includes("entrada")) {
-      playAvatarClip("connector_entradas");
+      playAvatarClip("connector_entradas_izquierda");
+      setHistory(prev => [...prev, { role: "model", text: entradasIntroText }]);
+      setGuidedStep("entrada_recs");
+      setGuidedAlternativeIndex(0);
+      setDrinkAlcoholChoice(null);
+      setDrinkSubcategoryChoice(null);
+      setActiveSection("sec-entradas");
+      setTimeout(() => {
+        const firstEntrada = menuData.menu.find(s => s.id === "entradas")?.items[0];
+        if (firstEntrada?.id) scrollToDish(firstEntrada.id);
+      }, 180);
+      return;
     }
     
     // Auto-guide directly if matching section is found
@@ -2695,7 +2763,7 @@ export default function App() {
                   return (
                     <button
                       key={idx}
-                      onClick={() => handleGuidedChipClick(item.action, item.text, item.id, item.price, item.name)}
+                      onClick={() => handleGuidedChipClick(item.action, item.text, item.id, item.price, item.name, "left")}
                       className={`quick-chip guided-bubble ${item.action === "go_to_order" ? "action-btn" : ""}`}
                     >
                       {item.text}
@@ -2714,7 +2782,7 @@ export default function App() {
                   return (
                     <button
                       key={idx}
-                      onClick={() => handleGuidedChipClick(item.action, item.text, item.id, item.price, item.name)}
+                      onClick={() => handleGuidedChipClick(item.action, item.text, item.id, item.price, item.name, "right")}
                       className={`quick-chip guided-bubble ${item.action === "go_to_order" ? "action-btn" : ""}`}
                     >
                       {item.text}
@@ -2728,43 +2796,70 @@ export default function App() {
         )}
 
         {/* THE AVATAR (DECORATIVE - live call only via phone icon) */}
-        {!activeOverlay && activeAvatarVideo && (
+        {!activeOverlay && (
           <div 
-            className="orb-float pointer-events-none"
-            data-clip={activeAvatarKey}
-            data-state={activeAvatarKey === "connector_idle" ? "idle" : "speaking"}
+            className={`orb-float pointer-events-none ${speakingVideoReady ? "speaking-ready" : ""}`}
+            data-clip={speakingAvatarKey || "connector_idle"}
+            data-state={speakingAvatarVideo ? "speaking" : "idle"}
           >
             <video
-              ref={avatarVideoRef}
-              key={`${activeAvatarKey}-${avatarPlayId}`}
-              src={activeAvatarVideo}
-              className={`avatar-alpha-video ${avatarVideoReady ? "ready" : ""}`}
+              ref={idleAvatarVideoRef}
+              key={idleAvatarKey}
+              src={currentIdleAvatarVideo}
+              className="avatar-alpha-video avatar-idle-video ready"
               playsInline
-              muted={activeAvatarKey === "connector_idle"}
-              loop={activeAvatarKey === "connector_idle"}
+              muted
+              loop={idleAvatarKey === "connector_idle"}
               controls={false}
               disablePictureInPicture
               preload="auto"
-              onCanPlay={() => setAvatarVideoReady(true)}
-              onError={() => {
-                if (activeAvatarKey !== "connector_idle") {
-                  setActiveAvatarKey("connector_idle");
-                  setActiveAvatarVideo(idleAvatarVideo);
-                  setAvatarPlayId((value) => value + 1);
-                } else {
-                  setActiveAvatarVideo(null);
-                }
-                setAvatarVideoReady(false);
-                setSolState("idle");
-              }}
+              autoPlay
               onEnded={() => {
-                setActiveAvatarKey("connector_idle");
-                setActiveAvatarVideo(idleAvatarVideo);
-                setAvatarPlayId((value) => value + 1);
-                setAvatarVideoReady(false);
+                if (idleAvatarKey !== "connector_idle") {
+                  setIdleAvatarKey("connector_idle");
+                  setCurrentIdleAvatarVideo(idleAvatarVideo);
+                  setIdleCycleNonce((value) => value + 1);
+                }
+              }}
+              onError={() => {
+                setIdleAvatarKey("connector_idle");
+                setCurrentIdleAvatarVideo(idleAvatarVideo);
                 setSolState("idle");
               }}
             />
+            {speakingAvatarVideo && (
+              <video
+                ref={speakingAvatarVideoRef}
+                key={`${speakingAvatarKey}-${speakingPlayId}`}
+                src={speakingAvatarVideo}
+                className={`avatar-alpha-video avatar-speaking-video ${speakingVideoReady ? "ready" : ""}`}
+                playsInline
+                controls={false}
+                disablePictureInPicture
+                preload="auto"
+                onCanPlay={() => {
+                  setSpeakingVideoReady(true);
+                  speakingAvatarVideoRef.current?.play().catch(() => {
+                    setSpeakingAvatarKey(null);
+                    setSpeakingAvatarVideo(null);
+                    setSpeakingVideoReady(false);
+                    setSolState("idle");
+                  });
+                }}
+                onError={() => {
+                  setSpeakingAvatarKey(null);
+                  setSpeakingAvatarVideo(null);
+                  setSpeakingVideoReady(false);
+                  setSolState("idle");
+                }}
+                onEnded={() => {
+                  setSpeakingAvatarKey(null);
+                  setSpeakingAvatarVideo(null);
+                  setSpeakingVideoReady(false);
+                  setSolState("idle");
+                }}
+              />
+            )}
           </div>
         )}
 

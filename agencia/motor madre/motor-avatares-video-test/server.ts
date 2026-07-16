@@ -262,7 +262,7 @@ async function startServer() {
       // For Live API, we need to use the @google/genai SDK with vertexai: true
       // The official @google-cloud/vertexai doesn't support Live API yet
       console.log("[Live] Importing @google/genai SDK...");
-      const { GoogleGenAI } = await import("@google/genai");
+      const { GoogleGenAI, Modality } = await import("@google/genai");
       console.log("[Live] SDK imported successfully");
 
       const ai = new GoogleGenAI({
@@ -276,7 +276,7 @@ async function startServer() {
       const session = await ai.live.connect({
         model: "gemini-live-2.5-flash-native-audio",
         config: {
-          responseModalities: ["AUDIO"],
+          responseModalities: [Modality.AUDIO],
           speechConfig: {
             voiceConfig: { prebuiltVoiceConfig: { voiceName: "Aoede" } },
           },
