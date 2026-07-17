@@ -50,7 +50,7 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
   display: block;
   opacity: 1;
   background: transparent;
-  transform: scale(1.02);
+  transform: scale(0.94);
   transform-origin: center bottom;
 }
 
@@ -860,12 +860,12 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
    ============================================================ */
 .orb-float {
   position: fixed;
-  bottom: 8px;
+  bottom: calc(-24px + env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);
-  z-index: 50;
-  width: min(46vw, 205px);
-  height: min(78vw, 348px);
+  z-index: 42;
+  width: min(38vw, 170px);
+  height: min(66vw, 300px);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: transform 220ms cubic-bezier(.2,.7,.2,1);
@@ -1614,9 +1614,9 @@ body.keyboard-open #ratingSheet { top: 8px; bottom: auto; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
+  padding: 0 10px;
   pointer-events: none; /* children clickables override this */
-  z-index: 5;
+  z-index: 56;
 }
 
 .quick-actions-title-container {
@@ -1644,7 +1644,7 @@ body.keyboard-open #ratingSheet { top: 8px; bottom: auto; }
 }
 
 .quick-col {
-  width: 140px; /* perfectly sized to not overlap the central 80px mic orb area */
+  width: 108px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -1661,20 +1661,22 @@ body.keyboard-open #ratingSheet { top: 8px; bottom: auto; }
 .quick-chip {
   pointer-events: auto;
   width: 100%;
-  max-width: 135px;
+  max-width: 106px;
+  min-height: 48px;
   background: #FFFFFF !important;
   color: #120B08 !important;
   border: 1.5px solid #C9A86A !important;
   box-shadow: 0 8px 20px rgba(0,0,0,0.55) !important;
   font-weight: 800 !important;
-  font-size: 10.5px !important;
+  font-size: 10px !important;
   letter-spacing: -0.01em;
   border-radius: 14px !important;
-  padding: 10px 12px !important;
+  padding: 11px 8px !important;
   text-align: center;
-  white-space: nowrap;
+  white-space: normal;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.05;
   transition: all 180ms cubic-bezier(.175, .885, .32, 1.275);
   animation: bubblePopIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
 }

@@ -72,12 +72,13 @@ const entradasIntroText = "Excelente elección. Te recomiendo estas entradas. Ar
 
 const idleAvatarVideo = avatarVideoByKey.connector_idle;
 const idleAvatarVariants = [
-  { key: "connector_idle_cut_1", src: avatarVideoByKey.connector_idle_cut_1 },
   { key: "connector_idle_cut_hair", src: avatarVideoByKey.connector_idle_cut_hair },
   { key: "connector_idle_cut_3", src: avatarVideoByKey.connector_idle_cut_3 },
   { key: "connector_idle_cut_4", src: avatarVideoByKey.connector_idle_cut_4 },
   { key: "connector_idle_cut_wait", src: avatarVideoByKey.connector_idle_cut_wait }
 ];
+
+const isIdleVariantKey = (key: string | null) => Boolean(key && idleAvatarVariants.some((variant) => variant.key === key));
 
 const getDishAllergens = (it: any, sectionId: string): string[] => {
   const allergens: string[] = [];
@@ -1072,6 +1073,17 @@ export default function App() {
   const historyListEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    Object.values(avatarVideoByKey).forEach((src) => {
+      const video = document.createElement("video");
+      video.src = src;
+      video.muted = true;
+      video.preload = "auto";
+      video.playsInline = true;
+      video.load();
+    });
+  }, []);
+
+  useEffect(() => {
     const clearIdleTimeout = () => {
       if (idleInactivityTimeoutRef.current) {
         clearTimeout(idleInactivityTimeoutRef.current);
@@ -1081,21 +1093,18 @@ export default function App() {
 
     const canPlayIdleVariant = !activeOverlay && !speakingAvatarVideo && solState !== "speaking";
 
-    const scheduleIdleVariant = (delay = 12000) => {
+    const scheduleIdleVariant = (delay = 6500) => {
       clearIdleTimeout();
       if (!canPlayIdleVariant) return;
 
       idleInactivityTimeoutRef.current = setTimeout(() => {
         const next = idleAvatarVariants[idleVariantIndexRef.current % idleAvatarVariants.length];
         idleVariantIndexRef.current += 1;
-        setIdleAvatarKey(next.key);
-        setCurrentIdleAvatarVideo(next.src);
+        playAvatarClip(next.key);
       }, delay);
     };
 
     const markActivity = () => {
-      setIdleAvatarKey("connector_idle");
-      setCurrentIdleAvatarVideo(idleAvatarVideo);
       scheduleIdleVariant();
     };
 
@@ -2063,7 +2072,7 @@ export default function App() {
 
     setTimeout(() => {
       setActiveOverlay("rating_restaurant");
-    }, 3200);
+    }, 9000);
   };
 
   const handleRatingSubmit = () => {
@@ -2857,10 +2866,14 @@ export default function App() {
                   setSolState("idle");
                 }}
                 onEnded={() => {
+                  const shouldContinueIdleCycle = isIdleVariantKey(speakingAvatarKey);
                   setSpeakingAvatarKey(null);
                   setSpeakingAvatarVideo(null);
                   setSpeakingVideoReady(false);
                   setSolState("idle");
+                  if (shouldContinueIdleCycle) {
+                    setIdleCycleNonce((value) => value + 1);
+                  }
                 }}
               />
             )}
