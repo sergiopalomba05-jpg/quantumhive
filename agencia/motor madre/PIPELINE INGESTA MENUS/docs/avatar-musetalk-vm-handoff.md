@@ -847,6 +847,335 @@ Validacion post-migracion obligatoria:
 7. Enviar pedido y rating: debe volver a home/invitacion live sin romper chips.
 ```
 
+## Flujo Replicable Para Futuras Cartas Y Avatares
+
+Este proceso es el patron base para repetir el trabajo en nuevas cartas/restaurantes y futuros avatares sin perder calidad ni volver a introducir glitches.
+
+### 1. Entrada De Nueva Carta
+
+```txt
+Objetivo: transformar una carta cruda en una experiencia guiada con avatar.
+
+Entradas necesarias:
+- Nombre del restaurante.
+- Menu estructurado por rubros: entradas, principales, bebidas, postres u otros rubros del local.
+- Nombre, descripcion, precio y posibles variantes por plato.
+- Fotos o referencias visuales de platos si existen.
+- Mensaje de bienvenida del avatar para ese restaurante.
+- Tono de atencion: formal, cercano, premium, barrial, familiar, etc.
+```
+
+Reglas para nuevas cartas:
+
+```txt
+1. Mantener un home simple de 4 chips principales siempre que sea posible.
+2. Los chips principales deben representar rubros amplios, no platos individuales.
+3. Cada rubro debe mostrar recomendaciones paginadas de a 3 para no saturar mobile.
+4. Siempre conservar una salida visible: Volver, Inicio o Ver mi pedido.
+5. Despues de elegir plato, el follow-up debe ser deterministico por rubro.
+6. No depender de respuestas IA para el flujo critico de pedido; el flujo guiado vive en codigo.
+7. La IA/chat puede asesorar, pero el carrito y follow-ups deben ser previsibles.
+```
+
+### 2. Flujo UX Canonico De Carta Viva
+
+```txt
+Splash:
+- Muestra marca/restaurante.
+- Precarga carta/carrusel/imagenes/video welcome detras.
+- No cierra hasta que el video de bienvenida real montado en la app este listo.
+
+Home:
+- 4 chips principales: Entradas, Plato principal, Bebidas, Postres.
+- Solo estos chips disparan mirada lateral.
+- Seleccion quedan visualmente destacadas durante el gesto.
+
+Recomendaciones:
+- Cada rubro muestra hasta 3 platos por pagina.
+- Chips de platos son blancos.
+- Chips de platos NO disparan mirada lateral.
+- Chips de platos disparan toma de pedido y alta al carrito.
+
+Follow-up:
+- Entrada -> Otra entrada / Plato principal / Inicio.
+- Principal -> Otro principal / Bebidas / Inicio.
+- Bebida -> Otra bebida / Postre / Ver mi pedido.
+- Postre -> Ver mi pedido / Agregar algo mas.
+
+Cierre:
+- Ver pedido.
+- Enviar pedido.
+- Despedida.
+- Rating.
+- Invitacion a llamada live.
+```
+
+### 3. Proceso De Avatar Desde Crudos
+
+```txt
+Objetivo: generar un set de clips alpha estable para un avatar de carta viva.
+
+Clips minimos recomendados:
+- idle base: postura neutral loopable.
+- idle alternativo 1: gesto leve natural.
+- idle alternativo 2: acomodarse pelo/ropa o micro movimiento.
+- idle alternativo 3: variacion corta.
+- idle espera larga: gesto de paciencia para inactividad.
+- mirada izquierda: para chips principales del lado izquierdo.
+- mirada derecha: para chips principales del lado derecho.
+- tomando pedido: para chips de plato y botones + de tarjeta.
+- saludo bienvenida: al abrir carta.
+- saludo despedida: al enviar pedido.
+- invitacion live: despues del rating.
+```
+
+Reglas de grabacion/edicion:
+
+```txt
+1. Todos los clips deben venir del mismo master visual/personaje.
+2. Fondo verde limpio si se va a chromakeyar.
+3. Evitar cambios fuertes de escala/camara entre clips.
+4. Inicio y final del clip deben volver a postura compatible con idle base.
+5. No usar clips con boca demasiado activa si van a convivir con TTS generico.
+6. Mantener duraciones cortas para gestos: 1.5s a 4s segun accion.
+7. Idle base debe ser el clip mas estable y menos llamativo.
+8. Los crudos se guardan completos; no borrar versiones anteriores.
+```
+
+### 4. Conversion A WebM Alpha
+
+Herramientas usadas:
+
+```txt
+ffmpeg: D:\tools\ffmpeg\ffmpeg-8.1.2-essentials_build\bin\ffmpeg.exe
+ffprobe: D:\tools\ffmpeg\ffmpeg-8.1.2-essentials_build\bin\ffprobe.exe
+Formato final: VP9 WebM alpha 720x1280, sin audio para gestos/idles.
+```
+
+Comando base vertical:
+
+```powershell
+$ffmpeg = "D:\tools\ffmpeg\ffmpeg-8.1.2-essentials_build\bin\ffmpeg.exe"
+$filter = "scale=720:1280:force_original_aspect_ratio=decrease:flags=lanczos,pad=720:1280:(ow-iw)/2:(oh-ih)/2:color=0x00FF00,format=rgba,chromakey=0x00FF00:0.28:0.08,despill=type=green:mix=0.85:expand=0.35,format=yuva420p"
+& $ffmpeg -y -i "input.mp4" -map 0:v:0 -vf $filter -c:v libvpx-vp9 -pix_fmt yuva420p -auto-alt-ref 0 -b:v 0 -crf 28 -an "output.webm"
+```
+
+Verificacion alpha obligatoria:
+
+```powershell
+$ffprobe = "D:\tools\ffmpeg\ffmpeg-8.1.2-essentials_build\bin\ffprobe.exe"
+& $ffprobe -v error -show_streams "output.webm"
+```
+
+Debe aparecer:
+
+```txt
+codec_name=vp9
+width=720
+height=1280
+TAG:alpha_mode=1
+```
+
+### 5. Integracion En App
+
+Rutas finales:
+
+```txt
+App: agencia\motor madre\motor-avatares-video-test
+Assets publicos: public\avatar-videos\sol\v1
+Codigo principal: src\App.tsx
+Estilos: src\index.css
+```
+
+Mapeo recomendado en `avatarVideoByKey`:
+
+```txt
+connector_idle -> idle base
+connector_idle_cut_hair -> idle alternativo pelo/ropa
+connector_idle_cut_3 -> idle alternativo
+connector_idle_cut_4 -> idle alternativo
+connector_idle_cut_6 -> idle alternativo
+connector_idle_cut_wait -> espera larga
+connector_look_left_cut -> mirada izquierda
+connector_look_right_cut -> mirada derecha
+connector_taking_order_cut -> tomando pedido
+connector_welcome_cut -> bienvenida
+connector_farewell_cut -> despedida
+connector_live_invite_cut -> invitacion live
+```
+
+Regla tecnica mas importante:
+
+```txt
+El idle base debe quedar fijo en el video de fondo.
+NO cambiar key/src del video idle base para rotar idles.
+Las variantes se reproducen como clips encima con playAvatarClip.
+```
+
+Por que:
+
+```txt
+Cambiar key/src del video idle de fondo remonta el elemento <video> y en mobile genera cuadrado blanco entre idles.
+Mirada lateral y toma de pedido no mostraban cuadrado porque se reproducian como clips encima.
+Por eso los idles deben seguir exactamente ese mismo patron.
+```
+
+### 6. Reglas De Transicion De Avatar
+
+```txt
+1. idle base siempre montado y visible.
+2. clip activo se monta encima.
+3. cuando clip activo esta ready, baja idle base a opacity 0.08.
+4. cuando termina clip activo, vuelve idle base sin cambiar src.
+5. desmontar clip activo despues del solape, no instantaneo.
+6. usar poster transparente.
+7. no usar video temporal intermedio en playAvatarClip.
+8. no usar guardas timeupdate para ocultar frames salvo evidencia concreta.
+```
+
+Valores actuales probados:
+
+```txt
+speaking fade: 680ms ease
+idle fade: 760ms ease
+idle bajo clip activo: opacity 0.08
+desmontaje speaking: 950ms despues de ended
+```
+
+### 7. Prewarm De Arranque
+
+```txt
+Problema resuelto: al tocar iniciar, la carta aparecia antes de que el saludo estuviera decodificado y se veia cuadrado blanco.
+
+Solucion actual:
+- La app/carta/carrusel se montan detras del splash con #app.prewarming.
+- Se precargan imagenes de destacados y primeros platos durante splash.
+- Se precarga connector_welcome en video oculto.
+- Al tocar iniciar se dispara playAvatarClip("connector_welcome").
+- El splash solo se cierra cuando el video real montado en la app dispara onCanPlay.
+- Si el usuario toca antes de tiempo, el boton muestra Preparando carta...
+```
+
+### 8. Checklist Para Crear Un Nuevo Restaurante
+
+```txt
+1. Crear/ingestar menu estructurado.
+2. Definir rubros principales y home de 4 chips.
+3. Cargar platos, precios, descripciones, imagenes y destacados.
+4. Adaptar textos de bienvenida, recomendaciones y follow-ups.
+5. Si se reutiliza Sol, usar mismo set WebM alpha probado.
+6. Si hay avatar nuevo, generar set minimo de clips y convertir a WebM alpha.
+7. Integrar assets en public/avatar-videos/<avatar>/<version>.
+8. Mapear avatarVideoByKey.
+9. Validar lint/build.
+10. Deploy Cloud Run test.
+11. QA humano en celular real.
+12. Documentar revision, URL, comandos y assets fuente.
+13. Commit y push antes de cambiar de VM.
+```
+
+### 9. Checklist Para Crear Un Nuevo Avatar
+
+```txt
+1. Guardar crudos completos en carpeta fuente versionada o respaldada.
+2. Seleccionar idle base mas estable.
+3. Cortar clips de gestos naturales.
+4. Convertir a WebM VP9 alpha 720x1280.
+5. Verificar alpha_mode=1 con ffprobe.
+6. Agregar assets a public/avatar-videos/<avatar>/v1.
+7. Reusar arquitectura: idle base fijo + gestos encima.
+8. No cambiar key/src del idle base.
+9. Validar en celular: saludo, idles, mirada, toma pedido, despedida.
+10. Documentar nombres de crudos y mapeo final.
+```
+
+### 10. Errores Que Ya Se Cometieron Y No Hay Que Repetir
+
+```txt
+1. Intentar mejorar transicion cambiando el idle base por key/src: genero cuadrados blancos.
+2. Usar video temporal de precarga dentro de playAvatarClip: genero comportamiento inestable.
+3. Abrir carta por timeout fijo sin esperar welcome onCanPlay: genero cuadrado blanco al inicio.
+4. Hacer que chips de subfiltros o platos miren al costado: rompe la intencion UX.
+5. Hacer chips de platos bordo: deben ser blancos para diferenciar seleccion de plato.
+6. Eliminar crudos o carpetas viejas: prohibido sin orden explicita.
+7. Confiar solo en build desktop: el QA real es celular.
+```
+
+### 11. Respaldo De Assets Y Supabase
+
+Estado de respaldo local/Git:
+
+```txt
+Los crudos y fuentes de Sol estan en C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol.
+Un snapshot del disco D NO garantiza estos archivos porque esta carpeta vive en C:.
+Por eso los crudos chicos/medianos se deben trackear en Git cuando el objetivo sea no perder nada antes de migrar VM.
+```
+
+Politica recomendada para Supabase:
+
+```txt
+1. No guardar binarios grandes directamente en columnas de Postgres.
+2. Usar Supabase Storage para videos, imagenes y crudos.
+3. Usar tablas solo para metadata: restaurante, avatar, tipo de clip, version, storage_path, public_url, checksum, created_at.
+4. Bucket recomendado para outputs servibles: avatar-videos.
+5. Bucket recomendado para crudos/backups: avatar-sources o carta-viva-assets.
+6. Mantener service role key solo como secret local/VM; nunca commitear claves.
+```
+
+Estructura sugerida de Storage:
+
+```txt
+avatar-videos/la-escaloneta/sol/v1/connector_idle.webm
+avatar-videos/la-escaloneta/sol/v1/connector_welcome_cut.webm
+avatar-sources/la-escaloneta/sol/2026-07-17/CORTADOS/idle 1.mp4
+avatar-sources/la-escaloneta/sol/2026-07-17/CORTADOS/saludo bienvenida.mp4
+avatar-sources/la-escaloneta/sol/2026-07-17/referencias/sol carta.png
+```
+
+Tabla metadata sugerida si se formaliza en Supabase:
+
+```sql
+create table if not exists public.avatar_assets (
+  id uuid primary key default gen_random_uuid(),
+  restaurant_id text not null,
+  avatar_id text not null,
+  asset_kind text not null,
+  clip_key text,
+  version text not null default 'v1',
+  bucket text not null,
+  storage_path text not null,
+  public_url text,
+  source_filename text,
+  notes text,
+  created_at timestamptz not null default now(),
+  unique (bucket, storage_path)
+);
+```
+
+Script existente relacionado:
+
+```txt
+agencia\motor madre\pipeline-vm-multimedia\scripts\upload_supabase.py
+```
+
+Uso previsto del script:
+
+```txt
+- Recibe SUPABASE_URL y SUPABASE_SERVICE_KEY desde secrets/env.
+- Sube a Supabase Storage.
+- Devuelve URL publica si el bucket es publico.
+- No debe guardar la key dentro del repo.
+```
+
+Decision actual antes de migrar VM:
+
+```txt
+1. Trackear y pushear crudos multimedia al repo porque todos estan por debajo del limite duro de GitHub de 100 MB.
+2. No depender del snapshot D para estos archivos de C:.
+3. Dejar Supabase Storage como segundo respaldo cloud recomendado cuando esten confirmados bucket y secrets.
+4. Si se usa Supabase, subir a Storage y registrar metadata en avatar_assets o tabla equivalente del proyecto Carta QR Viva.
+```
+
 Texto visible/audio de bienvenida:
 
 ```txt
