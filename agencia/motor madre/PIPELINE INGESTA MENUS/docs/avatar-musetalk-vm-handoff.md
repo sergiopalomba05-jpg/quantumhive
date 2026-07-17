@@ -531,7 +531,7 @@ Servicio test deployado:
 ```txt
 motor-avatares-video-test
 URL publica: https://motor-avatares-video-test-557866434489.us-central1.run.app
-Revision activa validada: motor-avatares-video-test-00036-4j2
+Revision activa validada: motor-avatares-video-test-00037-sjm
 ```
 
 Validaciones ejecutadas:
@@ -788,7 +788,7 @@ Este es el estado que no se debe perder al migrar a otra VM.
 Repo local actual: C:\Users\sergio\Desktop\boveda-obsidian
 Rama de trabajo: feat/avatar-engine-musetalk-v15
 Servicio Cloud Run test: motor-avatares-video-test
-Revision Cloud Run activa validada: motor-avatares-video-test-00036-4j2
+Revision Cloud Run activa validada: motor-avatares-video-test-00037-sjm
 URL publica estable: https://motor-avatares-video-test-557866434489.us-central1.run.app
 App test: agencia\motor madre\motor-avatares-video-test
 Handoff canonico: agencia\motor madre\PIPELINE INGESTA MENUS\docs\avatar-musetalk-vm-handoff.md
