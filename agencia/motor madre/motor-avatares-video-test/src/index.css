@@ -39,6 +39,11 @@ button:disabled { cursor: not-allowed; opacity: 0.5; }
 input, textarea { font: inherit; color: inherit; background: none; border: 0; outline: 0; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 
+#app.prewarming {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .avatar-alpha-video {
   position: absolute;
   inset: 0;
@@ -56,7 +61,7 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 
 .avatar-speaking-video {
   opacity: 0;
-  transition: opacity 680ms ease;
+  transition: opacity 1100ms cubic-bezier(.22,.61,.36,1);
 }
 
 .avatar-speaking-video.ready {
@@ -64,11 +69,11 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 }
 
 .orb-float.speaking-ready .avatar-idle-video {
-  opacity: 0.08;
+  opacity: 0.16;
 }
 
 .avatar-idle-video {
-  transition: opacity 760ms ease;
+  transition: opacity 1200ms cubic-bezier(.22,.61,.36,1);
 }
 
 .avatar-preload-video {
@@ -1325,7 +1330,7 @@ body.keyboard-open.has-ctx-chips .quick-actions { display: flex; bottom: calc(va
 
 /* Barra "Ver mi pedido" */
 .cart-bar {
-  position: fixed; left: 50%; bottom: calc(282px + env(safe-area-inset-bottom)); z-index: 57;
+  position: fixed; left: 50%; bottom: calc(196px + env(safe-area-inset-bottom)); z-index: 57;
   transform: translateX(-50%) translateY(20px);
   display: none; align-items: center; gap: 11px;
   padding: 11px 18px; border-radius: 999px;
@@ -1341,6 +1346,41 @@ body.keyboard-open.has-ctx-chips .quick-actions { display: flex; bottom: calc(va
   display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800;
 }
 body.keyboard-open .cart-bar { display: none; }
+
+.live-call-float {
+  position: fixed;
+  left: 50%;
+  bottom: calc(222px + env(safe-area-inset-bottom));
+  z-index: 58;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 158px;
+  padding: 11px 16px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(244,199,107,0.75);
+  background: linear-gradient(180deg, rgba(30,20,15,0.98), rgba(139,28,43,0.96));
+  color: var(--paper);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  box-shadow: 0 14px 34px -13px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.05) inset;
+  pointer-events: auto;
+  animation: cartPop 440ms cubic-bezier(.34,1.56,.64,1);
+}
+.live-call-float.active {
+  background: linear-gradient(180deg, #f4c76b, #c98a24);
+  color: #120b08;
+  animation: livePulse 1.1s ease-in-out infinite;
+}
+body.keyboard-open .live-call-float { display: none; }
+
+@keyframes livePulse {
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.04); }
+}
 
 /* Burbujas Blancas de Autoguido (Dynamic Flow) */
 .guided-container {

@@ -65,6 +65,7 @@ const avatarVideoByKey: Record<string, string> = {
   connector_taking_order_cut: "/avatar-videos/sol/v1/connector_taking_order_cut.webm",
   connector_welcome_cut: "/avatar-videos/sol/v1/connector_welcome_cut.webm",
   connector_farewell_cut: "/avatar-videos/sol/v1/connector_farewell_cut.webm",
+  connector_live_invite_cut: "/avatar-videos/sol/v1/connector_live_invite_cut.webm",
   connector_welcome: "/avatar-videos/sol/v1/connector_welcome_cut.webm"
 };
 
@@ -80,6 +81,7 @@ const idleAvatarVariants = [
 
 const isIdleVariantKey = (key: string | null) => Boolean(key && idleAvatarVariants.some((variant) => variant.key === key));
 const mainGuidedActions = new Set(["start_entradas", "start_principales", "start_bebidas", "start_postres"]);
+const mainGuidedLookMs = 5000;
 const transparentVideoPoster = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 type GuidedStep = "start" | "entrada_recs" | "principal_recs" | "drink_recs" | "postre_recs" | "after_entrada" | "after_principal" | "after_drink" | "after_postre" | "final_ask";
 type CartFollowup = { reply: string; chips: string[] };
@@ -291,6 +293,7 @@ export default function App() {
 
   const [isLiveCalling, setIsLiveCalling] = useState(false);
   const [liveCallMuted, setLiveCallMuted] = useState(false);
+  const [showLiveCallPrompt, setShowLiveCallPrompt] = useState(false);
 
   // Live Call references
   const liveWsRef = useRef<WebSocket | null>(null);
@@ -342,8 +345,6 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (showSplash) return;
-    
     const timer = setTimeout(() => {
       const el = carouselRef.current;
       if (!el) return;
@@ -377,7 +378,7 @@ export default function App() {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [showSplash]);
+  }, []);
 
   // Sync mute ref
   useEffect(() => {
@@ -421,6 +422,7 @@ export default function App() {
   const idleAvatarVideoRef = useRef<HTMLVideoElement | null>(null);
   const speakingAvatarVideoRef = useRef<HTMLVideoElement | null>(null);
   const preloadedAvatarVideosRef = useRef<HTMLVideoElement[]>([]);
+  const avatarClipLoadTokenRef = useRef(0);
   const idleVariantIndexRef = useRef(0);
   const idleInactivityTimeoutRef = useRef<any>(null);
   const [contextChips, setContextChips] = useState<string[]>([
@@ -458,10 +460,37 @@ export default function App() {
     const src = avatarVideoByKey[key];
     if (!src) return;
     setSolState("speaking");
-    setSpeakingVideoReady(false);
-    setSpeakingAvatarKey(key);
-    setSpeakingAvatarVideo(src);
-    setSpeakingPlayId((value) => value + 1);
+    const token = avatarClipLoadTokenRef.current + 1;
+    avatarClipLoadTokenRef.current = token;
+
+    const video = document.createElement("video");
+    video.src = src;
+    video.muted = true;
+    video.playsInline = true;
+    video.preload = "auto";
+    let shown = false;
+
+    const showClip = () => {
+      if (shown) return;
+      if (avatarClipLoadTokenRef.current !== token) return;
+      shown = true;
+      setSpeakingVideoReady(false);
+      setSpeakingAvatarKey(key);
+      setSpeakingAvatarVideo(src);
+      setSpeakingPlayId((value) => value + 1);
+    };
+
+    video.onloadeddata = showClip;
+    video.oncanplay = showClip;
+    video.onerror = () => {
+      if (avatarClipLoadTokenRef.current !== token) return;
+      setSolState("idle");
+    };
+    video.load();
+    if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+      showClip();
+    }
+    preloadedAvatarVideosRef.current = [...preloadedAvatarVideosRef.current.slice(-12), video];
   };
 
   const playGuidedChipLook = (side?: "left" | "right") => {
@@ -633,11 +662,11 @@ export default function App() {
         };
       case "after_drink":
         return {
-          title: "¿Cómo seguimos?",
+          title: "¿Seguimos tomando o pasamos al postre?",
           chips: [
+            { text: "Otra bebida", action: "repeat_bebidas" },
             { text: "🍰 Postre", action: "start_postres" },
-            { text: "Ver mi pedido 🛒", action: "go_to_order" },
-            { text: "Inicio ↺", action: "reset_flow" }
+            { text: "Ver mi pedido 🛒", action: "go_to_order" }
           ]
         };
       case "after_postre":
@@ -727,8 +756,6 @@ export default function App() {
 
   // Continuous Autoplay scroll effect for the featured carousel
   useEffect(() => {
-    if (showSplash) return;
-
     let animFrameId: number;
     let lastTime = performance.now();
 
@@ -760,7 +787,7 @@ export default function App() {
       clearTimeout(startTimeout);
       cancelAnimationFrame(animFrameId);
     };
-  }, [showSplash]);
+  }, []);
 
   const scrollCarouselToDish = (dishId: string) => {
     if (!carouselRef.current) return;
@@ -867,7 +894,7 @@ export default function App() {
       return {
         nextStep: "after_principal",
         followup: {
-          reply: `Perfecto, ${name} ya está en tu pedido. ¿Elegimos otro principal o pasamos a las bebidas?`,
+          reply: `Perfecto, ${name} ya está en tu pedido. ¿Algún plato principal más o pasamos a las bebidas?`,
           chips: ["Otro principal", "Bebidas", "Volver al inicio"]
         }
       };
@@ -876,8 +903,8 @@ export default function App() {
       return {
         nextStep: "after_drink",
         followup: {
-          reply: `Listo, agregué ${name}. ¿Te ofrezco un postre, cerramos el pedido o volvemos a sumar algo más?`,
-          chips: ["Postre", "Ver mi pedido", "Agregar algo más"]
+          reply: `Listo, agregué ${name}. ¿Elegimos otra bebida o pasamos al postre?`,
+          chips: ["Otra bebida", "Postre", "Ver mi pedido"]
         }
       };
     }
@@ -901,7 +928,7 @@ export default function App() {
 
   const handleGuidedChipClick = (action: string, text: string, dishId?: string, price?: number, name?: string, chipSide?: "left" | "right") => {
     stopCurrentAudio();
-    const isMainGuidedAction = mainGuidedActions.has(action);
+    const isMainGuidedAction = guidedStep === "start" && mainGuidedActions.has(action);
     if (isMainGuidedAction) {
       playGuidedChipLook(chipSide);
     }
@@ -909,7 +936,7 @@ export default function App() {
     setSelectedGuidedChipId(chipId);
     setTimeout(() => {
       setSelectedGuidedChipId(current => current === chipId ? null : current);
-    }, 2800);
+    }, isMainGuidedAction ? mainGuidedLookMs + 100 : 2800);
 
     // 1. Handle Dish Recommendation Click
     if (dishId) {
@@ -926,12 +953,7 @@ export default function App() {
         setExpandedDishIds(prev => ({ ...prev, [dishId]: true }));
 
         if (price != null && name) {
-          const selectionFollowup = getGuidedSelectionFollowup(name);
-          addToCart(dishId, name, price, true, selectionFollowup.followup);
-          setGuidedStep(selectionFollowup.nextStep);
-          setGuidedAlternativeIndex(0);
-          setDrinkAlcoholChoice(null);
-          setDrinkSubcategoryChoice(null);
+          addToCart(dishId, name, price, true);
         }
       }, 300);
       return;
@@ -948,7 +970,7 @@ export default function App() {
         setActiveSection("sec-entradas");
         const firstEntrada = menuData.menu.find(s => s.id === "entradas")?.items[0];
         if (firstEntrada?.id) scrollToDish(firstEntrada.id);
-      }, 2500);
+      }, isMainGuidedAction ? mainGuidedLookMs : 700);
     } else if (action === "start_principales") {
       setTimeout(() => {
         converse("Para el plato principal tenemos opciones increíbles a la parrilla y pastas caseras.", false);
@@ -962,7 +984,7 @@ export default function App() {
         if (container && element) {
           container.scrollTo({ top: element.offsetTop - 80, behavior: "smooth" });
         }
-      }, 2500);
+      }, isMainGuidedAction ? mainGuidedLookMs : 700);
     } else if (action === "start_bebidas") {
       setTimeout(() => {
         converse("¿Qué te gustaría tomar hoy? Primero contame, ¿preferís con o sin alcohol?", false);
@@ -976,7 +998,7 @@ export default function App() {
         if (container && element) {
           container.scrollTo({ top: element.offsetTop - 80, behavior: "smooth" });
         }
-      }, 2500);
+      }, isMainGuidedAction ? mainGuidedLookMs : 700);
     } else if (action === "start_postres") {
       setTimeout(() => {
         converse("Para terminar de la mejor manera, te recomiendo nuestros postres artesanales.", false);
@@ -990,7 +1012,7 @@ export default function App() {
         if (container && element) {
           container.scrollTo({ top: element.offsetTop - 80, behavior: "smooth" });
         }
-      }, 2500);
+      }, isMainGuidedAction ? mainGuidedLookMs : 700);
     } else if (action === "drink_choose_with") {
       converse("Te muestro nuestras opciones con alcohol: vinos, cervezas y tragos de autor.", false);
       setDrinkAlcoholChoice("with");
@@ -1078,6 +1100,11 @@ export default function App() {
     } else if (action === "repeat_principales") {
       setGuidedStep("principal_recs");
       setGuidedAlternativeIndex(0);
+    } else if (action === "repeat_bebidas") {
+      setGuidedStep("drink_recs");
+      setGuidedAlternativeIndex(0);
+      setDrinkAlcoholChoice(null);
+      setDrinkSubcategoryChoice(null);
     } else if (action === "go_to_order") {
       setActiveOverlay("order");
     } else if (action === "reset_flow") {
@@ -1417,6 +1444,8 @@ export default function App() {
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
   const addToCart = (id: string, name: string, price: number, forceAdd: boolean = false, followup?: CartFollowup) => {
+    const guidedFollowup = followup || (isShowingIndividualDishes() ? getGuidedSelectionFollowup(name) : null);
+    const effectiveFollowup = guidedFollowup && "followup" in guidedFollowup ? guidedFollowup.followup : followup;
     const baseId = id.split("|")[0];
     setGuidedDishId(baseId);
     if (liveHighlightTimeoutRef.current) {
@@ -1433,7 +1462,7 @@ export default function App() {
         title: "¿Sumar otro?",
         text: `Ya tenés ${name} en tu pedido. ¿Querés agregar uno más?`,
         onConfirm: () => {
-          addToCart(id, name, price, true, followup);
+          addToCart(id, name, price, true, effectiveFollowup);
           setConfirmModal(null);
         }
       });
@@ -1452,16 +1481,25 @@ export default function App() {
     const isDrink = id.includes("bebidas") || id.includes("cervezas") || id.includes("cocktails") || id.includes("mocktails") || id.includes("champagne") || id.includes("vinos");
     const isDessert = id.includes("postres");
     
-    let reply = followup?.reply || `Excelente elección. Te sumé ${name} al pedido.`;
-    let chips = followup?.chips || ["¿Algo para tomar?", "Un postre", "Cerrar el pedido"];
+    if (guidedFollowup && "nextStep" in guidedFollowup) {
+      setGuidedStep(guidedFollowup.nextStep);
+      setGuidedAlternativeIndex(0);
+      if (guidedFollowup.nextStep !== "after_drink") {
+        setDrinkAlcoholChoice(null);
+        setDrinkSubcategoryChoice(null);
+      }
+    }
 
-    if (!followup && isDrink) {
+    let reply = effectiveFollowup?.reply || `Excelente elección. Te sumé ${name} al pedido.`;
+    let chips = effectiveFollowup?.chips || ["¿Algo para tomar?", "Un postre", "Cerrar el pedido"];
+
+    if (!effectiveFollowup && isDrink) {
       reply = `¡Salud! Te agregué ${name}. ¿Buscamos un plato principal o preferís pasar al postre?`;
       chips = ["Platos principales", "Un postre", "Cerrar el pedido"];
-    } else if (!followup && isDessert) {
+    } else if (!effectiveFollowup && isDessert) {
       reply = `Qué rico postre. Te sumé ${name}. ¿Buscás algo más o ya cerramos el pedido para mandarlo a la cocina?`;
       chips = ["Cerrar el pedido", "Algo más para tomar"];
-    } else if (!followup) {
+    } else if (!effectiveFollowup) {
       reply = `Te sumé ${name} al pedido. ¿Le sumamos algo para tomar? ¿Con alcohol o sin alcohol?`;
       chips = ["Con alcohol", "Sin alcohol", "Un postre"];
     }
@@ -1883,6 +1921,7 @@ export default function App() {
   const startLiveCall = async () => {
     try {
       stopCurrentAudio();
+      setShowLiveCallPrompt(false);
 
       // Despertar audio DENTRO del gesto del click, antes de cualquier await
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
@@ -2204,7 +2243,15 @@ export default function App() {
 
     setTimeout(() => {
       setActiveOverlay("rating_restaurant");
-    }, 9000);
+    }, 7000);
+  };
+
+  const showLiveInviteAfterRating = () => {
+    stopCurrentAudio();
+    setActiveOverlay(null);
+    setShowLiveCallPrompt(true);
+    playAvatarClip("connector_live_invite_cut");
+    playTTS("Si querés, también podés tocar llamada y charlar conmigo en vivo.");
   };
 
   const handleRatingSubmit = () => {
@@ -2229,7 +2276,7 @@ export default function App() {
     setCart([]);
     setRating({ mesera: 0, restaurante: 0, quantumhive: 0 });
     setRatingComment("");
-    setActiveOverlay(null);
+    showLiveInviteAfterRating();
   };
 
   const handleEmbeddedRatingSubmit = () => {
@@ -2253,6 +2300,7 @@ export default function App() {
     triggerToast("¡Muchas gracias por valorar la experiencia QuantumHive! 🚀");
     setRating({ mesera: 0, restaurante: 0, quantumhive: 0 });
     setRatingComment("");
+    showLiveInviteAfterRating();
   };
 
   const scrollToSection = (secId: string) => {
@@ -2350,7 +2398,7 @@ export default function App() {
       </div>
 
       {/* --- CORE LAYOUT --- */}
-      <div id="app" className="ready">
+      <div id="app" className={`ready ${showSplash ? "prewarming" : ""}`} aria-hidden={showSplash}>
         
         {/* --- TOPBAR --- */}
         <header className="topbar">
@@ -2952,6 +3000,23 @@ export default function App() {
           </div>
         )}
 
+        {!activeOverlay && (showLiveCallPrompt || isLiveCalling) && (
+          <button
+            type="button"
+            onClick={() => {
+              if (isLiveCalling) {
+                endLiveCall();
+              } else {
+                startLiveCall();
+              }
+            }}
+            className={`live-call-float ${isLiveCalling ? "active" : ""}`}
+          >
+            {isLiveCalling ? <Square className="h-4 w-4 fill-current" /> : <Phone className="h-4 w-4" />}
+            <span>{isLiveCalling ? "Cortar llamada" : "Charlar en vivo"}</span>
+          </button>
+        )}
+
         {/* THE AVATAR (DECORATIVE - live call only via phone icon) */}
         {!activeOverlay && (
           <div 
@@ -3021,7 +3086,7 @@ export default function App() {
                     if (shouldContinueIdleCycle) {
                       setIdleCycleNonce((value) => value + 1);
                     }
-                  }, 950);
+                  }, 1300);
                 }}
               />
             )}

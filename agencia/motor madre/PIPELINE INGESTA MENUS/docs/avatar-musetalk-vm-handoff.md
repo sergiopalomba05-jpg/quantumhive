@@ -531,7 +531,7 @@ Servicio test deployado:
 ```txt
 motor-avatares-video-test
 URL publica: https://motor-avatares-video-test-557866434489.us-central1.run.app
-Revision activa validada: motor-avatares-video-test-00020-2xl
+Revision activa validada: motor-avatares-video-test-00024-xrx
 ```
 
 Validaciones ejecutadas:
@@ -555,6 +555,7 @@ public/avatar-videos/sol/v1/connector_look_right_cut.webm
 public/avatar-videos/sol/v1/connector_taking_order_cut.webm
 public/avatar-videos/sol/v1/connector_welcome_cut.webm
 public/avatar-videos/sol/v1/connector_farewell_cut.webm
+public/avatar-videos/sol/v1/connector_live_invite_cut.webm
 ```
 
 Propiedades verificadas para los clips de gesto/idle finales:
@@ -576,6 +577,7 @@ chip principal der.   -> connector_look_right_cut.webm
 agregar al pedido     -> connector_taking_order_cut.webm
 bienvenida            -> connector_welcome_cut.webm
 despedida             -> connector_farewell_cut.webm
+invitacion a live     -> connector_live_invite_cut.webm
 chips de platos       -> sin mirada lateral, solo seleccion + alta al pedido
 ```
 
@@ -592,17 +594,49 @@ Build remoto: gcloud builds submit OK
 URL publica: https://motor-avatares-video-test-557866434489.us-central1.run.app
 ```
 
+Actualizacion 2026-07-17 posterior:
+
+```txt
+Revision: motor-avatares-video-test-00021-x2h
+Objetivo: precargar carta en splash, clips nuevos de mirada, rating 2s antes, invitacion a live despues de puntuar.
+Build local: npm run lint OK, npm run build OK
+Build remoto: gcloud builds submit OK
+```
+
+Actualizacion 2026-07-17 ajuste fino:
+
+```txt
+Revision: motor-avatares-video-test-00022-gpr
+Objetivo: chips principales seleccionados 5s durante mirada lateral, follow-up guiado tambien desde boton + de tarjeta, Ver mi pedido mas abajo.
+Build local: npm run lint OK, npm run build OK
+Build remoto: gcloud builds submit OK
+```
+
+Actualizacion 2026-07-17 transiciones:
+
+```txt
+Revision: motor-avatares-video-test-00024-xrx
+Objetivo: eliminar hueco transparente al tocar chips principales y suavizar cortes entre videos.
+Build local: npm run lint OK, npm run build OK
+Build remoto: gcloud builds submit OK
+```
+
 Flujo UI optimo:
 
 ```txt
 1. Splash carga y precalienta connector_welcome_cut.webm.
-2. Tap de entrada reproduce bienvenida sin poster gris usando poster transparente.
-3. Home muestra 4 chips principales: Entradas, Plato Principal, Bebidas, Postres.
-4. Solo esos chips principales disparan mirada lateral izquierda/derecha.
-5. Cada seccion muestra recomendaciones paginadas de a 3 platos.
-6. El paginador siempre muestra Volver, aun cuando exista Mas opciones.
-7. Elegir un plato lo agrega al pedido, despliega feedback de Sol y pasa a una capa de continuacion.
-8. Boton atras del celular retrocede capas: subcategoria bebida -> tipo bebida -> pagina anterior -> home de 4 chips -> confirmacion de salida.
+2. La carta se monta y precalienta detras del splash con `#app.prewarming`, invisible y sin pointer events.
+3. El carrusel se inicializa en segundo plano aunque `showSplash` sea true.
+4. Tap de entrada reproduce bienvenida sin poster gris usando poster transparente.
+5. Home muestra 4 chips principales: Entradas, Plato Principal, Bebidas, Postres.
+6. Solo esos chips principales disparan mirada lateral izquierda/derecha y quedan seleccionados 5s.
+7. El autoguiado de platos arranca despues de los 5s del video de mirada lateral.
+8. Cada seccion muestra recomendaciones paginadas de a 3 platos.
+9. El paginador siempre muestra Volver, aun cuando exista Mas opciones.
+10. Elegir un plato lo agrega al pedido, despliega feedback de Sol y pasa a una capa de continuacion.
+11. Boton atras del celular retrocede capas: subcategoria bebida -> tipo bebida -> pagina anterior -> home de 4 chips -> confirmacion de salida.
+12. Enviar pedido dispara despedida y abre estrellas 2 segundos antes que el flujo anterior.
+13. Al terminar rating se reproduce invitacion a charlar y aparece boton de llamada live arriba del avatar.
 ```
 
 Continuaciones despues de agregar platos:
@@ -610,7 +644,7 @@ Continuaciones despues de agregar platos:
 ```txt
 Entrada agregada   -> Otra entrada / Plato principal / Inicio
 Principal agregado -> Otro principal / Bebidas / Inicio
-Bebida agregada    -> Postre / Ver mi pedido / Inicio
+Bebida agregada    -> Otra bebida / Postre / Ver mi pedido
 Postre agregado    -> Ver mi pedido / Agregar algo mas
 ```
 
@@ -619,7 +653,7 @@ Reglas de interaccion que quedaron correctas:
 ```txt
 - No llamar a converse("Contame sobre el plato...") despues de seleccionar un plato guiado.
 - El seguimiento posterior al plato debe ser deterministico con getGuidedSelectionFollowup.
-- El alta al pedido usa addToCart(..., followup) para conservar TTS + chips correctos.
+- El alta al pedido centraliza follow-up en addToCart para que funcione desde chip guiado y boton + de tarjeta.
 - resetGuidedFlow vuelve siempre al home de 4 chips y limpia filtros de bebidas.
 - preloadedAvatarVideosRef conserva los videos precargados para evitar garbage collection.
 - Los videos visibles usan poster transparente para evitar frame gris.
@@ -632,14 +666,34 @@ speaking video fade-in: 680ms
 idle video fade: 760ms
 idle queda en opacity 0.08 debajo del clip activo
 speaking se desmonta 950ms despues de ended para solapar visualmente con idle
+revision 00023: playAvatarClip precarga el clip en un video en memoria y recien reemplaza el visible cuando loadeddata/canplay esta listo.
+revision 00023: speaking fade 1100ms, idle fade 1200ms, idle bajo clip activo opacity 0.16, desmontaje 1300ms.
 ```
 
 Posicion UI actual:
 
 ```txt
-cart-bar Ver mi pedido: bottom calc(282px + safe-area)
+cart-bar Ver mi pedido: bottom calc(196px + safe-area)
 quick-actions: flanquean el avatar abajo, sin tapar el centro
+live-call-float: bottom calc(222px + safe-area), aparece despues de puntuar o durante llamada live
 toast: mantener fuera del rostro/avatar en mobile
+```
+
+Clips nuevos incorporados desde `CORTADOS` en revision 00021:
+
+```txt
+mirando izquierda.mp4 -> connector_look_left_cut.webm
+mirando derecha.mp4 -> connector_look_right_cut.webm
+invitacion a charlar.mp4 -> connector_live_invite_cut.webm
+```
+
+Validacion tecnica de los tres WebM:
+
+```txt
+codec: VP9
+resolucion: 720x1280
+alpha: TAG:alpha_mode=1
+audio: sin audio
 ```
 
 Comandos optimos para validar y deployar app test:
