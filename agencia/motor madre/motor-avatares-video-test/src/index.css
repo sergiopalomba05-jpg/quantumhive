@@ -56,7 +56,7 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 
 .avatar-speaking-video {
   opacity: 0;
-  transition: opacity 120ms linear;
+  transition: opacity 180ms ease;
 }
 
 .avatar-speaking-video.ready {
@@ -65,6 +65,10 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 
 .orb-float.speaking-ready .avatar-idle-video {
   opacity: 0;
+}
+
+.avatar-idle-video {
+  transition: opacity 180ms ease;
 }
 
 /* ============================================================
@@ -1104,7 +1108,7 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 }
 
 .toast {
-  position: fixed; bottom: 96px; left: 50%; transform: translateX(-50%);
+  position: fixed; bottom: calc(330px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%);
   background: rgba(139,28,43,0.96); color: var(--paper);
   padding: 10px 18px; border-radius: 999px;
   font-size: 13px; z-index: 100;
@@ -1312,7 +1316,7 @@ body.keyboard-open.has-ctx-chips .quick-actions { display: flex; bottom: calc(va
 
 /* Barra "Ver mi pedido" */
 .cart-bar {
-  position: fixed; left: 50%; bottom: 165px; z-index: 49;
+  position: fixed; left: 50%; bottom: calc(305px + env(safe-area-inset-bottom)); z-index: 57;
   transform: translateX(-50%) translateY(20px);
   display: none; align-items: center; gap: 11px;
   padding: 11px 18px; border-radius: 999px;
@@ -1682,6 +1686,13 @@ body.keyboard-open #ratingSheet { top: 8px; bottom: auto; }
 }
 .quick-chip:active {
   transform: scale(0.93);
+}
+.quick-chip.selected {
+  background: #8B1C2B !important;
+  color: #F4ECD8 !important;
+  border-color: #F4C76B !important;
+  box-shadow: 0 0 0 2px rgba(244,199,107,0.25), 0 10px 24px rgba(0,0,0,0.6) !important;
+  transform: translateY(-2px) scale(1.03);
 }
 .quick-chip.action-btn {
   background: #8B1C2B !important;

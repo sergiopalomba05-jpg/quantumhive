@@ -809,86 +809,90 @@ export default function App() {
   const handleGuidedChipClick = (action: string, text: string, dishId?: string, price?: number, name?: string, chipSide?: "left" | "right") => {
     stopCurrentAudio();
     playGuidedChipLook(chipSide);
+    const chipId = `${action}:${dishId || text}`;
+    setSelectedGuidedChipId(chipId);
+    setTimeout(() => {
+      setSelectedGuidedChipId(current => current === chipId ? null : current);
+    }, 1800);
 
     // 1. Handle Dish Recommendation Click
     if (dishId) {
-      setGuidedDishId(dishId);
-      if (liveHighlightTimeoutRef.current) {
-        clearTimeout(liveHighlightTimeoutRef.current);
-      }
-      liveHighlightTimeoutRef.current = setTimeout(() => {
-        setGuidedDishId(null);
-      }, 5000);
+      setTimeout(() => {
+        setGuidedDishId(dishId);
+        if (liveHighlightTimeoutRef.current) {
+          clearTimeout(liveHighlightTimeoutRef.current);
+        }
+        liveHighlightTimeoutRef.current = setTimeout(() => {
+          setGuidedDishId(null);
+        }, 5000);
 
-      // Scroll and expand
-      scrollToDish(dishId);
-      setExpandedDishIds(prev => ({ ...prev, [dishId]: true }));
+        scrollToDish(dishId);
+        setExpandedDishIds(prev => ({ ...prev, [dishId]: true }));
 
-      // Add to Order / Cart directly & quickly
-      if (price != null && name) {
-        addToCart(dishId, name, price, true);
-        triggerToast(`¡Agregamos ${name} a tu pedido! 🛒`);
-      }
+        if (price != null && name) {
+          addToCart(dishId, name, price, true);
+          triggerToast(`¡Agregamos ${name} a tu pedido! 🛒`);
+        }
 
-      // Voice recommendation logic
-      converse(`Contame sobre el plato ${name || text}`, false);
+        converse(`Contame sobre el plato ${name || text}`, false);
+      }, 1250);
       return;
     }
 
     // 2. Handle Navigation / Flows
     if (action === "start_entradas") {
       setHistory(prev => [...prev, { role: "model", text: entradasIntroText }]);
-      setGuidedStep("entrada_recs");
-      setGuidedAlternativeIndex(0);
-      setDrinkAlcoholChoice(null);
-      setDrinkSubcategoryChoice(null);
-      setActiveSection("sec-entradas");
       setTimeout(() => {
+        setGuidedStep("entrada_recs");
+        setGuidedAlternativeIndex(0);
+        setDrinkAlcoholChoice(null);
+        setDrinkSubcategoryChoice(null);
+        setActiveSection("sec-entradas");
         const firstEntrada = menuData.menu.find(s => s.id === "entradas")?.items[0];
         if (firstEntrada?.id) scrollToDish(firstEntrada.id);
-      }, 180);
+      }, 1600);
     } else if (action === "start_principales") {
-      converse("Para el plato principal tenemos opciones increíbles a la parrilla y pastas caseras.", false);
-      setGuidedStep("principal_recs");
-      setGuidedAlternativeIndex(0);
-      setDrinkAlcoholChoice(null);
-      setDrinkSubcategoryChoice(null);
-      setActiveSection("sec-carnes");
       setTimeout(() => {
+        converse("Para el plato principal tenemos opciones increíbles a la parrilla y pastas caseras.", false);
+        setGuidedStep("principal_recs");
+        setGuidedAlternativeIndex(0);
+        setDrinkAlcoholChoice(null);
+        setDrinkSubcategoryChoice(null);
+        setActiveSection("sec-carnes");
         const container = document.getElementById("cartaBody");
         const element = document.getElementById("sec-carnes");
         if (container && element) {
           container.scrollTo({ top: element.offsetTop - 80, behavior: "smooth" });
         }
-      }, 100);
+      }, 1250);
     } else if (action === "start_bebidas") {
-      converse("¿Qué te gustaría tomar hoy? Primero contame, ¿preferís con o sin alcohol?", false);
-      setGuidedStep("drink_recs");
-      setGuidedAlternativeIndex(0);
-      setDrinkAlcoholChoice(null);
-      setDrinkSubcategoryChoice(null);
-      setActiveSection("sec-bebidas");
       setTimeout(() => {
+        converse("¿Qué te gustaría tomar hoy? Primero contame, ¿preferís con o sin alcohol?", false);
+        setGuidedStep("drink_recs");
+        setGuidedAlternativeIndex(0);
+        setDrinkAlcoholChoice(null);
+        setDrinkSubcategoryChoice(null);
+        setActiveSection("sec-bebidas");
         const container = document.getElementById("cartaBody");
         const element = document.getElementById("sec-bebidas");
         if (container && element) {
           container.scrollTo({ top: element.offsetTop - 80, behavior: "smooth" });
         }
-      }, 100);
+      }, 1250);
     } else if (action === "start_postres") {
-      converse("Para terminar de la mejor manera, te recomiendo nuestros postres artesanales.", false);
-      setGuidedStep("postre_recs");
-      setGuidedAlternativeIndex(0);
-      setDrinkAlcoholChoice(null);
-      setDrinkSubcategoryChoice(null);
-      setActiveSection("sec-postres");
       setTimeout(() => {
+        converse("Para terminar de la mejor manera, te recomiendo nuestros postres artesanales.", false);
+        setGuidedStep("postre_recs");
+        setGuidedAlternativeIndex(0);
+        setDrinkAlcoholChoice(null);
+        setDrinkSubcategoryChoice(null);
+        setActiveSection("sec-postres");
         const container = document.getElementById("cartaBody");
         const element = document.getElementById("sec-postres");
         if (container && element) {
           container.scrollTo({ top: element.offsetTop - 80, behavior: "smooth" });
         }
-      }, 100);
+      }, 1250);
     } else if (action === "drink_choose_with") {
       converse("Te muestro nuestras opciones con alcohol: vinos, cervezas y tragos de autor.", false);
       setDrinkAlcoholChoice("with");
@@ -1014,6 +1018,7 @@ export default function App() {
 
   // Toasts
   const [toast, setToast] = useState<{ text: string; show: boolean }>({ text: "", show: false });
+  const [selectedGuidedChipId, setSelectedGuidedChipId] = useState<string | null>(null);
 
   // Exit Confirmation State
   const [showExitConfirm, setShowExitConfirm] = useState(false);
@@ -2170,10 +2175,12 @@ export default function App() {
             <div className="splash-orb" aria-hidden="true" />
 
             <button
+              onPointerDown={() => {
+                playAvatarClip("connector_welcome");
+              }}
               onClick={() => {
                 setShowSplash(false);
                 setHistory([{ role: "model", text: currentGreetingMessage() }]);
-                playAvatarClip("connector_welcome");
               }}
               className="splash-cta"
             >
@@ -2777,7 +2784,7 @@ export default function App() {
                     <button
                       key={idx}
                       onClick={() => handleGuidedChipClick(item.action, item.text, item.id, item.price, item.name, "left")}
-                      className={`quick-chip guided-bubble ${item.action === "go_to_order" ? "action-btn" : ""}`}
+                      className={`quick-chip guided-bubble ${selectedGuidedChipId === `${item.action}:${item.id || item.text}` ? "selected" : ""} ${item.action === "go_to_order" ? "action-btn" : ""}`}
                     >
                       {item.text}
                     </button>
@@ -2796,7 +2803,7 @@ export default function App() {
                     <button
                       key={idx}
                       onClick={() => handleGuidedChipClick(item.action, item.text, item.id, item.price, item.name, "right")}
-                      className={`quick-chip guided-bubble ${item.action === "go_to_order" ? "action-btn" : ""}`}
+                      className={`quick-chip guided-bubble ${selectedGuidedChipId === `${item.action}:${item.id || item.text}` ? "selected" : ""} ${item.action === "go_to_order" ? "action-btn" : ""}`}
                     >
                       {item.text}
                     </button>
@@ -2867,13 +2874,15 @@ export default function App() {
                 }}
                 onEnded={() => {
                   const shouldContinueIdleCycle = isIdleVariantKey(speakingAvatarKey);
-                  setSpeakingAvatarKey(null);
-                  setSpeakingAvatarVideo(null);
                   setSpeakingVideoReady(false);
-                  setSolState("idle");
-                  if (shouldContinueIdleCycle) {
-                    setIdleCycleNonce((value) => value + 1);
-                  }
+                  setTimeout(() => {
+                    setSpeakingAvatarKey(null);
+                    setSpeakingAvatarVideo(null);
+                    setSolState("idle");
+                    if (shouldContinueIdleCycle) {
+                      setIdleCycleNonce((value) => value + 1);
+                    }
+                  }, 160);
                 }}
               />
             )}
@@ -3189,11 +3198,11 @@ export default function App() {
                 </p>
               </div>
 
-              <div className="space-y-6 text-left mt-6">
+              <div className="space-y-4 text-left mt-4">
                 {/* Rating 1: Mesera */}
                 <div>
                   <span className="block text-[11px] font-bold text-stone-300 uppercase tracking-wider mb-2 text-center">¿Cómo te atendió Sol (mesera virtual)?</span>
-                  <div className="flex justify-center gap-4">
+                  <div className="flex justify-center gap-2">
                     {[1, 2, 3, 4, 5].map(v => (
                       <motion.button 
                         key={v}
@@ -3204,7 +3213,7 @@ export default function App() {
                         className={`transition-all cursor-pointer ${flashStarId === `mesera-${v}` ? "star-flash-anim" : ""}`}
                       >
                         <Star 
-                          className={`h-16 w-16 transition-all duration-200 ${
+                          className={`h-10 w-10 sm:h-12 sm:w-12 transition-all duration-200 ${
                             v <= rating.mesera 
                               ? "fill-[#C9A86A] text-[#C9A86A] drop-shadow-[0_0_20px_rgba(201,168,106,0.95)] scale-115" 
                               : "text-[#57453B] fill-transparent hover:text-stone-400"
@@ -3216,9 +3225,9 @@ export default function App() {
                 </div>
 
                 {/* Rating 2: Restaurante */}
-                <div className="pt-2">
+                <div className="pt-1">
                   <span className="block text-[11px] font-bold text-stone-300 uppercase tracking-wider mb-2 text-center">¿Qué tal la comida y el restaurante?</span>
-                  <div className="flex justify-center gap-4">
+                  <div className="flex justify-center gap-2">
                     {[1, 2, 3, 4, 5].map(v => (
                       <motion.button 
                         key={v}
@@ -3229,7 +3238,7 @@ export default function App() {
                         className={`transition-all cursor-pointer ${flashStarId === `restaurante-${v}` ? "star-flash-anim" : ""}`}
                       >
                         <Star 
-                          className={`h-16 w-16 transition-all duration-200 ${
+                          className={`h-10 w-10 sm:h-12 sm:w-12 transition-all duration-200 ${
                             v <= rating.restaurante 
                               ? "fill-[#C9A86A] text-[#C9A86A] drop-shadow-[0_0_20px_rgba(201,168,106,0.95)] scale-115" 
                               : "text-[#57453B] fill-transparent hover:text-stone-400"
@@ -3283,7 +3292,7 @@ export default function App() {
                       ¿Qué te pareció usar esta carta para pedir y hablar con la mesera virtual?
                     </p>
                   </div>
-                  <div className="flex justify-center gap-3">
+                  <div className="flex justify-center gap-2">
                     {[1, 2, 3, 4, 5].map(v => (
                       <motion.button 
                         key={v}
@@ -3294,7 +3303,7 @@ export default function App() {
                         className={`transition-all cursor-pointer ${flashStarId === `quantumhive-${v}` ? "star-flash-anim" : ""}`}
                       >
                         <Star 
-                          className={`h-16 w-16 transition-all duration-200 ${
+                          className={`h-10 w-10 sm:h-12 sm:w-12 transition-all duration-200 ${
                             v <= rating.quantumhive 
                               ? "fill-[#C9A86A] text-[#C9A86A] drop-shadow-[0_0_20px_rgba(201,168,106,0.95)] scale-115" 
                               : "text-[#57453B] fill-transparent hover:text-stone-400"
