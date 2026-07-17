@@ -531,7 +531,7 @@ Servicio test deployado:
 ```txt
 motor-avatares-video-test
 URL publica: https://motor-avatares-video-test-557866434489.us-central1.run.app
-Revision activa validada: motor-avatares-video-test-00028-fvc
+Revision activa validada: motor-avatares-video-test-00036-4j2
 ```
 
 Validaciones ejecutadas:
@@ -653,8 +653,8 @@ Build remoto: gcloud builds submit OK
 Actualizacion 2026-07-17 rotacion de idles:
 
 ```txt
-Revision: motor-avatares-video-test-00028-fvc
-Objetivo: usar idle 1 solo como base inicial/fallback, rotar hair/3/4/6 sin volver a idle 1 como puente, y suavizar salida de clips para que el avatar no desaparezca entre videos.
+Revision: motor-avatares-video-test-00036-4j2
+Objetivo: corregir el primer segundo al abrir carta. Durante splash se precarga connector_welcome y la carta/carrusel; al tocar iniciar, el splash no se cierra hasta que el video real del saludo montado en la app dispara onCanPlay. Evita revelar la carta con el video de saludo aun sin decodificar.
 Build local: npm run lint OK, npm run build OK
 Build remoto: gcloud builds submit OK
 ```
@@ -704,10 +704,10 @@ speaking video fade-in: 680ms
 idle video fade: 760ms
 idle queda en opacity 0.08 debajo del clip activo
 speaking se desmonta 950ms despues de ended para solapar visualmente con idle
-revision 00023: playAvatarClip precarga el clip en un video en memoria y recien reemplaza el visible cuando loadeddata/canplay esta listo.
-revision 00023: speaking fade 1100ms, idle fade 1200ms, idle bajo clip activo opacity 0.16, desmontaje 1300ms.
-revision estabilidad: playAvatarClip no cambia solState a speaking hasta que el video esta listo; si no carga en 1200ms vuelve a idle.
-revision 00026: idle bajo clip activo vuelve a opacity 0 para eliminar doble silueta/fantasma; fade speaking/idle 520ms.
+playAvatarClip monta directo el clip visible; no usar video temporal intermedio porque genero cuadrados blancos.
+idle base queda fijo en connector_idle; no cambiar key/src del video idle de fondo para rotar idles.
+idles alternativos se reproducen como clips encima con playAvatarClip, igual que mirada lateral y toma de pedido.
+splash no se cierra hasta que connector_welcome montado en la app dispara onCanPlay.
 ```
 
 Posicion UI actual:
@@ -770,14 +770,81 @@ Pasos descartados / errores a no repetir:
 Checklist de QA humano en celular real:
 
 ```txt
-1. Entrar desde splash: no debe aparecer reproductor gris.
-2. Welcome debe sentirse inmediato.
+1. Entrar desde splash: no debe aparecer cuadrado blanco ni reproductor gris.
+2. Welcome debe sentirse inmediato; si no esta listo, el boton muestra Preparando carta... y mantiene splash.
 3. Chips principales deben quedar seleccionados y Sol debe mirar al lado correcto.
 4. Chips de platos no deben disparar mirada lateral.
 5. Mas opciones y Volver deben convivir en listas largas.
 6. Boton atras del celular debe volver por capas hasta los 4 chips principales.
 7. Ver mi pedido debe quedar pegado arriba del avatar, sin tapar rostro.
-8. Transiciones entre clips no deben sentirse cortadas.
+8. Transiciones entre idles no deben mostrar cuadrado blanco; si reaparece, revisar que no se vuelva a cambiar key/src de idle base.
+```
+
+## Estado Congelado Para Migracion VM - 2026-07-17
+
+Este es el estado que no se debe perder al migrar a otra VM.
+
+```txt
+Repo local actual: C:\Users\sergio\Desktop\boveda-obsidian
+Rama de trabajo: feat/avatar-engine-musetalk-v15
+Servicio Cloud Run test: motor-avatares-video-test
+Revision Cloud Run activa validada: motor-avatares-video-test-00036-4j2
+URL publica estable: https://motor-avatares-video-test-557866434489.us-central1.run.app
+App test: agencia\motor madre\motor-avatares-video-test
+Handoff canonico: agencia\motor madre\PIPELINE INGESTA MENUS\docs\avatar-musetalk-vm-handoff.md
+```
+
+Archivos de codigo que contienen el estado final del MVP:
+
+```txt
+agencia\motor madre\motor-avatares-video-test\src\App.tsx
+agencia\motor madre\motor-avatares-video-test\src\index.css
+agencia\motor madre\motor-avatares-video-test\public\avatar-videos\sol\v1\*.webm
+agencia\motor madre\motor-avatares-video-test\cloudbuild-video-test.yaml
+agencia\motor madre\motor-avatares-video-test\Dockerfile
+agencia\motor madre\motor-avatares-video-test\package.json
+agencia\motor madre\motor-avatares-video-test\package-lock.json
+```
+
+Reglas criticas que quedaron aprendidas durante QA:
+
+```txt
+1. No rotar idles cambiando key/src del video idle base: eso genera cuadrado blanco entre idles.
+2. El idle base connector_idle debe quedar fijo como fondo permanente despues del saludo.
+3. Los idles hair/3/4/6/wait se reproducen como clips encima con playAvatarClip.
+4. Mirada lateral solo en los cuatro chips principales: Entradas, Plato principal, Bebidas, Postres.
+5. Chips de platos no miran al costado; disparan connector_taking_order_cut y agregan al pedido.
+6. No usar video temporal intermedio en playAvatarClip: genero cuadrados blancos.
+7. No cerrar splash con timeout fijo; esperar onCanPlay del connector_welcome real montado en la app.
+8. Mantener poster transparente en videos visibles.
+9. Mantener prewarm de carta/carrusel durante splash con #app.prewarming.
+10. No borrar fuentes ni carpetas de trabajo sin orden explicita.
+```
+
+Comandos de recuperacion en VM nueva:
+
+```powershell
+git clone <remote-del-repo> boveda-obsidian
+cd "boveda-obsidian"
+git switch feat/avatar-engine-musetalk-v15
+cd "agencia\motor madre\motor-avatares-video-test"
+npm ci
+npm run lint
+npm run build
+gcloud builds submit --config "cloudbuild-video-test.yaml" .
+gcloud run services describe motor-avatares-video-test --region us-central1 --format "value(status.latestReadyRevisionName,status.traffic[0].revisionName,status.url)"
+```
+
+Validacion post-migracion obligatoria:
+
+```txt
+1. Abrir URL publica en celular real.
+2. Esperar splash 2-3 segundos para permitir prewarm.
+3. Tocar iniciar: no debe aparecer cuadrado blanco en saludo.
+4. Esperar idles: no debe aparecer cuadrado blanco entre idles.
+5. Tocar chip principal: debe mirar al costado correcto.
+6. Tocar plato: debe tomar pedido, sin mirada lateral.
+7. Enviar pedido y rating: debe volver a home/invitacion live sin romper chips.
 ```
 
 Texto visible/audio de bienvenida:

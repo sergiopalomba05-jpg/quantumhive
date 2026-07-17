@@ -290,6 +290,8 @@ function warmUpOutput(ctx: AudioContext) {
 export default function App() {
   // --- STATE ---
   const [showSplash, setShowSplash] = useState(true);
+  const [startRequested, setStartRequested] = useState(false);
+  const [welcomeAvatarReady, setWelcomeAvatarReady] = useState(false);
   
   // Gemini additions (Low Latency & Live Call)
   const [lowLatency, setLowLatency] = useState(false);
@@ -425,7 +427,6 @@ export default function App() {
   const idleAvatarVideoRef = useRef<HTMLVideoElement | null>(null);
   const speakingAvatarVideoRef = useRef<HTMLVideoElement | null>(null);
   const preloadedAvatarVideosRef = useRef<HTMLVideoElement[]>([]);
-  const avatarClipLoadTokenRef = useRef(0);
   const idleVariantIndexRef = useRef(0);
   const idleInactivityTimeoutRef = useRef<any>(null);
   const idleLongInactivityTimeoutRef = useRef<any>(null);
@@ -463,51 +464,27 @@ export default function App() {
   const playAvatarClip = (key: string) => {
     const src = avatarVideoByKey[key];
     if (!src) return;
-    const token = avatarClipLoadTokenRef.current + 1;
-    avatarClipLoadTokenRef.current = token;
-
-    const video = document.createElement("video");
-    video.src = src;
-    video.muted = true;
-    video.playsInline = true;
-    video.preload = "auto";
-    let shown = false;
-
-    const showClip = () => {
-      if (shown) return;
-      if (avatarClipLoadTokenRef.current !== token) return;
-      shown = true;
-      setSpeakingVideoReady(false);
-      setSpeakingAvatarKey(key);
-      setSpeakingAvatarVideo(src);
-      setSolState("speaking");
-      setSpeakingPlayId((value) => value + 1);
-    };
-
-    video.onloadeddata = showClip;
-    video.oncanplay = showClip;
-    video.onerror = () => {
-      if (avatarClipLoadTokenRef.current !== token) return;
-      setSolState("idle");
-    };
-    video.load();
-    if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
-      showClip();
-    }
-    setTimeout(() => {
-      if (!shown && avatarClipLoadTokenRef.current === token) {
-        setSolState("idle");
-      }
-    }, 1200);
-    preloadedAvatarVideosRef.current = [...preloadedAvatarVideosRef.current.slice(-12), video];
+    setSolState("speaking");
+    setSpeakingVideoReady(false);
+    setSpeakingAvatarKey(key);
+    setSpeakingAvatarVideo(src);
+    setSpeakingPlayId((value) => value + 1);
   };
 
   const setNextIdleAvatarVariant = () => {
     const next = idleAvatarVariants[idleVariantIndexRef.current % idleAvatarVariants.length];
     idleVariantIndexRef.current += 1;
-    setIdleAvatarKey(next.key);
-    setCurrentIdleAvatarVideo(next.src);
+    playAvatarClip(next.key);
   };
+
+  useEffect(() => {
+    if (!startRequested) return;
+    if (speakingAvatarKey !== "connector_welcome") return;
+    if (!speakingVideoReady) return;
+
+    setShowSplash(false);
+    setHistory([{ role: "model", text: currentGreetingMessage() }]);
+  }, [startRequested, speakingAvatarKey, speakingVideoReady]);
 
   const playGuidedChipLook = (side?: "left" | "right") => {
     if (side === "left") {
@@ -963,18 +940,21 @@ export default function App() {
 
   const handleGuidedChipClick = (action: string, text: string, dishId?: string, price?: number, name?: string, chipSide?: "left" | "right") => {
     stopCurrentAudio();
+    const isDishChip = Boolean(dishId);
     const isMainGuidedAction = guidedStep === "start" && mainGuidedActions.has(action);
-    if (isMainGuidedAction) {
+    const shouldLookAtChip = !isDishChip && isMainGuidedAction;
+    if (shouldLookAtChip) {
       playGuidedChipLook(chipSide);
     }
     const chipId = `${action}:${dishId || text}`;
     setSelectedGuidedChipId(chipId);
     setTimeout(() => {
       setSelectedGuidedChipId(current => current === chipId ? null : current);
-    }, isMainGuidedAction ? mainGuidedLookMs + 100 : 2800);
+    }, shouldLookAtChip ? mainGuidedLookMs + 100 : 2800);
 
     // 1. Handle Dish Recommendation Click
     if (dishId) {
+      playAvatarClip("connector_taking_order_cut");
       setTimeout(() => {
         setGuidedDishId(dishId);
         if (liveHighlightTimeoutRef.current) {
@@ -988,7 +968,7 @@ export default function App() {
         setExpandedDishIds(prev => ({ ...prev, [dishId]: true }));
 
         if (price != null && name) {
-          addToCart(dishId, name, price, true);
+          addToCart(dishId, name, price, true, undefined, true);
         }
       }, 300);
       return;
@@ -1005,7 +985,7 @@ export default function App() {
         setActiveSection("sec-entradas");
         const firstEntrada = menuData.menu.find(s => s.id === "entradas")?.items[0];
         if (firstEntrada?.id) scrollToDish(firstEntrada.id);
-      }, isMainGuidedAction ? mainGuidedLookMs : 700);
+      }, shouldLookAtChip ? mainGuidedLookMs : 700);
     } else if (action === "start_principales") {
       setTimeout(() => {
         converse("Para el plato principal tenemos opciones increíbles a la parrilla y pastas caseras.", false);
@@ -1019,7 +999,7 @@ export default function App() {
         if (container && element) {
           container.scrollTo({ top: element.offsetTop - 80, behavior: "smooth" });
         }
-      }, isMainGuidedAction ? mainGuidedLookMs : 700);
+      }, shouldLookAtChip ? mainGuidedLookMs : 700);
     } else if (action === "start_bebidas") {
       setTimeout(() => {
         converse("¿Qué te gustaría tomar hoy? Primero contame, ¿preferís con o sin alcohol?", false);
@@ -1033,7 +1013,7 @@ export default function App() {
         if (container && element) {
           container.scrollTo({ top: element.offsetTop - 80, behavior: "smooth" });
         }
-      }, isMainGuidedAction ? mainGuidedLookMs : 700);
+      }, shouldLookAtChip ? mainGuidedLookMs : 700);
     } else if (action === "start_postres") {
       setTimeout(() => {
         converse("Para terminar de la mejor manera, te recomiendo nuestros postres artesanales.", false);
@@ -1047,7 +1027,7 @@ export default function App() {
         if (container && element) {
           container.scrollTo({ top: element.offsetTop - 80, behavior: "smooth" });
         }
-      }, isMainGuidedAction ? mainGuidedLookMs : 700);
+      }, shouldLookAtChip ? mainGuidedLookMs : 700);
     } else if (action === "drink_choose_with") {
       converse("Te muestro nuestras opciones con alcohol: vinos, cervezas y tragos de autor.", false);
       setDrinkAlcoholChoice("with");
@@ -1275,6 +1255,10 @@ export default function App() {
       video.muted = true;
       video.preload = "auto";
       video.playsInline = true;
+      if (src === avatarVideoByKey.connector_welcome) {
+        video.onloadeddata = () => setWelcomeAvatarReady(true);
+        video.oncanplaythrough = () => setWelcomeAvatarReady(true);
+      }
       video.load();
       return video;
     });
@@ -1303,8 +1287,7 @@ export default function App() {
       }, delay);
 
       idleLongInactivityTimeoutRef.current = setTimeout(() => {
-        setIdleAvatarKey(longWaitIdleAvatarVariant.key);
-        setCurrentIdleAvatarVideo(longWaitIdleAvatarVariant.src);
+        playAvatarClip(longWaitIdleAvatarVariant.key);
       }, 45000);
     };
 
@@ -1509,7 +1492,7 @@ export default function App() {
   const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
-  const addToCart = (id: string, name: string, price: number, forceAdd: boolean = false, followup?: CartFollowup) => {
+  const addToCart = (id: string, name: string, price: number, forceAdd: boolean = false, followup?: CartFollowup, skipAvatarClip: boolean = false) => {
     const guidedFollowup = followup || (isShowingIndividualDishes() ? getGuidedSelectionFollowup(name) : null);
     const effectiveFollowup = guidedFollowup && "followup" in guidedFollowup ? guidedFollowup.followup : followup;
     const baseId = id.split("|")[0];
@@ -1543,7 +1526,9 @@ export default function App() {
     triggerToast(`Sumado: ${name}`);
 
     stopCurrentAudio();
-    playAvatarClip("connector_taking_order_cut");
+    if (!skipAvatarClip) {
+      playAvatarClip("connector_taking_order_cut");
+    }
     const isDrink = isDrinkCartItem(id, name);
     const isDessert = id.includes("postres");
     
@@ -2427,21 +2412,18 @@ export default function App() {
               autoPlay
               aria-hidden="true"
               className="avatar-preload-video"
+              onLoadedData={() => setWelcomeAvatarReady(true)}
+              onCanPlayThrough={() => setWelcomeAvatarReady(true)}
             />
 
             <button
-              onPointerDown={() => {
-                playAvatarClip("connector_welcome");
-              }}
               onClick={() => {
-                setTimeout(() => {
-                  setShowSplash(false);
-                  setHistory([{ role: "model", text: currentGreetingMessage() }]);
-                }, 180);
+                setStartRequested(true);
+                playAvatarClip("connector_welcome");
               }}
               className="splash-cta"
             >
-              Tocá para empezar
+              {startRequested && !speakingVideoReady ? "Preparando carta..." : welcomeAvatarReady ? "Tocá para empezar" : "Cargando carta..."}
             </button>
 
             <p className="splash-sub">
@@ -3041,7 +3023,7 @@ export default function App() {
                     <button
                       key={idx}
                       onClick={() => handleGuidedChipClick(item.action, item.text, item.id, item.price, item.name, "left")}
-                      className={`quick-chip guided-bubble ${selectedGuidedChipId === `${item.action}:${item.id || item.text}` ? "selected" : ""} ${item.action === "go_to_order" ? "action-btn" : ""}`}
+                      className={`quick-chip guided-bubble ${item.id ? "dish-choice" : ""} ${selectedGuidedChipId === `${item.action}:${item.id || item.text}` ? "selected" : ""} ${item.action === "go_to_order" ? "action-btn" : ""}`}
                     >
                       {item.text}
                     </button>
@@ -3060,7 +3042,7 @@ export default function App() {
                     <button
                       key={idx}
                       onClick={() => handleGuidedChipClick(item.action, item.text, item.id, item.price, item.name, "right")}
-                      className={`quick-chip guided-bubble ${selectedGuidedChipId === `${item.action}:${item.id || item.text}` ? "selected" : ""} ${item.action === "go_to_order" ? "action-btn" : ""}`}
+                      className={`quick-chip guided-bubble ${item.id ? "dish-choice" : ""} ${selectedGuidedChipId === `${item.action}:${item.id || item.text}` ? "selected" : ""} ${item.action === "go_to_order" ? "action-btn" : ""}`}
                     >
                       {item.text}
                     </button>
@@ -3152,10 +3134,7 @@ export default function App() {
                 }}
                 onEnded={() => {
                   const shouldContinueIdleCycle = isIdleVariantKey(speakingAvatarKey);
-                  if (shouldContinueIdleCycle || idleAvatarKey === fallbackIdleAvatarVariant.key) {
-                    setNextIdleAvatarVariant();
-                  }
-                  setTimeout(() => setSpeakingVideoReady(false), 180);
+                  setSpeakingVideoReady(false);
                   setTimeout(() => {
                     setSpeakingAvatarKey(null);
                     setSpeakingAvatarVideo(null);
@@ -3163,7 +3142,7 @@ export default function App() {
                     if (shouldContinueIdleCycle) {
                       setIdleCycleNonce((value) => value + 1);
                     }
-                  }, 1300);
+                  }, 950);
                 }}
               />
             )}
