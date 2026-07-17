@@ -1,6 +1,6 @@
 # Handoff VM - MuseTalk 1.5 para Avatar Sol
 
-Fecha: 2026-07-14
+Fecha: 2026-07-14 | Actualizado: 2026-07-16
 
 ## Objetivo
 
@@ -14,12 +14,20 @@ job -> audio WAV F5-TTS -> motor visual -> master MP4 -> WebM VP9 alpha + Opus -
 
 Solo se reemplaza el motor visual de produccion por MuseTalk 1.5.
 
-## Estado Git Al Cierre De Esta VM
+## Deploy Activo (Revision 00037-sjm)
+
+```txt
+Servicio: motor-avatares-video-test-00037-sjm
+URL: https://motor-avatares-video-test-557866434489.us-central1.run.app
+HTTP: 200 verificado
+```
+
+## Estado Git Actualizado
 
 Repo:
 
 ```txt
-C:\Users\sergio\Desktop\boveda-obsidian
+https://github.com/sergiopalomba05-jpg/quantumhive.git
 ```
 
 Rama de trabajo:
@@ -28,23 +36,28 @@ Rama de trabajo:
 feat/avatar-engine-musetalk-v15
 ```
 
-Backup creado antes de MuseTalk:
+Commits clave:
 
 ```txt
-commit: 4ad788b chore: snapshot avatar pipeline before musetalk
+f87bbf0 docs: record final sol deploy revision     (documentacion final)
+dbd1a34 fix: stabilize sol avatar startup           (estabilizacion codigo)
+1bce0d1 chore: preserve sol avatar source assets    (assets fuente trackeados)
+```
+
+Backup anterior:
+
+```txt
+4ad788b chore: snapshot avatar pipeline before musetalk
 tag: backup-pre-musetalk-mvp
 ```
 
-Base anterior:
-
-```txt
-40f6847 chore: package avatar pipeline diagnostics
-2341159 feat: add avatar video pipeline and test app
-```
-
 Regla de continuidad: seguir en `feat/avatar-engine-musetalk-v15`, no trabajar sobre `main`.
+Ahora TODO esta en Git, incluyendo assets fuente y codigo del test app.
 
-## Estado De La VM Actual
+## Estado De La VM Anterior (Para Referencia)
+
+La VM `comfyui-l4` en `us-east1-d` queda suspendida. Los datos relevantes estan en Git.
+La nueva VM debe clonar el repo y continuar desde ahi.
 
 OS:
 
@@ -72,8 +85,8 @@ CUDA disponible: True
 Disco:
 
 ```txt
-C: casi lleno, no usar para runtime pesado
-D: usado para MuseTalk
+C: repo local en C:\Users\sergio\Desktop\boveda-obsidian (TODO esta en Git)
+D: usado para MuseTalk runtime
 ```
 
 ## Instalacion MuseTalk En D
@@ -363,18 +376,128 @@ sin manos
 sin sombras ni gradientes en verde
 ```
 
+## Flujo Correcto Del Avatar (Reglas Finales)
+
+Reglas que quedaron funcionando en produccion:
+
+```txt
+1. connector_idle queda fijo como video base.
+2. No cambiar key/src del idle base.
+3. Idles alternativos se reproducen encima con playAvatarClip.
+4. Mirada lateral solo en 4 chips principales: Entradas, Plato principal, Bebidas, Postres.
+5. Chips de platos NO miran al costado.
+6. Chips de platos disparan connector_taking_order_cut.
+7. Splash precarga carta/carrusel/welcome.
+8. La carta no aparece hasta que el saludo real confirma onCanPlay.
+```
+
+## Codigo App Test Guardado
+
+```txt
+agencia/motor madre/motor-avatares-video-test
+```
+
+Archivos clave:
+
+```txt
+src/App.tsx
+src/index.css
+public/avatar-videos/sol/v1/*.webm
+cloudbuild-video-test.yaml
+Dockerfile
+package.json
+package-lock.json
+```
+
+## Assets Fuente Guardados
+
+Se trackearon y pushearon los crudos/fuentes en:
+
+```txt
+agencia/motor madre/motor-avatares-run/foto avatar sol
+```
+
+Incluye:
+
+```txt
+PNGs fuente/referencia de Sol
+Loops originales
+Clips editados finales
+Carpeta CORTADOS
+Clips hablando 1/2/3
+Clips de mirada, saludo, despedida, toma de pedido
+idle 1, idle 3, idle 4, idle 5, idle 6
+```
+
+Tambien quedo guardado:
+
+```txt
+agencia/motor madre/dominus-prime/dominus.jpg
+```
+
+## Comandos Para Nueva VM
+
+### 1. Clonar y preparar repo
+
+```powershell
+git clone https://github.com/sergiopalomba05-jpg/quantumhive.git boveda-obsidian
+cd "boveda-obsidian"
+git switch feat/avatar-engine-musetalk-v15
+```
+
+### 2. Preparar app test
+
+```powershell
+cd "agencia\motor madre\motor-avatares-video-test"
+npm ci
+npm run lint
+npm run build
+```
+
+### 3. Deploy a Cloud Run
+
+```powershell
+gcloud builds submit --config "cloudbuild-video-test.yaml" .
+```
+
+### 4. Verificar deploy
+
+```powershell
+gcloud run services describe motor-avatares-video-test --region us-central1 --format "value(status.latestReadyRevisionName,status.traffic[0].revisionName,status.url)"
+```
+
+## Supabase (Plan Pendiente)
+
+No se subieron assets a Supabase porque faltan bucket/proyecto/secrets confirmados.
+El plan correcto documentado:
+
+```txt
+- Binarios en Supabase Storage
+- Metadata en tabla tipo avatar_assets
+- No guardar videos en columnas Postgres
+- No commitear service role keys
+```
+
+Script existente:
+
+```txt
+agencia/motor madre/pipeline-vm-multimedia/scripts/upload_supabase.py
+```
+
 ## Siguiente Implementacion En Codigo
 
-No se comenzo todavia la modificacion del pipeline. Pendiente:
+Pendiente en nueva VM:
 
-1. Crear `src/avatar_engines/`.
-2. Crear `MuseTalkEngine`.
-3. Mantener `LegacyComfyUIEngine`.
-4. Cambiar `generate_avatar_videos.py` solo para seleccionar motor configurable.
-5. Agregar `script_hash` a cache global.
-6. Eliminar `colorkey` negro del flujo productivo.
-7. Agregar QC automatico.
-8. Generar prueba dorada de 3 clips.
+1. Completar pesos de MuseTalk en `D:\ai-runtime\musetalk-v15`
+2. Crear `src/avatar_engines/`
+3. Crear `MuseTalkEngine`
+4. Mantener `LegacyComfyUIEngine`
+5. Cambiar `generate_avatar_videos.py` solo para seleccionar motor configurable
+6. Agregar `script_hash` a cache global
+7. Eliminar `colorkey` negro del flujo productivo
+8. Agregar QC automatico
+9. Generar prueba dorada de 3 clips
+10. Integrar en la app test existente
 
 ## Prueba Dorada Obligatoria
 
@@ -411,3 +534,4 @@ No usar `git reset --hard` salvo autorizacion explicita.
 - No usar `colorkey=0x000000`; perfora el blazer negro.
 - Usar el WAV original como audio final del WebM.
 - No guardar en cache global renders sin QC aprobado.
+- El snapshot del disco D no garantiza archivos del repo porque estan en C:\Users\sergio\Desktop\boveda-obsidian. Por eso quedaron subidos a Git.
