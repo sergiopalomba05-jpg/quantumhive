@@ -531,7 +531,7 @@ Servicio test deployado:
 ```txt
 motor-avatares-video-test
 URL publica: https://motor-avatares-video-test-557866434489.us-central1.run.app
-Revision activa: motor-avatares-video-test-00015-l67
+Revision activa: motor-avatares-video-test-00016-n7d
 ```
 
 Validaciones ejecutadas:
@@ -545,13 +545,16 @@ gcloud builds submit --config "cloudbuild-video-test.yaml" .
 Assets publicos versionables en la app test:
 
 ```txt
-public/avatar-videos/sol/v1/connector_idle_final_1.webm
-public/avatar-videos/sol/v1/connector_idle_final_hair.webm
-public/avatar-videos/sol/v1/connector_look_left_final.webm
-public/avatar-videos/sol/v1/connector_look_right_final.webm
-public/avatar-videos/sol/v1/connector_taking_order_final.webm
-public/avatar-videos/sol/v1/connector_welcome.webm
-public/avatar-videos/sol/v1/connector_entradas_izquierda.webm
+public/avatar-videos/sol/v1/connector_idle_cut_1.webm
+public/avatar-videos/sol/v1/connector_idle_cut_hair.webm
+public/avatar-videos/sol/v1/connector_idle_cut_3.webm
+public/avatar-videos/sol/v1/connector_idle_cut_4.webm
+public/avatar-videos/sol/v1/connector_idle_cut_wait.webm
+public/avatar-videos/sol/v1/connector_look_left_cut.webm
+public/avatar-videos/sol/v1/connector_look_right_cut.webm
+public/avatar-videos/sol/v1/connector_taking_order_cut.webm
+public/avatar-videos/sol/v1/connector_welcome_cut.webm
+public/avatar-videos/sol/v1/connector_farewell_cut.webm
 ```
 
 Propiedades verificadas para los clips de gesto/idle finales:
@@ -566,13 +569,14 @@ audio: 0 streams para idles/gestos, para evitar doble audio
 Mapeo de interacciones en `motor-avatares-video-test/src/App.tsx`:
 
 ```txt
-idle base             -> connector_idle_final_1.webm
-idle alternativo      -> connector_idle_final_hair.webm
-chip lado izquierdo   -> connector_look_left_final.webm
-chip lado derecho     -> connector_look_right_final.webm
-agregar al pedido     -> connector_taking_order_final.webm
-bienvenida            -> connector_welcome.webm
-Entradas              -> connector_entradas_izquierda.webm
+idle base             -> connector_idle_cut_1.webm
+idle alternativos     -> connector_idle_cut_hair.webm, connector_idle_cut_3.webm, connector_idle_cut_4.webm, connector_idle_cut_wait.webm
+chip lado izquierdo   -> connector_look_left_cut.webm
+chip lado derecho     -> connector_look_right_cut.webm
+agregar al pedido     -> connector_taking_order_cut.webm
+bienvenida            -> connector_welcome_cut.webm
+despedida             -> connector_farewell_cut.webm
+Entradas              -> connector_look_left_cut.webm + texto en UI
 ```
 
 Texto visible/audio de bienvenida:
@@ -590,11 +594,16 @@ Excelente elección. Te recomiendo estas entradas. Arranquemos por esta primera 
 Fuentes locales usadas para esta tanda, no mover ni borrar:
 
 ```txt
-C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\idle 1.mp4
-C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\idle acomodandose el pelo.mp4
-C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\mirando a la derecha.mp4
-C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\mirando  a la izquiera.mp4
-C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\tomando pedido.mp4
+C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\CORTADOS\idle 1.mp4
+C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\CORTADOS\idle 3 acomodandose el pelo (online-video-cutter.com).mp4
+C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\CORTADOS\idle 3.mp4
+C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\CORTADOS\idle 4.mp4
+C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\CORTADOS\idle 5 cuando tarda mucho (online-video-cutter.com).mp4
+C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\CORTADOS\mirando a la derecha (online-video-cutter.com).mp4
+C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\CORTADOS\mirando a la izquiera (online-video-cutter.com).mp4
+C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\CORTADOS\tomando pedido (online-video-cutter.com).mp4
+C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\CORTADOS\saludo bienvenida.mp4
+C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-run\foto avatar sol\editados finales\CORTADOS\saludo despedida.mp4
 ```
 
 Decision sobre clips `hablando 1/2/3.mp4`:
@@ -620,9 +629,8 @@ ffmpeg -y -i "mirando  a la izquiera.mp4" -map 0:v:0 -vf "crop=608:1080:656:0,sc
 Notas de producto pendientes:
 
 - QA visual humana de los gestos en celular real.
-- Ajustar timing: el clip `tomando pedido` dura 10s y puede sentirse largo si el TTS termina antes.
+- El set activo debe ser solo el pack `CORTADOS`; los WebM anteriores fueron removidos de `public/avatar-videos/sol/v1`.
 - Decidir si los chips de chat dentro del panel deben disparar tambien mirada lateral o quedar neutros.
-- Mantener `connector_idle.webm` viejo fuera del flujo base; existe solo como asset legado.
 
 ## Rollback
 

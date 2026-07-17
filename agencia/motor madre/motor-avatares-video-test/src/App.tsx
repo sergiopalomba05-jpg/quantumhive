@@ -54,26 +54,29 @@ export const featuredDishes = [
 ];
 
 const avatarVideoByKey: Record<string, string> = {
-  connector_idle: "/avatar-videos/sol/v1/connector_idle_final_1.webm",
-  connector_idle_final_1: "/avatar-videos/sol/v1/connector_idle_final_1.webm",
-  connector_idle_final_hair: "/avatar-videos/sol/v1/connector_idle_final_hair.webm",
-  connector_idle_loop1: "/avatar-videos/sol/v1/connector_idle_loop1.webm",
-  connector_idle_loop3: "/avatar-videos/sol/v1/connector_idle_loop3.webm",
-  connector_idle_loop4: "/avatar-videos/sol/v1/connector_idle_loop4.webm",
-  connector_look_left_final: "/avatar-videos/sol/v1/connector_look_left_final.webm",
-  connector_look_right_final: "/avatar-videos/sol/v1/connector_look_right_final.webm",
-  connector_taking_order_final: "/avatar-videos/sol/v1/connector_taking_order_final.webm",
-  connector_entradas_izquierda: "/avatar-videos/sol/v1/connector_entradas_izquierda.webm",
-  connector_welcome: "/avatar-videos/sol/v1/connector_welcome.webm",
-  connector_entradas: "/avatar-videos/sol/v1/connector_entradas.webm"
+  connector_idle: "/avatar-videos/sol/v1/connector_idle_cut_1.webm",
+  connector_idle_cut_1: "/avatar-videos/sol/v1/connector_idle_cut_1.webm",
+  connector_idle_cut_hair: "/avatar-videos/sol/v1/connector_idle_cut_hair.webm",
+  connector_idle_cut_3: "/avatar-videos/sol/v1/connector_idle_cut_3.webm",
+  connector_idle_cut_4: "/avatar-videos/sol/v1/connector_idle_cut_4.webm",
+  connector_idle_cut_wait: "/avatar-videos/sol/v1/connector_idle_cut_wait.webm",
+  connector_look_left_cut: "/avatar-videos/sol/v1/connector_look_left_cut.webm",
+  connector_look_right_cut: "/avatar-videos/sol/v1/connector_look_right_cut.webm",
+  connector_taking_order_cut: "/avatar-videos/sol/v1/connector_taking_order_cut.webm",
+  connector_welcome_cut: "/avatar-videos/sol/v1/connector_welcome_cut.webm",
+  connector_farewell_cut: "/avatar-videos/sol/v1/connector_farewell_cut.webm",
+  connector_welcome: "/avatar-videos/sol/v1/connector_welcome_cut.webm"
 };
 
 const entradasIntroText = "Excelente elección. Te recomiendo estas entradas. Arranquemos por esta primera opción.";
 
 const idleAvatarVideo = avatarVideoByKey.connector_idle;
 const idleAvatarVariants = [
-  { key: "connector_idle_final_1", src: avatarVideoByKey.connector_idle_final_1 },
-  { key: "connector_idle_final_hair", src: avatarVideoByKey.connector_idle_final_hair }
+  { key: "connector_idle_cut_1", src: avatarVideoByKey.connector_idle_cut_1 },
+  { key: "connector_idle_cut_hair", src: avatarVideoByKey.connector_idle_cut_hair },
+  { key: "connector_idle_cut_3", src: avatarVideoByKey.connector_idle_cut_3 },
+  { key: "connector_idle_cut_4", src: avatarVideoByKey.connector_idle_cut_4 },
+  { key: "connector_idle_cut_wait", src: avatarVideoByKey.connector_idle_cut_wait }
 ];
 
 const getDishAllergens = (it: any, sectionId: string): string[] => {
@@ -457,9 +460,9 @@ export default function App() {
 
   const playGuidedChipLook = (side?: "left" | "right") => {
     if (side === "left") {
-      playAvatarClip("connector_look_left_final");
+      playAvatarClip("connector_look_left_cut");
     } else if (side === "right") {
-      playAvatarClip("connector_look_right_final");
+      playAvatarClip("connector_look_right_cut");
     }
   };
 
@@ -804,9 +807,7 @@ export default function App() {
 
   const handleGuidedChipClick = (action: string, text: string, dishId?: string, price?: number, name?: string, chipSide?: "left" | "right") => {
     stopCurrentAudio();
-    if (action !== "start_entradas") {
-      playGuidedChipLook(chipSide);
-    }
+    playGuidedChipLook(chipSide);
 
     // 1. Handle Dish Recommendation Click
     if (dishId) {
@@ -835,7 +836,6 @@ export default function App() {
 
     // 2. Handle Navigation / Flows
     if (action === "start_entradas") {
-      playAvatarClip("connector_entradas_izquierda");
       setHistory(prev => [...prev, { role: "model", text: entradasIntroText }]);
       setGuidedStep("entrada_recs");
       setGuidedAlternativeIndex(0);
@@ -1307,7 +1307,7 @@ export default function App() {
     triggerToast(`Sumado: ${name}`);
 
     stopCurrentAudio();
-    playAvatarClip("connector_taking_order_final");
+    playAvatarClip("connector_taking_order_cut");
     const isDrink = id.includes("bebidas") || id.includes("cervezas") || id.includes("cocktails") || id.includes("mocktails") || id.includes("champagne") || id.includes("vinos");
     const isDessert = id.includes("postres");
     
@@ -1407,7 +1407,7 @@ export default function App() {
   const handleContextChipClick = (text: string) => {
     stopCurrentAudio();
     if (text.toLowerCase().includes("picar") || text.toLowerCase().includes("entrada")) {
-      playAvatarClip("connector_entradas_izquierda");
+      playAvatarClip("connector_look_left_cut");
       setHistory(prev => [...prev, { role: "model", text: entradasIntroText }]);
       setGuidedStep("entrada_recs");
       setGuidedAlternativeIndex(0);
@@ -2057,9 +2057,13 @@ export default function App() {
 
     triggerToast("¡Tu pedido ya está en viaje a la cocina! 🍳", 4000);
     stopCurrentAudio();
+    setActiveOverlay(null);
+    playAvatarClip("connector_farewell_cut");
     playTTS("¡Perfecto! Ya le mandé tu pedido directo a la cocina. Que lo disfrutes mucho.");
-    
-    setActiveOverlay("rating_restaurant");
+
+    setTimeout(() => {
+      setActiveOverlay("rating_restaurant");
+    }, 3200);
   };
 
   const handleRatingSubmit = () => {
