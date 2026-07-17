@@ -40,8 +40,9 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 
 #app.prewarming {
-  visibility: hidden;
+  opacity: 0;
   pointer-events: none;
+  transform: translateZ(0);
 }
 
 .avatar-alpha-video {
@@ -61,7 +62,7 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 
 .avatar-speaking-video {
   opacity: 0;
-  transition: opacity 1100ms cubic-bezier(.22,.61,.36,1);
+  transition: opacity 760ms cubic-bezier(.22,.61,.36,1);
 }
 
 .avatar-speaking-video.ready {
@@ -69,11 +70,11 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 }
 
 .orb-float.speaking-ready .avatar-idle-video {
-  opacity: 0.16;
+  opacity: 0;
 }
 
 .avatar-idle-video {
-  transition: opacity 1200ms cubic-bezier(.22,.61,.36,1);
+  transition: opacity 760ms cubic-bezier(.22,.61,.36,1);
 }
 
 .avatar-preload-video {
@@ -1716,8 +1717,8 @@ body.keyboard-open #ratingSheet { top: 8px; bottom: auto; }
   width: 100%;
   max-width: 106px;
   min-height: 48px;
-  background: #FFFFFF !important;
-  color: #120B08 !important;
+  background: linear-gradient(180deg, #9f2034, #721321) !important;
+  color: #F4ECD8 !important;
   border: 1.5px solid #C9A86A !important;
   box-shadow: 0 8px 20px rgba(0,0,0,0.55) !important;
   font-weight: 800 !important;
@@ -1737,16 +1738,46 @@ body.keyboard-open #ratingSheet { top: 8px; bottom: auto; }
   transform: scale(0.93);
 }
 .quick-chip.selected {
-  background: #8B1C2B !important;
+  background: linear-gradient(180deg, #b62a3f, #8B1C2B) !important;
   color: #F4ECD8 !important;
   border-color: #F4C76B !important;
   box-shadow: 0 0 0 2px rgba(244,199,107,0.25), 0 10px 24px rgba(0,0,0,0.6) !important;
   transform: translateY(-2px) scale(1.03);
 }
 .quick-chip.action-btn {
-  background: #8B1C2B !important;
+  background: linear-gradient(180deg, #8B1C2B, #5f101b) !important;
   color: #F4ECD8 !important;
   border-color: #C9A86A !important;
+}
+
+.rating-input-light {
+  width: 100%;
+  border-radius: 12px;
+  border: 1.5px solid rgba(201,168,106,0.55);
+  background: #fffaf0 !important;
+  color: #1a120e !important;
+  box-shadow: 0 10px 24px -18px rgba(0,0,0,0.8) inset;
+}
+.rating-input-light::placeholder {
+  color: rgba(80,62,52,0.65) !important;
+}
+.rating-input-light:focus {
+  border-color: #C9A86A;
+  outline: 2px solid rgba(139,28,43,0.35);
+  outline-offset: 2px;
+}
+.rating-btn-bordo {
+  background: linear-gradient(180deg, #9f2034, #721321) !important;
+  color: #F4ECD8 !important;
+  border: 1.5px solid rgba(201,168,106,0.75) !important;
+  box-shadow: 0 16px 32px -18px rgba(139,28,43,0.95) !important;
+}
+.rating-btn-bordo:hover {
+  background: linear-gradient(180deg, #b72a40, #8B1C2B) !important;
+}
+.rating-btn-bordo:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 @keyframes bubblePopIn {

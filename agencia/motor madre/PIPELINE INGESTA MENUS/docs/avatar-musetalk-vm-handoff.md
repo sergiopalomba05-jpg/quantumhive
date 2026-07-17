@@ -531,7 +531,7 @@ Servicio test deployado:
 ```txt
 motor-avatares-video-test
 URL publica: https://motor-avatares-video-test-557866434489.us-central1.run.app
-Revision activa validada: motor-avatares-video-test-00024-xrx
+Revision activa validada: motor-avatares-video-test-00028-fvc
 ```
 
 Validaciones ejecutadas:
@@ -550,6 +550,7 @@ public/avatar-videos/sol/v1/connector_idle_cut_hair.webm
 public/avatar-videos/sol/v1/connector_idle_cut_3.webm
 public/avatar-videos/sol/v1/connector_idle_cut_4.webm
 public/avatar-videos/sol/v1/connector_idle_cut_wait.webm
+public/avatar-videos/sol/v1/connector_idle_cut_6.webm
 public/avatar-videos/sol/v1/connector_look_left_cut.webm
 public/avatar-videos/sol/v1/connector_look_right_cut.webm
 public/avatar-videos/sol/v1/connector_taking_order_cut.webm
@@ -571,7 +572,8 @@ Mapeo de interacciones en `motor-avatares-video-test/src/App.tsx`:
 
 ```txt
 idle base             -> connector_idle_cut_1.webm
-idle alternativos     -> connector_idle_cut_hair.webm, connector_idle_cut_3.webm, connector_idle_cut_4.webm, connector_idle_cut_wait.webm
+idle alternativos     -> connector_idle_cut_hair.webm, connector_idle_cut_3.webm, connector_idle_cut_4.webm, connector_idle_cut_6.webm
+idle espera larga     -> connector_idle_cut_wait.webm solo despues de inactividad larga
 chip principal izq.   -> connector_look_left_cut.webm
 chip principal der.   -> connector_look_right_cut.webm
 agregar al pedido     -> connector_taking_order_cut.webm
@@ -617,6 +619,42 @@ Actualizacion 2026-07-17 transiciones:
 ```txt
 Revision: motor-avatares-video-test-00024-xrx
 Objetivo: eliminar hueco transparente al tocar chips principales y suavizar cortes entre videos.
+Build local: npm run lint OK, npm run build OK
+Build remoto: gcloud builds submit OK
+```
+
+Actualizacion 2026-07-17 estabilidad de acciones:
+
+```txt
+Revision: motor-avatares-video-test-00025-tt5
+Objetivo: evitar salida real de la app, asegurar que bebidas agregadas desde tarjeta pasen a follow-up correcto, y que Sol no entre en speaking hasta que el clip visual este listo.
+Build local: npm run lint OK, npm run build OK
+Build remoto: gcloud builds submit OK
+```
+
+Actualizacion 2026-07-17 visual polish:
+
+```txt
+Revision: motor-avatares-video-test-00026-67v
+Objetivo: rating con inputs blancos y botones bordo, chips principales bordo con borde dorado, eliminar fantasma del idle detras del avatar activo.
+Build local: npm run lint OK, npm run build OK
+Build remoto: gcloud builds submit OK
+```
+
+Actualizacion 2026-07-17 carga inicial e idles:
+
+```txt
+Revision: motor-avatares-video-test-00027-mhr
+Objetivo: precargar menu/calesita con opacity 0 durante splash, agregar idle6 al stack normal, limitar idle5/wait a inactividad larga, reforzar historial del boton atras.
+Build local: npm run lint OK, npm run build OK
+Build remoto: gcloud builds submit OK
+```
+
+Actualizacion 2026-07-17 rotacion de idles:
+
+```txt
+Revision: motor-avatares-video-test-00028-fvc
+Objetivo: usar idle 1 solo como base inicial/fallback, rotar hair/3/4/6 sin volver a idle 1 como puente, y suavizar salida de clips para que el avatar no desaparezca entre videos.
 Build local: npm run lint OK, npm run build OK
 Build remoto: gcloud builds submit OK
 ```
@@ -668,6 +706,8 @@ idle queda en opacity 0.08 debajo del clip activo
 speaking se desmonta 950ms despues de ended para solapar visualmente con idle
 revision 00023: playAvatarClip precarga el clip en un video en memoria y recien reemplaza el visible cuando loadeddata/canplay esta listo.
 revision 00023: speaking fade 1100ms, idle fade 1200ms, idle bajo clip activo opacity 0.16, desmontaje 1300ms.
+revision estabilidad: playAvatarClip no cambia solState a speaking hasta que el video esta listo; si no carga en 1200ms vuelve a idle.
+revision 00026: idle bajo clip activo vuelve a opacity 0 para eliminar doble silueta/fantasma; fade speaking/idle 520ms.
 ```
 
 Posicion UI actual:
