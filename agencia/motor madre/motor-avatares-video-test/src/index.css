@@ -56,7 +56,7 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 
 .avatar-speaking-video {
   opacity: 0;
-  transition: opacity 180ms ease;
+  transition: opacity 680ms ease;
 }
 
 .avatar-speaking-video.ready {
@@ -64,11 +64,20 @@ input, textarea { font: inherit; color: inherit; background: none; border: 0; ou
 }
 
 .orb-float.speaking-ready .avatar-idle-video {
-  opacity: 0;
+  opacity: 0.08;
 }
 
 .avatar-idle-video {
-  transition: opacity 180ms ease;
+  transition: opacity 760ms ease;
+}
+
+.avatar-preload-video {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
 }
 
 /* ============================================================
@@ -1316,7 +1325,7 @@ body.keyboard-open.has-ctx-chips .quick-actions { display: flex; bottom: calc(va
 
 /* Barra "Ver mi pedido" */
 .cart-bar {
-  position: fixed; left: 50%; bottom: calc(305px + env(safe-area-inset-bottom)); z-index: 57;
+  position: fixed; left: 50%; bottom: calc(282px + env(safe-area-inset-bottom)); z-index: 57;
   transform: translateX(-50%) translateY(20px);
   display: none; align-items: center; gap: 11px;
   padding: 11px 18px; border-radius: 999px;

@@ -524,14 +524,14 @@ connector_welcome: "Hola, bienvenidos a La Escaloneta. Soy Sol, tu mesera virtua
 connector_entradas: "Excelente, te sugiero estas entradas."
 ```
 
-## Estado MVP Cloud Run - 2026-07-16
+## Estado MVP Cloud Run - 2026-07-17
 
 Servicio test deployado:
 
 ```txt
 motor-avatares-video-test
 URL publica: https://motor-avatares-video-test-557866434489.us-central1.run.app
-Revision activa: motor-avatares-video-test-00016-n7d
+Revision activa validada: motor-avatares-video-test-00020-2xl
 ```
 
 Validaciones ejecutadas:
@@ -571,12 +571,119 @@ Mapeo de interacciones en `motor-avatares-video-test/src/App.tsx`:
 ```txt
 idle base             -> connector_idle_cut_1.webm
 idle alternativos     -> connector_idle_cut_hair.webm, connector_idle_cut_3.webm, connector_idle_cut_4.webm, connector_idle_cut_wait.webm
-chip lado izquierdo   -> connector_look_left_cut.webm
-chip lado derecho     -> connector_look_right_cut.webm
+chip principal izq.   -> connector_look_left_cut.webm
+chip principal der.   -> connector_look_right_cut.webm
 agregar al pedido     -> connector_taking_order_cut.webm
 bienvenida            -> connector_welcome_cut.webm
 despedida             -> connector_farewell_cut.webm
-Entradas              -> connector_look_left_cut.webm + texto en UI
+chips de platos       -> sin mirada lateral, solo seleccion + alta al pedido
+```
+
+## Workflow Limpio Actual - Sol V2 App Test
+
+Objetivo del flujo actual: una experiencia guiada por capas, con 4 chips principales como home, seleccion de platos progresiva y salida clara hacia pedido.
+
+Estado funcional deployado en Cloud Run test:
+
+```txt
+Revision: motor-avatares-video-test-00020-2xl
+Build local: npm run lint OK, npm run build OK
+Build remoto: gcloud builds submit OK
+URL publica: https://motor-avatares-video-test-557866434489.us-central1.run.app
+```
+
+Flujo UI optimo:
+
+```txt
+1. Splash carga y precalienta connector_welcome_cut.webm.
+2. Tap de entrada reproduce bienvenida sin poster gris usando poster transparente.
+3. Home muestra 4 chips principales: Entradas, Plato Principal, Bebidas, Postres.
+4. Solo esos chips principales disparan mirada lateral izquierda/derecha.
+5. Cada seccion muestra recomendaciones paginadas de a 3 platos.
+6. El paginador siempre muestra Volver, aun cuando exista Mas opciones.
+7. Elegir un plato lo agrega al pedido, despliega feedback de Sol y pasa a una capa de continuacion.
+8. Boton atras del celular retrocede capas: subcategoria bebida -> tipo bebida -> pagina anterior -> home de 4 chips -> confirmacion de salida.
+```
+
+Continuaciones despues de agregar platos:
+
+```txt
+Entrada agregada   -> Otra entrada / Plato principal / Inicio
+Principal agregado -> Otro principal / Bebidas / Inicio
+Bebida agregada    -> Postre / Ver mi pedido / Inicio
+Postre agregado    -> Ver mi pedido / Agregar algo mas
+```
+
+Reglas de interaccion que quedaron correctas:
+
+```txt
+- No llamar a converse("Contame sobre el plato...") despues de seleccionar un plato guiado.
+- El seguimiento posterior al plato debe ser deterministico con getGuidedSelectionFollowup.
+- El alta al pedido usa addToCart(..., followup) para conservar TTS + chips correctos.
+- resetGuidedFlow vuelve siempre al home de 4 chips y limpia filtros de bebidas.
+- preloadedAvatarVideosRef conserva los videos precargados para evitar garbage collection.
+- Los videos visibles usan poster transparente para evitar frame gris.
+```
+
+Transiciones visuales actuales:
+
+```txt
+speaking video fade-in: 680ms
+idle video fade: 760ms
+idle queda en opacity 0.08 debajo del clip activo
+speaking se desmonta 950ms despues de ended para solapar visualmente con idle
+```
+
+Posicion UI actual:
+
+```txt
+cart-bar Ver mi pedido: bottom calc(282px + safe-area)
+quick-actions: flanquean el avatar abajo, sin tapar el centro
+toast: mantener fuera del rostro/avatar en mobile
+```
+
+Comandos optimos para validar y deployar app test:
+
+```powershell
+cd "C:\Users\sergio\Desktop\boveda-obsidian\agencia\motor madre\motor-avatares-video-test"
+npm run lint
+npm run build
+gcloud builds submit --config "cloudbuild-video-test.yaml" .
+gcloud run services describe motor-avatares-video-test --region us-central1 --format "value(status.latestReadyRevisionName,status.traffic[0].revisionName,status.url)"
+```
+
+Verificaciones HTTP minimas post deploy:
+
+```powershell
+Invoke-WebRequest -Uri "https://motor-avatares-video-test-557866434489.us-central1.run.app" -UseBasicParsing
+Invoke-WebRequest -Uri "https://motor-avatares-video-test-557866434489.us-central1.run.app/avatar-videos/sol/v1/connector_welcome_cut.webm" -Method Head -UseBasicParsing
+Invoke-WebRequest -Uri "https://motor-avatares-video-test-557866434489.us-central1.run.app/avatar-videos/sol/v1/connector_idle_cut_1.webm" -Method Head -UseBasicParsing
+```
+
+Pasos descartados / errores a no repetir:
+
+```txt
+- No volver a mezclar WebM viejos con el pack CORTADOS.
+- No disparar mirada lateral en chips de platos o subfiltros, solo en chips principales.
+- No dejar Mas opciones como unica salida: siempre mantener Volver.
+- No depender de agent-browser para QA critico en esta maquina; fue inestable con ChildProcess.kill.
+- No usar el download_weights.bat oficial de MuseTalk sin modificar porque actualiza huggingface_hub y rompe dependencias.
+- No usar colorkey negro; perfora blazer negro.
+- No usar H.264 yuv420p como master de chromakey por contaminacion de bordes.
+- No borrar crudos ni carpetas de sesiones anteriores sin orden explicita.
+```
+
+Checklist de QA humano en celular real:
+
+```txt
+1. Entrar desde splash: no debe aparecer reproductor gris.
+2. Welcome debe sentirse inmediato.
+3. Chips principales deben quedar seleccionados y Sol debe mirar al lado correcto.
+4. Chips de platos no deben disparar mirada lateral.
+5. Mas opciones y Volver deben convivir en listas largas.
+6. Boton atras del celular debe volver por capas hasta los 4 chips principales.
+7. Ver mi pedido debe quedar pegado arriba del avatar, sin tapar rostro.
+8. Transiciones entre clips no deben sentirse cortadas.
 ```
 
 Texto visible/audio de bienvenida:

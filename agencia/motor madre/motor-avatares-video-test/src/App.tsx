@@ -79,6 +79,10 @@ const idleAvatarVariants = [
 ];
 
 const isIdleVariantKey = (key: string | null) => Boolean(key && idleAvatarVariants.some((variant) => variant.key === key));
+const mainGuidedActions = new Set(["start_entradas", "start_principales", "start_bebidas", "start_postres"]);
+const transparentVideoPoster = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+type GuidedStep = "start" | "entrada_recs" | "principal_recs" | "drink_recs" | "postre_recs" | "after_entrada" | "after_principal" | "after_drink" | "after_postre" | "final_ask";
+type CartFollowup = { reply: string; chips: string[] };
 
 const getDishAllergens = (it: any, sectionId: string): string[] => {
   const allergens: string[] = [];
@@ -416,6 +420,7 @@ export default function App() {
   const [idleCycleNonce, setIdleCycleNonce] = useState(0);
   const idleAvatarVideoRef = useRef<HTMLVideoElement | null>(null);
   const speakingAvatarVideoRef = useRef<HTMLVideoElement | null>(null);
+  const preloadedAvatarVideosRef = useRef<HTMLVideoElement[]>([]);
   const idleVariantIndexRef = useRef(0);
   const idleInactivityTimeoutRef = useRef<any>(null);
   const [contextChips, setContextChips] = useState<string[]>([
@@ -427,7 +432,7 @@ export default function App() {
   const [guidedDishId, setGuidedDishId] = useState<string | null>(null);
   
   // Guided state machine (Autoguided tour)
-  const [guidedStep, setGuidedStep] = useState<"start" | "entrada_recs" | "principal_recs" | "drink_recs" | "postre_recs" | "final_ask">("start");
+  const [guidedStep, setGuidedStep] = useState<GuidedStep>("start");
   const [guidedAlternativeIndex, setGuidedAlternativeIndex] = useState(0);
   const [visibleChipsCount, setVisibleChipsCount] = useState(1);
   const [drinkAlcoholChoice, setDrinkAlcoholChoice] = useState<"with" | "without" | null>(null);
@@ -502,9 +507,8 @@ export default function App() {
       }));
       if (end < items.length) {
         chips.push({ text: "Más opciones ➔", action: moreAction, id: "", price: 0, name: "" });
-      } else {
-        chips.push({ text: "Volver ↺", action: endAction, id: "", price: 0, name: "" });
       }
+      chips.push({ text: "Volver ↺", action: endAction, id: "", price: 0, name: "" });
       return { title, chips };
     };
 
@@ -609,6 +613,41 @@ export default function App() {
         const items = section ? section.items : [];
         return renderPaginatedChips(items, "postre", "Recomendaciones de Postres:", "more_postres", "more_postres_end");
       }
+      case "after_entrada":
+        return {
+          title: "¿Seguimos por dónde?",
+          chips: [
+            { text: "Otra entrada", action: "repeat_entradas" },
+            { text: "🥩 Plato principal", action: "start_principales" },
+            { text: "Inicio ↺", action: "reset_flow" }
+          ]
+        };
+      case "after_principal":
+        return {
+          title: "¿Sumamos algo más?",
+          chips: [
+            { text: "Otro principal", action: "repeat_principales" },
+            { text: "🍹 Bebidas", action: "start_bebidas" },
+            { text: "Inicio ↺", action: "reset_flow" }
+          ]
+        };
+      case "after_drink":
+        return {
+          title: "¿Cómo seguimos?",
+          chips: [
+            { text: "🍰 Postre", action: "start_postres" },
+            { text: "Ver mi pedido 🛒", action: "go_to_order" },
+            { text: "Inicio ↺", action: "reset_flow" }
+          ]
+        };
+      case "after_postre":
+        return {
+          title: "¿Cerramos o sumamos algo?",
+          chips: [
+            { text: "Ver mi pedido 🛒", action: "go_to_order" },
+            { text: "Agregar algo más", action: "reset_flow" }
+          ]
+        };
       case "final_ask":
         return {
           title: "¡Listo! ¿Sumamos algo más?",
@@ -806,14 +845,71 @@ export default function App() {
     }, 150);
   };
 
+  const resetGuidedFlow = () => {
+    setGuidedStep("start");
+    setGuidedAlternativeIndex(0);
+    setDrinkAlcoholChoice(null);
+    setDrinkSubcategoryChoice(null);
+    setVisibleChipsCount(4);
+  };
+
+  const getGuidedSelectionFollowup = (name: string): { nextStep: GuidedStep; followup: CartFollowup } => {
+    if (guidedStep === "entrada_recs") {
+      return {
+        nextStep: "after_entrada",
+        followup: {
+          reply: `Te sumé ${name} al pedido. ¿Querés una entrada más o pasamos al plato principal?`,
+          chips: ["Otra entrada", "Plato principal", "Volver al inicio"]
+        }
+      };
+    }
+    if (guidedStep === "principal_recs") {
+      return {
+        nextStep: "after_principal",
+        followup: {
+          reply: `Perfecto, ${name} ya está en tu pedido. ¿Elegimos otro principal o pasamos a las bebidas?`,
+          chips: ["Otro principal", "Bebidas", "Volver al inicio"]
+        }
+      };
+    }
+    if (guidedStep === "drink_recs") {
+      return {
+        nextStep: "after_drink",
+        followup: {
+          reply: `Listo, agregué ${name}. ¿Te ofrezco un postre, cerramos el pedido o volvemos a sumar algo más?`,
+          chips: ["Postre", "Ver mi pedido", "Agregar algo más"]
+        }
+      };
+    }
+    if (guidedStep === "postre_recs") {
+      return {
+        nextStep: "after_postre",
+        followup: {
+          reply: `Qué buena elección. Sumé ${name}. ¿Querés ver tu pedido o agregar algo más?`,
+          chips: ["Ver mi pedido", "Agregar algo más"]
+        }
+      };
+    }
+    return {
+      nextStep: "final_ask",
+      followup: {
+        reply: `Excelente elección. Te sumé ${name} al pedido. ¿Revisamos el pedido o agregamos algo más?`,
+        chips: ["Ver mi pedido", "Agregar algo más"]
+      }
+    };
+  };
+
   const handleGuidedChipClick = (action: string, text: string, dishId?: string, price?: number, name?: string, chipSide?: "left" | "right") => {
     stopCurrentAudio();
-    playGuidedChipLook(chipSide);
+    const isMainGuidedAction = mainGuidedActions.has(action);
+    if (isMainGuidedAction) {
+      playGuidedChipLook(chipSide);
+    }
     const chipId = `${action}:${dishId || text}`;
     setSelectedGuidedChipId(chipId);
     setTimeout(() => {
       setSelectedGuidedChipId(current => current === chipId ? null : current);
-    }, 1800);
+    }, 2800);
 
     // 1. Handle Dish Recommendation Click
     if (dishId) {
@@ -830,12 +926,14 @@ export default function App() {
         setExpandedDishIds(prev => ({ ...prev, [dishId]: true }));
 
         if (price != null && name) {
-          addToCart(dishId, name, price, true);
-          triggerToast(`¡Agregamos ${name} a tu pedido! 🛒`);
+          const selectionFollowup = getGuidedSelectionFollowup(name);
+          addToCart(dishId, name, price, true, selectionFollowup.followup);
+          setGuidedStep(selectionFollowup.nextStep);
+          setGuidedAlternativeIndex(0);
+          setDrinkAlcoholChoice(null);
+          setDrinkSubcategoryChoice(null);
         }
-
-        converse(`Contame sobre el plato ${name || text}`, false);
-      }, 1250);
+      }, 300);
       return;
     }
 
@@ -850,7 +948,7 @@ export default function App() {
         setActiveSection("sec-entradas");
         const firstEntrada = menuData.menu.find(s => s.id === "entradas")?.items[0];
         if (firstEntrada?.id) scrollToDish(firstEntrada.id);
-      }, 1600);
+      }, 2500);
     } else if (action === "start_principales") {
       setTimeout(() => {
         converse("Para el plato principal tenemos opciones increíbles a la parrilla y pastas caseras.", false);
@@ -864,7 +962,7 @@ export default function App() {
         if (container && element) {
           container.scrollTo({ top: element.offsetTop - 80, behavior: "smooth" });
         }
-      }, 1250);
+      }, 2500);
     } else if (action === "start_bebidas") {
       setTimeout(() => {
         converse("¿Qué te gustaría tomar hoy? Primero contame, ¿preferís con o sin alcohol?", false);
@@ -878,7 +976,7 @@ export default function App() {
         if (container && element) {
           container.scrollTo({ top: element.offsetTop - 80, behavior: "smooth" });
         }
-      }, 1250);
+      }, 2500);
     } else if (action === "start_postres") {
       setTimeout(() => {
         converse("Para terminar de la mejor manera, te recomiendo nuestros postres artesanales.", false);
@@ -892,7 +990,7 @@ export default function App() {
         if (container && element) {
           container.scrollTo({ top: element.offsetTop - 80, behavior: "smooth" });
         }
-      }, 1250);
+      }, 2500);
     } else if (action === "drink_choose_with") {
       converse("Te muestro nuestras opciones con alcohol: vinos, cervezas y tragos de autor.", false);
       setDrinkAlcoholChoice("with");
@@ -973,15 +1071,17 @@ export default function App() {
       setGuidedAlternativeIndex(prev => prev + 1);
     } else if (action === "more_entradas_end" || action === "more_principales_end" || action === "more_postres_end") {
       triggerToast("Volviendo al menú principal.");
-      setGuidedStep("start");
+      resetGuidedFlow();
+    } else if (action === "repeat_entradas") {
+      setGuidedStep("entrada_recs");
+      setGuidedAlternativeIndex(0);
+    } else if (action === "repeat_principales") {
+      setGuidedStep("principal_recs");
       setGuidedAlternativeIndex(0);
     } else if (action === "go_to_order") {
       setActiveOverlay("order");
     } else if (action === "reset_flow") {
-      setGuidedStep("start");
-      setGuidedAlternativeIndex(0);
-      setDrinkAlcoholChoice(null);
-      setDrinkSubcategoryChoice(null);
+      resetGuidedFlow();
     }
   };
 
@@ -1030,6 +1130,14 @@ export default function App() {
   showMenuDropRef.current = showMenuDrop;
   const showSearchRef = useRef(showSearch);
   showSearchRef.current = showSearch;
+  const guidedStepRef = useRef(guidedStep);
+  guidedStepRef.current = guidedStep;
+  const guidedAlternativeIndexRef = useRef(guidedAlternativeIndex);
+  guidedAlternativeIndexRef.current = guidedAlternativeIndex;
+  const drinkAlcoholChoiceRef = useRef(drinkAlcoholChoice);
+  drinkAlcoholChoiceRef.current = drinkAlcoholChoice;
+  const drinkSubcategoryChoiceRef = useRef(drinkSubcategoryChoice);
+  drinkSubcategoryChoiceRef.current = drinkSubcategoryChoice;
   const expandedDishIdsRef = useRef(expandedDishIds);
   expandedDishIdsRef.current = expandedDishIds;
   const showExitConfirmRef = useRef(showExitConfirm);
@@ -1058,6 +1166,24 @@ export default function App() {
         setShowSearch(false);
         return;
       }
+      if (guidedStepRef.current === "drink_recs" && drinkSubcategoryChoiceRef.current !== null) {
+        setDrinkSubcategoryChoice(null);
+        setGuidedAlternativeIndex(0);
+        return;
+      }
+      if (guidedStepRef.current === "drink_recs" && drinkAlcoholChoiceRef.current !== null) {
+        setDrinkAlcoholChoice(null);
+        setGuidedAlternativeIndex(0);
+        return;
+      }
+      if (guidedAlternativeIndexRef.current > 0) {
+        setGuidedAlternativeIndex((value) => Math.max(0, value - 1));
+        return;
+      }
+      if (guidedStepRef.current !== "start") {
+        resetGuidedFlow();
+        return;
+      }
       const expandedIds = Object.keys(expandedDishIdsRef.current).filter(k => expandedDishIdsRef.current[k]);
       if (expandedIds.length > 0) {
         setExpandedDishIds({});
@@ -1078,13 +1204,14 @@ export default function App() {
   const historyListEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    Object.values(avatarVideoByKey).forEach((src) => {
+    preloadedAvatarVideosRef.current = Object.values(avatarVideoByKey).map((src) => {
       const video = document.createElement("video");
       video.src = src;
       video.muted = true;
       video.preload = "auto";
       video.playsInline = true;
       video.load();
+      return video;
     });
   }, []);
 
@@ -1289,7 +1416,7 @@ export default function App() {
   const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
-  const addToCart = (id: string, name: string, price: number, forceAdd: boolean = false) => {
+  const addToCart = (id: string, name: string, price: number, forceAdd: boolean = false, followup?: CartFollowup) => {
     const baseId = id.split("|")[0];
     setGuidedDishId(baseId);
     if (liveHighlightTimeoutRef.current) {
@@ -1306,7 +1433,7 @@ export default function App() {
         title: "¿Sumar otro?",
         text: `Ya tenés ${name} en tu pedido. ¿Querés agregar uno más?`,
         onConfirm: () => {
-          addToCart(id, name, price, true);
+          addToCart(id, name, price, true, followup);
           setConfirmModal(null);
         }
       });
@@ -1325,16 +1452,16 @@ export default function App() {
     const isDrink = id.includes("bebidas") || id.includes("cervezas") || id.includes("cocktails") || id.includes("mocktails") || id.includes("champagne") || id.includes("vinos");
     const isDessert = id.includes("postres");
     
-    let reply = `Excelente elección. Te sumé ${name} al pedido.`;
-    let chips = ["¿Algo para tomar?", "Un postre", "Cerrar el pedido"];
+    let reply = followup?.reply || `Excelente elección. Te sumé ${name} al pedido.`;
+    let chips = followup?.chips || ["¿Algo para tomar?", "Un postre", "Cerrar el pedido"];
 
-    if (isDrink) {
+    if (!followup && isDrink) {
       reply = `¡Salud! Te agregué ${name}. ¿Buscamos un plato principal o preferís pasar al postre?`;
       chips = ["Platos principales", "Un postre", "Cerrar el pedido"];
-    } else if (isDessert) {
+    } else if (!followup && isDessert) {
       reply = `Qué rico postre. Te sumé ${name}. ¿Buscás algo más o ya cerramos el pedido para mandarlo a la cocina?`;
       chips = ["Cerrar el pedido", "Algo más para tomar"];
-    } else {
+    } else if (!followup) {
       reply = `Te sumé ${name} al pedido. ¿Le sumamos algo para tomar? ¿Con alcohol o sin alcohol?`;
       chips = ["Con alcohol", "Sin alcohol", "Un postre"];
     }
@@ -2173,6 +2300,16 @@ export default function App() {
             </div>
 
             <div className="splash-orb" aria-hidden="true" />
+            <video
+              src={avatarVideoByKey.connector_welcome}
+              poster={transparentVideoPoster}
+              muted
+              playsInline
+              preload="auto"
+              autoPlay
+              aria-hidden="true"
+              className="avatar-preload-video"
+            />
 
             <button
               onPointerDown={() => {
@@ -2826,6 +2963,7 @@ export default function App() {
               ref={idleAvatarVideoRef}
               key={idleAvatarKey}
               src={currentIdleAvatarVideo}
+              poster={transparentVideoPoster}
               className="avatar-alpha-video avatar-idle-video ready"
               playsInline
               muted
@@ -2852,6 +2990,7 @@ export default function App() {
                 ref={speakingAvatarVideoRef}
                 key={`${speakingAvatarKey}-${speakingPlayId}`}
                 src={speakingAvatarVideo}
+                poster={transparentVideoPoster}
                 className={`avatar-alpha-video avatar-speaking-video ${speakingVideoReady ? "ready" : ""}`}
                 playsInline
                 controls={false}
@@ -2882,7 +3021,7 @@ export default function App() {
                     if (shouldContinueIdleCycle) {
                       setIdleCycleNonce((value) => value + 1);
                     }
-                  }, 160);
+                  }, 950);
                 }}
               />
             )}
