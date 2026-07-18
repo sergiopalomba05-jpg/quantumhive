@@ -1,0 +1,18 @@
+{
+  "name": "quantumhive-bus-proxy",
+  "version": "1.0.0",
+  "description": "HTTP proxy for QuantumHive Agent Bus via Convex",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "convex": "^1.17.4",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
