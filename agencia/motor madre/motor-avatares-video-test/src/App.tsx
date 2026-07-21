@@ -54,12 +54,40 @@ export const featuredDishes = [
 ];
 
 const avatarVideoByKey: Record<string, string> = {
-  connector_idle: "/avatar-videos/sol/v1/connector_idle.webm",
-  connector_welcome: "/avatar-videos/sol/v1/connector_welcome.webm",
-  connector_entradas: "/avatar-videos/sol/v1/connector_entradas.webm"
+  connector_idle: "/avatar-videos/sol/v1/connector_idle_cut_1.webm",
+  connector_idle_cut_1: "/avatar-videos/sol/v1/connector_idle_cut_1.webm",
+  connector_idle_cut_hair: "/avatar-videos/sol/v1/connector_idle_cut_hair.webm",
+  connector_idle_cut_3: "/avatar-videos/sol/v1/connector_idle_cut_3.webm",
+  connector_idle_cut_4: "/avatar-videos/sol/v1/connector_idle_cut_4.webm",
+  connector_idle_cut_wait: "/avatar-videos/sol/v1/connector_idle_cut_wait.webm",
+  connector_idle_cut_6: "/avatar-videos/sol/v1/connector_idle_cut_6.webm",
+  connector_look_left_cut: "/avatar-videos/sol/v1/connector_look_left_cut.webm",
+  connector_look_right_cut: "/avatar-videos/sol/v1/connector_look_right_cut.webm",
+  connector_taking_order_cut: "/avatar-videos/sol/v1/connector_taking_order_cut.webm",
+  connector_welcome_cut: "/avatar-videos/sol/v1/connector_welcome_cut.webm",
+  connector_farewell_cut: "/avatar-videos/sol/v1/connector_farewell_cut.webm",
+  connector_live_invite_cut: "/avatar-videos/sol/v1/connector_live_invite_cut.webm",
+  connector_welcome: "/avatar-videos/sol/v1/connector_welcome_cut.webm"
 };
 
+const entradasIntroText = "Excelente elección. Te recomiendo estas entradas. Arranquemos por esta primera opción.";
+
 const idleAvatarVideo = avatarVideoByKey.connector_idle;
+const idleAvatarVariants = [
+  { key: "connector_idle_cut_hair", src: avatarVideoByKey.connector_idle_cut_hair },
+  { key: "connector_idle_cut_3", src: avatarVideoByKey.connector_idle_cut_3 },
+  { key: "connector_idle_cut_4", src: avatarVideoByKey.connector_idle_cut_4 },
+  { key: "connector_idle_cut_6", src: avatarVideoByKey.connector_idle_cut_6 }
+];
+const longWaitIdleAvatarVariant = { key: "connector_idle_cut_wait", src: avatarVideoByKey.connector_idle_cut_wait };
+const fallbackIdleAvatarVariant = { key: "connector_idle", src: idleAvatarVideo };
+
+const isIdleVariantKey = (key: string | null) => Boolean(key && [...idleAvatarVariants, longWaitIdleAvatarVariant].some((variant) => variant.key === key));
+const mainGuidedActions = new Set(["start_entradas", "start_principales", "start_bebidas", "start_postres"]);
+const mainGuidedLookMs = 5000;
+const transparentVideoPoster = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+type GuidedStep = "start" | "entrada_recs" | "principal_recs" | "drink_recs" | "postre_recs" | "after_entrada" | "after_principal" | "after_drink" | "after_postre" | "final_ask";
+type CartFollowup = { reply: string; chips: string[] };
 
 const getDishAllergens = (it: any, sectionId: string): string[] => {
   const allergens: string[] = [];
@@ -262,12 +290,15 @@ function warmUpOutput(ctx: AudioContext) {
 export default function App() {
   // --- STATE ---
   const [showSplash, setShowSplash] = useState(true);
+  const [startRequested, setStartRequested] = useState(false);
+  const [welcomeAvatarReady, setWelcomeAvatarReady] = useState(false);
   
   // Gemini additions (Low Latency & Live Call)
   const [lowLatency, setLowLatency] = useState(false);
 
   const [isLiveCalling, setIsLiveCalling] = useState(false);
   const [liveCallMuted, setLiveCallMuted] = useState(false);
+  const [showLiveCallPrompt, setShowLiveCallPrompt] = useState(false);
 
   // Live Call references
   const liveWsRef = useRef<WebSocket | null>(null);
@@ -319,8 +350,6 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (showSplash) return;
-    
     const timer = setTimeout(() => {
       const el = carouselRef.current;
       if (!el) return;
@@ -354,7 +383,7 @@ export default function App() {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [showSplash]);
+  }, []);
 
   // Sync mute ref
   useEffect(() => {
@@ -388,11 +417,19 @@ export default function App() {
   const [inputValue, setInputValue] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const [solState, setSolState] = useState<"idle" | "listening" | "thinking" | "speaking">("idle");
-  const [activeAvatarKey, setActiveAvatarKey] = useState("connector_idle");
-  const [activeAvatarVideo, setActiveAvatarVideo] = useState<string | null>(idleAvatarVideo);
-  const [avatarPlayId, setAvatarPlayId] = useState(0);
-  const [avatarVideoReady, setAvatarVideoReady] = useState(false);
-  const avatarVideoRef = useRef<HTMLVideoElement | null>(null);
+  const [speakingAvatarKey, setSpeakingAvatarKey] = useState<string | null>(null);
+  const [speakingAvatarVideo, setSpeakingAvatarVideo] = useState<string | null>(null);
+  const [speakingPlayId, setSpeakingPlayId] = useState(0);
+  const [speakingVideoReady, setSpeakingVideoReady] = useState(false);
+  const [idleAvatarKey, setIdleAvatarKey] = useState("connector_idle");
+  const [currentIdleAvatarVideo, setCurrentIdleAvatarVideo] = useState(idleAvatarVideo);
+  const [idleCycleNonce, setIdleCycleNonce] = useState(0);
+  const idleAvatarVideoRef = useRef<HTMLVideoElement | null>(null);
+  const speakingAvatarVideoRef = useRef<HTMLVideoElement | null>(null);
+  const preloadedAvatarVideosRef = useRef<HTMLVideoElement[]>([]);
+  const idleVariantIndexRef = useRef(0);
+  const idleInactivityTimeoutRef = useRef<any>(null);
+  const idleLongInactivityTimeoutRef = useRef<any>(null);
   const [contextChips, setContextChips] = useState<string[]>([
     "¿Cuál es la especialidad?",
     "¿Qué tenés para picar?",
@@ -402,7 +439,7 @@ export default function App() {
   const [guidedDishId, setGuidedDishId] = useState<string | null>(null);
   
   // Guided state machine (Autoguided tour)
-  const [guidedStep, setGuidedStep] = useState<"start" | "entrada_recs" | "principal_recs" | "drink_recs" | "postre_recs" | "final_ask">("start");
+  const [guidedStep, setGuidedStep] = useState<GuidedStep>("start");
   const [guidedAlternativeIndex, setGuidedAlternativeIndex] = useState(0);
   const [visibleChipsCount, setVisibleChipsCount] = useState(1);
   const [drinkAlcoholChoice, setDrinkAlcoholChoice] = useState<"with" | "without" | null>(null);
@@ -428,23 +465,34 @@ export default function App() {
     const src = avatarVideoByKey[key];
     if (!src) return;
     setSolState("speaking");
-    setAvatarVideoReady(false);
-    setActiveAvatarKey(key);
-    setActiveAvatarVideo(src);
-    setAvatarPlayId((value) => value + 1);
+    setSpeakingVideoReady(false);
+    setSpeakingAvatarKey(key);
+    setSpeakingAvatarVideo(src);
+    setSpeakingPlayId((value) => value + 1);
+  };
+
+  const setNextIdleAvatarVariant = () => {
+    const next = idleAvatarVariants[idleVariantIndexRef.current % idleAvatarVariants.length];
+    idleVariantIndexRef.current += 1;
+    playAvatarClip(next.key);
   };
 
   useEffect(() => {
-    if (!activeAvatarVideo || !avatarVideoRef.current) return;
-    const video = avatarVideoRef.current;
-    video.currentTime = 0;
-    const playPromise = video.play();
-    if (playPromise) {
-      playPromise.catch(() => {
-        setSolState("idle");
-      });
+    if (!startRequested) return;
+    if (speakingAvatarKey !== "connector_welcome") return;
+    if (!speakingVideoReady) return;
+
+    setShowSplash(false);
+    setHistory([{ role: "model", text: currentGreetingMessage() }]);
+  }, [startRequested, speakingAvatarKey, speakingVideoReady]);
+
+  const playGuidedChipLook = (side?: "left" | "right") => {
+    if (side === "left") {
+      playAvatarClip("connector_look_left_cut");
+    } else if (side === "right") {
+      playAvatarClip("connector_look_right_cut");
     }
-  }, [activeAvatarVideo]);
+  };
 
   const getGuidedFlowInfo = () => {
     // Helper to get short name with emoji
@@ -481,9 +529,8 @@ export default function App() {
       }));
       if (end < items.length) {
         chips.push({ text: "Más opciones ➔", action: moreAction, id: "", price: 0, name: "" });
-      } else {
-        chips.push({ text: "Volver ↺", action: endAction, id: "", price: 0, name: "" });
       }
+      chips.push({ text: "Volver ↺", action: endAction, id: "", price: 0, name: "" });
       return { title, chips };
     };
 
@@ -588,6 +635,41 @@ export default function App() {
         const items = section ? section.items : [];
         return renderPaginatedChips(items, "postre", "Recomendaciones de Postres:", "more_postres", "more_postres_end");
       }
+      case "after_entrada":
+        return {
+          title: "¿Seguimos por dónde?",
+          chips: [
+            { text: "Otra entrada", action: "repeat_entradas" },
+            { text: "🥩 Plato principal", action: "start_principales" },
+            { text: "Inicio ↺", action: "reset_flow" }
+          ]
+        };
+      case "after_principal":
+        return {
+          title: "¿Sumamos algo más?",
+          chips: [
+            { text: "Otro principal", action: "repeat_principales" },
+            { text: "🍹 Bebidas", action: "start_bebidas" },
+            { text: "Inicio ↺", action: "reset_flow" }
+          ]
+        };
+      case "after_drink":
+        return {
+          title: "¿Seguimos tomando o pasamos al postre?",
+          chips: [
+            { text: "Otra bebida", action: "repeat_bebidas" },
+            { text: "🍰 Postre", action: "start_postres" },
+            { text: "Ver mi pedido 🛒", action: "go_to_order" }
+          ]
+        };
+      case "after_postre":
+        return {
+          title: "¿Cerramos o sumamos algo?",
+          chips: [
+            { text: "Ver mi pedido 🛒", action: "go_to_order" },
+            { text: "Agregar algo más", action: "reset_flow" }
+          ]
+        };
       case "final_ask":
         return {
           title: "¡Listo! ¿Sumamos algo más?",
@@ -667,8 +749,6 @@ export default function App() {
 
   // Continuous Autoplay scroll effect for the featured carousel
   useEffect(() => {
-    if (showSplash) return;
-
     let animFrameId: number;
     let lastTime = performance.now();
 
@@ -700,7 +780,7 @@ export default function App() {
       clearTimeout(startTimeout);
       cancelAnimationFrame(animFrameId);
     };
-  }, [showSplash]);
+  }, []);
 
   const scrollCarouselToDish = (dishId: string) => {
     if (!carouselRef.current) return;
@@ -785,92 +865,169 @@ export default function App() {
     }, 150);
   };
 
-  const handleGuidedChipClick = (action: string, text: string, dishId?: string, price?: number, name?: string) => {
+  const resetGuidedFlow = () => {
+    setGuidedStep("start");
+    setGuidedAlternativeIndex(0);
+    setDrinkAlcoholChoice(null);
+    setDrinkSubcategoryChoice(null);
+    setVisibleChipsCount(4);
+  };
+
+  const getGuidedSelectionFollowup = (name: string): { nextStep: GuidedStep; followup: CartFollowup } => {
+    if (guidedStep === "entrada_recs") {
+      return {
+        nextStep: "after_entrada",
+        followup: {
+          reply: `Te sumé ${name} al pedido. ¿Querés una entrada más o pasamos al plato principal?`,
+          chips: ["Otra entrada", "Plato principal", "Volver al inicio"]
+        }
+      };
+    }
+    if (guidedStep === "principal_recs") {
+      return {
+        nextStep: "after_principal",
+        followup: {
+          reply: `Perfecto, ${name} ya está en tu pedido. ¿Algún plato principal más o pasamos a las bebidas?`,
+          chips: ["Otro principal", "Bebidas", "Volver al inicio"]
+        }
+      };
+    }
+    if (guidedStep === "drink_recs") {
+      return {
+        nextStep: "after_drink",
+        followup: {
+          reply: `Listo, agregué ${name}. ¿Elegimos otra bebida o pasamos al postre?`,
+          chips: ["Otra bebida", "Postre", "Ver mi pedido"]
+        }
+      };
+    }
+    if (guidedStep === "postre_recs") {
+      return {
+        nextStep: "after_postre",
+        followup: {
+          reply: `Qué buena elección. Sumé ${name}. ¿Querés ver tu pedido o agregar algo más?`,
+          chips: ["Ver mi pedido", "Agregar algo más"]
+        }
+      };
+    }
+    return {
+      nextStep: "final_ask",
+      followup: {
+        reply: `Excelente elección. Te sumé ${name} al pedido. ¿Revisamos el pedido o agregamos algo más?`,
+        chips: ["Ver mi pedido", "Agregar algo más"]
+      }
+    };
+  };
+
+  const isDrinkCartItem = (id: string, name: string) => {
+    const value = `${id} ${name}`.toLowerCase();
+    return [
+      "bebidas",
+      "cervezas",
+      "cocktails",
+      "mocktails",
+      "champagne",
+      "vinos",
+      "vino",
+      "tragos",
+      "trago",
+      "limonada",
+      "gaseosa",
+      "copa",
+      "botella"
+    ].some((token) => value.includes(token));
+  };
+
+  const handleGuidedChipClick = (action: string, text: string, dishId?: string, price?: number, name?: string, chipSide?: "left" | "right") => {
     stopCurrentAudio();
+    const isDishChip = Boolean(dishId);
+    const isMainGuidedAction = guidedStep === "start" && mainGuidedActions.has(action);
+    const shouldLookAtChip = !isDishChip && isMainGuidedAction;
+    if (shouldLookAtChip) {
+      playGuidedChipLook(chipSide);
+    }
+    const chipId = `${action}:${dishId || text}`;
+    setSelectedGuidedChipId(chipId);
+    setTimeout(() => {
+      setSelectedGuidedChipId(current => current === chipId ? null : current);
+    }, shouldLookAtChip ? mainGuidedLookMs + 100 : 2800);
 
     // 1. Handle Dish Recommendation Click
     if (dishId) {
-      setGuidedDishId(dishId);
-      if (liveHighlightTimeoutRef.current) {
-        clearTimeout(liveHighlightTimeoutRef.current);
-      }
-      liveHighlightTimeoutRef.current = setTimeout(() => {
-        setGuidedDishId(null);
-      }, 5000);
+      playAvatarClip("connector_taking_order_cut");
+      setTimeout(() => {
+        setGuidedDishId(dishId);
+        if (liveHighlightTimeoutRef.current) {
+          clearTimeout(liveHighlightTimeoutRef.current);
+        }
+        liveHighlightTimeoutRef.current = setTimeout(() => {
+          setGuidedDishId(null);
+        }, 5000);
 
-      // Scroll and expand
-      scrollToDish(dishId);
-      setExpandedDishIds(prev => ({ ...prev, [dishId]: true }));
+        scrollToDish(dishId);
+        setExpandedDishIds(prev => ({ ...prev, [dishId]: true }));
 
-      // Add to Order / Cart directly & quickly
-      if (price != null && name) {
-        addToCart(dishId, name, price, true);
-        triggerToast(`¡Agregamos ${name} a tu pedido! 🛒`);
-      }
-
-      // Voice recommendation logic
-      converse(`Contame sobre el plato ${name || text}`, false);
+        if (price != null && name) {
+          addToCart(dishId, name, price, true, undefined, true);
+        }
+      }, 300);
       return;
     }
 
     // 2. Handle Navigation / Flows
     if (action === "start_entradas") {
-      playAvatarClip("connector_entradas");
-      converse("Excelente, para entradas te recomiendo que empecemos con algo rico para compartir.", false);
-      setGuidedStep("entrada_recs");
-      setGuidedAlternativeIndex(0);
-      setDrinkAlcoholChoice(null);
-      setDrinkSubcategoryChoice(null);
-      setActiveSection("sec-entradas");
+      setHistory(prev => [...prev, { role: "model", text: entradasIntroText }]);
       setTimeout(() => {
-        const container = document.getElementById("cartaBody");
-        const element = document.getElementById("sec-entradas");
-        if (container && element) {
-          container.scrollTo({ top: element.offsetTop - 80, behavior: "smooth" });
-        }
-      }, 100);
+        setGuidedStep("entrada_recs");
+        setGuidedAlternativeIndex(0);
+        setDrinkAlcoholChoice(null);
+        setDrinkSubcategoryChoice(null);
+        setActiveSection("sec-entradas");
+        const firstEntrada = menuData.menu.find(s => s.id === "entradas")?.items[0];
+        if (firstEntrada?.id) scrollToDish(firstEntrada.id);
+      }, shouldLookAtChip ? mainGuidedLookMs : 700);
     } else if (action === "start_principales") {
-      converse("Para el plato principal tenemos opciones increíbles a la parrilla y pastas caseras.", false);
-      setGuidedStep("principal_recs");
-      setGuidedAlternativeIndex(0);
-      setDrinkAlcoholChoice(null);
-      setDrinkSubcategoryChoice(null);
-      setActiveSection("sec-carnes");
       setTimeout(() => {
+        converse("Para el plato principal tenemos opciones increíbles a la parrilla y pastas caseras.", false);
+        setGuidedStep("principal_recs");
+        setGuidedAlternativeIndex(0);
+        setDrinkAlcoholChoice(null);
+        setDrinkSubcategoryChoice(null);
+        setActiveSection("sec-carnes");
         const container = document.getElementById("cartaBody");
         const element = document.getElementById("sec-carnes");
         if (container && element) {
           container.scrollTo({ top: element.offsetTop - 80, behavior: "smooth" });
         }
-      }, 100);
+      }, shouldLookAtChip ? mainGuidedLookMs : 700);
     } else if (action === "start_bebidas") {
-      converse("¿Qué te gustaría tomar hoy? Primero contame, ¿preferís con o sin alcohol?", false);
-      setGuidedStep("drink_recs");
-      setGuidedAlternativeIndex(0);
-      setDrinkAlcoholChoice(null);
-      setDrinkSubcategoryChoice(null);
-      setActiveSection("sec-bebidas");
       setTimeout(() => {
+        converse("¿Qué te gustaría tomar hoy? Primero contame, ¿preferís con o sin alcohol?", false);
+        setGuidedStep("drink_recs");
+        setGuidedAlternativeIndex(0);
+        setDrinkAlcoholChoice(null);
+        setDrinkSubcategoryChoice(null);
+        setActiveSection("sec-bebidas");
         const container = document.getElementById("cartaBody");
         const element = document.getElementById("sec-bebidas");
         if (container && element) {
           container.scrollTo({ top: element.offsetTop - 80, behavior: "smooth" });
         }
-      }, 100);
+      }, shouldLookAtChip ? mainGuidedLookMs : 700);
     } else if (action === "start_postres") {
-      converse("Para terminar de la mejor manera, te recomiendo nuestros postres artesanales.", false);
-      setGuidedStep("postre_recs");
-      setGuidedAlternativeIndex(0);
-      setDrinkAlcoholChoice(null);
-      setDrinkSubcategoryChoice(null);
-      setActiveSection("sec-postres");
       setTimeout(() => {
+        converse("Para terminar de la mejor manera, te recomiendo nuestros postres artesanales.", false);
+        setGuidedStep("postre_recs");
+        setGuidedAlternativeIndex(0);
+        setDrinkAlcoholChoice(null);
+        setDrinkSubcategoryChoice(null);
+        setActiveSection("sec-postres");
         const container = document.getElementById("cartaBody");
         const element = document.getElementById("sec-postres");
         if (container && element) {
           container.scrollTo({ top: element.offsetTop - 80, behavior: "smooth" });
         }
-      }, 100);
+      }, shouldLookAtChip ? mainGuidedLookMs : 700);
     } else if (action === "drink_choose_with") {
       converse("Te muestro nuestras opciones con alcohol: vinos, cervezas y tragos de autor.", false);
       setDrinkAlcoholChoice("with");
@@ -951,15 +1108,22 @@ export default function App() {
       setGuidedAlternativeIndex(prev => prev + 1);
     } else if (action === "more_entradas_end" || action === "more_principales_end" || action === "more_postres_end") {
       triggerToast("Volviendo al menú principal.");
-      setGuidedStep("start");
+      resetGuidedFlow();
+    } else if (action === "repeat_entradas") {
+      setGuidedStep("entrada_recs");
       setGuidedAlternativeIndex(0);
-    } else if (action === "go_to_order") {
-      setActiveOverlay("order");
-    } else if (action === "reset_flow") {
-      setGuidedStep("start");
+    } else if (action === "repeat_principales") {
+      setGuidedStep("principal_recs");
+      setGuidedAlternativeIndex(0);
+    } else if (action === "repeat_bebidas") {
+      setGuidedStep("drink_recs");
       setGuidedAlternativeIndex(0);
       setDrinkAlcoholChoice(null);
       setDrinkSubcategoryChoice(null);
+    } else if (action === "go_to_order") {
+      setActiveOverlay("order");
+    } else if (action === "reset_flow") {
+      resetGuidedFlow();
     }
   };
 
@@ -996,6 +1160,7 @@ export default function App() {
 
   // Toasts
   const [toast, setToast] = useState<{ text: string; show: boolean }>({ text: "", show: false });
+  const [selectedGuidedChipId, setSelectedGuidedChipId] = useState<string | null>(null);
 
   // Exit Confirmation State
   const [showExitConfirm, setShowExitConfirm] = useState(false);
@@ -1007,6 +1172,14 @@ export default function App() {
   showMenuDropRef.current = showMenuDrop;
   const showSearchRef = useRef(showSearch);
   showSearchRef.current = showSearch;
+  const guidedStepRef = useRef(guidedStep);
+  guidedStepRef.current = guidedStep;
+  const guidedAlternativeIndexRef = useRef(guidedAlternativeIndex);
+  guidedAlternativeIndexRef.current = guidedAlternativeIndex;
+  const drinkAlcoholChoiceRef = useRef(drinkAlcoholChoice);
+  drinkAlcoholChoiceRef.current = drinkAlcoholChoice;
+  const drinkSubcategoryChoiceRef = useRef(drinkSubcategoryChoice);
+  drinkSubcategoryChoiceRef.current = drinkSubcategoryChoice;
   const expandedDishIdsRef = useRef(expandedDishIds);
   expandedDishIdsRef.current = expandedDishIds;
   const showExitConfirmRef = useRef(showExitConfirm);
@@ -1014,10 +1187,12 @@ export default function App() {
   const isExitingRef = useRef(false);
 
   useEffect(() => {
-    window.history.pushState({ appLayer: 'main' }, "");
+    const pushBackTrap = () => window.history.pushState({ appLayer: 'main', trap: Date.now() }, "");
+    pushBackTrap();
+    pushBackTrap();
     const handlePopState = (e) => {
       if (isExitingRef.current) return;
-      window.history.pushState({ appLayer: 'main' }, "");
+      pushBackTrap();
 
       if (showExitConfirmRef.current) {
         setShowExitConfirm(false);
@@ -1035,6 +1210,24 @@ export default function App() {
         setShowSearch(false);
         return;
       }
+      if (guidedStepRef.current === "drink_recs" && drinkSubcategoryChoiceRef.current !== null) {
+        setDrinkSubcategoryChoice(null);
+        setGuidedAlternativeIndex(0);
+        return;
+      }
+      if (guidedStepRef.current === "drink_recs" && drinkAlcoholChoiceRef.current !== null) {
+        setDrinkAlcoholChoice(null);
+        setGuidedAlternativeIndex(0);
+        return;
+      }
+      if (guidedAlternativeIndexRef.current > 0) {
+        setGuidedAlternativeIndex((value) => Math.max(0, value - 1));
+        return;
+      }
+      if (guidedStepRef.current !== "start") {
+        resetGuidedFlow();
+        return;
+      }
       const expandedIds = Object.keys(expandedDishIdsRef.current).filter(k => expandedDishIdsRef.current[k]);
       if (expandedIds.length > 0) {
         setExpandedDishIds({});
@@ -1042,6 +1235,7 @@ export default function App() {
       }
 
       setShowExitConfirm(true);
+      pushBackTrap();
     };
 
     window.addEventListener('popstate', handlePopState);
@@ -1053,6 +1247,64 @@ export default function App() {
   const speechUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const chatFeedEndRef = useRef<HTMLDivElement | null>(null);
   const historyListEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    preloadedAvatarVideosRef.current = Object.values(avatarVideoByKey).map((src) => {
+      const video = document.createElement("video");
+      video.src = src;
+      video.muted = true;
+      video.preload = "auto";
+      video.playsInline = true;
+      if (src === avatarVideoByKey.connector_welcome) {
+        video.onloadeddata = () => setWelcomeAvatarReady(true);
+        video.oncanplaythrough = () => setWelcomeAvatarReady(true);
+      }
+      video.load();
+      return video;
+    });
+  }, []);
+
+  useEffect(() => {
+    const clearIdleTimeout = () => {
+      if (idleInactivityTimeoutRef.current) {
+        clearTimeout(idleInactivityTimeoutRef.current);
+        idleInactivityTimeoutRef.current = null;
+      }
+      if (idleLongInactivityTimeoutRef.current) {
+        clearTimeout(idleLongInactivityTimeoutRef.current);
+        idleLongInactivityTimeoutRef.current = null;
+      }
+    };
+
+    const canPlayIdleVariant = !activeOverlay && !speakingAvatarVideo && solState !== "speaking";
+
+    const scheduleIdleVariant = (delay = 14000) => {
+      clearIdleTimeout();
+      if (!canPlayIdleVariant) return;
+
+      idleInactivityTimeoutRef.current = setTimeout(() => {
+        setNextIdleAvatarVariant();
+      }, delay);
+
+      idleLongInactivityTimeoutRef.current = setTimeout(() => {
+        playAvatarClip(longWaitIdleAvatarVariant.key);
+      }, 45000);
+    };
+
+    const markActivity = () => {
+      scheduleIdleVariant();
+    };
+
+    markActivity();
+
+    const events = ["pointerdown", "keydown", "wheel", "touchstart"] as const;
+    events.forEach((eventName) => window.addEventListener(eventName, markActivity, { passive: true }));
+
+    return () => {
+      clearIdleTimeout();
+      events.forEach((eventName) => window.removeEventListener(eventName, markActivity));
+    };
+  }, [activeOverlay, speakingAvatarVideo, solState, idleCycleNonce]);
 
   // --- FLAT SECTIONS LIST FOR NAVIGATION ---
   const sectionsList: Array<{ id: string; name: string; items: MenuItem[]; note?: string }> = [];
@@ -1100,6 +1352,27 @@ export default function App() {
           )
         };
       }).filter(sec => sec.items.length > 0);
+
+  useEffect(() => {
+    if (!showSplash) return;
+    const preloadItems = [
+      ...featuredDishes,
+      ...sectionsList.flatMap((sec) => sec.items).slice(0, 24)
+    ];
+    const images = preloadItems.map((item) => {
+      const image = new Image();
+      image.decoding = "async";
+      image.loading = "eager";
+      image.src = getDishImage(item.id);
+      return image;
+    });
+    return () => {
+      images.forEach((image) => {
+        image.onload = null;
+        image.onerror = null;
+      });
+    };
+  }, [showSplash]);
 
   // Check URL table on mount
   useEffect(() => {
@@ -1219,7 +1492,9 @@ export default function App() {
   const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
-  const addToCart = (id: string, name: string, price: number, forceAdd: boolean = false) => {
+  const addToCart = (id: string, name: string, price: number, forceAdd: boolean = false, followup?: CartFollowup, skipAvatarClip: boolean = false) => {
+    const guidedFollowup = followup || (isShowingIndividualDishes() ? getGuidedSelectionFollowup(name) : null);
+    const effectiveFollowup = guidedFollowup && "followup" in guidedFollowup ? guidedFollowup.followup : followup;
     const baseId = id.split("|")[0];
     setGuidedDishId(baseId);
     if (liveHighlightTimeoutRef.current) {
@@ -1236,7 +1511,7 @@ export default function App() {
         title: "¿Sumar otro?",
         text: `Ya tenés ${name} en tu pedido. ¿Querés agregar uno más?`,
         onConfirm: () => {
-          addToCart(id, name, price, true);
+          addToCart(id, name, price, true, effectiveFollowup);
           setConfirmModal(null);
         }
       });
@@ -1251,19 +1526,34 @@ export default function App() {
     triggerToast(`Sumado: ${name}`);
 
     stopCurrentAudio();
-    const isDrink = id.includes("bebidas") || id.includes("cervezas") || id.includes("cocktails") || id.includes("mocktails") || id.includes("champagne") || id.includes("vinos");
+    if (!skipAvatarClip) {
+      playAvatarClip("connector_taking_order_cut");
+    }
+    const isDrink = isDrinkCartItem(id, name);
     const isDessert = id.includes("postres");
     
-    let reply = `Excelente elección. Te sumé ${name} al pedido.`;
-    let chips = ["¿Algo para tomar?", "Un postre", "Cerrar el pedido"];
+    if (guidedFollowup && "nextStep" in guidedFollowup) {
+      setGuidedStep(guidedFollowup.nextStep);
+      setGuidedAlternativeIndex(0);
+      if (guidedFollowup.nextStep !== "after_drink") {
+        setDrinkAlcoholChoice(null);
+        setDrinkSubcategoryChoice(null);
+      }
+    } else if (isDrink) {
+      setGuidedStep("after_drink");
+      setGuidedAlternativeIndex(0);
+    }
 
-    if (isDrink) {
-      reply = `¡Salud! Te agregué ${name}. ¿Buscamos un plato principal o preferís pasar al postre?`;
-      chips = ["Platos principales", "Un postre", "Cerrar el pedido"];
-    } else if (isDessert) {
+    let reply = effectiveFollowup?.reply || `Excelente elección. Te sumé ${name} al pedido.`;
+    let chips = effectiveFollowup?.chips || ["¿Algo para tomar?", "Un postre", "Cerrar el pedido"];
+
+    if (!effectiveFollowup && isDrink) {
+      reply = `Listo, agregué ${name}. ¿Elegimos otra bebida o pasamos al postre?`;
+      chips = ["Otra bebida", "Postre", "Ver mi pedido"];
+    } else if (!effectiveFollowup && isDessert) {
       reply = `Qué rico postre. Te sumé ${name}. ¿Buscás algo más o ya cerramos el pedido para mandarlo a la cocina?`;
       chips = ["Cerrar el pedido", "Algo más para tomar"];
-    } else {
+    } else if (!effectiveFollowup) {
       reply = `Te sumé ${name} al pedido. ¿Le sumamos algo para tomar? ¿Con alcohol o sin alcohol?`;
       chips = ["Con alcohol", "Sin alcohol", "Un postre"];
     }
@@ -1350,7 +1640,18 @@ export default function App() {
   const handleContextChipClick = (text: string) => {
     stopCurrentAudio();
     if (text.toLowerCase().includes("picar") || text.toLowerCase().includes("entrada")) {
-      playAvatarClip("connector_entradas");
+      playAvatarClip("connector_look_left_cut");
+      setHistory(prev => [...prev, { role: "model", text: entradasIntroText }]);
+      setGuidedStep("entrada_recs");
+      setGuidedAlternativeIndex(0);
+      setDrinkAlcoholChoice(null);
+      setDrinkSubcategoryChoice(null);
+      setActiveSection("sec-entradas");
+      setTimeout(() => {
+        const firstEntrada = menuData.menu.find(s => s.id === "entradas")?.items[0];
+        if (firstEntrada?.id) scrollToDish(firstEntrada.id);
+      }, 180);
+      return;
     }
     
     // Auto-guide directly if matching section is found
@@ -1674,6 +1975,7 @@ export default function App() {
   const startLiveCall = async () => {
     try {
       stopCurrentAudio();
+      setShowLiveCallPrompt(false);
 
       // Despertar audio DENTRO del gesto del click, antes de cualquier await
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
@@ -1989,9 +2291,22 @@ export default function App() {
 
     triggerToast("¡Tu pedido ya está en viaje a la cocina! 🍳", 4000);
     stopCurrentAudio();
+    setActiveOverlay(null);
+    playAvatarClip("connector_farewell_cut");
     playTTS("¡Perfecto! Ya le mandé tu pedido directo a la cocina. Que lo disfrutes mucho.");
-    
-    setActiveOverlay("rating_restaurant");
+
+    setTimeout(() => {
+      setActiveOverlay("rating_restaurant");
+    }, 7000);
+  };
+
+  const showLiveInviteAfterRating = () => {
+    stopCurrentAudio();
+    setActiveOverlay(null);
+    resetGuidedFlow();
+    setShowLiveCallPrompt(true);
+    playAvatarClip("connector_live_invite_cut");
+    playTTS("Si querés, también podés tocar llamada y charlar conmigo en vivo.");
   };
 
   const handleRatingSubmit = () => {
@@ -2016,7 +2331,7 @@ export default function App() {
     setCart([]);
     setRating({ mesera: 0, restaurante: 0, quantumhive: 0 });
     setRatingComment("");
-    setActiveOverlay(null);
+    showLiveInviteAfterRating();
   };
 
   const handleEmbeddedRatingSubmit = () => {
@@ -2040,6 +2355,7 @@ export default function App() {
     triggerToast("¡Muchas gracias por valorar la experiencia QuantumHive! 🚀");
     setRating({ mesera: 0, restaurante: 0, quantumhive: 0 });
     setRatingComment("");
+    showLiveInviteAfterRating();
   };
 
   const scrollToSection = (secId: string) => {
@@ -2087,16 +2403,27 @@ export default function App() {
             </div>
 
             <div className="splash-orb" aria-hidden="true" />
+            <video
+              src={avatarVideoByKey.connector_welcome}
+              poster={transparentVideoPoster}
+              muted
+              playsInline
+              preload="auto"
+              autoPlay
+              aria-hidden="true"
+              className="avatar-preload-video"
+              onLoadedData={() => setWelcomeAvatarReady(true)}
+              onCanPlayThrough={() => setWelcomeAvatarReady(true)}
+            />
 
             <button
               onClick={() => {
-                setShowSplash(false);
-                setHistory([{ role: "model", text: currentGreetingMessage() }]);
+                setStartRequested(true);
                 playAvatarClip("connector_welcome");
               }}
               className="splash-cta"
             >
-              Tocá para empezar
+              {startRequested && !speakingVideoReady ? "Preparando carta..." : welcomeAvatarReady ? "Tocá para empezar" : "Cargando carta..."}
             </button>
 
             <p className="splash-sub">
@@ -2125,7 +2452,7 @@ export default function App() {
       </div>
 
       {/* --- CORE LAYOUT --- */}
-      <div id="app" className="ready">
+      <div id="app" className={`ready ${showSplash ? "prewarming" : ""}`} aria-hidden={showSplash}>
         
         {/* --- TOPBAR --- */}
         <header className="topbar">
@@ -2649,14 +2976,14 @@ export default function App() {
                   value={ratingComment}
                   onChange={(e) => setRatingComment(e.target.value)}
                   placeholder="Ej: Excelente velocidad y muy fácil de usar..."
-                  className="w-full bg-[#1A120E] border border-[#C9A86A]/20 rounded-lg px-2.5 py-1.5 text-xs text-stone-100 placeholder-stone-600 focus:outline-none focus:border-amber-500/60"
+                  className="rating-input-light px-2.5 py-1.5 text-xs"
                 />
               </div>
 
               <button
                 type="button"
                 onClick={handleEmbeddedRatingSubmit}
-                className="w-full py-2 bg-gradient-to-r from-amber-600 to-amber-500 text-stone-950 font-black text-[11px] uppercase tracking-widest rounded-lg shadow-md active:scale-95 transition-all cursor-pointer"
+                className="rating-btn-bordo w-full py-2 font-black text-[11px] uppercase tracking-widest rounded-lg active:scale-95 transition-all cursor-pointer"
               >
                 Enviar Valoración
               </button>
@@ -2695,8 +3022,8 @@ export default function App() {
                   return (
                     <button
                       key={idx}
-                      onClick={() => handleGuidedChipClick(item.action, item.text, item.id, item.price, item.name)}
-                      className={`quick-chip guided-bubble ${item.action === "go_to_order" ? "action-btn" : ""}`}
+                      onClick={() => handleGuidedChipClick(item.action, item.text, item.id, item.price, item.name, "left")}
+                      className={`quick-chip guided-bubble ${item.id ? "dish-choice" : ""} ${selectedGuidedChipId === `${item.action}:${item.id || item.text}` ? "selected" : ""} ${item.action === "go_to_order" ? "action-btn" : ""}`}
                     >
                       {item.text}
                     </button>
@@ -2714,8 +3041,8 @@ export default function App() {
                   return (
                     <button
                       key={idx}
-                      onClick={() => handleGuidedChipClick(item.action, item.text, item.id, item.price, item.name)}
-                      className={`quick-chip guided-bubble ${item.action === "go_to_order" ? "action-btn" : ""}`}
+                      onClick={() => handleGuidedChipClick(item.action, item.text, item.id, item.price, item.name, "right")}
+                      className={`quick-chip guided-bubble ${item.id ? "dish-choice" : ""} ${selectedGuidedChipId === `${item.action}:${item.id || item.text}` ? "selected" : ""} ${item.action === "go_to_order" ? "action-btn" : ""}`}
                     >
                       {item.text}
                     </button>
@@ -2727,44 +3054,98 @@ export default function App() {
           </div>
         )}
 
+        {!activeOverlay && (showLiveCallPrompt || isLiveCalling) && (
+          <button
+            type="button"
+            onClick={() => {
+              if (isLiveCalling) {
+                endLiveCall();
+              } else {
+                startLiveCall();
+              }
+            }}
+            className={`live-call-float ${isLiveCalling ? "active" : ""}`}
+          >
+            {isLiveCalling ? <Square className="h-4 w-4 fill-current" /> : <Phone className="h-4 w-4" />}
+            <span>{isLiveCalling ? "Cortar llamada" : "Charlar en vivo"}</span>
+          </button>
+        )}
+
         {/* THE AVATAR (DECORATIVE - live call only via phone icon) */}
-        {!activeOverlay && activeAvatarVideo && (
+        {!activeOverlay && (
           <div 
-            className="orb-float pointer-events-none"
-            data-clip={activeAvatarKey}
-            data-state={activeAvatarKey === "connector_idle" ? "idle" : "speaking"}
+            className={`orb-float pointer-events-none ${speakingVideoReady ? "speaking-ready" : ""}`}
+            data-clip={speakingAvatarKey || "connector_idle"}
+            data-state={speakingAvatarVideo ? "speaking" : "idle"}
           >
             <video
-              ref={avatarVideoRef}
-              key={`${activeAvatarKey}-${avatarPlayId}`}
-              src={activeAvatarVideo}
-              className={`avatar-alpha-video ${avatarVideoReady ? "ready" : ""}`}
+              ref={idleAvatarVideoRef}
+              key={idleAvatarKey}
+              src={currentIdleAvatarVideo}
+              poster={transparentVideoPoster}
+              className="avatar-alpha-video avatar-idle-video ready"
               playsInline
-              muted={activeAvatarKey === "connector_idle"}
-              loop={activeAvatarKey === "connector_idle"}
+              muted
+              loop={idleAvatarKey === "connector_idle"}
               controls={false}
               disablePictureInPicture
               preload="auto"
-              onCanPlay={() => setAvatarVideoReady(true)}
-              onError={() => {
-                if (activeAvatarKey !== "connector_idle") {
-                  setActiveAvatarKey("connector_idle");
-                  setActiveAvatarVideo(idleAvatarVideo);
-                  setAvatarPlayId((value) => value + 1);
-                } else {
-                  setActiveAvatarVideo(null);
-                }
-                setAvatarVideoReady(false);
-                setSolState("idle");
-              }}
+              autoPlay
               onEnded={() => {
-                setActiveAvatarKey("connector_idle");
-                setActiveAvatarVideo(idleAvatarVideo);
-                setAvatarPlayId((value) => value + 1);
-                setAvatarVideoReady(false);
+                if (idleAvatarKey === longWaitIdleAvatarVariant.key) {
+                  setNextIdleAvatarVariant();
+                  setIdleCycleNonce((value) => value + 1);
+                } else if (idleAvatarKey !== fallbackIdleAvatarVariant.key) {
+                  setNextIdleAvatarVariant();
+                  setIdleCycleNonce((value) => value + 1);
+                }
+              }}
+              onError={() => {
+                setIdleAvatarKey(fallbackIdleAvatarVariant.key);
+                setCurrentIdleAvatarVideo(fallbackIdleAvatarVariant.src);
                 setSolState("idle");
               }}
             />
+            {speakingAvatarVideo && (
+              <video
+                ref={speakingAvatarVideoRef}
+                key={`${speakingAvatarKey}-${speakingPlayId}`}
+                src={speakingAvatarVideo}
+                poster={transparentVideoPoster}
+                className={`avatar-alpha-video avatar-speaking-video ${speakingVideoReady ? "ready" : ""}`}
+                playsInline
+                controls={false}
+                disablePictureInPicture
+                preload="auto"
+                onCanPlay={() => {
+                  setSpeakingVideoReady(true);
+                  speakingAvatarVideoRef.current?.play().catch(() => {
+                    setSpeakingAvatarKey(null);
+                    setSpeakingAvatarVideo(null);
+                    setSpeakingVideoReady(false);
+                    setSolState("idle");
+                  });
+                }}
+                onError={() => {
+                  setSpeakingAvatarKey(null);
+                  setSpeakingAvatarVideo(null);
+                  setSpeakingVideoReady(false);
+                  setSolState("idle");
+                }}
+                onEnded={() => {
+                  const shouldContinueIdleCycle = isIdleVariantKey(speakingAvatarKey);
+                  setSpeakingVideoReady(false);
+                  setTimeout(() => {
+                    setSpeakingAvatarKey(null);
+                    setSpeakingAvatarVideo(null);
+                    setSolState("idle");
+                    if (shouldContinueIdleCycle) {
+                      setIdleCycleNonce((value) => value + 1);
+                    }
+                  }, 950);
+                }}
+              />
+            )}
           </div>
         )}
 
@@ -3077,11 +3458,11 @@ export default function App() {
                 </p>
               </div>
 
-              <div className="space-y-6 text-left mt-6">
+              <div className="space-y-4 text-left mt-4">
                 {/* Rating 1: Mesera */}
                 <div>
                   <span className="block text-[11px] font-bold text-stone-300 uppercase tracking-wider mb-2 text-center">¿Cómo te atendió Sol (mesera virtual)?</span>
-                  <div className="flex justify-center gap-4">
+                  <div className="flex justify-center gap-2">
                     {[1, 2, 3, 4, 5].map(v => (
                       <motion.button 
                         key={v}
@@ -3092,7 +3473,7 @@ export default function App() {
                         className={`transition-all cursor-pointer ${flashStarId === `mesera-${v}` ? "star-flash-anim" : ""}`}
                       >
                         <Star 
-                          className={`h-16 w-16 transition-all duration-200 ${
+                          className={`h-10 w-10 sm:h-12 sm:w-12 transition-all duration-200 ${
                             v <= rating.mesera 
                               ? "fill-[#C9A86A] text-[#C9A86A] drop-shadow-[0_0_20px_rgba(201,168,106,0.95)] scale-115" 
                               : "text-[#57453B] fill-transparent hover:text-stone-400"
@@ -3104,9 +3485,9 @@ export default function App() {
                 </div>
 
                 {/* Rating 2: Restaurante */}
-                <div className="pt-2">
+                <div className="pt-1">
                   <span className="block text-[11px] font-bold text-stone-300 uppercase tracking-wider mb-2 text-center">¿Qué tal la comida y el restaurante?</span>
-                  <div className="flex justify-center gap-4">
+                  <div className="flex justify-center gap-2">
                     {[1, 2, 3, 4, 5].map(v => (
                       <motion.button 
                         key={v}
@@ -3117,7 +3498,7 @@ export default function App() {
                         className={`transition-all cursor-pointer ${flashStarId === `restaurante-${v}` ? "star-flash-anim" : ""}`}
                       >
                         <Star 
-                          className={`h-16 w-16 transition-all duration-200 ${
+                          className={`h-10 w-10 sm:h-12 sm:w-12 transition-all duration-200 ${
                             v <= rating.restaurante 
                               ? "fill-[#C9A86A] text-[#C9A86A] drop-shadow-[0_0_20px_rgba(201,168,106,0.95)] scale-115" 
                               : "text-[#57453B] fill-transparent hover:text-stone-400"
@@ -3133,7 +3514,7 @@ export default function App() {
                 <button
                   onClick={() => setActiveOverlay("rating_quantumhive")}
                   disabled={rating.mesera === 0 || rating.restaurante === 0}
-                  className="w-full py-3.5 px-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold rounded-xl active:scale-98 transition-all shadow-lg shadow-amber-900/20 cursor-pointer text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="rating-btn-bordo w-full py-3.5 px-4 font-bold rounded-xl active:scale-98 transition-all cursor-pointer text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Siguiente paso ➔
                 </button>
@@ -3171,7 +3552,7 @@ export default function App() {
                       ¿Qué te pareció usar esta carta para pedir y hablar con la mesera virtual?
                     </p>
                   </div>
-                  <div className="flex justify-center gap-3">
+                  <div className="flex justify-center gap-2">
                     {[1, 2, 3, 4, 5].map(v => (
                       <motion.button 
                         key={v}
@@ -3182,7 +3563,7 @@ export default function App() {
                         className={`transition-all cursor-pointer ${flashStarId === `quantumhive-${v}` ? "star-flash-anim" : ""}`}
                       >
                         <Star 
-                          className={`h-16 w-16 transition-all duration-200 ${
+                          className={`h-10 w-10 sm:h-12 sm:w-12 transition-all duration-200 ${
                             v <= rating.quantumhive 
                               ? "fill-[#C9A86A] text-[#C9A86A] drop-shadow-[0_0_20px_rgba(201,168,106,0.95)] scale-115" 
                               : "text-[#57453B] fill-transparent hover:text-stone-400"
@@ -3201,7 +3582,7 @@ export default function App() {
                     value={ratingComment}
                     onChange={(e) => setRatingComment(e.target.value)}
                     placeholder="Ej: Sumar fotos de postres, anduvo genial, etc."
-                    className="w-full bg-[#1A120E] border border-[#C9A86A]/30 rounded-xl px-4 py-3.5 text-[13px] text-stone-100 placeholder-stone-600 focus:outline-none focus:border-amber-500/80 focus:bg-[#2A1D15] transition-all shadow-inner"
+                    className="rating-input-light px-4 py-3.5 text-[13px] transition-all"
                   />
                 </div>
               </div>
@@ -3216,7 +3597,7 @@ export default function App() {
                 <button
                   onClick={handleRatingSubmit}
                   disabled={rating.quantumhive === 0}
-                  className="w-2/3 py-3 px-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold rounded-xl active:scale-98 transition-all shadow-lg shadow-amber-900/20 cursor-pointer text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="rating-btn-bordo w-2/3 py-3 px-4 font-bold rounded-xl active:scale-98 transition-all cursor-pointer text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Enviar y finalizar
                 </button>
@@ -3304,13 +3685,17 @@ export default function App() {
                 </button>
                 <button 
                   onClick={() => {
-                    isExitingRef.current = true;
-                    window.history.back();
-                    setTimeout(() => window.close(), 100);
+                    setShowExitConfirm(false);
+                    setActiveOverlay(null);
+                    setShowMenuDrop(false);
+                    setShowSearch(false);
+                    setExpandedDishIds({});
+                    resetGuidedFlow();
+                    triggerToast("Volvimos al inicio de la carta.");
                   }}
                   className="flex-1 py-2 rounded-lg font-bold uppercase text-[11px] tracking-widest bg-red-900/40 text-red-400 border border-red-900 active:scale-95 transition-all"
                 >
-                  Sí, salir
+                  Ir al inicio
                 </button>
               </div>
             </div>
