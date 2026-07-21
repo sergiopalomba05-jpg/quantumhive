@@ -1,0 +1,38 @@
+.git
+.gitignore
+.agents/
+.claude/
+.opencode/
+.playwright-mcp/
+graphify-out/
+CLON/
+elementos visuales/
+agencia/
+ai-town/
+humania/
+directimport/
+AVATARES VIDEOS/
+Business/
+Coding/
+DevOps/
+DOMINUS_MASTER_KIT/
+AI Agents/
+Automation/
+habilidades-multimedia/
+kit_maestro_dominus/
+kit_maestro_logo_quantumhive/
+paquete-pipeline-avatar-minimo/
+planes-a-llevar-a-cabo/
+procesos-aprendidos/
+scripts/
+supabase/
+tests/
+trading/
+vault/
+_BrainFeeder Logs/
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+*.log
