@@ -1,0 +1,346 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Geist", "Plus Jakarta Sans", ui-sans-serif, system-ui;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-qh-bg: #020306;
+  --color-qh-panel: #070a0f;
+  --color-qh-card: #0b1018;
+  --color-qh-header: #060912;
+  
+  --color-qh-border: rgba(148, 163, 184, 0.16);
+  --color-qh-border-light: rgba(245, 205, 112, 0.28);
+  
+  --color-qh-gold: #f5cd70;
+  --color-qh-gold-dim: rgba(245, 205, 112, 0.15);
+  
+  --color-qh-amber: #d89b2a;
+  --color-qh-amber-dim: rgba(216, 155, 42, 0.15);
+  
+  --color-qh-cyan: #42e8ff;
+  --color-qh-cyan-dim: rgba(66, 232, 255, 0.15);
+
+  --color-qh-emerald: #10b981;
+}
+
+@layer base {
+  html {
+    height: 100%;
+    background: #020306;
+  }
+
+  body {
+    @apply bg-qh-bg text-slate-200 font-sans antialiased selection:bg-qh-gold-dim selection:text-qh-gold;
+    margin: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-image:
+      radial-gradient(circle at 15% 50%, rgba(245, 205, 112, 0.08) 0%, transparent 42%),
+      radial-gradient(circle at 85% 30%, rgba(66, 232, 255, 0.055) 0%, transparent 40%);
+    background-attachment: fixed;
+  }
+
+  #root {
+    @apply h-full w-full flex flex-col flex-1;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-800 rounded-full border border-slate-700;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-qh-gold border-qh-gold;
+  }
+}
+
+@layer components {
+  .qh-shell {
+    --qh-pointer-x: 62%;
+    --qh-pointer-y: 28%;
+    --qh-bg-image: url('/brand/curated/bg-global-command.jpeg');
+    --qh-card-texture: url('/brand/curated/texture-card-honeycomb.jpeg');
+    --qh-sidebar-texture: url('/brand/curated/texture-sidebar-graphite.jpeg');
+    --qh-sidebar-image: url('/brand/curated/sidebar-primary.jpeg');
+    --qh-top-panel-image: url('/brand/curated/top-panel-primary.jpeg');
+    --qh-bg-opacity: 0.17;
+    --qh-bg-position: center;
+    position: relative;
+    isolation: isolate;
+    color: rgb(226 232 240);
+    background:
+      radial-gradient(circle at var(--qh-pointer-x) var(--qh-pointer-y), rgba(66, 232, 255, 0.16), transparent 24rem),
+      radial-gradient(circle at 12% 10%, rgba(245, 205, 112, 0.16), transparent 22rem),
+      linear-gradient(135deg, #020306 0%, #070b12 42%, #03040a 100%);
+  }
+
+  .qh-control-room-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .qh-control-room-bg::before {
+    content: "";
+    position: absolute;
+    inset: -2%;
+    background-image:
+      linear-gradient(90deg, rgba(2, 3, 6, 0.94), rgba(2, 3, 6, 0.72) 48%, rgba(2, 3, 6, 0.96)),
+      radial-gradient(circle at var(--qh-pointer-x) var(--qh-pointer-y), rgba(245, 205, 112, 0.32), transparent 18rem),
+      var(--qh-bg-image);
+    background-position: center, center, var(--qh-bg-position);
+    background-size: cover;
+    opacity: var(--qh-bg-opacity);
+    transform: scale(1.02);
+  }
+
+  .qh-control-room-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(66, 232, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245, 205, 112, 0.035) 1px, transparent 1px),
+      radial-gradient(circle at 50% 0%, rgba(245, 205, 112, 0.12), transparent 34rem);
+    background-size: 56px 56px, 56px 56px, auto;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent 86%);
+    opacity: 0.74;
+  }
+
+  .qh-content-layer {
+    position: relative;
+    z-index: 1;
+  }
+
+  .qh-top-panel {
+    position: relative;
+    overflow: hidden;
+    background-image:
+      linear-gradient(90deg, rgba(3, 5, 10, 0.72), rgba(4, 7, 13, 0.56) 50%, rgba(3, 5, 10, 0.76)),
+      var(--qh-top-panel-image);
+    background-position: center 46%;
+    background-size: cover;
+  }
+
+  .qh-top-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at var(--qh-pointer-x) 50%, rgba(245, 205, 112, 0.22), transparent 16rem),
+      linear-gradient(90deg, transparent, rgba(66, 232, 255, 0.08), transparent);
+    opacity: 0.9;
+  }
+
+  .qh-top-panel > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .qh-cursor-reactor {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at var(--qh-pointer-x) var(--qh-pointer-y), rgba(66, 232, 255, 0.16), transparent 9rem),
+      radial-gradient(circle at var(--qh-pointer-x) var(--qh-pointer-y), rgba(245, 205, 112, 0.1), transparent 16rem);
+    opacity: 0.9;
+  }
+
+  .qh-live-circuit {
+    position: fixed;
+    z-index: 0;
+    pointer-events: none;
+    width: 13rem;
+    height: 13rem;
+    opacity: 0.3;
+    border-radius: 2rem;
+    border: 1px solid rgba(245, 205, 112, 0.16);
+    background:
+      linear-gradient(90deg, transparent 49%, rgba(245, 205, 112, 0.34) 50%, transparent 51%),
+      linear-gradient(0deg, transparent 49%, rgba(66, 232, 255, 0.2) 50%, transparent 51%);
+    box-shadow: inset 0 0 28px rgba(66, 232, 255, 0.1), 0 0 36px rgba(245, 205, 112, 0.08);
+    animation: qh-panel-breathe 7s cubic-bezier(0.32, 0.72, 0, 1) infinite alternate;
+  }
+
+  .qh-live-circuit::before,
+  .qh-live-circuit::after {
+    content: "";
+    position: absolute;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 0.7rem;
+    border: 1px solid rgba(245, 205, 112, 0.28);
+    background: rgba(5, 8, 13, 0.86);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 0 26px rgba(245, 205, 112, 0.18);
+  }
+
+  .qh-live-circuit::before {
+    left: 1.2rem;
+    top: 1.4rem;
+  }
+
+  .qh-live-circuit::after {
+    right: 1.4rem;
+    bottom: 1.2rem;
+  }
+
+  .qh-live-circuit-a {
+    right: 5vw;
+    top: 14vh;
+    transform: rotate(12deg);
+  }
+
+  .qh-live-circuit-b {
+    left: 18vw;
+    bottom: 8vh;
+    width: 9rem;
+    height: 9rem;
+    opacity: 0.2;
+    transform: rotate(-18deg);
+  }
+
+  @keyframes qh-panel-breathe {
+    from {
+      opacity: 0.16;
+      transform: translate3d(0, 0, 0) rotate(8deg) scale(0.98);
+    }
+    to {
+      opacity: 0.36;
+      transform: translate3d(0, -8px, 0) rotate(12deg) scale(1.02);
+    }
+  }
+
+  .glass-panel {
+    @apply relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-qh-card/84 shadow-[0_24px_80px_rgba(0,0,0,0.42)] ring-1 ring-qh-gold/10;
+    background-image:
+      linear-gradient(135deg, rgba(3, 6, 12, 0.82), rgba(9, 15, 25, 0.72)),
+      var(--qh-card-texture);
+    background-position: center;
+    background-size: cover;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      inset 0 0 0 1px rgba(245, 205, 112, 0.04),
+      0 24px 80px rgba(0, 0, 0, 0.42);
+    transition: transform 650ms cubic-bezier(0.32, 0.72, 0, 1), border-color 650ms cubic-bezier(0.32, 0.72, 0, 1), box-shadow 650ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .glass-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(245, 205, 112, 0.38), rgba(66, 232, 255, 0.08), rgba(245, 205, 112, 0.18));
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  .glass-panel:hover {
+    border-color: rgba(66, 232, 255, 0.22);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 0 0 1px rgba(245, 205, 112, 0.08),
+      0 28px 90px rgba(0, 0, 0, 0.48),
+      0 0 34px rgba(66, 232, 255, 0.08),
+      0 0 24px rgba(245, 205, 112, 0.06);
+  }
+
+  .glass-button {
+    @apply px-3 py-1.5 bg-slate-950/70 hover:bg-slate-900/90 border border-white/10 hover:border-qh-gold/50 rounded-full flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-300 hover:text-qh-gold shadow-[0_0_10px_rgba(0,0,0,0.45)] hover:shadow-[0_0_22px_rgba(245,205,112,0.16)] active:scale-[0.98];
+    transition: transform 650ms cubic-bezier(0.32, 0.72, 0, 1), border-color 650ms cubic-bezier(0.32, 0.72, 0, 1), color 650ms cubic-bezier(0.32, 0.72, 0, 1), background-color 650ms cubic-bezier(0.32, 0.72, 0, 1), box-shadow 650ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .glass-input {
+    @apply w-full bg-slate-950/70 border border-white/10 rounded-2xl px-3 py-2 text-xs focus:outline-none focus:border-qh-cyan focus:ring-1 focus:ring-qh-cyan/50 text-slate-200 placeholder:text-slate-600;
+    transition: border-color 650ms cubic-bezier(0.32, 0.72, 0, 1), box-shadow 650ms cubic-bezier(0.32, 0.72, 0, 1), background-color 650ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  
+  .premium-border {
+    @apply relative before:absolute before:inset-0 before:-z-10 before:p-[1px] before:bg-gradient-to-b before:from-qh-gold/40 before:to-transparent before:rounded-[1.5rem];
+  }
+
+  .qh-stat-card {
+    @apply relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-slate-950/70 p-4 ring-1 ring-qh-gold/10;
+    background-image:
+      linear-gradient(135deg, rgba(2, 4, 8, 0.84), rgba(9, 14, 22, 0.74)),
+      var(--qh-card-texture);
+    background-position: center;
+    background-size: cover;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 18px 50px rgba(0, 0, 0, 0.32);
+    transition: transform 650ms cubic-bezier(0.32, 0.72, 0, 1), border-color 650ms cubic-bezier(0.32, 0.72, 0, 1), box-shadow 650ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .qh-stat-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(145deg, rgba(245, 205, 112, 0.45), rgba(66, 232, 255, 0.12), rgba(255, 255, 255, 0.04));
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .qh-stat-card:hover {
+    transform: translate3d(0, -3px, 0);
+    border-color: rgba(245, 205, 112, 0.24);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 26px 70px rgba(0, 0, 0, 0.38), 0 0 28px rgba(66, 232, 255, 0.09);
+  }
+
+  .qh-stat-card::after {
+    content: "";
+    position: absolute;
+    inset: auto -10% -42% 26%;
+    height: 88px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(66, 232, 255, 0.16), transparent 68%);
+  }
+
+  .qh-hero-card {
+    @apply relative overflow-hidden rounded-[2rem] border border-white/10 bg-qh-card/80 p-5 md:p-7 ring-1 ring-qh-gold/15;
+    background-image:
+      linear-gradient(110deg, rgba(3, 5, 10, 0.74), rgba(5, 12, 21, 0.6) 48%, rgba(3, 5, 10, 0.68)),
+      var(--qh-top-panel-image);
+    background-position: center, var(--qh-bg-position);
+    background-size: cover;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 26px 90px rgba(0, 0, 0, 0.46);
+  }
+
+  .qh-hero-card::before {
+    content: "";
+    position: absolute;
+    width: 22rem;
+    height: 22rem;
+    right: -8rem;
+    top: -10rem;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(245, 205, 112, 0.2), transparent 68%);
+  }
+
+  .qh-hero-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(66, 232, 255, 0.055), transparent);
+    opacity: 0.8;
+  }
+}
