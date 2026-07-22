@@ -56,3 +56,27 @@ export function buildDominusContextPack(input: BuildDominusContextInput) {
 
   return { prompt, memoryProposalInstruction };
 }
+
+export interface MemoryProposal {
+  title: string;
+  content: string;
+  type: string;
+  importance: string;
+  tags: string[];
+}
+
+export function extractMemoryProposal(rawText: string): { text: string; memoryProposal?: MemoryProposal } {
+  const jsonBlock = rawText.match(/```json\s*([\s\S]*?)```/i);
+  if (!jsonBlock) return { text: rawText };
+
+  try {
+    const parsed = JSON.parse(jsonBlock[1]);
+    if (!parsed.memoryProposal) return { text: rawText };
+    return {
+      text: rawText.replace(jsonBlock[0], '').trim(),
+      memoryProposal: parsed.memoryProposal,
+    };
+  } catch {
+    return { text: rawText };
+  }
+}
