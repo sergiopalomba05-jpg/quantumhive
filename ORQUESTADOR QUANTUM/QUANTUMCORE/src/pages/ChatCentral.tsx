@@ -93,7 +93,7 @@ export function ChatCentral() {
   const [isThinking, setIsThinking] = useState(false);
   const [useHighThinking, setUseHighThinking] = useState(false);
   const [brainMode, setBrainMode] = useState<BrainMode>('auto');
-  const [selectedModelId, setSelectedModelId] = useState('gemini-3.5-flash');
+  const [selectedModelId, setSelectedModelId] = useState('gemini-2.5-flash');
   const [lastBrainMeta, setLastBrainMeta] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -127,7 +127,7 @@ export function ChatCentral() {
         body: JSON.stringify({
           message: userMsg,
           brainMode,
-          modelId: useHighThinking ? 'gemini-3.1-pro-preview' : selectedModelId,
+          modelId: useHighThinking ? 'gemini-2.5-pro' : selectedModelId,
         })
       });
       
@@ -262,9 +262,9 @@ export function ChatCentral() {
               onClick={() => {
                 const next = !useHighThinking;
                 setUseHighThinking(next);
-                if (next) setSelectedModelId('gemini-3.1-pro-preview');
+                if (next) setSelectedModelId('gemini-2.5-pro');
               }}
-              title="Toggle High Thinking Mode (gemini-3.1-pro-preview)"
+              title="Toggle High Thinking Mode (gemini-2.5-pro)"
             >
               <BrainCircuit size={12}/> Thinking Mode
             </button>
@@ -296,7 +296,7 @@ export function ChatCentral() {
                 key={model.id}
                 onClick={() => {
                   setSelectedModelId(model.id);
-                  setUseHighThinking(model.id === 'gemini-3.1-pro-preview');
+                  setUseHighThinking(model.id === 'gemini-2.5-pro');
                   if (brainMode === 'auto') setBrainMode('manual');
                 }}
                 className={cn(

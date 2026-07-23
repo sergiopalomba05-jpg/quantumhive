@@ -83,8 +83,8 @@ La UI puede mostrar cerebros favoritos aunque solo Gemini este conectado realmen
 
 Catalogo inicial sugerido:
 
-- `gemini-3.5-flash`: disponible, proveedor `vertex`, recomendado para contexto y uso general
-- `gemini-3.1-pro-preview`: disponible, proveedor `vertex`, recomendado para thinking alto
+- `gemini-2.5-flash`: disponible, proveedor `vertex`, recomendado para contexto y uso general
+- `gemini-2.5-pro`: disponible, proveedor `vertex`, recomendado para thinking alto
 - `gpt-chat-latest`: no conectado, proveedor futuro `openai`, recomendado para planificacion
 - `claude-sonnet-5`: no conectado, proveedor futuro `anthropic`, recomendado para codigo
 - `kimi-k2.6`: no conectado, proveedor futuro `kimi`, recomendado para codigo largo/alternativo
@@ -105,7 +105,7 @@ Request:
 {
   "message": "texto del usuario",
   "brainMode": "auto | manual | council",
-  "modelId": "gemini-3.5-flash"
+  "modelId": "gemini-2.5-flash"
 }
 ```
 
@@ -117,7 +117,7 @@ Response:
   "brain": {
     "mode": "manual",
     "requestedModelId": "claude-sonnet-5",
-    "usedModelId": "gemini-3.5-flash",
+    "usedModelId": "gemini-2.5-flash",
     "provider": "vertex",
     "fallbackUsed": true,
     "fallbackReason": "Modelo elegido todavia no conectado"

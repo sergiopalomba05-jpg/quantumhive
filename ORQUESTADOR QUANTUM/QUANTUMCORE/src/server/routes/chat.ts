@@ -9,12 +9,12 @@ import { buildDominusContextPack, extractMemoryProposal } from "../../core/domin
 
 export const chatRouter = Router();
 
-// 1. Google Search Data (gemini-3.5-flash)
+// 1. Google Search Data (gemini-2.5-flash)
 chatRouter.post("/chat", async (req, res) => {
   try {
     const { message } = req.body;
     const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
+      model: "gemini-2.5-flash",
       contents: message,
       config: {
         tools: [{ googleSearch: {} }],
@@ -30,12 +30,12 @@ chatRouter.post("/chat", async (req, res) => {
   }
 });
 
-// 2. High Thinking (gemini-3.1-pro-preview)
+// 2. High Thinking (gemini-2.5-pro)
 chatRouter.post("/think", async (req, res) => {
   try {
     const { message } = req.body;
     const response = await ai.models.generateContent({
-      model: "gemini-3.1-pro-preview",
+      model: "gemini-2.5-pro",
       contents: message,
       config: {
         thinkingConfig: { thinkingLevel: ThinkingLevel.HIGH },
@@ -90,7 +90,7 @@ chatRouter.post("/agents/:agentId/chat", async (req, res) => {
       message,
     });
 
-    const config = brain.usedModelId === "gemini-3.5-flash" ? { tools: [{ googleSearch: {} }] } : undefined;
+    const config = brain.usedModelId === "gemini-2.5-flash" ? { tools: [{ googleSearch: {} }] } : undefined;
     const response = await ai.models.generateContent({
       model: brain.usedModelId,
       contents: context.prompt,

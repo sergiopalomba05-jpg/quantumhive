@@ -15,7 +15,7 @@
 - Memory proposals are returned and shown, but never saved automatically.
 - `ChatCentral` must send `agentId`, `brainMode`, `modelId`, and `message` to the backend.
 - The backend must load agent, memories, system core doc, and constitution doc before calling the model.
-- If a requested model is not connected, fallback to `gemini-3.5-flash` and report the fallback.
+- If a requested model is not connected, fallback to `gemini-2.5-flash` and report the fallback.
 - Keep changes minimal and do not build billing, Agent Builder model assignment, avatar live, VM manager, or real council mode now.
 
 ---
@@ -53,10 +53,10 @@ import { BRAIN_MODELS, resolveBrainSelection } from '../src/core/brainRouter';
 
 describe('brain router', () => {
   it('uses a connected Gemini model when requested manually', () => {
-    const result = resolveBrainSelection({ brainMode: 'manual', modelId: 'gemini-3.1-pro-preview', message: 'analiza este contexto' });
+    const result = resolveBrainSelection({ brainMode: 'manual', modelId: 'gemini-2.5-pro', message: 'analiza este contexto' });
 
-    assert.equal(result.requestedModelId, 'gemini-3.1-pro-preview');
-    assert.equal(result.usedModelId, 'gemini-3.1-pro-preview');
+    assert.equal(result.requestedModelId, 'gemini-2.5-pro');
+    assert.equal(result.usedModelId, 'gemini-2.5-pro');
     assert.equal(result.provider, 'vertex');
     assert.equal(result.fallbackUsed, false);
   });
@@ -65,7 +65,7 @@ describe('brain router', () => {
     const result = resolveBrainSelection({ brainMode: 'manual', modelId: 'claude-sonnet-5', message: 'escribi codigo' });
 
     assert.equal(result.requestedModelId, 'claude-sonnet-5');
-    assert.equal(result.usedModelId, 'gemini-3.5-flash');
+    assert.equal(result.usedModelId, 'gemini-2.5-flash');
     assert.equal(result.provider, 'vertex');
     assert.equal(result.fallbackUsed, true);
     assert.match(result.fallbackReason || '', /todavia no conectado/i);
@@ -74,7 +74,7 @@ describe('brain router', () => {
   it('recommends code-capable catalog entries without forcing them in auto mode', () => {
     const result = resolveBrainSelection({ brainMode: 'auto', message: 'revisa este codigo y escribi el fix' });
 
-    assert.equal(result.usedModelId, 'gemini-3.5-flash');
+    assert.equal(result.usedModelId, 'gemini-2.5-flash');
     assert.equal(result.recommendedModelId, 'claude-sonnet-5');
     assert.equal(result.fallbackUsed, true);
   });
@@ -129,12 +129,12 @@ export interface ResolvedBrainSelection {
   recommendedModelId: string;
 }
 
-export const DEFAULT_CONNECTED_MODEL_ID = 'gemini-3.5-flash';
+export const DEFAULT_CONNECTED_MODEL_ID = 'gemini-2.5-flash';
 
 export const BRAIN_MODELS: BrainModelDefinition[] = [
   {
-    id: 'gemini-3.5-flash',
-    displayName: 'Gemini 3.5 Flash',
+    id: 'gemini-2.5-flash',
+    displayName: 'Gemini 2.5 Flash',
     provider: 'vertex',
     status: 'available',
     icon: 'gemini',
@@ -142,8 +142,8 @@ export const BRAIN_MODELS: BrainModelDefinition[] = [
     description: 'Cerebro conectado inicial para contexto, chat general y fallback.',
   },
   {
-    id: 'gemini-3.1-pro-preview',
-    displayName: 'Gemini 3.1 Pro',
+    id: 'gemini-2.5-pro',
+    displayName: 'Gemini 2.5 Pro',
     provider: 'vertex',
     status: 'available',
     icon: 'gemini',
@@ -515,7 +515,7 @@ chatRouter.post('/agents/:agentId/chat', async (req, res) => {
     const response = await ai.models.generateContent({
       model: brain.usedModelId,
       contents: context.prompt,
-      config: brain.usedModelId === 'gemini-3.5-flash' ? { tools: [{ googleSearch: {} }] } : undefined,
+      config: brain.usedModelId === 'gemini-2.5-flash' ? { tools: [{ googleSearch: {} }] } : undefined,
     });
 
     const extracted = extractMemoryProposal(response.text || '');
@@ -565,7 +565,7 @@ Add state near existing state declarations:
 
 ```ts
 const [brainMode, setBrainMode] = useState<BrainMode>('auto');
-const [selectedModelId, setSelectedModelId] = useState('gemini-3.5-flash');
+const [selectedModelId, setSelectedModelId] = useState('gemini-2.5-flash');
 const [lastBrainMeta, setLastBrainMeta] = useState<any>(null);
 ```
 

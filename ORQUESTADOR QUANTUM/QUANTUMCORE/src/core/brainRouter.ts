@@ -27,12 +27,12 @@ export interface ResolvedBrainSelection {
   recommendedModelId: string;
 }
 
-export const DEFAULT_CONNECTED_MODEL_ID = 'gemini-3.5-flash';
+export const DEFAULT_CONNECTED_MODEL_ID = 'gemini-2.5-flash';
 
 export const BRAIN_MODELS: BrainModelDefinition[] = [
   {
-    id: 'gemini-3.5-flash',
-    displayName: 'Gemini 3.5 Flash',
+    id: 'gemini-2.5-flash',
+    displayName: 'Gemini 2.5 Flash',
     provider: 'vertex',
     status: 'available',
     icon: 'gemini',
@@ -40,8 +40,8 @@ export const BRAIN_MODELS: BrainModelDefinition[] = [
     description: 'Cerebro conectado inicial para contexto, chat general y fallback.',
   },
   {
-    id: 'gemini-3.1-pro-preview',
-    displayName: 'Gemini 3.1 Pro',
+    id: 'gemini-2.5-pro',
+    displayName: 'Gemini 2.5 Pro',
     provider: 'vertex',
     status: 'available',
     icon: 'gemini',
