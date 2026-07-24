@@ -1,22 +1,39 @@
-export type ProviderStatus = 'connected' | 'pending' | 'requires_enablement';
-export type ModelConnectionStatus = 'verified' | 'candidate' | 'catalog_only';
+export type ProviderKind = 'api' | 'cloud' | 'browser' | 'headless' | 'local';
+export type ProviderVendor = 'openai' | 'anthropic' | 'google' | 'azure' | 'aws' | 'openrouter' | 'ollama';
+export type ProviderRuntimeStatus =
+  | 'connected'
+  | 'needs_secret'
+  | 'requires_runner'
+  | 'needs_login'
+  | 'limit_reached'
+  | 'disabled'
+  | 'failed';
+export type ProviderStatus = ProviderRuntimeStatus;
+export type ModelConnectionStatus = 'verified' | 'candidate' | 'catalog_only' | 'requires_runner' | 'needs_secret';
 
 export interface ProviderModelDefinition {
   id: string;
   displayName: string;
-  family: 'gemini' | 'gemma' | 'third_party' | 'azure_deployment' | 'nim';
+  providerId?: string;
+  family: 'gemini' | 'gpt' | 'claude' | 'openrouter' | 'bedrock' | 'gemma' | 'third_party' | 'azure_deployment' | 'nim' | 'ollama';
   connectionStatus: ModelConnectionStatus;
   routerReady: boolean;
   capabilities: string[];
+  recommendedFor?: string[];
   notes: string;
 }
 
-export interface ProviderRegistryItem {
+export interface ProviderDefinition {
   id: string;
   name: string;
-  status: ProviderStatus;
+  kind: ProviderKind;
+  vendor: ProviderVendor;
+  status: ProviderRuntimeStatus;
   runtime: string;
   secretRef: string;
+  hasSecret: boolean;
+  priority: number;
+  costTier: 'free' | 'low' | 'medium' | 'high' | 'unknown';
   models: ProviderModelDefinition[];
   notes: string;
 }
@@ -105,25 +122,277 @@ export const GCP_VERTEX_MODELS: ProviderModelDefinition[] = [
   },
 ];
 
-export function getProviderRegistry(): ProviderRegistryItem[] {
+const API_SECRET_ENV_KEYS: Record<string, string> = {
+  'openai-api': 'OPENAI_API_KEY',
+  'anthropic-api': 'ANTHROPIC_API_KEY',
+  'openrouter-api': 'OPENROUTER_API_KEY',
+};
+
+const hasEnvSecret = (env: NodeJS.ProcessEnv, key: string) => Boolean(env[key]?.trim());
+
+export function getProviderTemplates(): ProviderDefinition[] {
   return [
     {
       id: 'gcp-vertex-ai',
       name: 'Google Cloud Vertex AI',
+      kind: 'cloud',
+      vendor: 'google',
       status: 'connected',
       runtime: 'Cloud Run service account / Vertex AI',
       secretRef: 'gcp-runtime-identity',
-      models: GCP_VERTEX_MODELS,
-      notes: 'Proveedor principal. Solo los modelos verificados se usan automaticamente en Dominus.',
+      hasSecret: true,
+      priority: 40,
+      costTier: 'low',
+      models: GCP_VERTEX_MODELS.map((model) => ({ ...model, providerId: 'gcp-vertex-ai' })),
+      notes: 'Proveedor principal actual. Vertex usa identidad de Cloud Run.',
     },
     {
-      id: 'azure-openai',
-      name: 'Azure OpenAI',
-      status: 'pending',
-      runtime: 'Azure deployments',
-      secretRef: 'AZURE_OPENAI_CONFIG',
-      models: [],
-      notes: 'Siguiente proveedor: los modelos reales dependen de deployments del recurso Azure.',
+      id: 'openai-api',
+      name: 'OpenAI API',
+      kind: 'api',
+      vendor: 'openai',
+      status: 'needs_secret',
+      runtime: 'OpenAI Responses/Chat API',
+      secretRef: 'openai-server-secret',
+      hasSecret: false,
+      priority: 10,
+      costTier: 'medium',
+      models: [
+        {
+          id: 'gpt-5.5',
+          displayName: 'GPT-5.5',
+          providerId: 'openai-api',
+          family: 'gpt',
+          connectionStatus: 'needs_secret',
+          routerReady: false,
+          capabilities: ['text', 'code', 'reasoning'],
+          recommendedFor: ['code', 'reasoning'],
+          notes: 'Disponible cuando el secreto server-side de OpenAI este configurado.',
+        },
+        {
+          id: 'gpt-5.5-mini',
+          displayName: 'GPT-5.5 Mini',
+          providerId: 'openai-api',
+          family: 'gpt',
+          connectionStatus: 'needs_secret',
+          routerReady: false,
+          capabilities: ['text', 'fast'],
+          recommendedFor: ['fast', 'low_cost'],
+          notes: 'Modelo rapido cuando el secreto server-side de OpenAI este configurado.',
+        },
+      ],
+      notes: 'API oficial de OpenAI. No usa el plan web de ChatGPT.',
+    },
+    {
+      id: 'anthropic-api',
+      name: 'Anthropic API',
+      kind: 'api',
+      vendor: 'anthropic',
+      status: 'needs_secret',
+      runtime: 'Anthropic Messages API',
+      secretRef: 'anthropic-server-secret',
+      hasSecret: false,
+      priority: 20,
+      costTier: 'high',
+      models: [
+        {
+          id: 'claude-sonnet-5',
+          displayName: 'Claude Sonnet 5',
+          providerId: 'anthropic-api',
+          family: 'claude',
+          connectionStatus: 'needs_secret',
+          routerReady: false,
+          capabilities: ['text', 'code', 'reasoning'],
+          recommendedFor: ['code', 'architecture'],
+          notes: 'Disponible cuando el secreto server-side de Anthropic este configurado.',
+        },
+      ],
+      notes: 'API oficial de Anthropic. Distinto de Claude Pro browser.',
+    },
+    {
+      id: 'openrouter-api',
+      name: 'OpenRouter',
+      kind: 'api',
+      vendor: 'openrouter',
+      status: 'needs_secret',
+      runtime: 'OpenAI-compatible OpenRouter API',
+      secretRef: 'openrouter-server-secret',
+      hasSecret: false,
+      priority: 30,
+      costTier: 'unknown',
+      models: [
+        {
+          id: 'openrouter/auto',
+          displayName: 'OpenRouter Auto',
+          providerId: 'openrouter-api',
+          family: 'openrouter',
+          connectionStatus: 'needs_secret',
+          routerReady: false,
+          capabilities: ['text', 'router'],
+          recommendedFor: ['fallback'],
+          notes: 'Enruta desde OpenRouter cuando el secreto server-side exista.',
+        },
+      ],
+      notes: 'Proveedor multi-modelo compatible con OpenAI API.',
+    },
+    {
+      id: 'chatgpt-plus-browser',
+      name: 'ChatGPT Pro/Plus Browser',
+      kind: 'browser',
+      vendor: 'openai',
+      status: 'requires_runner',
+      runtime: 'Personal browser session through future runner',
+      secretRef: 'runner-session-only',
+      hasSecret: false,
+      priority: 50,
+      costTier: 'unknown',
+      models: [
+        {
+          id: 'chatgpt-plan-auto',
+          displayName: 'ChatGPT Plan Auto',
+          providerId: 'chatgpt-plus-browser',
+          family: 'gpt',
+          connectionStatus: 'requires_runner',
+          routerReady: false,
+          capabilities: ['text', 'code', 'reasoning'],
+          recommendedFor: ['personal_plan'],
+          notes: 'Requiere runner local/VM para usar sesion browser.',
+        },
+      ],
+      notes: 'Aparece en el menu, pero no se ejecuta desde Cloud Run.',
+    },
+    {
+      id: 'chatgpt-plus-headless',
+      name: 'ChatGPT Pro/Plus Headless',
+      kind: 'headless',
+      vendor: 'openai',
+      status: 'requires_runner',
+      runtime: 'Personal headless session through future runner',
+      secretRef: 'runner-session-only',
+      hasSecret: false,
+      priority: 55,
+      costTier: 'unknown',
+      models: [
+        {
+          id: 'chatgpt-headless-auto',
+          displayName: 'ChatGPT Headless Auto',
+          providerId: 'chatgpt-plus-headless',
+          family: 'gpt',
+          connectionStatus: 'requires_runner',
+          routerReady: false,
+          capabilities: ['text', 'code', 'reasoning'],
+          recommendedFor: ['personal_plan'],
+          notes: 'Requiere runner local/VM para usar sesion headless.',
+        },
+      ],
+      notes: 'Modo futuro para planes personales sin ventana visible.',
+    },
+    {
+      id: 'claude-pro-browser',
+      name: 'Claude Pro Browser',
+      kind: 'browser',
+      vendor: 'anthropic',
+      status: 'requires_runner',
+      runtime: 'Personal browser session through future runner',
+      secretRef: 'runner-session-only',
+      hasSecret: false,
+      priority: 60,
+      costTier: 'unknown',
+      models: [
+        {
+          id: 'claude-plan-auto',
+          displayName: 'Claude Plan Auto',
+          providerId: 'claude-pro-browser',
+          family: 'claude',
+          connectionStatus: 'requires_runner',
+          routerReady: false,
+          capabilities: ['text', 'code', 'reasoning'],
+          recommendedFor: ['personal_plan'],
+          notes: 'Requiere runner local/VM para usar Claude Pro.',
+        },
+      ],
+      notes: 'Aparece en el menu, pero no se ejecuta desde Cloud Run.',
+    },
+    {
+      id: 'claude-pro-headless',
+      name: 'Claude Pro Headless',
+      kind: 'headless',
+      vendor: 'anthropic',
+      status: 'requires_runner',
+      runtime: 'Personal headless session through future runner',
+      secretRef: 'runner-session-only',
+      hasSecret: false,
+      priority: 65,
+      costTier: 'unknown',
+      models: [
+        {
+          id: 'claude-headless-auto',
+          displayName: 'Claude Headless Auto',
+          providerId: 'claude-pro-headless',
+          family: 'claude',
+          connectionStatus: 'requires_runner',
+          routerReady: false,
+          capabilities: ['text', 'code', 'reasoning'],
+          recommendedFor: ['personal_plan'],
+          notes: 'Requiere runner local/VM para usar Claude headless.',
+        },
+      ],
+      notes: 'Modo futuro para planes personales sin ventana visible.',
+    },
+    {
+      id: 'ollama-vm',
+      name: 'Ollama / VM Local',
+      kind: 'local',
+      vendor: 'ollama',
+      status: 'requires_runner',
+      runtime: 'Future VM/local runner',
+      secretRef: 'runner-endpoint',
+      hasSecret: false,
+      priority: 90,
+      costTier: 'free',
+      models: [
+        {
+          id: 'ollama-auto',
+          displayName: 'Ollama Auto',
+          providerId: 'ollama-vm',
+          family: 'ollama',
+          connectionStatus: 'requires_runner',
+          routerReady: false,
+          capabilities: ['text', 'local'],
+          recommendedFor: ['local_models'],
+          notes: 'Requiere runner conectado a una VM/local.',
+        },
+      ],
+      notes: 'Reservado para runners locales/VM.',
     },
   ];
+}
+
+export function getProviderRegistry(env: NodeJS.ProcessEnv = process.env): ProviderDefinition[] {
+  return getProviderTemplates().map((provider) => {
+    if (provider.kind !== 'api') return provider;
+
+    const envKey = API_SECRET_ENV_KEYS[provider.id];
+    const hasSecret = envKey ? hasEnvSecret(env, envKey) : false;
+    if (!hasSecret) return provider;
+
+    return {
+      ...provider,
+      hasSecret: true,
+      status: 'connected',
+      models: provider.models.map((model) => ({
+        ...model,
+        connectionStatus: 'verified',
+        routerReady: true,
+      })),
+    };
+  });
+}
+
+export function findProviderModel(providerId: string, modelId: string, env: NodeJS.ProcessEnv = process.env) {
+  const provider = getProviderRegistry(env).find((item) => item.id === providerId);
+  const model = provider?.models.find((item) => item.id === modelId);
+
+  if (!provider || !model) return undefined;
+  return { provider, model };
 }
