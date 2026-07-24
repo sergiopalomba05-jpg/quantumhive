@@ -10,6 +10,24 @@ import { BRAIN_MODELS, type BrainMode, type BrainModelStatus } from '../core/bra
 
 type ReasoningLevel = 'normal' | 'high';
 
+type ChatProviderModel = {
+  id: string;
+  displayName: string;
+};
+
+type ChatProvider = {
+  id: string;
+  name: string;
+  models: ChatProviderModel[];
+};
+
+type ChatRepo = {
+  id: string;
+  owner?: string;
+  name: string;
+  active?: boolean;
+};
+
 const getBrainCardStyle = (status: BrainModelStatus): CSSProperties => {
   const accent = status === 'available' ? '16, 185, 129' : '245, 158, 11';
   const accentStrong = status === 'available' ? '52, 211, 153' : '251, 191, 36';
@@ -140,6 +158,10 @@ export function ChatCentral() {
   const [brainMode, setBrainMode] = useState<BrainMode>('auto');
   const [reasoningLevel, setReasoningLevel] = useState<ReasoningLevel>('normal');
   const [selectedModelId, setSelectedModelId] = useState('gemini-2.5-flash');
+  const [selectedProviderId, setSelectedProviderId] = useState('gcp-vertex-ai');
+  const [selectedRepoId, setSelectedRepoId] = useState('');
+  const [providers, setProviders] = useState<ChatProvider[]>([]);
+  const [repos, setRepos] = useState<ChatRepo[]>([]);
   const [vsModelIds, setVsModelIds] = useState(['gemini-2.5-flash', 'gemini-2.5-pro']);
   const [lastBrainMeta, setLastBrainMeta] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -150,8 +172,16 @@ export function ChatCentral() {
   const agentMessages = store.chatMessages.filter(m => m.agentId === selectedAgentId);
   const filteredAgents = store.agents.filter(a => a.name.toLowerCase().includes(searchTerm.toLowerCase()));
   const maxVsBrains = 2;
+  const selectedProvider = providers.find(provider => provider.id === selectedProviderId);
+  const selectedProviderModels = selectedProvider?.models || [];
 
   const selectBrainModel = (modelId: string) => {
+    const providerForModel = providers.find(provider => provider.models.some(model => model.id === modelId));
+
+    if (providerForModel) {
+      setSelectedProviderId(providerForModel.id);
+    }
+
     setSelectedModelId(modelId);
 
     if (brainMode === 'auto') {
@@ -172,6 +202,31 @@ export function ChatCentral() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [agentMessages, isThinking, selectedAgentId]);
+
+  useEffect(() => {
+    fetch('/api/providers')
+      .then((response) => response.json())
+      .then((data) => {
+        const nextProviders = data.providers || [];
+        setProviders(nextProviders);
+        const currentProvider = nextProviders.find((provider: ChatProvider) => provider.id === selectedProviderId);
+        if (!currentProvider && nextProviders[0]) {
+          setSelectedProviderId(nextProviders[0].id);
+          setSelectedModelId(nextProviders[0].models[0]?.id || selectedModelId);
+        }
+      })
+      .catch(() => setProviders([]));
+
+    fetch('/api/github/repos')
+      .then((response) => response.json())
+      .then((data) => {
+        const nextRepos = data.repos || [];
+        setRepos(nextRepos);
+        const activeRepo = nextRepos.find((repo: ChatRepo) => repo.active) || nextRepos[0];
+        if (activeRepo) setSelectedRepoId(activeRepo.id);
+      })
+      .catch(() => setRepos([]));
+  }, []);
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -204,6 +259,8 @@ export function ChatCentral() {
           brainMode,
           reasoningLevel,
           modelId: reasoningLevel === 'high' ? 'gemini-2.5-pro' : selectedModelId,
+          providerId: selectedProviderId,
+          repoId: selectedRepoId || undefined,
           vsModelIds: brainMode === 'vs_2' ? vsModelIds : undefined,
         })
       });
@@ -273,7 +330,7 @@ export function ChatCentral() {
             <SearchIcon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
             <input
               type="text"
-              placeholder="Search conversations..."
+              placeholder="Buscar conversaciones..."
               className="w-full rounded-xl border border-white/10 bg-slate-950/45 py-2 pl-9 pr-3 font-mono text-xs text-slate-300 outline-none transition-colors placeholder:text-slate-600 focus:border-qh-cyan/60"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
@@ -345,6 +402,51 @@ export function ChatCentral() {
               >
                 <option value="normal">Esfuerzo de pensamiento: Normal</option>
                 <option value="high">Esfuerzo de pensamiento: Alto</option>
+              </select>
+            </label>
+            <label className="brain-mode-toggle" aria-label="Proveedor">
+              <select
+                className="brain-mode-dropdown"
+                value={selectedProviderId}
+                onChange={(event) => {
+                  const nextProviderId = event.target.value;
+                  const nextProvider = providers.find(provider => provider.id === nextProviderId);
+                  setSelectedProviderId(nextProviderId);
+                  setSelectedModelId(nextProvider?.models[0]?.id || selectedModelId);
+                  if (brainMode === 'auto') setBrainMode('manual');
+                }}
+              >
+                {providers.length === 0 && <option value="gcp-vertex-ai">Vertex AI</option>}
+                {providers.map((provider) => (
+                  <option key={provider.id} value={provider.id}>{provider.name}</option>
+                ))}
+              </select>
+            </label>
+            <label className="brain-mode-toggle" aria-label="Modelo">
+              <select
+                className="reasoning-level-dropdown"
+                value={selectedModelId}
+                onChange={(event) => {
+                  setSelectedModelId(event.target.value);
+                  if (brainMode === 'auto') setBrainMode('manual');
+                }}
+              >
+                {selectedProviderModels.length === 0 && <option value={selectedModelId}>{selectedModelId}</option>}
+                {selectedProviderModels.map((model) => (
+                  <option key={model.id} value={model.id}>{model.displayName}</option>
+                ))}
+              </select>
+            </label>
+            <label className="brain-mode-toggle" aria-label="Repo GitHub">
+              <select
+                className="reasoning-level-dropdown"
+                value={selectedRepoId}
+                onChange={(event) => setSelectedRepoId(event.target.value)}
+              >
+                <option value="">Sin repo</option>
+                {repos.map((repo) => (
+                  <option key={repo.id} value={repo.id}>{repo.owner ? `${repo.owner}/${repo.name}` : repo.name}</option>
+                ))}
               </select>
             </label>
             <div className="brain-model-row header-brain-model-row flex gap-2 overflow-x-auto">
