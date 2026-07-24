@@ -6,6 +6,8 @@ import { supabase } from "../../core/providers/supabase";
 import { ThinkingLevel } from "@google/genai";
 import { BRAIN_MODELS, resolveBrainSelection, resolveVsBrainSelection } from "../../core/brainRouter";
 import { buildDominusContextPack, extractMemoryProposal } from "../../core/dominusContext";
+import { resolveProviderSelection } from "../../core/providerRouter";
+import { generateWithProvider } from "../../core/providerClients";
 
 export const chatRouter = Router();
 
@@ -52,7 +54,7 @@ chatRouter.post("/think", async (req, res) => {
 chatRouter.post("/agents/:agentId/chat", async (req, res) => {
   try {
     const { agentId } = req.params;
-    const { message, brainMode, modelId, vsModelIds } = req.body;
+    const { message, brainMode, modelId, vsModelIds, providerId, repoId } = req.body;
 
     if (!message || typeof message !== "string") {
       res.status(400).json({ error: "message is required" });
@@ -123,15 +125,27 @@ chatRouter.post("/agents/:agentId/chat", async (req, res) => {
       return;
     }
 
-    const config = brain.usedModelId === "gemini-2.5-flash" ? { tools: [{ googleSearch: {} }] } : undefined;
-    const response = await ai.models.generateContent({
-      model: brain.usedModelId,
-      contents: context.prompt,
-      ...(config ? { config } : {}),
+    const providerSelection = resolveProviderSelection({ brainMode, providerId, modelId, repoId, message });
+    const response = await generateWithProvider({
+      selection: providerSelection,
+      prompt: context.prompt,
     });
 
     const extracted = extractMemoryProposal(response.text || "");
-    res.json({ text: extracted.text, brain, memoryProposal: extracted.memoryProposal });
+    res.json({
+      text: extracted.text,
+      brain: {
+        ...brain,
+        providerId: providerSelection.providerId,
+        providerName: providerSelection.providerName,
+        usedModelId: providerSelection.modelId,
+        modelDisplayName: providerSelection.modelDisplayName,
+        fallbackUsed: providerSelection.fallbackUsed,
+        fallbackReason: providerSelection.fallbackReason,
+        repoId: providerSelection.repoId,
+      },
+      memoryProposal: extracted.memoryProposal,
+    });
   } catch (error: any) {
     console.error("Dominus chat error:", error);
     res.status(500).json({ error: error.message });
