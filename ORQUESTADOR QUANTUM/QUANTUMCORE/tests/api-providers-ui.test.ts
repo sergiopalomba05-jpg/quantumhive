@@ -31,4 +31,14 @@ describe('AI Providers / API Providers UI', () => {
     assert.doesNotMatch(page, /localStorage/);
     assert.doesNotMatch(page, /apiKey|api_key|secretKey|token/i);
   });
+
+  it('loads provider registry from the backend API instead of a hardcoded local list', () => {
+    const page = readProjectFile('src/pages/ApiProviders.tsx');
+    const app = readProjectFile('src/server/app.ts');
+
+    assert.match(app, /providersRouter/);
+    assert.match(page, /fetch\('\/api\/providers'\)/);
+    assert.match(page, /routerReady/);
+    assert.doesNotMatch(page, /const providers = \[/);
+  });
 });

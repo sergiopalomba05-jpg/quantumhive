@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import { chatRouter } from "./routes/chat";
 import { visionRouter } from "./routes/vision";
+import { providersRouter } from "./routes/providers";
 
 export const app = express();
 
@@ -10,6 +11,7 @@ app.use(express.json({ limit: "50mb" }));
 // Register routes
 app.use("/api", chatRouter);
 app.use("/api", visionRouter);
+app.use("/api", providersRouter);
 
 // Vite middleware for development or Static files for production
 export async function setupFrontendRoutes() {
