@@ -4,7 +4,7 @@ import path from "node:path";
 import { ai } from "../../core/providers/ai";
 import { supabase } from "../../core/providers/supabase";
 import { ThinkingLevel } from "@google/genai";
-import { resolveBrainSelection } from "../../core/brainRouter";
+import { BRAIN_MODELS, resolveBrainSelection, resolveVsBrainSelection } from "../../core/brainRouter";
 import { buildDominusContextPack, extractMemoryProposal } from "../../core/dominusContext";
 
 export const chatRouter = Router();
@@ -20,7 +20,7 @@ chatRouter.post("/chat", async (req, res) => {
         tools: [{ googleSearch: {} }],
       },
     });
-    
+
     const text = response.text;
     const chunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
     res.json({ text, chunks });
@@ -52,7 +52,7 @@ chatRouter.post("/think", async (req, res) => {
 chatRouter.post("/agents/:agentId/chat", async (req, res) => {
   try {
     const { agentId } = req.params;
-    const { message, brainMode, modelId } = req.body;
+    const { message, brainMode, modelId, vsModelIds } = req.body;
 
     if (!message || typeof message !== "string") {
       res.status(400).json({ error: "message is required" });
@@ -81,7 +81,9 @@ chatRouter.post("/agents/:agentId/chat", async (req, res) => {
       readFile(constitutionPath, "utf8"),
     ]);
 
-    const brain = resolveBrainSelection({ brainMode, modelId, message });
+    const brain = brainMode === "vs_2"
+      ? resolveVsBrainSelection({ brainMode, modelId, vsModelIds, message })
+      : resolveBrainSelection({ brainMode, modelId, message });
     const context = buildDominusContextPack({
       agent: { name: agent.name, role: agent.role },
       systemCore,
@@ -89,6 +91,37 @@ chatRouter.post("/agents/:agentId/chat", async (req, res) => {
       memories: memories || [],
       message,
     });
+
+    if (brain.mode === "vs_2" && brain.usedModelIds?.length) {
+      const vsResponses = await Promise.all(brain.usedModelIds.map(async (usedModelId) => {
+        const model = BRAIN_MODELS.find((item) => item.id === usedModelId);
+        const config = usedModelId === "gemini-2.5-flash" ? { tools: [{ googleSearch: {} }] } : undefined;
+        const response = await ai.models.generateContent({
+          model: usedModelId,
+          contents: `${context.prompt}\n\nRol de esta pasada: propone una respuesta independiente y breve para compararla con otro cerebro.`,
+          ...(config ? { config } : {}),
+        });
+
+        return {
+          modelId: usedModelId,
+          displayName: model?.displayName || usedModelId,
+          text: response.text || "",
+        };
+      }));
+
+      const synthesis = await ai.models.generateContent({
+        model: brain.synthesizerModelId || "gemini-2.5-pro",
+        contents: `${context.prompt}\n\nSintetiza una respuesta final para Sergio usando estas dos respuestas. No menciones deliberaciones internas; entrega la mejor version accionable.\n\n${vsResponses.map((item, index) => `Cerebro ${index + 1} (${item.displayName}):\n${item.text}`).join("\n\n")}`,
+      });
+
+      const extracted = extractMemoryProposal(synthesis.text || "");
+      res.json({
+        text: extracted.text,
+        brain: { ...brain, vsResults: vsResponses.map(({ modelId, displayName }) => ({ modelId, displayName })) },
+        memoryProposal: extracted.memoryProposal,
+      });
+      return;
+    }
 
     const config = brain.usedModelId === "gemini-2.5-flash" ? { tools: [{ googleSearch: {} }] } : undefined;
     const response = await ai.models.generateContent({

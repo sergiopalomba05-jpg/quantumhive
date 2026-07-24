@@ -1,19 +1,65 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, type CSSProperties } from 'react';
 import { useStore } from '../store/useStore';
-import { Send, Bot, Lightbulb, CheckSquare, Database, Play, Search, BrainCircuit, Loader2, MessageSquare, Search as SearchIcon, Code, ChevronDown, ChevronRight, ArrowLeft } from 'lucide-react';
-import { TourButton } from '../components/onboarding/TourButton';
+import { Send, Bot, BrainCircuit, Loader2, MessageSquare, Search as SearchIcon, ChevronDown, ChevronRight, ArrowLeft } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { cn } from '../lib/utils';
-import { BRAIN_MODELS, type BrainMode } from '../core/brainRouter';
+import { BRAIN_MODELS, type BrainMode, type BrainModelStatus } from '../core/brainRouter';
+
+type ReasoningLevel = 'normal' | 'high';
+
+const getBrainCardStyle = (status: BrainModelStatus): CSSProperties => {
+  const accent = status === 'available' ? '16, 185, 129' : '245, 158, 11';
+  const accentStrong = status === 'available' ? '52, 211, 153' : '251, 191, 36';
+
+  return {
+    '--brain-accent': accent,
+    '--brain-accent-strong': accentStrong,
+  } as CSSProperties;
+};
+
+function ProviderLogo({ provider }: { provider: string }) {
+  if (provider === 'openai') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+        <path fill="currentColor" d="M12 2.2a4.3 4.3 0 0 0-3.74 2.18 4.3 4.3 0 0 0-4.05 6.62 4.3 4.3 0 0 0 1.46 6.95 4.3 4.3 0 0 0 6.07 3.56 4.3 4.3 0 0 0 6.72-3.17 4.3 4.3 0 0 0 1.34-7.03 4.3 4.3 0 0 0-4.09-6.94A4.3 4.3 0 0 0 12 2.2Zm0 2.1c.68 0 1.3.33 1.7.87l-4.07 2.35a4.2 4.2 0 0 0-1.62-.21A2.2 2.2 0 0 1 12 4.3Zm4.99 2.16a2.2 2.2 0 0 1 1.08 3.63l-4.07-2.35a4.3 4.3 0 0 0-.63-1.5c.92-.53 2.08-.44 3.62.22ZM6.48 8.83c.27-.47.71-.8 1.22-.95v4.7c-.4.43-.68.94-.86 1.5a2.2 2.2 0 0 1-.36-5.25Zm11.05 2.59a2.2 2.2 0 0 1-.35 5.24l-4.07-2.35c.06-.27.1-.55.1-.84 0-.28-.04-.56-.1-.83l4.42-1.22Zm-7.6-1.6 2.07-1.2 2.07 1.2v2.4L12 13.42l-2.07-1.2v-2.4Zm.07 4.88c.47.33.99.56 1.56.66v4.7a2.2 2.2 0 0 1-3.71-2.64L10 14.7Zm3.99.01 2.16 1.25a2.2 2.2 0 0 1-3.71 2.64v-4.7c.56-.1 1.09-.33 1.55-.66Z" />
+      </svg>
+    );
+  }
+
+  if (provider === 'anthropic') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+        <path fill="currentColor" d="M13.7 3 21 20h-3.1l-1.5-3.6H7.6L6.1 20H3L10.3 3h3.4Zm1.6 10.7L12 5.9l-3.3 7.8h6.6Z" />
+      </svg>
+    );
+  }
+
+  if (provider === 'kimi') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+        <path fill="currentColor" d="M17.8 18.9A8.7 8.7 0 0 1 5.1 6.2a7.7 7.7 0 1 0 12.7 12.7Z" />
+        <path fill="currentColor" d="M15.9 4.2 17 6.6l2.6.4-1.9 1.8.5 2.6-2.3-1.2-2.3 1.2.4-2.6L12.2 7l2.6-.4 1.1-2.4Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+      <path fill="#4285F4" d="M12 3.5 13.4 9l5.1 1.5-5.1 1.5L12 17.5 10.6 12l-5.1-1.5L10.6 9 12 3.5Z" />
+      <path fill="#34A853" d="M18.5 14.5 19 17l2.5.5-2.5.5-.5 2.5-.5-2.5-2.5-.5 2.5-.5.5-2.5Z" />
+      <path fill="#FBBC04" d="M5.7 15.2 6.2 17l1.8.5-1.8.5-.5 1.8-.5-1.8-1.8-.5 1.8-.5.5-1.8Z" />
+    </svg>
+  );
+}
 
 const ThoughtBlock = ({ content }: { content: string }) => {
    const [open, setOpen] = useState(false);
    return (
       <div className="border border-slate-700/50 rounded bg-slate-900/40 my-2 overflow-hidden text-[11px]">
-         <button 
+         <button
            onClick={() => setOpen(!open)}
            className="w-full px-3 py-1.5 flex items-center gap-2 text-slate-400 hover:text-qh-gold hover:bg-slate-800/50 transition-colors"
          >
@@ -33,7 +79,7 @@ const ThoughtBlock = ({ content }: { content: string }) => {
 const MessageContent = ({ text }: { text: string }) => {
   const parts = [];
   let remainingText = text;
-  
+
   while (remainingText) {
      const match = remainingText.match(/<think>([\s\S]*?)<\/think>/);
      if (match) {
@@ -48,13 +94,13 @@ const MessageContent = ({ text }: { text: string }) => {
   }
 
   return (
-     <div className="space-y-1">
-        {parts.map((part, i) => (
-           part.type === 'thought' ? (
-              <ThoughtBlock key={i} content={part.content} />
-           ) : (
-              <div key={i} className="markdown-body font-sans text-xs">
-                 <ReactMarkdown
+      <div className="space-y-3">
+         {parts.map((part, i) => (
+            part.type === 'thought' ? (
+               <ThoughtBlock key={i} content={part.content} />
+            ) : (
+               <div key={i} className="markdown-body dominus-response font-sans">
+                  <ReactMarkdown
                    remarkPlugins={[remarkGfm]}
                    components={{
                      code({node, inline, className, children, ...props}: any) {
@@ -66,10 +112,10 @@ const MessageContent = ({ text }: { text: string }) => {
                            style={vscDarkPlus}
                            language={match[1]}
                            PreTag="div"
-                           className="!rounded-md border border-slate-700 !bg-slate-900/80 my-2 !text-[10px]"
+                            className="!rounded-xl border border-white/10 !bg-slate-950/85 my-3 !text-[12px]"
                          />
                        ) : (
-                         <code {...props} className={cn(className, "bg-slate-800 text-qh-gold px-1.5 py-0.5 rounded text-[10px] font-mono")}>
+                          <code {...props} className={cn(className, "rounded-md border border-white/10 bg-slate-950/80 px-1.5 py-0.5 text-[0.8em] font-mono text-qh-gold")}>
                            {children}
                          </code>
                        )
@@ -91,27 +137,56 @@ export function ChatCentral() {
   const [mobileView, setMobileView] = useState<'list' | 'chat'>('list');
   const [input, setInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
-  const [useHighThinking, setUseHighThinking] = useState(false);
   const [brainMode, setBrainMode] = useState<BrainMode>('auto');
+  const [reasoningLevel, setReasoningLevel] = useState<ReasoningLevel>('normal');
   const [selectedModelId, setSelectedModelId] = useState('gemini-2.5-flash');
+  const [vsModelIds, setVsModelIds] = useState(['gemini-2.5-flash', 'gemini-2.5-pro']);
   const [lastBrainMeta, setLastBrainMeta] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const activeAgent = store.agents.find(a => a.id === selectedAgentId);
   const agentMessages = store.chatMessages.filter(m => m.agentId === selectedAgentId);
   const filteredAgents = store.agents.filter(a => a.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  const maxVsBrains = 2;
+
+  const selectBrainModel = (modelId: string) => {
+    setSelectedModelId(modelId);
+
+    if (brainMode === 'auto') {
+      setBrainMode('manual');
+    }
+
+    if (brainMode !== 'vs_2') return;
+
+    setVsModelIds(prev => {
+      if (prev.includes(modelId)) {
+        return prev.length === 1 ? prev : prev.filter(id => id !== modelId);
+      }
+
+      return [...prev, modelId].slice(-maxVsBrains);
+    });
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [agentMessages, isThinking, selectedAgentId]);
 
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    textarea.style.height = '0px';
+    textarea.style.height = `${Math.min(textarea.scrollHeight, 118)}px`;
+  }, [input]);
+
   const handleSend = async () => {
     if (!input.trim() || !activeAgent || isThinking) return;
-    
+
     const userMsg = input;
     setInput('');
-    
+
     store.addChatMessage({
       agentId: selectedAgentId,
       sender: 'user',
@@ -127,13 +202,15 @@ export function ChatCentral() {
         body: JSON.stringify({
           message: userMsg,
           brainMode,
-          modelId: useHighThinking ? 'gemini-2.5-pro' : selectedModelId,
+          reasoningLevel,
+          modelId: reasoningLevel === 'high' ? 'gemini-2.5-pro' : selectedModelId,
+          vsModelIds: brainMode === 'vs_2' ? vsModelIds : undefined,
         })
       });
-      
+
       if (!res.ok) throw new Error('API Error');
       const data = await res.json();
-      
+
       setLastBrainMeta(data.brain || null);
       let replyText = data.text || '';
 
@@ -144,7 +221,7 @@ export function ChatCentral() {
       if (data.memoryProposal) {
         replyText += `\n\n---\n**Memoria sugerida:** ${data.memoryProposal.title}\n\n${data.memoryProposal.content}\n\n_Tipo: ${data.memoryProposal.type} · Importancia: ${data.memoryProposal.importance}_`;
       }
-      
+
       let thoughtText = '';
       if (data.parts && data.parts.length > 0) {
         data.parts.forEach((p: any) => {
@@ -153,13 +230,9 @@ export function ChatCentral() {
            }
         });
       }
-      
+
       if (thoughtText) {
           replyText = `<think>${thoughtText}</think>\n\n${replyText}`;
-      }
-      
-      if (data.chunks && data.chunks.length > 0) {
-         replyText += '\n\n[Search Grounding Results Applied]';
       }
 
       store.addChatMessage({
@@ -167,7 +240,7 @@ export function ChatCentral() {
         sender: 'agent',
         text: replyText,
       });
-      
+
       store.addEvent({
         type: 'agent.message',
         actor: activeAgent.name,
@@ -187,40 +260,40 @@ export function ChatCentral() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-8rem)] max-w-7xl mx-auto border border-qh-border rounded-xl bg-qh-card shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden">
-      
+    <div data-chat-shell="fullscreen" className="chat-command-shell flex h-full min-h-0 w-full overflow-hidden">
+
       {/* Sidebar (Chats List) */}
-      <div className={cn("w-full md:w-80 border-r border-qh-border bg-slate-900/40 flex flex-col shrink-0", mobileView === 'chat' ? "hidden md:flex" : "flex")}>
-        <div className="p-4 border-b border-qh-border flex flex-col gap-3">
-          <h2 className="text-slate-300 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
+      <div className={cn("chat-glass-panel w-full md:w-[18rem] border-r border-white/10 flex flex-col shrink-0", mobileView === 'chat' ? "hidden md:flex" : "flex")}>
+        <div className="p-4 border-b border-white/10 flex flex-col gap-3">
+          <h2 className="text-slate-300 font-bold uppercase tracking-[0.22em] text-[11px] flex items-center gap-2">
             <MessageSquare size={14} className="text-qh-gold" />
             Chats
           </h2>
           <div className="relative">
             <SearchIcon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-            <input 
-              type="text" 
-              placeholder="Search conversations..." 
-              className="w-full bg-slate-800 border border-slate-700 rounded-full pl-9 pr-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-qh-gold transition-colors placeholder:text-slate-500"
+            <input
+              type="text"
+              placeholder="Search conversations..."
+              className="w-full rounded-xl border border-white/10 bg-slate-950/45 py-2 pl-9 pr-3 font-mono text-xs text-slate-300 outline-none transition-colors placeholder:text-slate-600 focus:border-qh-cyan/60"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
             />
           </div>
         </div>
-        
+
         <div className="flex-1 overflow-y-auto">
           {filteredAgents.map(a => {
             const lastMsg = store.chatMessages.filter(m => m.agentId === a.id).pop();
             return (
-              <div 
-                key={a.id} 
+              <div
+                key={a.id}
                 onClick={() => { setSelectedAgentId(a.id); setMobileView('chat'); }}
                 className={cn(
-                  "p-3 border-b border-qh-border/50 cursor-pointer hover:bg-slate-800/50 transition-colors flex gap-3 items-center",
-                  selectedAgentId === a.id ? "bg-slate-800/80 border-l-2 border-l-qh-gold" : "border-l-2 border-l-transparent"
+                  "cursor-pointer border-b border-white/5 border-l-2 p-3 transition-all duration-300 flex gap-3 items-center hover:bg-white/[0.03]",
+                  selectedAgentId === a.id ? "border-l-qh-cyan bg-transparent text-qh-cyan" : "border-l-transparent"
                 )}
               >
-                <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center shrink-0 border border-slate-600 text-qh-gold">
+                <div className="w-10 h-10 rounded-xl bg-slate-950/55 flex items-center justify-center shrink-0 border border-white/10 text-qh-gold shadow-[0_0_24px_rgba(66,232,255,0.08)]">
                   <Bot size={20} />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -239,104 +312,90 @@ export function ChatCentral() {
       </div>
 
       {/* Main Chat Area */}
-      <div className={cn("flex-1 flex flex-col min-w-0 bg-qh-bg/30 relative", mobileView === 'list' ? "hidden md:flex" : "flex")}>
+      <div className={cn("chat-glass-panel chat-conversation-panel flex-1 flex flex-col min-w-0 relative", mobileView === 'list' ? "hidden md:flex" : "flex")}>
         {/* Chat Header */}
-        <div className="flex items-center justify-between p-3 border-b border-qh-border bg-slate-900/60 shrink-0">
-          <div className="flex items-center gap-3">
+        <div className="chat-header-controls flex items-center justify-end gap-3 p-3 border-b border-white/10 bg-slate-950/30 shrink-0">
+          <div className="mr-auto flex items-center md:hidden">
             <button onClick={() => setMobileView('list')} className="md:hidden p-1.5 -ml-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors">
               <ArrowLeft size={18} />
             </button>
-            <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center shrink-0 border border-slate-700 text-qh-gold">
-              <Bot size={20} />
-            </div>
-            <div>
-              <div className="text-sm font-bold text-slate-200">{activeAgent?.name}</div>
-              <div className="text-[10px] text-qh-emerald uppercase tracking-widest flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-qh-emerald animate-pulse"></span> Online
-              </div>
-            </div>
           </div>
-          <div className="flex gap-2">
-            <button 
-              className={cn("glass-button text-[9px] py-1 transition-all", useHighThinking ? "border-qh-gold text-qh-gold bg-qh-gold/10" : "")} 
-              onClick={() => {
-                const next = !useHighThinking;
-                setUseHighThinking(next);
-                if (next) setSelectedModelId('gemini-2.5-pro');
-              }}
-              title="Toggle High Thinking Mode (gemini-2.5-pro)"
-            >
-              <BrainCircuit size={12}/> Thinking Mode
-            </button>
-            <div className="text-[9px] uppercase tracking-widest text-slate-500 flex items-center gap-1 bg-slate-800 px-2 py-1 rounded">
-              <Search size={10} /> Grounding: {useHighThinking ? 'OFF' : 'ON'}
-            </div>
-          </div>
-        </div>
-
-        <div className="border-b border-qh-border bg-slate-950/50 p-3 space-y-3 shrink-0">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500">Brain Router</div>
-              <div className="text-xs text-slate-300">Elegi el cerebro libremente. Dominus recomienda, vos decidis.</div>
-            </div>
-            <select
-              value={brainMode}
-              onChange={(event) => setBrainMode(event.target.value as BrainMode)}
-              className="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-slate-200"
-            >
-              <option value="auto">Auto</option>
-              <option value="manual">Manual</option>
-              <option value="council">Consejo</option>
-            </select>
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-5 gap-2">
-            {BRAIN_MODELS.map((model) => (
-              <button
-                key={model.id}
-                onClick={() => {
-                  setSelectedModelId(model.id);
-                  setUseHighThinking(model.id === 'gemini-2.5-pro');
-                  if (brainMode === 'auto') setBrainMode('manual');
-                }}
-                className={cn(
-                  'text-left rounded-xl border p-3 transition-all bg-slate-900/70 hover:border-qh-gold/70',
-                  selectedModelId === model.id ? 'border-qh-gold shadow-[0_0_20px_rgba(212,175,55,0.18)]' : 'border-slate-700'
-                )}
+          <div className="dominus-header-router min-w-0 justify-end">
+            <label className="brain-mode-toggle" aria-label="Modo de inteligencia">
+              <select
+                className="brain-mode-dropdown"
+                value={brainMode}
+                onChange={(event) => setBrainMode(event.target.value as BrainMode)}
               >
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-[10px] uppercase text-qh-gold">
-                    {model.icon.slice(0, 2)}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-xs font-bold text-slate-100 truncate">{model.displayName}</div>
-                    <div className="text-[10px] text-slate-500 uppercase">{model.provider}</div>
-                  </div>
-                </div>
-                <div className={cn('text-[10px]', model.status === 'available' ? 'text-emerald-400' : 'text-amber-400')}>
-                  {model.status === 'available' ? 'Disponible' : 'Fallback Gemini'}
-                </div>
-              </button>
-            ))}
+                <option value="auto">Auto</option>
+                <option value="manual">Manual</option>
+                <option value="vs_2">V.S 2 Cerebros</option>
+              </select>
+            </label>
+            <label className="brain-mode-toggle" aria-label="Esfuerzo de pensamiento">
+              <select
+                className="reasoning-level-dropdown"
+                value={reasoningLevel}
+                onChange={(event) => {
+                  const nextLevel = event.target.value as ReasoningLevel;
+                  setReasoningLevel(nextLevel);
+                  setSelectedModelId(nextLevel === 'high' ? 'gemini-2.5-pro' : 'gemini-2.5-flash');
+                  setVsModelIds(nextLevel === 'high' ? ['gemini-2.5-pro', 'gemini-2.5-flash'].slice(0, maxVsBrains) : ['gemini-2.5-flash', 'gemini-2.5-pro'].slice(0, maxVsBrains));
+                }}
+              >
+                <option value="normal">Esfuerzo de pensamiento: Normal</option>
+                <option value="high">Esfuerzo de pensamiento: Alto</option>
+              </select>
+            </label>
+            <div className="brain-model-row header-brain-model-row flex gap-2 overflow-x-auto">
+              {BRAIN_MODELS.map((model, index) => {
+                const selectedInVs = brainMode === 'vs_2' && vsModelIds.includes(model.id);
+                const selectedSingle = brainMode !== 'vs_2' && selectedModelId === model.id;
+
+                return (
+                  <button
+                    key={model.id}
+                    style={{ ...getBrainCardStyle(model.status), animationDelay: `${index * 38}ms` }}
+                    onClick={() => selectBrainModel(model.id)}
+                    className={cn(
+                      'brain-router-card brain-router-card-header text-left',
+                      (selectedSingle || selectedInVs) && 'brain-router-card-selected'
+                    )}
+                    title={`${model.logoLabel} ${model.shortLabel}`}
+                  >
+                    <div className="brain-model-icon" aria-label={`${model.logoLabel} logo`}>
+                      <ProviderLogo provider={model.provider} />
+                    </div>
+                    <div className="relative z-10 min-w-0 flex-1">
+                      <div className="truncate text-[11px] font-extrabold tracking-[0.01em] text-slate-100">
+                        {model.shortLabel}
+                      </div>
+                    </div>
+                    <span className={cn('relative z-10 h-1.5 w-1.5 rounded-full shadow-[0_0_12px_currentColor]', model.status === 'available' ? 'bg-emerald-400 text-emerald-400' : 'bg-amber-400 text-amber-400')} />
+                  </button>
+                );
+              })}
+            </div>
           </div>
-          {lastBrainMeta?.fallbackUsed && <div className="text-[11px] text-amber-300">{lastBrainMeta.fallbackReason}</div>}
         </div>
+        {lastBrainMeta?.fallbackUsed && <div className="border-b border-white/10 bg-amber-500/5 px-4 py-1.5 text-[11px] text-amber-300">{lastBrainMeta.fallbackReason}</div>}
 
         {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-5">
           {agentMessages.length === 0 ? (
             <div className="text-center text-slate-600 mt-10 text-xs uppercase tracking-widest leading-loose">
-              Start a conversation with {activeAgent?.name}.<br/>
+              Iniciar conversación.<br/>
               <span className="text-[10px] lowercase text-slate-500">{activeAgent?.role}</span>
             </div>
           ) : (
             agentMessages.map(m => (
-              <div key={m.id} className={cn("flex", m.sender === 'user' ? "justify-end" : "justify-start")}>
+              <div key={m.id} className={cn("chat-message-reveal flex", m.sender === 'user' ? "justify-end" : "justify-start")}>
                 <div className={cn(
-                  "max-w-[80%] rounded-xl px-4 py-2 border shadow-sm relative",
-                  m.sender === 'user' ? "bg-qh-gold/10 border-qh-gold/30 text-qh-gold rounded-tr-sm" : "bg-slate-900/90 border-slate-700 text-slate-300 rounded-tl-sm"
+                  "relative border px-4 py-3 shadow-sm",
+                  m.sender === 'user'
+                    ? "max-w-[min(720px,86%)] rounded-2xl rounded-tr-sm border-qh-gold/25 bg-qh-gold/10 text-qh-gold"
+                    : "dominus-message-surface max-w-[min(920px,94%)] rounded-2xl rounded-tl-sm border-white/10 text-slate-200"
                 )}>
-                  {m.sender === 'agent' && <div className="text-[9px] font-bold text-qh-gold mb-1 uppercase tracking-widest">{activeAgent?.name}</div>}
                   <MessageContent text={m.text} />
                   <div className="text-[8px] text-slate-500 text-right mt-1 font-sans">
                     {new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
@@ -347,7 +406,7 @@ export function ChatCentral() {
           )}
           {isThinking && (
             <div className="flex justify-start">
-               <div className="max-w-[80%] rounded-xl rounded-tl-sm px-4 py-3 bg-slate-900/90 border border-slate-700 text-qh-gold flex items-center gap-3 shadow-sm text-xs uppercase tracking-widest">
+               <div className="chat-message-reveal max-w-[80%] rounded-2xl rounded-tl-sm px-4 py-3 bg-slate-950/75 border border-white/10 text-qh-gold flex items-center gap-3 shadow-sm text-xs uppercase tracking-widest">
                  <Loader2 size={14} className="animate-spin" /> Procesando respuesta...
                </div>
             </div>
@@ -356,22 +415,28 @@ export function ChatCentral() {
         </div>
 
         {/* Chat Input */}
-        <div className="p-3 bg-slate-900/60 border-t border-qh-border">
-          <div className="flex gap-2 bg-slate-800 p-1.5 rounded-lg border border-slate-700 focus-within:border-qh-gold/50 transition-colors shadow-inner">
-            <input 
-              type="text" 
-              className="flex-1 bg-transparent border-none text-xs text-slate-200 px-3 py-1.5 focus:outline-none placeholder:text-slate-500 font-mono" 
-              placeholder="Type a message..." 
+        <div className="p-3 bg-slate-950/30 border-t border-white/10">
+          <div className="flex gap-2 bg-slate-950/60 p-1.5 rounded-2xl border border-white/10 focus-within:border-qh-cyan/50 transition-colors shadow-inner">
+            <textarea
+              ref={textareaRef}
+              rows={1}
+              className="chat-composer-input flex-1 bg-transparent border-none text-sm text-slate-100 px-3 py-2 focus:outline-none placeholder:text-slate-600 font-mono"
+              placeholder="Transmitir instrucción..."
               value={input}
               onChange={e => setInput(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleSend()}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSend();
+                }
+              }}
               disabled={isThinking}
             />
-            <button 
+            <button
               className={cn(
                 "p-2 rounded-md flex items-center justify-center transition-all",
-                input.trim() 
-                  ? "bg-qh-gold/20 text-qh-gold hover:bg-qh-gold/30" 
+                input.trim()
+                  ? "bg-qh-gold/20 text-qh-gold hover:bg-qh-gold/30"
                   : "bg-slate-700 text-slate-500 cursor-not-allowed"
               )}
               onClick={handleSend}
@@ -381,9 +446,9 @@ export function ChatCentral() {
             </button>
           </div>
         </div>
-        
+
         {/* Background Pattern */}
-        <div className="absolute inset-0 z-[-1] opacity-5 pointer-events-none" style={{ backgroundImage: 'radial-gradient(var(--color-qh-gold) 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+        <div className="chat-bg-pattern-disabled absolute inset-0 z-[-1] pointer-events-none" />
       </div>
     </div>
   );

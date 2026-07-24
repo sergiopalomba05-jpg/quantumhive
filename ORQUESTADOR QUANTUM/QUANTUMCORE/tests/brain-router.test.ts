@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { BRAIN_MODELS, resolveBrainSelection } from '../src/core/brainRouter';
+import { BRAIN_MODELS, resolveBrainSelection, resolveVsBrainSelection } from '../src/core/brainRouter';
 
 describe('brain router', () => {
   it('uses a connected Gemini model when requested manually', () => {
@@ -36,5 +36,28 @@ describe('brain router', () => {
     assert.equal(claude?.displayName, 'Claude Sonnet 5');
     assert.equal(claude?.status, 'not_connected');
     assert.equal(claude?.recommendedFor.includes('codigo'), true);
+  });
+
+  it('supports the V.S 2 Cerebros mode without exposing the old council name', () => {
+    const result = resolveBrainSelection({ brainMode: 'vs_2', modelId: 'gemini-2.5-pro', message: 'comparar dos enfoques' });
+
+    assert.equal(result.mode, 'vs_2');
+    assert.equal(result.usedModelId, 'gemini-2.5-pro');
+  });
+
+  it('resolves V.S 2 Cerebros to two connected Gemini models and a Pro synthesizer', () => {
+    const result = resolveVsBrainSelection({
+      brainMode: 'vs_2',
+      modelId: 'claude-sonnet-5',
+      vsModelIds: ['gemini-2.5-flash', 'gemini-2.5-pro', 'gpt-chat-latest'],
+      message: 'comparar dos enfoques para Dominus',
+    });
+
+    assert.equal(result.mode, 'vs_2');
+    assert.deepEqual(result.usedModelIds, ['gemini-2.5-flash', 'gemini-2.5-pro']);
+    assert.equal(result.synthesizerModelId, 'gemini-2.5-pro');
+    assert.equal(result.provider, 'vertex');
+    assert.equal(result.fallbackUsed, true);
+    assert.match(result.fallbackReason || '', /solo modelos conectados/i);
   });
 });
