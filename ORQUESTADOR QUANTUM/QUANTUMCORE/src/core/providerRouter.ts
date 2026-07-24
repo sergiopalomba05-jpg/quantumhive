@@ -66,6 +66,9 @@ export function resolveProviderSelection(
   const requestedModel = requestedProvider && request.modelId
     ? requestedProvider.models.find((model) => model.id === request.modelId)
     : undefined;
+  const readyModels = providers.flatMap((provider) => provider.models
+    .filter((model) => model.routerReady)
+    .map((model) => ({ provider, model })));
 
   if (requestedProvider || request.providerId || request.modelId) {
     if (requestedProvider?.status === 'requires_runner' || requestedModel?.connectionStatus === 'requires_runner') {
@@ -83,12 +86,24 @@ export function resolveProviderSelection(
       };
     }
 
+    if (!request.providerId && request.modelId) {
+      const modelOnlyMatch = readyModels.find(({ model }) => model.id === request.modelId);
+      if (modelOnlyMatch) {
+        return {
+          providerId: modelOnlyMatch.provider.id,
+          providerName: modelOnlyMatch.provider.name,
+          modelId: modelOnlyMatch.model.id,
+          modelDisplayName: modelOnlyMatch.model.displayName,
+          fallbackUsed: false,
+          repoId: request.repoId,
+        };
+      }
+
+      return defaultSelection(providers, 'El modelo elegido todavia no esta conectado.', request.repoId);
+    }
+
     return defaultSelection(providers, 'El proveedor o modelo elegido todavia no esta conectado.', request.repoId);
   }
-
-  const readyModels = providers.flatMap((provider) => provider.models
-    .filter((model) => model.routerReady)
-    .map((model) => ({ provider, model })));
 
   const wantsCodeApi = (request.brainMode === 'auto' || request.brainMode === 'dev') && isCodeTask(request.message);
   const wantsLowCost = request.brainMode === 'low_cost' || isCheapTask(request.message);
