@@ -73,6 +73,41 @@ function ProviderLogo({ provider }: { provider: string }) {
   );
 }
 
+const ActiveBrainBadge = ({
+  modelId,
+  providerId,
+  providers,
+}: {
+  modelId: string;
+  providerId: string;
+  providers: ChatProvider[];
+}) => {
+  const model = BRAIN_MODELS.find(m => m.id === modelId);
+  const provider = providers.find(p => p.id === providerId);
+  const providerLabel = provider?.name || providerId;
+  const modelLabel = model?.displayName || modelId;
+  const isAvailable = model?.status === 'available';
+
+  return (
+    <div className="active-brain-badge flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl border border-white/[0.08] bg-slate-950/55 backdrop-blur-sm">
+      <div className="flex items-center gap-2 min-w-0">
+        <div className="flex items-center gap-1.5">
+          <ProviderLogo provider={model?.provider || 'vertex'} />
+          <span className="text-[11px] font-extrabold tracking-wide text-slate-100 truncate">{modelLabel}</span>
+        </div>
+        <span className="text-[9px] text-slate-500 font-mono uppercase tracking-widest">/</span>
+        <span className="text-[10px] text-slate-400 font-mono">{providerLabel}</span>
+      </div>
+      <span
+        className={cn(
+          'h-1.5 w-1.5 rounded-full shrink-0',
+          isAvailable ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]' : 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]'
+        )}
+      />
+    </div>
+  );
+};
+
 const ThoughtBlock = ({ content }: { content: string }) => {
    const [open, setOpen] = useState(false);
    return (
@@ -292,10 +327,15 @@ export function ChatCentral() {
           replyText = `<think>${thoughtText}</think>\n\n${replyText}`;
       }
 
+      const respondingModelId = data.brain?.usedModelId || selectedModelId;
+      const respondingModel = BRAIN_MODELS.find(m => m.id === respondingModelId);
+
       store.addChatMessage({
         agentId: selectedAgentId,
         sender: 'agent',
         text: replyText,
+        modelId: respondingModelId,
+        modelName: respondingModel?.displayName || respondingModelId,
       });
 
       store.addEvent({
@@ -482,6 +522,15 @@ export function ChatCentral() {
         </div>
         {lastBrainMeta?.fallbackUsed && <div className="border-b border-white/10 bg-amber-500/5 px-4 py-1.5 text-[11px] text-amber-300">{lastBrainMeta.fallbackReason}</div>}
 
+        {/* Active Brain Indicator */}
+        <div className="px-4 py-2 border-b border-white/[0.05] flex items-center justify-between">
+          <ActiveBrainBadge
+            modelId={reasoningLevel === 'high' ? 'gemini-2.5-pro' : selectedModelId}
+            providerId={selectedProviderId}
+            providers={providers}
+          />
+        </div>
+
         {/* Chat Messages */}
         <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-5">
           {agentMessages.length === 0 ? (
@@ -499,8 +548,15 @@ export function ChatCentral() {
                     : "dominus-message-surface max-w-[min(920px,94%)] rounded-2xl rounded-tl-sm border-white/10 text-slate-200"
                 )}>
                   <MessageContent text={m.text} />
-                  <div className="text-[8px] text-slate-500 text-right mt-1 font-sans">
-                    {new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                  <div className="flex items-center justify-between mt-1.5">
+                    {m.sender === 'agent' && m.modelName && (
+                      <span className="text-[8px] text-slate-600 font-mono uppercase tracking-widest">
+                        {m.modelName}
+                      </span>
+                    )}
+                    <div className={cn("text-[8px] text-slate-500 font-sans", m.sender === 'agent' && m.modelName ? "" : "text-right w-full")}>
+                      {new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -509,7 +565,12 @@ export function ChatCentral() {
           {isThinking && (
             <div className="flex justify-start">
                <div className="chat-message-reveal max-w-[80%] rounded-2xl rounded-tl-sm px-4 py-3 bg-slate-950/75 border border-white/10 text-qh-gold flex items-center gap-3 shadow-sm text-xs uppercase tracking-widest">
-                 <Loader2 size={14} className="animate-spin" /> Procesando respuesta...
+                 <Loader2 size={14} className="animate-spin" />
+                 {(() => {
+                   const activeModelId = reasoningLevel === 'high' ? 'gemini-2.5-pro' : selectedModelId;
+                   const activeModel = BRAIN_MODELS.find(m => m.id === activeModelId);
+                   return `${activeModel?.displayName || activeModelId} procesando...`;
+                 })()}
                </div>
             </div>
           )}

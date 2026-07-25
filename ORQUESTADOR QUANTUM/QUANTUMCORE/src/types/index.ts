@@ -61,6 +61,8 @@ export interface ChatMessage {
   sender: 'user' | 'agent';
   text: string;
   timestamp: number;
+  modelId?: string;
+  modelName?: string;
 }
 
 export type MemoryImportance = 'baja' | 'media' | 'alta' | 'crítica';
