@@ -8,6 +8,7 @@ import { BRAIN_MODELS, resolveBrainSelection, resolveVsBrainSelection } from "..
 import { buildDominusContextPack, extractMemoryProposal } from "../../core/dominusContext";
 import { resolveProviderSelection } from "../../core/providerRouter";
 import { generateWithProvider } from "../../core/providerClients";
+import { searchGraphNodes } from "./graph";
 
 export const chatRouter = Router();
 
@@ -86,12 +87,17 @@ chatRouter.post("/agents/:agentId/chat", async (req, res) => {
     const brain = brainMode === "vs_2"
       ? resolveVsBrainSelection({ brainMode, modelId, vsModelIds, message })
       : resolveBrainSelection({ brainMode, modelId, message });
+
+    const graphNodes = searchGraphNodes(message, 10);
+
     const context = buildDominusContextPack({
       agent: { name: agent.name, role: agent.role },
       systemCore,
       constitution,
       memories: memories || [],
       message,
+      graphNodes,
+      repo: repoId ? { title: repoId, summary: 'Repositorio conectado', url: '' } : undefined,
     });
 
     if (brain.mode === "vs_2" && brain.usedModelIds?.length) {
@@ -144,6 +150,7 @@ chatRouter.post("/agents/:agentId/chat", async (req, res) => {
         fallbackReason: providerSelection.fallbackReason,
         repoId: providerSelection.repoId,
       },
+      graphNodesConsulted: graphNodes.length,
       memoryProposal: extracted.memoryProposal,
     });
   } catch (error: any) {

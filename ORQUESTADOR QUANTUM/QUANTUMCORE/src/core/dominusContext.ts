@@ -11,12 +11,30 @@ interface DominusMemoryContext {
   tags?: string[];
 }
 
+interface GraphNodeContext {
+  id: string;
+  label: string;
+  type: string;
+  summary: string;
+  community: number;
+  importance: number;
+  tags: string[];
+}
+
+interface RepoContext {
+  title: string;
+  summary: string;
+  url: string;
+}
+
 interface BuildDominusContextInput {
   agent: DominusAgentContext;
   systemCore: string;
   constitution: string;
   memories: DominusMemoryContext[];
   message: string;
+  graphNodes?: GraphNodeContext[];
+  repo?: RepoContext;
 }
 
 export function buildDominusContextPack(input: BuildDominusContextInput) {
@@ -34,6 +52,30 @@ export function buildDominusContextPack(input: BuildDominusContextInput) {
     'No afirmes que fue guardado. Solo proponelo para aprobacion humana.',
   ].join(' ');
 
+  const graphSection = input.graphNodes && input.graphNodes.length > 0
+    ? [
+        'CONOCIMIENTO DEL GRAFO (Graphify)',
+        'Estos son nodos relevantes de tu base de conocimiento persistente:',
+        ...input.graphNodes.map(n =>
+          `- [${n.type}] ${n.label} (comunidad ${n.community}, importancia ${n.importance.toFixed(1)}): ${n.summary || 'Sin resumen'}${n.tags.length ? ` [${n.tags.join(', ')}]` : ''}`
+        ),
+        '',
+        'Usa este conocimiento para responder con contexto real de proyectos anteriores.',
+        '',
+      ].join('\n')
+    : '';
+
+  const repoSection = input.repo
+    ? [
+        'REPOSITORIO CONECTADO',
+        `Nombre: ${input.repo.title}`,
+        `Resumen: ${input.repo.summary}`,
+        `URL: ${input.repo.url}`,
+        'Usa el contexto de este repositorio cuando el usuario pregunte sobre código, arquitectura o decisiones técnicas de este proyecto.',
+        '',
+      ].join('\n')
+    : '';
+
   const prompt = [
     'SYSTEM CORE',
     input.systemCore.trim(),
@@ -47,6 +89,8 @@ export function buildDominusContextPack(input: BuildDominusContextInput) {
     'MEMORIAS DEL AGENTE',
     memoriesText,
     '',
+    graphSection,
+    repoSection,
     'INSTRUCCION DE MEMORIA',
     memoryProposalInstruction,
     '',

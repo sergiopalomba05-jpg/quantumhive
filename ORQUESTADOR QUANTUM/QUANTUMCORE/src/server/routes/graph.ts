@@ -184,6 +184,62 @@ graphRouter.get('/graph', (req, res) => {
   }
 });
 
+export function searchGraphNodes(query: string, limit = 20): Array<{ id: string; label: string; type: string; summary: string; community: number; importance: number; tags: string[] }> {
+  const cached = ensureCache();
+  const nodes = cached.data.nodes || [];
+  const queryLower = query.toLowerCase();
+  const keywords = queryLower.split(/\s+/).filter(w => w.length > 2);
+
+  if (keywords.length === 0) return [];
+
+  const scored = nodes.map(node => {
+    let score = 0;
+    const labelLower = (node.label || '').toLowerCase();
+    const summaryLower = (node.summary || '').toLowerCase();
+    const tagsLower = (node.tags || []).join(' ').toLowerCase();
+
+    for (const kw of keywords) {
+      if (labelLower.includes(kw)) score += 3;
+      if (summaryLower.includes(kw)) score += 2;
+      if (tagsLower.includes(kw)) score += 1;
+    }
+
+    if (node.importance) score += node.importance * 0.5;
+
+    return {
+      id: node.id,
+      label: node.label || '',
+      type: node.file_type || node.type || 'unknown',
+      summary: node.summary || '',
+      community: node.community ?? -1,
+      importance: node.importance ?? 0.5,
+      tags: node.tags || [],
+      score,
+    };
+  });
+
+  return scored
+    .filter(n => n.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map(({ score: _, ...rest }) => rest);
+}
+
+graphRouter.get('/graph/search', (req, res) => {
+  try {
+    const query = String(req.query.q || '');
+    const limit = req.query.limit ? Number(req.query.limit) : 20;
+    if (!query.trim()) {
+      res.status(400).json({ error: 'q parameter is required' });
+      return;
+    }
+    const results = searchGraphNodes(query, limit);
+    res.json({ query, results, count: results.length });
+  } catch (err) {
+    res.status(500).json({ error: 'Search failed' });
+  }
+});
+
 graphRouter.post('/graph/reload', (_req, res) => {
   try {
     cache = null;
