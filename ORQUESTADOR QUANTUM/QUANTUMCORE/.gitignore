@@ -6,3 +6,11 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Graphify cache (only graph.json is needed in repo)
+graphify-out/cache/
+graphify-out/2026-*/
+graphify-out/.graphify_*
+graphify-out/cost.json
+graphify-out/manifest.json
+graphify-out/GRAPH_REPORT.md
