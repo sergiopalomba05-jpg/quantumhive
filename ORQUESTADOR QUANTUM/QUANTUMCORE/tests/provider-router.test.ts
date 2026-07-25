@@ -32,7 +32,7 @@ describe('provider router', () => {
     );
 
     assert.equal(selection.providerId, 'gcp-vertex-ai');
-    assert.equal(selection.modelId, 'gemini-2.5-flash');
+    assert.equal(selection.modelId, 'gemini-3.6-flash');
     assert.equal(selection.fallbackUsed, true);
     assert.match(selection.fallbackReason || '', /requiere runner/i);
   });

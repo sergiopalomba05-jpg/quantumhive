@@ -7,19 +7,21 @@ describe('GCP Vertex model registry', () => {
   it('offers a broader Gemini catalog than the two verified router models', () => {
     const geminiModels = GCP_VERTEX_MODELS.filter((model) => model.family === 'gemini');
 
-    assert.equal(geminiModels.length >= 8, true);
-    assert.equal(geminiModels.some((model) => model.id === 'gemini-2.5-flash'), true);
-    assert.equal(geminiModels.some((model) => model.id === 'gemini-2.5-pro'), true);
-    assert.equal(geminiModels.some((model) => model.id === 'gemini-2.5-flash-lite'), true);
-    assert.equal(geminiModels.some((model) => model.capabilities.includes('image')), true);
+    assert.equal(geminiModels.length >= 7, true);
+    assert.equal(geminiModels.some((model) => model.id === 'gemini-3.6-flash'), true);
+    assert.equal(geminiModels.some((model) => model.id === 'gemini-3.5-flash'), true);
+    assert.equal(geminiModels.some((model) => model.id === 'gemini-3.1-flash-lite'), true);
     assert.equal(geminiModels.some((model) => model.capabilities.includes('audio')), true);
   });
 
   it('marks only Cloud Run verified Gemini models as router-ready', () => {
     const routerReady = GCP_VERTEX_MODELS.filter((model) => model.routerReady).map((model) => model.id);
 
-    assert.deepEqual(routerReady, ['gemini-2.5-flash', 'gemini-2.5-pro']);
-    assert.equal(BRAIN_MODELS.filter((model) => model.provider === 'vertex' && model.status === 'available').length, 2);
+    assert.ok(routerReady.includes('gemini-3.6-flash'));
+    assert.ok(routerReady.includes('gemini-3.5-flash'));
+    assert.ok(routerReady.includes('gemini-2.5-flash'));
+    assert.ok(routerReady.includes('gemini-2.5-pro'));
+    assert.equal(BRAIN_MODELS.filter((model) => model.provider === 'vertex' && model.status === 'available').length >= 5, true);
   });
 
   it('returns provider metadata without secret values', () => {

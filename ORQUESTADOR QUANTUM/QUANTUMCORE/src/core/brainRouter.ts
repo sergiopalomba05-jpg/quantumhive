@@ -32,63 +32,96 @@ export interface ResolvedBrainSelection {
   synthesizerModelId?: string;
 }
 
-export const DEFAULT_CONNECTED_MODEL_ID = 'gemini-2.5-flash';
+export const DEFAULT_CONNECTED_MODEL_ID = 'gemini-3.6-flash';
 
 export const BRAIN_MODELS: BrainModelDefinition[] = [
   {
+    id: 'gemini-3.6-flash',
+    displayName: 'Gemini 3.6 Flash',
+    shortLabel: '3.6 FLASH',
+    logoLabel: 'Gemini',
+    provider: 'vertex',
+    status: 'available',
+    icon: 'gemini',
+    recommendedFor: ['general', 'rapido', 'agente', 'balanced'],
+    description: 'Último modelo Stable. Balance velocidad/inteligencia. Default del sistema.',
+  },
+  {
+    id: 'gemini-3.5-flash',
+    displayName: 'Gemini 3.5 Flash',
+    shortLabel: '3.5 FLASH',
+    logoLabel: 'Gemini',
+    provider: 'vertex',
+    status: 'available',
+    icon: 'gemini',
+    recommendedFor: ['thinking', 'analisis', 'code', 'agente'],
+    description: 'Modelo más inteligente para agentic y coding tasks. Stable.',
+  },
+  {
     id: 'gemini-2.5-flash',
-    displayName: 'Gemini 2.5 Flash',
+    displayName: 'Gemini 2.5 Flash (Legacy)',
     shortLabel: '2.5 FLASH',
     logoLabel: 'Gemini',
     provider: 'vertex',
     status: 'available',
     icon: 'gemini',
     recommendedFor: ['contexto', 'general', 'rapido'],
-    description: 'Cerebro conectado inicial para contexto, chat general y fallback.',
+    description: 'Legacy. Se retira Octubre 2026. Migrar a 3.6 Flash.',
   },
   {
     id: 'gemini-2.5-pro',
-    displayName: 'Gemini 2.5 Pro',
+    displayName: 'Gemini 2.5 Pro (Legacy)',
     shortLabel: '2.5 PRO',
     logoLabel: 'Gemini',
     provider: 'vertex',
     status: 'available',
     icon: 'gemini',
     recommendedFor: ['thinking', 'analisis', 'contexto'],
-    description: 'Modo conectado para razonamiento mas alto dentro de Vertex.',
+    description: 'Legacy. Se retira Octubre 2026. Sintetizador de V.S 2 Cerebros.',
   },
   {
-    id: 'gemini-2.5-flash-lite',
-    displayName: 'Gemini 2.5 Flash-Lite',
-    shortLabel: 'FLASH LITE',
+    id: 'gemini-3.1-flash-lite',
+    displayName: 'Gemini 3.1 Flash-Lite',
+    shortLabel: 'LITE',
     logoLabel: 'Gemini',
     provider: 'vertex',
-    status: 'not_connected',
+    status: 'available',
     icon: 'gemini',
     recommendedFor: ['rapido', 'bajo_costo', 'clasificacion'],
-    description: 'Candidato Vertex para tareas livianas; requiere prueba antes de usarlo en Dominus.',
+    description: 'Modelo liviano Stable para tareas masivas y clasificación.',
   },
   {
-    id: 'gemini-2.5-flash-image',
-    displayName: 'Gemini 2.5 Flash Image',
-    shortLabel: 'IMAGE',
+    id: 'gemini-3.1-pro-preview',
+    displayName: 'Gemini 3.1 Pro Preview',
+    shortLabel: '3.1 PRO',
     logoLabel: 'Gemini',
     provider: 'vertex',
     status: 'not_connected',
     icon: 'gemini',
-    recommendedFor: ['imagen', 'creativo', 'multimodal'],
-    description: 'Candidato Vertex para imagen; no se usa hasta validar el endpoint del proyecto.',
+    recommendedFor: ['reasoning', 'advanced', 'preview'],
+    description: 'Preview del modelo Pro más avanzado. 1M tokens. Pendiente validación.',
+  },
+  {
+    id: 'gemini-live-3.1-flash-preview',
+    displayName: 'Gemini Live 3.1 Flash Preview',
+    shortLabel: 'LIVE',
+    logoLabel: 'Gemini',
+    provider: 'vertex',
+    status: 'not_connected',
+    icon: 'gemini',
+    recommendedFor: ['voz', 'live', 'realtime'],
+    description: 'Live API A2A para diálogo realtime y voz.',
   },
   {
     id: 'gemini-live-2.5-flash-preview-native-audio',
-    displayName: 'Gemini Live 2.5 Flash Native Audio',
+    displayName: 'Gemini Live 2.5 Flash Native Audio (Legacy)',
     shortLabel: 'LIVE',
     logoLabel: 'Gemini',
     provider: 'vertex',
     status: 'not_connected',
     icon: 'gemini',
     recommendedFor: ['voz', 'audio', 'realtime'],
-    description: 'Candidato para voz/live; requiere integracion separada de Gemini Live API.',
+    description: 'Legacy. Live API 2.5. Migrar a 3.1 Flash Preview.',
   },
   {
     id: 'gpt-chat-latest',
@@ -165,13 +198,13 @@ export function resolveBrainSelection(request: BrainSelectionRequest): ResolvedB
 }
 
 export function resolveVsBrainSelection(request: BrainSelectionRequest): ResolvedBrainSelection {
-  const requested = request.vsModelIds?.length ? request.vsModelIds : ['gemini-2.5-flash', 'gemini-2.5-pro'];
+  const requested = request.vsModelIds?.length ? request.vsModelIds : ['gemini-3.6-flash', 'gemini-3.5-flash'];
   const connected = requested
     .map((id) => BRAIN_MODELS.find((model) => model.id === id))
     .filter((model): model is BrainModelDefinition => model?.status === 'available' && model.provider === 'vertex');
   const usedModelIds = Array.from(new Set(connected.map((model) => model.id))).slice(0, 2);
 
-  for (const fallbackId of ['gemini-2.5-flash', 'gemini-2.5-pro']) {
+  for (const fallbackId of ['gemini-3.6-flash', 'gemini-3.5-flash']) {
     if (usedModelIds.length >= 2) break;
     if (!usedModelIds.includes(fallbackId)) usedModelIds.push(fallbackId);
   }
@@ -183,7 +216,7 @@ export function resolveVsBrainSelection(request: BrainSelectionRequest): Resolve
     requestedModelId: request.modelId || requested[0] || DEFAULT_CONNECTED_MODEL_ID,
     usedModelId: usedModelIds[0] || DEFAULT_CONNECTED_MODEL_ID,
     usedModelIds,
-    synthesizerModelId: 'gemini-2.5-pro',
+    synthesizerModelId: 'gemini-3.5-flash',
     provider: 'vertex',
     fallbackUsed,
     fallbackReason: fallbackUsed ? 'V.S 2 Cerebros usa solo modelos conectados de Vertex Gemini en esta fase.' : undefined,

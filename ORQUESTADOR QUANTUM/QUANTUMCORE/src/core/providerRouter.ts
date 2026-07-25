@@ -19,7 +19,7 @@ export interface ProviderSelectionResult {
 }
 
 const DEFAULT_PROVIDER_ID = 'gcp-vertex-ai';
-const DEFAULT_MODEL_ID = 'gemini-2.5-flash';
+const DEFAULT_MODEL_ID = 'gemini-3.6-flash';
 
 function isCodeTask(message = '') {
   const text = message.toLowerCase();
