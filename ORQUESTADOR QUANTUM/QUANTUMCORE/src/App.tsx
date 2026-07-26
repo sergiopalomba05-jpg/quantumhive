@@ -73,6 +73,7 @@ export default function App() {
           <Route path="/models" element={<ModelsView />} />
           <Route path="/cloud" element={<CloudView />} />
           <Route path="/decisions" element={<DecisionsView />} />
+          <Route path="/catalogo-herramientas" element={<VideoInbox />} />
           <Route path="/video-inbox" element={<VideoInbox />} />
           <Route path="/voice" element={<LiveCommand />} />
           <Route path="/live-assistant" element={<LiveAssistant />} />

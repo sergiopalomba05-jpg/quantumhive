@@ -30,7 +30,7 @@ export const macroAreas = [
     icon: Lightbulb,
     links: [
       { to: '/ideas', icon: Lightbulb, label: 'Inbox de Ideas' },
-      { to: '/video-inbox', icon: Video, label: 'Bandeja de Videos' },
+      { to: '/catalogo-herramientas', icon: Video, label: 'Catálogo de Herramientas' },
       { to: '/voice', icon: Mic, label: 'Notas de Voz' }
     ]
   },

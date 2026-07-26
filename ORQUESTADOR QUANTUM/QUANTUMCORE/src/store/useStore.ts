@@ -169,6 +169,7 @@ interface AppState {
 }
 
 const DOMINUS_PRIME_AGENT_ID = '11111111-1111-4111-8111-111111111111';
+const INGESTADOR_VIDEOS_AGENT_ID = '22222222-2222-4222-8222-222222222222';
 
 const SEED_AGENTS: Agent[] = [
   {
@@ -184,6 +185,19 @@ const SEED_AGENTS: Agent[] = [
     permissions: ['read_context', 'create_tasks', 'propose_actions', 'request_approval', 'coordinate_agents', 'write_memory'],
     approvalPolicy: 'required_for_sensitive_actions',
   },
+  {
+    id: INGESTADOR_VIDEOS_AGENT_ID,
+    name: 'Ingestador de Videos',
+    role: 'Agente principal del catalogo multimedia de herramientas. Recibe links, reels, videos y posts enviados por Sergio; detecta herramientas, clasifica por taxonomia, deduplica, compara alternativas, asigna puntajes y deja cada recurso listo para la PWA del catalogo cuando la confianza es suficiente.',
+    macroDivision: 'General',
+    status: 'active',
+    preferredModel: 'vertex',
+    brainProviderId: 'vertex',
+    defaultModelId: 'gemini-3.6-flash',
+    memoryScope: 'catalogo_multimedia,herramientas,taxonomia,video_ingest,comparativas',
+    permissions: ['catalogo_multimedia', 'ingest_links', 'analyze_video', 'classify_taxonomy', 'dedupe_tools', 'score_tools', 'compare_tools', 'publish_catalog_candidates'],
+    approvalPolicy: 'automatico_si_confianza_alta',
+  },
   { id: uuidv4(), name: 'Asistente Global', role: 'Orquestador personal central', macroDivision: 'General', status: 'active', preferredModel: 'vertex' },
   { id: uuidv4(), name: 'CEO Carta Viva', role: 'Responsable MVP comercial Carta Viva', macroDivision: 'Carta Viva', status: 'active', preferredModel: 'vertex' },
   { id: uuidv4(), name: 'CEO HumanIA', role: 'Responsable HumanIA Chat, World y agentes', macroDivision: 'HumanIA', status: 'active', preferredModel: 'vertex' },
@@ -192,13 +206,20 @@ const SEED_AGENTS: Agent[] = [
   { id: uuidv4(), name: 'CEO Trading', role: 'Placeholder futuro trading', macroDivision: 'Trading', status: 'paused', preferredModel: 'manual' },
 ];
 
+function ensureCoreAgents(agents: Agent[]): Agent[] {
+  const coreAgents = SEED_AGENTS.filter(agent => [DOMINUS_PRIME_AGENT_ID, INGESTADOR_VIDEOS_AGENT_ID].includes(agent.id));
+  const existingIds = new Set(agents.map(agent => agent.id));
+  const missingCoreAgents = coreAgents.filter(agent => !existingIds.has(agent.id));
+  return [...agents, ...missingCoreAgents];
+}
+
 const SEED_PROJECTS: Project[] = [
-  { id: uuidv4(), name: 'Carta Viva MVP', macroDivision: 'Carta Viva', status: 'active', repo: 'carta-viva-ui', ceoAgentId: SEED_AGENTS[1].id, goal: 'Lanzar MVP con avatar cacheado manual', nextAction: 'Hacer videos de Sol manualmente', risks: 'Costos altos si usamos GPU sin validar', lastUpdate: Date.now() },
+  { id: uuidv4(), name: 'Carta Viva MVP', macroDivision: 'Carta Viva', status: 'active', repo: 'carta-viva-ui', ceoAgentId: SEED_AGENTS[3].id, goal: 'Lanzar MVP con avatar cacheado manual', nextAction: 'Hacer videos de Sol manualmente', risks: 'Costos altos si usamos GPU sin validar', lastUpdate: Date.now() },
   { id: uuidv4(), name: 'QuantumHive Control Plane', macroDivision: 'Infraestructura', status: 'active', repo: 'quantum-hive', ceoAgentId: DOMINUS_PRIME_AGENT_ID, goal: 'Panel central de control personal', nextAction: 'Diseñar frontend AI Studio', risks: 'Perderse en features, mantener MVP', lastUpdate: Date.now() },
-  { id: uuidv4(), name: 'HumanIA Chat', macroDivision: 'HumanIA', status: 'planned', repo: 'humania-core', ceoAgentId: SEED_AGENTS[2].id, goal: 'Chat base para interactuar con NPCs', nextAction: 'Definir DB schema', risks: 'Ninguno', lastUpdate: Date.now() },
-  { id: uuidv4(), name: 'HumanIA World', macroDivision: 'HumanIA', status: 'planned', repo: 'humania-world', ceoAgentId: SEED_AGENTS[2].id, goal: 'Mundo inmersivo', nextAction: 'Visión futura', risks: 'Scope creep', lastUpdate: Date.now() },
-  { id: uuidv4(), name: 'Avatar Cache Engine', macroDivision: 'Carta Viva', status: 'active', repo: 'avatar-engine', ceoAgentId: SEED_AGENTS[4].id, goal: 'Motor para servir video cacheado', nextAction: 'Integrar en MVP', risks: 'Latencia de video', lastUpdate: Date.now() },
-  { id: uuidv4(), name: 'Azure Provider Integration', macroDivision: 'Infraestructura', status: 'blocked', repo: 'provider-router', ceoAgentId: SEED_AGENTS[3].id, goal: 'Tener fallback a Azure OpenAI', nextAction: 'Esperar backend', risks: 'Bloqueado por backend', lastUpdate: Date.now() },
+  { id: uuidv4(), name: 'HumanIA Chat', macroDivision: 'HumanIA', status: 'planned', repo: 'humania-core', ceoAgentId: SEED_AGENTS[4].id, goal: 'Chat base para interactuar con NPCs', nextAction: 'Definir DB schema', risks: 'Ninguno', lastUpdate: Date.now() },
+  { id: uuidv4(), name: 'HumanIA World', macroDivision: 'HumanIA', status: 'planned', repo: 'humania-world', ceoAgentId: SEED_AGENTS[4].id, goal: 'Mundo inmersivo', nextAction: 'Visión futura', risks: 'Scope creep', lastUpdate: Date.now() },
+  { id: uuidv4(), name: 'Avatar Cache Engine', macroDivision: 'Carta Viva', status: 'active', repo: 'avatar-engine', ceoAgentId: SEED_AGENTS[6].id, goal: 'Motor para servir video cacheado', nextAction: 'Integrar en MVP', risks: 'Latencia de video', lastUpdate: Date.now() },
+  { id: uuidv4(), name: 'Azure Provider Integration', macroDivision: 'Infraestructura', status: 'blocked', repo: 'provider-router', ceoAgentId: SEED_AGENTS[5].id, goal: 'Tener fallback a Azure OpenAI', nextAction: 'Esperar backend', risks: 'Bloqueado por backend', lastUpdate: Date.now() },
 ];
 
 
@@ -672,7 +693,7 @@ const SEED_CONTEXTUAL_ASSISTANTS: ContextualAssistant[] = [
   { id: 'ca_9', name: 'Asistente Graphify', sectionId: '/graph', macroArea: 'Conocimiento', purpose: 'ayuda a buscar nodos y recomienda qué nodo enviar a agente', capabilities: ['explorar_nodos', 'crear_tareas_desde_nodos'], suggestedActions: ['Buscar Módulos', 'Enviar a Agente'], safetyRules: ['solo_lectura'], status: 'simulado' },
   { id: 'ca_10', name: 'Asistente de Memoria', sectionId: '/memory', macroArea: 'Conocimiento', purpose: 'decide qué conviene guardar como memoria y resume', capabilities: ['resumir_contexto', 'detectar_criticos'], suggestedActions: ['Limpiar Duplicados', 'Crear Contexto Maestro'], safetyRules: ['borrado_manual'], status: 'simulado' },
   { id: 'ca_11', name: 'Asistente de Decisiones', sectionId: '/decisions', macroArea: 'Conocimiento', purpose: 'ayuda a registrar decisiones y pide alternativas', capabilities: ['registrar_decisiones', 'conectar_proyectos'], suggestedActions: ['Registrar Decisión', 'Ver Alternativas'], safetyRules: ['solo_lectura'], status: 'simulado' },
-  { id: 'ca_12', name: 'Asistente de Video Intelligence', sectionId: '/video-inbox', macroArea: 'Captura', purpose: 'analiza video y extrae herramientas o casos de uso', capabilities: ['analizar_video', 'extraer_pasos'], suggestedActions: ['Extraer Tareas', 'Extraer Skills'], safetyRules: ['crear_memorias'], status: 'simulado' },
+  { id: 'ca_12', name: 'Ingestador de Videos', sectionId: '/catalogo-herramientas', macroArea: 'Catálogo', purpose: 'analiza links multimedia, deduplica herramientas, aplica scoring y acomoda recursos en la taxonomia del catalogo', capabilities: ['catalogo_multimedia', 'analizar_video', 'dedupe_tools', 'score_tools', 'clasificar_taxonomia'], suggestedActions: ['Ingerir Link', 'Comparar Herramientas', 'Publicar en PWA'], safetyRules: ['no_guardar_secretos', 'validar_confianza'], status: 'simulado' },
   { id: 'ca_13', name: 'Asistente de Herramientas y Skills', sectionId: '/mcp-hub', macroArea: 'Workspace', purpose: 'recomienda herramientas para una necesidad', capabilities: ['recomendar_skills', 'vincular_proyectos'], suggestedActions: ['Buscar Tool', 'Vincular a Proyecto'], safetyRules: ['solo_lectura'], status: 'simulado' },
   { id: 'ca_14', name: 'Asesor de Skills', sectionId: '/skill-advisor', macroArea: 'Inteligencia', purpose: 'recomienda qué skills usar para cada tarea', capabilities: ['generar_orden', 'explicar_uso'], suggestedActions: ['Generar Prompts', 'Crear Workflow'], safetyRules: ['solo_lectura'], status: 'simulado' },
   { id: 'ca_15', name: 'Asistente de Prompts', sectionId: '/prompt-studio', macroArea: 'Inteligencia', purpose: 'convierte idea cruda en prompt maestro', capabilities: ['crear_loops', 'recomendar_skills'], suggestedActions: ['Mejorar Prompt', 'Crear Loop'], safetyRules: ['crear_prompts'], status: 'simulado' },
@@ -914,7 +935,7 @@ export const useStore = create<AppState>()(
               costLimitDaily: dbAgent.cost_limit_daily || undefined,
               approvalPolicy: dbAgent.provider_policy || undefined,
             }));
-            set({ agents: mappedAgents });
+            set({ agents: ensureCoreAgents(mappedAgents) });
           }
         } catch (err) {
           console.error("Error fetching agents", err);

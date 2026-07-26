@@ -444,8 +444,10 @@ function VisualizadorBibliotecaRecursos() {
 
       const nuevosRecursos = enlaces.slice(0, 100).map((a, index) => ({
         nombre: a.textContent?.trim() || `Recurso #${index + 1}`,
-        url: a.href || '#',
-        descripcion: a.getAttribute('title') || a.parentElement?.textContent?.trim().slice(0, 120) || 'Recurso parseado desde HTML',
+        repo_url: a.href || '#',
+        para_que: a.getAttribute('title') || a.parentElement?.textContent?.trim().slice(0, 120) || 'Recurso parseado desde HTML',
+        detalle: `Importado desde HTML de 100 recursos. Fuente: ${a.href || '#'}`,
+        estado: 'pending_review',
         categoria: 'IA & Herramientas'
       }));
 
@@ -453,8 +455,10 @@ function VisualizadorBibliotecaRecursos() {
         // Inserción en Supabase
         const { error } = await supabase.from('herramientas').insert(nuevosRecursos.map(r => ({
           nombre: r.nombre,
-          descripcion: r.descripcion,
-          url: r.url
+          repo_url: r.repo_url,
+          para_que: r.para_que,
+          detalle: r.detalle,
+          estado: r.estado
         })));
 
         if (!error) {
@@ -529,10 +533,10 @@ function VisualizadorBibliotecaRecursos() {
               <div>
                 <span className="text-[10px] uppercase font-bold text-qh-cyan tracking-wider">Recurso #{idx + 1}</span>
                 <h5 className="font-bold text-white text-sm mt-1">{rec.nombre || 'Herramienta Ingerida'}</h5>
-                <p className="text-xs text-gray-400 mt-1">{rec.descripcion || 'Sin descripción detallada'}</p>
+                <p className="text-xs text-gray-400 mt-1">{rec.para_que || rec.detalle || 'Sin descripción detallada'}</p>
               </div>
-              {rec.url && (
-                <a href={rec.url} target="_blank" rel="noreferrer" className="text-[11px] text-qh-cyan hover:underline flex items-center gap-1 mt-3">
+              {rec.repo_url && (
+                <a href={rec.repo_url} target="_blank" rel="noreferrer" className="text-[11px] text-qh-cyan hover:underline flex items-center gap-1 mt-3">
                   <ExternalLink size={12} /> Visitar Enlace
                 </a>
               )}
