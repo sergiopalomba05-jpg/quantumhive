@@ -4,6 +4,7 @@ import type { ProviderSelectionResult } from './providerRouter';
 export interface ProviderChatRequest {
   selection: ProviderSelectionResult;
   prompt: string;
+  repoFullName?: string;
   env?: NodeJS.ProcessEnv;
 }
 
@@ -13,8 +14,87 @@ export interface ProviderChatResult {
   modelId: string;
 }
 
-async function generateWithVertex(modelId: string, prompt: string): Promise<string> {
-  const response = await ai.models.generateContent({ model: modelId, contents: prompt });
+async function generateWithVertex(modelId: string, prompt: string, repoFullName?: string): Promise<string> {
+  const tools: any = [];
+  if (repoFullName) {
+    tools.push({
+      functionDeclarations: [
+        {
+          name: "query_github_repo",
+          description: `Query the connected GitHub repository (${repoFullName}) to list branches or get file contents.`,
+          parameters: {
+            type: "OBJECT",
+            properties: {
+              action: {
+                type: "STRING",
+                description: "The action to perform: 'list_branches', 'list_commits', or 'get_file'."
+              },
+              path: {
+                type: "STRING",
+                description: "The file path if action is 'get_file'."
+              }
+            },
+            required: ["action"]
+          }
+        }
+      ]
+    });
+  }
+
+  let currentPrompt = prompt;
+  let response = await ai.models.generateContent({ 
+    model: modelId, 
+    contents: currentPrompt,
+    config: tools.length > 0 ? { tools } : undefined
+  });
+
+  // Simple function calling loop (max 3 iterations)
+  let iterations = 0;
+  while (response.functionCalls && response.functionCalls.length > 0 && iterations < 3) {
+    iterations++;
+    const call = response.functionCalls[0];
+    let result = {};
+    
+    if (call.name === "query_github_repo" && repoFullName) {
+      try {
+        const action = call.args.action;
+        const token = process.env.GITHUB_TOKEN || '';
+        const headers = { 'Accept': 'application/vnd.github+json', 'User-Agent': 'QuantumCore' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        
+        let url = '';
+        if (action === 'list_branches') url = `https://api.github.com/repos/${repoFullName}/branches`;
+        else if (action === 'list_commits') url = `https://api.github.com/repos/${repoFullName}/commits`;
+        else if (action === 'get_file' && call.args.path) url = `https://api.github.com/repos/${repoFullName}/contents/${call.args.path}`;
+        
+        if (url) {
+          const res = await fetch(url, { headers });
+          if (res.ok) {
+            const data = await res.json();
+            if (action === 'get_file' && data.content) {
+               data.content_decoded = Buffer.from(data.content, 'base64').toString('utf-8').substring(0, 1000) + '...';
+            }
+            result = { status: 'success', data: Array.isArray(data) ? data.slice(0, 10) : data };
+          } else {
+            result = { status: 'error', error: `GitHub API error: ${res.status}` };
+          }
+        }
+      } catch (err: any) {
+        result = { status: 'error', error: err.message };
+      }
+    }
+
+    response = await ai.models.generateContent({
+      model: modelId,
+      contents: [
+        { role: 'user', parts: [{ text: currentPrompt }] },
+        { role: 'model', parts: [{ functionCall: call }] },
+        { role: 'user', parts: [{ functionResponse: { name: call.name, response: result } }] }
+      ],
+      config: { tools }
+    });
+  }
+
   return response.text || '';
 }
 
@@ -43,7 +123,7 @@ export async function generateWithProvider(request: ProviderChatRequest): Promis
 
   if (selection.providerId === 'gcp-vertex-ai') {
     return {
-      text: await generateWithVertex(selection.modelId, prompt),
+      text: await generateWithVertex(selection.modelId, prompt, request.repoFullName),
       providerId: selection.providerId,
       modelId: selection.modelId,
     };

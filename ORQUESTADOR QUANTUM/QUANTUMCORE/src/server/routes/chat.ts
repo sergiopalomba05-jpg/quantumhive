@@ -90,6 +90,22 @@ chatRouter.post("/agents/:agentId/chat", async (req, res) => {
 
     const graphNodes = searchGraphNodes(message, 10);
 
+    let repoContext;
+    if (repoId) {
+      const { data: repoMemory } = await supabase
+        .from("memories")
+        .select("metadata")
+        .eq("id", repoId)
+        .single();
+      
+      if (repoMemory?.metadata?.repo) {
+        const repo = repoMemory.metadata.repo;
+        repoContext = { title: repo.fullName, summary: repo.summary, url: repo.url };
+      } else {
+        repoContext = { title: repoId, summary: 'Repositorio conectado', url: '' };
+      }
+    }
+
     const context = buildDominusContextPack({
       agent: { name: agent.name, role: agent.role },
       systemCore,
@@ -97,7 +113,7 @@ chatRouter.post("/agents/:agentId/chat", async (req, res) => {
       memories: memories || [],
       message,
       graphNodes,
-      repo: repoId ? { title: repoId, summary: 'Repositorio conectado', url: '' } : undefined,
+      repo: repoContext,
     });
 
     if (brain.mode === "vs_2" && brain.usedModelIds?.length) {
