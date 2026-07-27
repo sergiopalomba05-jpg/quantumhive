@@ -159,23 +159,148 @@ async function generateWithVertex(modelId: string, prompt: string, repoFullName?
   return response.text || '';
 }
 
-async function generateWithOpenAICompatible(baseUrl: string, apiKey: string, modelId: string, prompt: string): Promise<string> {
-  const response = await fetch(baseUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
+async function generateWithOpenAICompatible(baseUrl: string, apiKey: string, modelId: string, prompt: string, repoFullName?: string): Promise<string> {
+  const tools: any[] = [];
+  
+  if (repoFullName) {
+    tools.push({
+      type: "function",
+      function: {
+        name: "query_github_repo",
+        description: `Query the connected GitHub repository (${repoFullName}) to list branches or get file contents.`,
+        parameters: {
+          type: "object",
+          properties: {
+            action: { type: "string", description: "The action to perform: 'list_branches', 'list_commits', or 'get_file'." },
+            path: { type: "string", description: "The file path if action is 'get_file'." }
+          },
+          required: ["action"]
+        }
+      }
+    });
+  }
+
+  // Add the local runner tools
+  tools.push(
+    {
+      type: "function",
+      function: {
+        name: "execute_local_command",
+        description: "Execute a command on the user's local machine via Quantum Runner. CRITICAL: The local machine is running WINDOWS. You MUST use Windows commands.",
+        parameters: { type: "object", properties: { command: { type: "string" } }, required: ["command"] }
+      }
     },
-    body: JSON.stringify({
+    {
+      type: "function",
+      function: {
+        name: "view_file",
+        description: "View the contents of a file on the user's local machine.",
+        parameters: { type: "object", properties: { path: { type: "string" } }, required: ["path"] }
+      }
+    },
+    {
+      type: "function",
+      function: {
+        name: "write_to_file",
+        description: "Create or overwrite a file on the user's local machine.",
+        parameters: { type: "object", properties: { path: { type: "string" }, content: { type: "string" } }, required: ["path", "content"] }
+      }
+    },
+    {
+      type: "function",
+      function: {
+        name: "multi_replace_file_content",
+        description: "Replace exact chunks of text in a local file.",
+        parameters: {
+          type: "object",
+          properties: { 
+            path: { type: "string" }, 
+            chunks: { 
+              type: "array", 
+              items: {
+                type: "object",
+                properties: { targetContent: { type: "string" }, replacementContent: { type: "string" } },
+                required: ["targetContent", "replacementContent"]
+              }
+            } 
+          },
+          required: ["path", "chunks"]
+        }
+      }
+    }
+  );
+
+  let messages: any[] = [{ role: 'user', content: prompt }];
+  let iterations = 0;
+  let finalResponse = '';
+
+  while (iterations < 5) {
+    iterations++;
+    
+    const body: any = {
       model: modelId,
-      messages: [{ role: 'user', content: prompt }],
-    }),
-  });
+      messages: messages,
+    };
+    if (tools.length > 0) {
+      body.tools = tools;
+      body.tool_choice = "auto";
+    }
 
-  if (!response.ok) throw new Error(`Provider request failed: ${response.status}`);
+    const response = await fetch(baseUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify(body),
+    });
 
-  const data = await response.json() as { choices?: Array<{ message?: { content?: string } }> };
-  return data.choices?.[0]?.message?.content || '';
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Provider request failed: ${response.status} - ${errText}`);
+    }
+
+    const data = await response.json() as any;
+    const message = data.choices?.[0]?.message;
+    
+    if (!message) break;
+    
+    finalResponse = message.content || '';
+    
+    if (message.tool_calls && message.tool_calls.length > 0) {
+      messages.push(message); // Append the assistant's tool call message
+      
+      for (const toolCall of message.tool_calls) {
+        const name = toolCall.function.name;
+        let args: any = {};
+        try { args = JSON.parse(toolCall.function.arguments); } catch(e) {}
+        
+        let toolResultStr = "";
+
+        if (name === "query_github_repo" && repoFullName) {
+           // Reuse the github logic (simplified)
+           toolResultStr = JSON.stringify({ status: "error", error: "Please use local runner for repo files." });
+        } else if (name === "execute_local_command" || name === "view_file" || name === "write_to_file" || name === "multi_replace_file_content") {
+           try {
+             const job = enqueueRunnerJob(name, args);
+             const finishedJob = await waitForRunnerJob(job.id, 60000);
+             toolResultStr = JSON.stringify({ status: finishedJob.status, result: finishedJob.result });
+           } catch (err: any) {
+             toolResultStr = JSON.stringify({ status: 'error', error: err.message });
+           }
+        } else {
+           toolResultStr = JSON.stringify({ error: "Unknown tool" });
+        }
+
+        messages.push({
+          role: "tool",
+          tool_call_id: toolCall.id,
+          content: toolResultStr
+        });
+      }
+    } else {
+      break; // No more tool calls, we're done
+    }
+  }
+
+  return finalResponse;
 }
 
 export async function generateWithProvider(request: ProviderChatRequest): Promise<ProviderChatResult> {
@@ -193,7 +318,7 @@ export async function generateWithProvider(request: ProviderChatRequest): Promis
   if (selection.providerId === 'openai-api') {
     if (!env.OPENAI_API_KEY) throw new Error('OPENAI_API_KEY is not configured');
     return {
-      text: await generateWithOpenAICompatible('https://api.openai.com/v1/chat/completions', env.OPENAI_API_KEY, selection.modelId, prompt),
+      text: await generateWithOpenAICompatible('https://api.openai.com/v1/chat/completions', env.OPENAI_API_KEY, selection.modelId, prompt, request.repoFullName),
       providerId: selection.providerId,
       modelId: selection.modelId,
     };
@@ -202,7 +327,7 @@ export async function generateWithProvider(request: ProviderChatRequest): Promis
   if (selection.providerId === 'openrouter-api') {
     if (!env.OPENROUTER_API_KEY) throw new Error('OPENROUTER_API_KEY is not configured');
     return {
-      text: await generateWithOpenAICompatible('https://openrouter.ai/api/v1/chat/completions', env.OPENROUTER_API_KEY, selection.modelId, prompt),
+      text: await generateWithOpenAICompatible('https://openrouter.ai/api/v1/chat/completions', env.OPENROUTER_API_KEY, selection.modelId, prompt, request.repoFullName),
       providerId: selection.providerId,
       modelId: selection.modelId,
     };
