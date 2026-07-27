@@ -92,12 +92,14 @@ chatRouter.post("/agents/:agentId/chat", async (req, res) => {
 
     let repoContext;
     if (repoId) {
-      const { data: repoMemory } = await supabase
+      const { data: repoMemories } = await supabase
         .from("memories")
         .select("metadata")
-        .eq("id", repoId)
-        .single();
-      
+        .eq("scope", "global")
+        .eq("metadata->>kind", "github_connected_repo");
+
+      const repoMemory = repoMemories?.find(row => (row.metadata as any)?.repo?.id === repoId);
+
       if (repoMemory?.metadata?.repo) {
         const repo = repoMemory.metadata.repo;
         repoContext = { title: repo.fullName, summary: repo.summary, url: repo.url };
