@@ -6,6 +6,7 @@ export interface ProviderSelectionRequest {
   modelId?: string;
   message?: string;
   repoId?: string;
+  customProvider?: { baseUrl: string; apiKey: string };
 }
 
 export interface ProviderSelectionResult {
@@ -16,6 +17,7 @@ export interface ProviderSelectionResult {
   fallbackUsed: boolean;
   fallbackReason?: string;
   repoId?: string;
+  customProvider?: { baseUrl: string; apiKey: string };
 }
 
 const DEFAULT_PROVIDER_ID = 'gcp-vertex-ai';
@@ -61,6 +63,18 @@ export function resolveProviderSelection(
   request: ProviderSelectionRequest,
   env: NodeJS.ProcessEnv = process.env,
 ): ProviderSelectionResult {
+  if (request.providerId?.startsWith('custom-') && request.customProvider) {
+    return {
+      providerId: request.providerId,
+      providerName: 'Custom Provider (BYOK)',
+      modelId: request.modelId || 'auto',
+      modelDisplayName: request.modelId || 'Custom Model',
+      fallbackUsed: false,
+      repoId: request.repoId,
+      customProvider: request.customProvider,
+    };
+  }
+
   const providers = getProviderRegistry(env);
   const requestedProvider = request.providerId ? providers.find((provider) => provider.id === request.providerId) : undefined;
   const requestedModel = requestedProvider && request.modelId

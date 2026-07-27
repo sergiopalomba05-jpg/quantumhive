@@ -333,5 +333,15 @@ export async function generateWithProvider(request: ProviderChatRequest): Promis
     };
   }
 
+  if (selection.providerId.startsWith('custom-') && selection.customProvider) {
+    const chatUrl = selection.customProvider.baseUrl.replace(/\/$/, '') + '/chat/completions';
+    return {
+      text: await generateWithOpenAICompatible(chatUrl, selection.customProvider.apiKey, selection.modelId, prompt, request.repoFullName),
+      providerId: selection.providerId,
+      modelId: selection.modelId,
+    };
+  }
+
   throw new Error(`Provider ${selection.providerId} is not executable yet`);
 }
+

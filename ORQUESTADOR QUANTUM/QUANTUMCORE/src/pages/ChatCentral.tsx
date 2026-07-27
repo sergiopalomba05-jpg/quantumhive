@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, type CSSProperties } from 'react';
 import { useStore } from '../store/useStore';
+import { useProviderStore } from '../store/providerStore';
 import { Send, Bot, BrainCircuit, Loader2, MessageSquare, Search as SearchIcon, ChevronDown, ChevronRight, ArrowLeft } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -207,11 +208,22 @@ export function ChatCentral() {
   const agentMessages = store.chatMessages.filter(m => m.agentId === selectedAgentId);
   const filteredAgents = store.agents.filter(a => a.name.toLowerCase().includes(searchTerm.toLowerCase()));
   const maxVsBrains = 2;
-  const selectedProvider = providers.find(provider => provider.id === selectedProviderId);
+  const { customProviders } = useProviderStore();
+  
+  const allProviders: ChatProvider[] = [
+    ...providers,
+    ...customProviders.map(cp => ({
+      id: cp.id,
+      name: cp.name,
+      models: cp.models.filter(m => m.enabled).map(m => ({ id: m.id, displayName: m.name }))
+    }))
+  ];
+
+  const selectedProvider = allProviders.find(provider => provider.id === selectedProviderId);
   const selectedProviderModels = selectedProvider?.models || [];
 
   const selectBrainModel = (modelId: string) => {
-    const providerForModel = providers.find(provider => provider.models.some(model => model.id === modelId));
+    const providerForModel = allProviders.find(provider => provider.models.some(model => model.id === modelId));
 
     if (providerForModel) {
       setSelectedProviderId(providerForModel.id);
@@ -285,6 +297,8 @@ export function ChatCentral() {
 
     setIsThinking(true);
 
+    const selectedCustomProvider = customProviders.find(p => p.id === selectedProviderId);
+
     try {
       const res = await fetch(`/api/agents/${selectedAgentId}/chat`, {
         method: 'POST',
@@ -295,6 +309,10 @@ export function ChatCentral() {
           reasoningLevel,
           modelId: reasoningLevel === 'high' ? 'gemini-2.5-pro' : selectedModelId,
           providerId: selectedProviderId,
+          customProvider: selectedCustomProvider ? {
+            baseUrl: selectedCustomProvider.baseUrl,
+            apiKey: selectedCustomProvider.apiKey
+          } : undefined,
           repoId: selectedRepoId || undefined,
           vsModelIds: brainMode === 'vs_2' ? vsModelIds : undefined,
         })
@@ -456,8 +474,8 @@ export function ChatCentral() {
                   if (brainMode === 'auto') setBrainMode('manual');
                 }}
               >
-                {providers.length === 0 && <option value="gcp-vertex-ai">Vertex AI</option>}
-                {providers.map((provider) => (
+                {allProviders.length === 0 && <option value="gcp-vertex-ai">Vertex AI</option>}
+                {allProviders.map((provider) => (
                   <option key={provider.id} value={provider.id}>{provider.name}</option>
                 ))}
               </select>
@@ -527,7 +545,7 @@ export function ChatCentral() {
           <ActiveBrainBadge
             modelId={reasoningLevel === 'high' ? 'gemini-2.5-pro' : selectedModelId}
             providerId={selectedProviderId}
-            providers={providers}
+            providers={allProviders}
           />
         </div>
 
