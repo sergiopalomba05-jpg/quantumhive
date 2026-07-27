@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Search, Database, BrainCircuit, Bot, Copy, Plus, Loader2, RefreshCw, Network, FileText, Code, Box, ChevronRight, ExternalLink, Download } from 'lucide-react';
+import { Search, Database, BrainCircuit, Bot, Copy, Plus, Loader2, RefreshCw, Network, FileText, Code, Box, ChevronRight, ExternalLink, Download, X } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { TourButton } from '../components/onboarding/TourButton';
 
@@ -304,6 +304,14 @@ export function KnowledgeGraph() {
       )}>
         {selectedNode && (
           <div className="p-6 space-y-6">
+            <button
+              type="button"
+              onClick={() => setSelectedNode(null)}
+              aria-label="Cerrar detalle"
+              className="ml-auto flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:border-qh-cyan hover:bg-slate-800"
+            >
+              <X size={14} /> Cerrar detalle
+            </button>
             <div>
               <div className={cn('inline-flex items-center gap-1.5 px-2 py-0.5 rounded border text-[10px] font-bold uppercase tracking-widest mb-3', TYPE_COLORS[selectedNode.type] || 'text-slate-400 bg-slate-800 border-slate-700')}>
                 {TYPE_ICONS[selectedNode.type] || <Box size={12} />}

@@ -22,4 +22,11 @@ describe('Graph direct link', () => {
     assert.doesNotMatch(graphPage, /Ejecutá[\s\S]{0,80}localmente/);
     assert.equal(existsSync(join(root, 'graphify-out/graph.html')), true);
   });
+
+  it('lets users close the node detail side panel', () => {
+    const graphPage = readProjectFile('src/pages/KnowledgeGraph.tsx');
+
+    assert.match(graphPage, /Cerrar detalle/);
+    assert.match(graphPage, /setSelectedNode\(null\)/);
+  });
 });
