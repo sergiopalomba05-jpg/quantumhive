@@ -133,19 +133,22 @@ describe('QuantumCore chat command UI', () => {
     assert.match(css, /\.sidebar-nav-idle:hover[\s\S]*text-shadow:[\s\S]*rgba\(0, 0, 0/);
     assert.match(css, /\.sidebar-section-trigger:hover[\s\S]*background:\s*rgba\(5, 8, 13/);
     assert.match(css, /\.sidebar-section-trigger[\s\S]*font-weight:\s*950/);
-    assert.match(css, /\.sidebar-section-label[\s\S]*font-size:\s*0\.68rem/);
+    assert.match(css, /\.sidebar-section-label[\s\S]*font-size:\s*0\.8rem/);
+    assert.match(css, /\.sidebar-section-label[\s\S]*letter-spacing:\s*0\.08em/);
+    assert.match(css, /\.sidebar-section-trigger[\s\S]*background:\s*rgba\(2, 6, 23, 0\.42\)/);
     assert.match(css, /\.sidebar-nav-link[\s\S]*font-size:\s*0\.74rem/);
   });
 
-  it('keeps the sidebar close control large and clickable', () => {
+  it('keeps the sidebar close control compact and visually integrated', () => {
     const layout = readProjectFile('src/components/Layout.tsx');
     const css = readProjectFile('src/index.css');
 
     assert.match(layout, /sidebarCollapsed/);
     assert.match(layout, /aria-label="Ocultar navegación"/);
     assert.match(layout, /aria-label="Mostrar navegación"/);
-    assert.match(css, /\.sidebar-edge-toggle[\s\S]*width:\s*2\.65rem/);
-    assert.match(css, /\.sidebar-edge-toggle[\s\S]*background:\s*rgba\(2, 6, 23, 0\.92\)/);
+    assert.match(css, /\.sidebar-edge-toggle[\s\S]*width:\s*1\.85rem/);
+    assert.match(css, /\.sidebar-edge-toggle[\s\S]*border-radius:\s*0 0\.85rem 0\.85rem 0/);
+    assert.match(css, /\.sidebar-edge-toggle[\s\S]*background:\s*linear-gradient\(180deg, rgba\(4, 10, 22, 0\.96\), rgba\(2, 6, 23, 0\.98\)\)/);
     assert.match(css, /\.sidebar-edge-toggle[\s\S]*pointer-events:\s*auto/);
   });
 

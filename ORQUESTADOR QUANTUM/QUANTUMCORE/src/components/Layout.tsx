@@ -64,10 +64,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
             aria-label="Mostrar navegación"
             onClick={() => setSidebarCollapsed(false)}
             className="sidebar-edge-toggle"
-            style={{ left: '0.25rem' }}
+            style={{ left: '0' }}
             title="Mostrar navegación"
           >
-            <PanelLeftOpen size={16} />
+            <PanelLeftOpen size={15} />
           </button>
         ) : (
           <button
@@ -75,10 +75,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
             aria-label="Ocultar navegación"
             onClick={() => setSidebarCollapsed(true)}
             className="sidebar-edge-toggle"
-            style={{ left: '17.85rem' }}
+            style={{ left: '18rem' }}
             title="Ocultar navegación"
           >
-            <PanelLeftClose size={16} />
+            <PanelLeftClose size={15} />
           </button>
         )}
       </div>
