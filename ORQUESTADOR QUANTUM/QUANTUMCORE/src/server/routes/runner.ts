@@ -5,7 +5,8 @@ export const runnerRouter = Router();
 
 type RunnerJob = {
   id: string;
-  command: string;
+  tool: string;
+  args: any;
   status: 'pending' | 'running' | 'completed' | 'failed';
   result?: string;
   createdAt: number;
@@ -14,9 +15,9 @@ type RunnerJob = {
 // In-memory queue for MVP
 const jobs = new Map<string, RunnerJob>();
 
-export function enqueueRunnerJob(command: string): RunnerJob {
+export function enqueueRunnerJob(tool: string, args: any): RunnerJob {
   const id = randomUUID();
-  const job: RunnerJob = { id, command, status: 'pending', createdAt: Date.now() };
+  const job: RunnerJob = { id, tool, args, status: 'pending', createdAt: Date.now() };
   jobs.set(id, job);
   return job;
 }
@@ -34,12 +35,16 @@ export async function waitForRunnerJob(id: string, timeoutMs = 30000): Promise<R
 
 // 1. Endpoint para encolar un comando (Usado por interfaz web si se quiere)
 runnerRouter.post('/runner/jobs', (req, res) => {
-  const { command } = req.body;
-  if (!command) {
-    res.status(400).json({ error: "command is required" });
+  const { tool, args, command } = req.body;
+  if (!tool && !command) {
+    res.status(400).json({ error: "tool or command is required" });
     return;
   }
-  const job = enqueueRunnerJob(command);
+  // Compatibilidad hacia atrás (si mandan command, lo mapeamos a execute_local_command)
+  const jobTool = tool || 'execute_local_command';
+  const jobArgs = args || { command };
+  
+  const job = enqueueRunnerJob(jobTool, jobArgs);
   res.status(201).json(job);
 });
 

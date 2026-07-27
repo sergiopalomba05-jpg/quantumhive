@@ -1,5 +1,6 @@
 import { exec } from "node:child_process";
 import { promisify } from "node:util";
+import fs from "node:fs/promises";
 
 const execAsync = promisify(exec);
 
@@ -12,21 +13,49 @@ const POLL_INTERVAL = 3000; // Chequear tareas cada 3 segundos
 console.log(`🚀 Iniciando Quantum Runner Local...`);
 console.log(`🔗 Conectando a QuantumCore en: ${API_BASE}`);
 
-async function executeCommand(command: string): Promise<{ result: string, status: 'completed' | 'failed' }> {
+async function executeTool(toolName: string, args: any): Promise<{ result: string, status: 'completed' | 'failed' }> {
   try {
-    console.log(`\n⚙️ Ejecutando comando: ${command}`);
-    // Ejecutamos en el shell por defecto (PowerShell en Windows, bash en Linux)
-    const { stdout, stderr } = await execAsync(command);
+    if (toolName === 'execute_local_command') {
+      const command = args.command || args; // Fallback
+      console.log(`\n⚙️ Ejecutando comando: ${command}`);
+      const { stdout, stderr } = await execAsync(command);
+      
+      let resultText = stdout;
+      if (stderr) {
+        resultText += `\n[STDERR]\n${stderr}`;
+      }
+      console.log(`✅ Comando finalizado.`);
+      return { result: resultText.trim() || "Comando ejecutado sin salida.", status: 'completed' };
+    } 
     
-    let resultText = stdout;
-    if (stderr) {
-      resultText += `\n[STDERR]\n${stderr}`;
+    if (toolName === 'view_file') {
+      console.log(`\n📄 Leyendo archivo: ${args.path}`);
+      const content = await fs.readFile(args.path, 'utf8');
+      console.log(`✅ Archivo leído.`);
+      return { result: content, status: 'completed' };
     }
     
-    console.log(`✅ Comando finalizado con éxito.`);
-    return { result: resultText.trim() || "Comando ejecutado sin salida.", status: 'completed' };
+    if (toolName === 'write_to_file') {
+      console.log(`\n💾 Escribiendo archivo: ${args.path}`);
+      await fs.writeFile(args.path, args.content, 'utf8');
+      console.log(`✅ Archivo guardado.`);
+      return { result: "File written successfully.", status: 'completed' };
+    }
+
+    if (toolName === 'multi_replace_file_content') {
+      console.log(`\n✂️ Modificando archivo: ${args.path}`);
+      let content = await fs.readFile(args.path, 'utf8');
+      for (const chunk of args.chunks) {
+        content = content.replace(chunk.targetContent, chunk.replacementContent);
+      }
+      await fs.writeFile(args.path, content, 'utf8');
+      console.log(`✅ Archivo modificado.`);
+      return { result: "File updated successfully.", status: 'completed' };
+    }
+
+    return { result: `Tool no reconocida: ${toolName}`, status: 'failed' };
   } catch (error: any) {
-    console.error(`❌ Error ejecutando comando:`, error.message);
+    console.error(`❌ Error en tool ${toolName}:`, error.message);
     const errorText = `${error.message}\n${error.stdout || ""}\n${error.stderr || ""}`;
     return { result: errorText.trim(), status: 'failed' };
   }
@@ -43,9 +72,11 @@ async function pollJobs() {
     const jobs = data.jobs || [];
 
     for (const job of jobs) {
-      console.log(`\n📥 Tarea recibida [ID: ${job.id}]`);
+      console.log(`\n📥 Tarea recibida [ID: ${job.id}] -> Tool: ${job.tool || 'comando legacy'}`);
       
-      const { result, status } = await executeCommand(job.command);
+      const toolName = job.tool || 'execute_local_command';
+      const args = job.args || job.command;
+      const { result, status } = await executeTool(toolName, args);
 
       // Enviamos el resultado de vuelta a la nube
       console.log(`📤 Enviando resultado a la nube...`);

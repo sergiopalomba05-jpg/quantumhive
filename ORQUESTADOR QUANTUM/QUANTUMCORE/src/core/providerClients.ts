@@ -42,21 +42,53 @@ async function generateWithVertex(modelId: string, prompt: string, repoFullName?
     });
   }
 
-  // Add the local runner tool
+  // Add the local runner tools
   tools.push({
     functionDeclarations: [
       {
         name: "execute_local_command",
-        description: "Execute a command on the user's local machine via Quantum Runner. CRITICAL: The local machine is running WINDOWS. You MUST use Windows commands (e.g., 'dir' instead of 'ls', 'type' instead of 'cat'). The current directory is the root of the project.",
+        description: "Execute a command on the user's local machine via Quantum Runner. CRITICAL: The local machine is running WINDOWS. You MUST use Windows commands (e.g., 'dir' instead of 'ls', 'type' instead of 'cat').",
         parameters: {
           type: "OBJECT",
-          properties: {
-            command: {
-              type: "STRING",
-              description: "The command to execute in the terminal."
-            }
-          },
+          properties: { command: { type: "STRING" } },
           required: ["command"]
+        }
+      },
+      {
+        name: "view_file",
+        description: "View the contents of a file on the user's local machine. Provide an absolute path or path relative to the project root.",
+        parameters: {
+          type: "OBJECT",
+          properties: { path: { type: "STRING" } },
+          required: ["path"]
+        }
+      },
+      {
+        name: "write_to_file",
+        description: "Create or overwrite a file on the user's local machine with the given content.",
+        parameters: {
+          type: "OBJECT",
+          properties: { path: { type: "STRING" }, content: { type: "STRING" } },
+          required: ["path", "content"]
+        }
+      },
+      {
+        name: "multi_replace_file_content",
+        description: "Replace exact chunks of text in a local file. Use this to edit specific parts of a file.",
+        parameters: {
+          type: "OBJECT",
+          properties: { 
+            path: { type: "STRING" }, 
+            chunks: { 
+              type: "ARRAY", 
+              items: {
+                type: "OBJECT",
+                properties: { targetContent: { type: "STRING" }, replacementContent: { type: "STRING" } },
+                required: ["targetContent", "replacementContent"]
+              }
+            } 
+          },
+          required: ["path", "chunks"]
         }
       }
     ]
@@ -103,10 +135,9 @@ async function generateWithVertex(modelId: string, prompt: string, repoFullName?
       } catch (err: any) {
         result = { status: 'error', error: err.message };
       }
-    } else if (call.name === "execute_local_command") {
+    } else if (call.name === "execute_local_command" || call.name === "view_file" || call.name === "write_to_file" || call.name === "multi_replace_file_content") {
       try {
-        const command = call.args.command;
-        const job = enqueueRunnerJob(command as string);
+        const job = enqueueRunnerJob(call.name, call.args);
         const finishedJob = await waitForRunnerJob(job.id, 60000); // 60s timeout
         result = { status: finishedJob.status, result: finishedJob.result };
       } catch (err: any) {
