@@ -47,7 +47,7 @@ async function generateWithVertex(modelId: string, prompt: string, repoFullName?
     functionDeclarations: [
       {
         name: "execute_local_command",
-        description: "Execute a bash or powershell command on the user's local machine via the Quantum Runner. Use this to read files, run git, npm, etc.",
+        description: "Execute a command on the user's local machine via Quantum Runner. CRITICAL: The local machine is running WINDOWS. You MUST use Windows commands (e.g., 'dir' instead of 'ls', 'type' instead of 'cat'). The current directory is the root of the project.",
         parameters: {
           type: "OBJECT",
           properties: {
