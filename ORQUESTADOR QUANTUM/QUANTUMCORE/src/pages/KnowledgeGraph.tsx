@@ -212,21 +212,22 @@ export function KnowledgeGraph() {
 
               {/* Agent context info */}
               <div className="p-4 bg-slate-900/30 border border-slate-800/50 rounded-xl">
-                <h3 className="text-xs uppercase tracking-widest text-qh-cyan font-bold mb-2">Grafo Externo (Graphify)</h3>
+                <h3 className="text-xs uppercase tracking-widest text-qh-cyan font-bold mb-2">Grafo Visual Interactivo (Graphify)</h3>
                 <a
-                  href="/graphify-out/graph.html"
+                  href="https://cerebrogeneral.netlify.app"
                   target="_blank"
                   rel="noreferrer"
-                  className="mb-3 inline-flex items-center gap-2 rounded-lg border border-qh-cyan/30 bg-qh-cyan/10 px-3 py-2 text-xs font-bold uppercase tracking-widest text-qh-cyan transition-colors hover:bg-qh-cyan/20"
+                  className="mb-3 inline-flex items-center gap-2 rounded-lg border border-qh-cyan/30 bg-qh-cyan/10 px-4 py-3 text-sm font-bold uppercase tracking-widest text-qh-cyan transition-colors hover:bg-qh-cyan/20"
                 >
-                  <ExternalLink size={14} /> Abrir grafo interactivo
+                  <ExternalLink size={16} /> 🕸️ Abrir Grafo Completo de Nodos
                 </a>
                 <p className="text-xs text-slate-400 leading-relaxed mb-3">
-                  Link directo al archivo vivo: <span className="text-white font-mono">/graphify-out/graph.html</span>. Carga el grafo completo desde <span className="text-white font-mono">/graphify-out/graph.json</span>.
+                  Abre el visualizador interactivo con todos los nodos, árbol jerárquico y flujo de llamadas del proyecto.
+                  Alojado en: <span className="text-white font-mono">cerebrogeneral.netlify.app</span>
                 </p>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Este explorador es interno: busca nodos, navega comunidades, y consulta el agente.
-                  El agente Dominus ya consulta el grafo via API en cada mensaje.
+                  Este explorador de abajo es para buscar nodos y navegar comunidades por texto.
+                  El grafo visual completo está en el link de arriba.
                 </p>
               </div>
             </div>

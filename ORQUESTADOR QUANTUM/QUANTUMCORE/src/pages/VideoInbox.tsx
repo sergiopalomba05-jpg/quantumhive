@@ -22,7 +22,7 @@ interface BackendVideoIngestItem {
 }
 
 const viteEnv = (import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env ?? {};
-const catalogPwaUrl = viteEnv.VITE_CATALOGO_PWA_URL || '/catalogo-pwa/';
+const catalogPwaUrl = viteEnv.VITE_CATALOGO_PWA_URL || 'https://catalogodeherramientasia.netlify.app';
 const catalogSupabaseUrl = 'https://gbngjsulhqcwgkqoxozy.supabase.co';
 
 function formatCatalogStatus(status: string): string {
