@@ -12,6 +12,40 @@ export function SkillAdvisor() {
   const [recommendations, setRecommendations] = useState<SkillDefinition[]>([]);
   const [suggestedOrder, setSuggestedOrder] = useState<string[]>([]);
   const [generatedPrompt, setGeneratedPrompt] = useState<string>('');
+  
+  const [showAddSource, setShowAddSource] = useState(false);
+  const [newSourceUrl, setNewSourceUrl] = useState('');
+  const [isImporting, setIsImporting] = useState(false);
+
+  const handleImportGitHub = async () => {
+    if (!newSourceUrl.includes('github.com')) {
+       alert("Por favor ingresa una URL válida de GitHub.");
+       return;
+    }
+    
+    setIsImporting(true);
+    try {
+      const res = await fetch('/api/runner/jobs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tool: 'import_github_skill',
+          args: { url: newSourceUrl }
+        })
+      });
+      
+      if (res.ok) {
+        alert('Orden de clonación enviada al Quantum Runner. La skill se instalará en ~/.quantumcore/skills.');
+        setShowAddSource(false);
+        setNewSourceUrl('');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Error contactando al Runner.');
+    } finally {
+      setIsImporting(false);
+    }
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -220,9 +254,41 @@ export function SkillAdvisor() {
               </span>
             </div>
           ))}
-          <button className="w-full py-3 border border-dashed border-slate-600 rounded-lg text-slate-400 hover:text-white hover:border-slate-400 flex items-center justify-center gap-2 text-sm transition-colors">
-            <Plus size={16} /> Agregar Source
-          </button>
+          ))}
+
+          {showAddSource ? (
+            <div className="p-4 bg-black/40 rounded-lg border border-emerald-500/30 space-y-3">
+              <input 
+                type="text" 
+                placeholder="URL del Repositorio de GitHub" 
+                className="w-full bg-black/50 border border-white/10 rounded p-2 text-sm text-white"
+                value={newSourceUrl}
+                onChange={e => setNewSourceUrl(e.target.value)}
+              />
+              <div className="flex gap-2">
+                <button 
+                  onClick={handleImportGitHub}
+                  disabled={isImporting}
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs py-2 rounded font-bold disabled:opacity-50"
+                >
+                  {isImporting ? 'Importando...' : 'Clonar e Instalar'}
+                </button>
+                <button 
+                  onClick={() => setShowAddSource(false)}
+                  className="px-4 bg-slate-700 hover:bg-slate-600 text-white text-xs py-2 rounded font-bold"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button 
+              onClick={() => setShowAddSource(true)}
+              className="w-full py-3 border border-dashed border-slate-600 rounded-lg text-slate-400 hover:text-white hover:border-slate-400 flex items-center justify-center gap-2 text-sm transition-colors"
+            >
+              <Plus size={16} /> Importar Skill desde GitHub
+            </button>
+          )}
         </div>
       </div>
     </div>

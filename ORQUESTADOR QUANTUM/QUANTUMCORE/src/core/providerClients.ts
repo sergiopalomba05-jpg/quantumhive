@@ -1,6 +1,6 @@
 import { ai } from './providers/ai';
 import type { ProviderSelectionResult } from './providerRouter';
-import { enqueueRunnerJob, waitForRunnerJob } from '../server/routes/runner';
+import { enqueueRunnerJob, waitForRunnerJob, getRunnerDynamicTools } from '../server/routes/runner.js';
 
 export interface ProviderChatRequest {
   selection: ProviderSelectionResult;
@@ -94,6 +94,31 @@ async function generateWithVertex(modelId: string, prompt: string, repoFullName?
     ]
   });
 
+  const dynamicTools = getRunnerDynamicTools();
+  if (dynamicTools.length > 0) {
+    tools.push({
+      functionDeclarations: dynamicTools.map(t => {
+        // Gemini expects uppercase OBJECT, STRING, etc.
+        const convertType = (schema: any): any => {
+          if (!schema) return { type: "STRING" };
+          let tStr = schema.type ? schema.type.toUpperCase() : "STRING";
+          let props = {};
+          if (schema.properties) {
+             for (const [k, v] of Object.entries(schema.properties)) {
+                props[k] = convertType(v);
+             }
+          }
+          return { type: tStr, description: schema.description, properties: Object.keys(props).length ? props : undefined, required: schema.required };
+        };
+        return {
+          name: t.name,
+          description: t.description || `Tool from ${t.source}`,
+          parameters: convertType(t.parameters)
+        };
+      })
+    });
+  }
+
   let currentPrompt = prompt;
   let response = await ai.models.generateContent({ 
     model: modelId, 
@@ -142,6 +167,19 @@ async function generateWithVertex(modelId: string, prompt: string, repoFullName?
         result = { status: finishedJob.status, result: finishedJob.result };
       } catch (err: any) {
         result = { status: 'error', error: err.message };
+      }
+    } else {
+      const dynamicTool = getRunnerDynamicTools().find(t => t.name === call.name);
+      if (dynamicTool) {
+        try {
+          const runnerToolName = dynamicTool.source === 'mcp' ? 'call_mcp_tool' : 'call_skill';
+          const runnerArgs = { serverId: dynamicTool.serverId, toolName: call.name, args: call.args };
+          const job = enqueueRunnerJob(runnerToolName, runnerArgs);
+          const finishedJob = await waitForRunnerJob(job.id, 60000);
+          result = { status: finishedJob.status, result: finishedJob.result };
+        } catch (err: any) {
+          result = { status: 'error', error: err.message };
+        }
       }
     }
 
@@ -230,6 +268,18 @@ async function generateWithOpenAICompatible(baseUrl: string, apiKey: string, mod
     }
   );
 
+  const dynamicTools = getRunnerDynamicTools();
+  for (const dt of dynamicTools) {
+    tools.push({
+      type: "function",
+      function: {
+        name: dt.name,
+        description: dt.description || `Tool from ${dt.source}`,
+        parameters: dt.parameters || { type: "object", properties: {} }
+      }
+    });
+  }
+
   let messages: any[] = [{ role: 'user', content: prompt }];
   let iterations = 0;
   let finalResponse = '';
@@ -282,11 +332,24 @@ async function generateWithOpenAICompatible(baseUrl: string, apiKey: string, mod
              const job = enqueueRunnerJob(name, args);
              const finishedJob = await waitForRunnerJob(job.id, 60000);
              toolResultStr = JSON.stringify({ status: finishedJob.status, result: finishedJob.result });
-           } catch (err: any) {
+            } catch (err: any) {
              toolResultStr = JSON.stringify({ status: 'error', error: err.message });
            }
         } else {
-           toolResultStr = JSON.stringify({ error: "Unknown tool" });
+           const dynamicTool = getRunnerDynamicTools().find(t => t.name === name);
+           if (dynamicTool) {
+             try {
+               const runnerToolName = dynamicTool.source === 'mcp' ? 'call_mcp_tool' : 'call_skill';
+               const runnerArgs = { serverId: dynamicTool.serverId, toolName: name, args: args };
+               const job = enqueueRunnerJob(runnerToolName, runnerArgs);
+               const finishedJob = await waitForRunnerJob(job.id, 60000);
+               toolResultStr = JSON.stringify({ status: finishedJob.status, result: finishedJob.result });
+             } catch (err: any) {
+               toolResultStr = JSON.stringify({ status: 'error', error: err.message });
+             }
+           } else {
+             toolResultStr = JSON.stringify({ error: "Unknown tool" });
+           }
         }
 
         messages.push({

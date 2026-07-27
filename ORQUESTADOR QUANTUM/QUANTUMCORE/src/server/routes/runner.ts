@@ -12,8 +12,21 @@ type RunnerJob = {
   createdAt: number;
 };
 
+export type DynamicTool = {
+  name: string;
+  description: string;
+  parameters: any;
+  source: 'mcp' | 'skill';
+  serverId?: string;
+};
+
 // In-memory queue for MVP
 const jobs = new Map<string, RunnerJob>();
+let runnerDynamicTools: DynamicTool[] = [];
+
+export function getRunnerDynamicTools() {
+  return runnerDynamicTools;
+}
 
 export function enqueueRunnerJob(tool: string, args: any): RunnerJob {
   const id = randomUUID();
@@ -80,4 +93,16 @@ runnerRouter.get('/runner/jobs/:id', (req, res) => {
     return;
   }
   res.json(job);
+});
+
+// 5. Endpoint para que el Runner registre sus herramientas dinámicas
+runnerRouter.post('/runner/tools', (req, res) => {
+  const { tools } = req.body;
+  if (!Array.isArray(tools)) {
+    res.status(400).json({ error: "tools must be an array" });
+    return;
+  }
+  runnerDynamicTools = tools;
+  console.log(`[Runner] Registradas ${tools.length} herramientas dinamicas.`);
+  res.json({ success: true, count: runnerDynamicTools.length });
 });
