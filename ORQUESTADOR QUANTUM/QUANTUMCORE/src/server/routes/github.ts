@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { Router } from 'express';
+import { supabase } from '../../core/providers/supabase';
 
 type GitHubRepoMetadata = {
   description?: string | null;
@@ -24,7 +25,151 @@ type ConnectedRepo = {
   assignedAgentIds: string[];
 };
 
-const connectedRepos: ConnectedRepo[] = [];
+type ConnectedRepoMemoryPayload = {
+  scope: 'global';
+  content: string;
+  metadata: {
+    kind: 'github_connected_repo';
+    fullName: string;
+    repo: ConnectedRepo;
+  };
+  visibility: 'private';
+};
+
+type ConnectedRepoMemoryRow = {
+  id: string;
+  content: string | null;
+  metadata: unknown;
+  created_at?: string | null;
+};
+
+const fallbackConnectedRepos: ConnectedRepo[] = [];
+
+function rememberFallbackRepo(repo: ConnectedRepo): void {
+  const index = fallbackConnectedRepos.findIndex((item) => item.id === repo.id || item.fullName === repo.fullName);
+  if (index >= 0) {
+    fallbackConnectedRepos[index] = repo;
+    return;
+  }
+  fallbackConnectedRepos.push(repo);
+}
+
+function forgetFallbackRepo(repoId: string): void {
+  const index = fallbackConnectedRepos.findIndex((item) => item.id === repoId);
+  if (index >= 0) fallbackConnectedRepos.splice(index, 1);
+}
+
+function isConnectedRepo(value: unknown): value is ConnectedRepo {
+  if (!value || typeof value !== 'object') return false;
+  const repo = value as Partial<ConnectedRepo>;
+  return [repo.id, repo.owner, repo.name, repo.fullName, repo.title, repo.summary, repo.url, repo.lastIndexedAt]
+    .every((item) => typeof item === 'string')
+    && typeof repo.active === 'boolean'
+    && Array.isArray(repo.assignedAgentIds)
+    && repo.assignedAgentIds.every((id) => typeof id === 'string');
+}
+
+export function createConnectedRepoMemoryPayload(repo: ConnectedRepo): ConnectedRepoMemoryPayload {
+  return {
+    scope: 'global',
+    content: `Repositorio GitHub conectado: ${repo.fullName}\n${repo.summary}`,
+    metadata: {
+      kind: 'github_connected_repo',
+      fullName: repo.fullName,
+      repo,
+    },
+    visibility: 'private',
+  };
+}
+
+export function mapConnectedRepoMemoryRow(row: ConnectedRepoMemoryRow): ConnectedRepo {
+  const metadata = row.metadata && typeof row.metadata === 'object' ? row.metadata as { repo?: unknown } : {};
+  if (!isConnectedRepo(metadata.repo)) {
+    throw new Error('Invalid connected repo memory row');
+  }
+  return metadata.repo;
+}
+
+async function listConnectedRepos(): Promise<ConnectedRepo[]> {
+  try {
+    const { data, error } = await supabase
+      .from('memories')
+      .select('id, content, metadata, created_at')
+      .eq('scope', 'global')
+      .eq('metadata->>kind', 'github_connected_repo')
+      .order('created_at', { ascending: true });
+
+    if (error) throw error;
+
+    const repos = (data || [])
+      .map((row) => {
+        try {
+          return mapConnectedRepoMemoryRow(row as ConnectedRepoMemoryRow);
+        } catch {
+          return null;
+        }
+      })
+      .filter((repo): repo is ConnectedRepo => repo !== null);
+
+    return repos.length > 0 ? repos : fallbackConnectedRepos;
+  } catch (error) {
+    console.warn('GitHub repo persistence unavailable, using in-memory fallback:', error instanceof Error ? error.message : error);
+    return fallbackConnectedRepos;
+  }
+}
+
+async function saveConnectedRepo(repo: ConnectedRepo): Promise<void> {
+  rememberFallbackRepo(repo);
+
+  try {
+    const payload = createConnectedRepoMemoryPayload(repo);
+    const { data: existingRows, error: findError } = await supabase
+      .from('memories')
+      .select('id')
+      .eq('scope', 'global')
+      .eq('metadata->>kind', 'github_connected_repo')
+      .eq('metadata->>fullName', repo.fullName)
+      .limit(1);
+
+    if (findError) throw findError;
+
+    const existingId = existingRows?.[0]?.id;
+    if (existingId) {
+      const { error } = await supabase
+        .from('memories')
+        .update(payload)
+        .eq('id', existingId);
+      if (error) throw error;
+      return;
+    }
+
+    const { error } = await supabase.from('memories').insert(payload);
+    if (error) throw error;
+  } catch (error) {
+    console.warn('GitHub repo persistence save failed, kept in in-memory fallback:', error instanceof Error ? error.message : error);
+  }
+}
+
+async function deleteConnectedRepo(repoId: string): Promise<boolean> {
+  const repos = await listConnectedRepos();
+  const repo = repos.find((item) => item.id === repoId);
+  forgetFallbackRepo(repoId);
+  if (!repo) return false;
+
+  try {
+    const { error } = await supabase
+      .from('memories')
+      .delete()
+      .eq('scope', 'global')
+      .eq('metadata->>kind', 'github_connected_repo')
+      .eq('metadata->>fullName', repo.fullName);
+    if (error) throw error;
+  } catch (error) {
+    console.warn('GitHub repo persistence delete failed:', error instanceof Error ? error.message : error);
+  }
+
+  return true;
+}
 
 export function parseGitHubRepoUrl(url: string): { owner: string; name: string } {
   let parsed: URL;
@@ -99,8 +244,8 @@ githubRouter.get('/github/repos/available', async (_req, res) => {
   }
 });
 
-githubRouter.get('/github/repos', (_req, res) => {
-  res.json({ repos: connectedRepos });
+githubRouter.get('/github/repos', async (_req, res) => {
+  res.json({ repos: await listConnectedRepos() });
 });
 
 githubRouter.post('/github/repos', async (req, res) => {
@@ -132,29 +277,32 @@ githubRouter.post('/github/repos', async (req, res) => {
     }
 
     const metadata = await response.json() as GitHubRepoMetadata;
-    const isFirstRepo = connectedRepos.length === 0;
+    const existingRepos = await listConnectedRepos();
+    const existingRepo = existingRepos.find((item) => item.fullName.toLowerCase() === (metadata.full_name || `${owner}/${name}`).toLowerCase());
+    const isFirstRepo = existingRepos.length === 0;
     const repo: ConnectedRepo = {
-      id: randomUUID(),
+      id: existingRepo?.id || randomUUID(),
       owner: metadata.owner?.login || owner,
       name: metadata.name || name,
       fullName: metadata.full_name || `${owner}/${name}`,
       title: metadata.full_name || `${owner}/${name}`,
       summary: metadata.description || 'No description provided.',
       url: metadata.html_url || `https://github.com/${owner}/${name}`,
-      active: isFirstRepo,
-      lastIndexedAt: new Date().toISOString(),
-      assignedAgentIds: [],
+      active: existingRepo?.active ?? isFirstRepo,
+      lastIndexedAt: existingRepo?.lastIndexedAt || new Date().toISOString(),
+      assignedAgentIds: existingRepo?.assignedAgentIds || [],
     };
 
-    connectedRepos.push(repo);
+    await saveConnectedRepo(repo);
     res.status(201).json({ repo });
   } catch (error) {
     res.status(400).json({ error: error instanceof Error ? error.message : 'GitHub repo connection failed' });
   }
 });
 
-githubRouter.patch('/github/repos/:id/agents', (req, res) => {
-  const repo = connectedRepos.find((item) => item.id === req.params.id);
+githubRouter.patch('/github/repos/:id/agents', async (req, res) => {
+  const repos = await listConnectedRepos();
+  const repo = repos.find((item) => item.id === req.params.id);
   if (!repo) {
     res.status(404).json({ error: 'repo not found' });
     return;
@@ -167,25 +315,39 @@ githubRouter.patch('/github/repos/:id/agents', (req, res) => {
   }
 
   repo.assignedAgentIds = assignedAgentIds.filter((id): id is string => typeof id === 'string');
+  await saveConnectedRepo(repo);
   res.json({ repo });
 });
 
-githubRouter.patch('/github/repos/:id/active', (req, res) => {
-  const repo = connectedRepos.find((item) => item.id === req.params.id);
+githubRouter.patch('/github/repos/:id/active', async (req, res) => {
+  const repos = await listConnectedRepos();
+  const repo = repos.find((item) => item.id === req.params.id);
   if (!repo) {
     res.status(404).json({ error: 'repo not found' });
     return;
   }
 
-  for (const item of connectedRepos) {
+  for (const item of repos) {
     item.active = item.id === repo.id;
+    await saveConnectedRepo(item);
   }
 
   res.json({ repo });
 });
 
-githubRouter.get('/github/repos/:id/context', (req, res) => {
-  const repo = connectedRepos.find((item) => item.id === req.params.id);
+githubRouter.delete('/github/repos/:id', async (req, res) => {
+  const deleted = await deleteConnectedRepo(req.params.id);
+  if (!deleted) {
+    res.status(404).json({ error: 'repo not found' });
+    return;
+  }
+
+  res.status(204).send();
+});
+
+githubRouter.get('/github/repos/:id/context', async (req, res) => {
+  const repos = await listConnectedRepos();
+  const repo = repos.find((item) => item.id === req.params.id);
   if (!repo) {
     res.status(404).json({ error: 'repo not found' });
     return;

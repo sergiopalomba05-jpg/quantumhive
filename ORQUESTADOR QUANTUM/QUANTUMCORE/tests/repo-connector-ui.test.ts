@@ -140,4 +140,12 @@ describe('GitHub API routes', () => {
 
     assert.match(routes, /assignedAgentIds: string\[\]/);
   });
+
+  it('does not keep connected repos only in process memory', () => {
+    const routes = readProjectFile('src/server/routes/github.ts');
+
+    assert.doesNotMatch(routes, /const\s+connectedRepos:\s*ConnectedRepo\[\]\s*=\s*\[\]/);
+    assert.match(routes, /github_connected_repo/);
+    assert.match(routes, /memories/);
+  });
 });
