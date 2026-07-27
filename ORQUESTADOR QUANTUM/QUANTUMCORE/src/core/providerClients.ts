@@ -1,5 +1,6 @@
 import { ai } from './providers/ai';
 import type { ProviderSelectionResult } from './providerRouter';
+import { enqueueRunnerJob, waitForRunnerJob } from '../server/routes/runner';
 
 export interface ProviderChatRequest {
   selection: ProviderSelectionResult;
@@ -41,6 +42,26 @@ async function generateWithVertex(modelId: string, prompt: string, repoFullName?
     });
   }
 
+  // Add the local runner tool
+  tools.push({
+    functionDeclarations: [
+      {
+        name: "execute_local_command",
+        description: "Execute a bash or powershell command on the user's local machine via the Quantum Runner. Use this to read files, run git, npm, etc.",
+        parameters: {
+          type: "OBJECT",
+          properties: {
+            command: {
+              type: "STRING",
+              description: "The command to execute in the terminal."
+            }
+          },
+          required: ["command"]
+        }
+      }
+    ]
+  });
+
   let currentPrompt = prompt;
   let response = await ai.models.generateContent({ 
     model: modelId, 
@@ -79,6 +100,15 @@ async function generateWithVertex(modelId: string, prompt: string, repoFullName?
             result = { status: 'error', error: `GitHub API error: ${res.status}` };
           }
         }
+      } catch (err: any) {
+        result = { status: 'error', error: err.message };
+      }
+    } else if (call.name === "execute_local_command") {
+      try {
+        const command = call.args.command;
+        const job = enqueueRunnerJob(command as string);
+        const finishedJob = await waitForRunnerJob(job.id, 60000); // 60s timeout
+        result = { status: finishedJob.status, result: finishedJob.result };
       } catch (err: any) {
         result = { status: 'error', error: err.message };
       }

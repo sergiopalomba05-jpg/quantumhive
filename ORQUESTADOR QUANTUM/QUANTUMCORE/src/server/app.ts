@@ -6,6 +6,7 @@ import { providersRouter } from "./routes/providers";
 import { githubRouter } from "./routes/github";
 import { graphRouter } from "./routes/graph";
 import { videoIngestRouter } from "./routes/videoIngest";
+import { runnerRouter } from "./routes/runner";
 
 export const app = express();
 
@@ -22,6 +23,7 @@ app.use("/api", providersRouter);
 app.use("/api", githubRouter);
 app.use("/api", graphRouter);
 app.use("/api", videoIngestRouter);
+app.use("/api", runnerRouter);
 
 // Vite middleware for development or Static files for production
 export async function setupFrontendRoutes() {
