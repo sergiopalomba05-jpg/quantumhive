@@ -30,6 +30,7 @@ export async function setupFrontendRoutes() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), "dist");
+    app.use("/graphify-out", express.static(path.join(process.cwd(), "graphify-out")));
     app.use(express.static(distPath));
     app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));

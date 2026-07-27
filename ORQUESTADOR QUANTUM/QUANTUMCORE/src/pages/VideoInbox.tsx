@@ -22,7 +22,8 @@ interface BackendVideoIngestItem {
 }
 
 const viteEnv = (import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env ?? {};
-const catalogPwaUrl = viteEnv.VITE_CATALOGO_PWA_URL || 'https://directimport-app.onrender.com';
+const catalogPwaUrl = viteEnv.VITE_CATALOGO_PWA_URL || '/catalogo-pwa/';
+const catalogSupabaseUrl = 'https://gbngjsulhqcwgkqoxozy.supabase.co';
 
 function formatCatalogStatus(status: string): string {
   const labels: Record<string, string> = {
@@ -174,7 +175,8 @@ export function VideoInbox() {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-[14px] font-bold text-slate-400 uppercase tracking-widest">Catálogo de Herramientas <span className="text-qh-gold">Multimedia</span></h2>
-          <p className="text-xs text-slate-500 mt-1">Laboratorio previo a la PWA: el Ingestador de Videos analiza links, detecta duplicados, aplica scoring y acomoda cada herramienta en la taxonomía.</p>
+          <p className="text-xs text-slate-500 mt-1">Laboratorio previo a la PWA real: el Ingestador de Videos analiza links, detecta duplicados, aplica scoring y acomoda cada herramienta en la taxonomía.</p>
+          <p className="text-[10px] text-slate-600 mt-1 font-mono">Base catálogo: {catalogSupabaseUrl}</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2">
           <a

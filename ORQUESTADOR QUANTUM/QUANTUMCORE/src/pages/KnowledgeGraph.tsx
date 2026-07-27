@@ -213,9 +213,16 @@ export function KnowledgeGraph() {
               {/* Agent context info */}
               <div className="p-4 bg-slate-900/30 border border-slate-800/50 rounded-xl">
                 <h3 className="text-xs uppercase tracking-widest text-qh-cyan font-bold mb-2">Grafo Externo (Graphify)</h3>
+                <a
+                  href="/graphify-out/graph.html"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mb-3 inline-flex items-center gap-2 rounded-lg border border-qh-cyan/30 bg-qh-cyan/10 px-3 py-2 text-xs font-bold uppercase tracking-widest text-qh-cyan transition-colors hover:bg-qh-cyan/20"
+                >
+                  <ExternalLink size={14} /> Abrir grafo interactivo
+                </a>
                 <p className="text-xs text-slate-400 leading-relaxed mb-3">
-                  El grafo completo con visualización force-directed está en <span className="text-white font-mono">graphify-out/graph.json</span>.
-                  Ejecutá <span className="text-qh-cyan font-mono">graphify</span> localmente para ver la visualización interactiva con comunidades y aristas.
+                  Link directo al archivo vivo: <span className="text-white font-mono">/graphify-out/graph.html</span>. Carga el grafo completo desde <span className="text-white font-mono">/graphify-out/graph.json</span>.
                 </p>
                 <p className="text-xs text-slate-400 leading-relaxed">
                   Este explorador es interno: busca nodos, navega comunidades, y consulta el agente.

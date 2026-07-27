@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Catálogo de Herramientas IA · QuantumHive</title>
+  <meta name="description" content="Catálogo de herramientas IA de QuantumHive organizado por objetivo." />
+  <style>
+    :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; background: #070a12; color: #f8fafc; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: radial-gradient(circle at 12% 0%, rgba(245,205,112,.18), transparent 28rem), radial-gradient(circle at 88% 18%, rgba(66,232,255,.12), transparent 28rem), #070a12; }
+    header { padding: 28px clamp(16px, 4vw, 48px) 18px; border-bottom: 1px solid rgba(148,163,184,.18); background: rgba(2,6,23,.56); backdrop-filter: blur(18px); position: sticky; top: 0; z-index: 5; }
+    h1 { margin: 0; max-width: 920px; font-size: clamp(28px, 5vw, 58px); line-height: .95; letter-spacing: -.05em; color: #fff; text-shadow: 0 3px 18px #000; }
+    .sub { margin: 12px 0 0; color: #cbd5e1; max-width: 780px; line-height: 1.55; }
+    .bar { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    input { flex: 1 1 280px; border: 1px solid rgba(66,232,255,.26); background: rgba(15,23,42,.8); color: #fff; border-radius: 14px; padding: 12px 14px; outline: none; }
+    .pill { border: 1px solid rgba(245,205,112,.24); color: #f5cd70; background: rgba(245,205,112,.08); border-radius: 999px; padding: 9px 12px; font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    main { padding: 24px clamp(16px, 4vw, 48px) 64px; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+    .tab { border: 1px solid rgba(148,163,184,.18); border-radius: 999px; background: rgba(15,23,42,.72); color: #cbd5e1; padding: 10px 14px; cursor: pointer; font-weight: 800; }
+    .tab.active { border-color: rgba(66,232,255,.52); color: #67e8f9; background: rgba(66,232,255,.12); }
+    .division { border: 1px solid rgba(148,163,184,.17); border-radius: 22px; background: rgba(15,23,42,.58); margin: 12px 0; overflow: hidden; box-shadow: 0 20px 80px rgba(0,0,0,.24); }
+    summary { cursor: pointer; display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; padding: 18px; }
+    summary h2 { margin: 0; font-size: 18px; color: #fff; }
+    .dot, .dcount { display: inline-grid; place-items: center; min-width: 34px; height: 34px; border-radius: 50%; background: rgba(66,232,255,.12); color: #67e8f9; font-weight: 900; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .ddesc { margin-top: 3px; color: #94a3b8; font-size: 13px; }
+    .subs { padding: 0 18px 18px; }
+    .sub-h { margin: 14px 0 8px; color: #f5cd70; font-size: 12px; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
+    .tools { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+    .card { border: 1px solid rgba(148,163,184,.16); border-radius: 18px; background: rgba(2,6,23,.62); padding: 14px; min-height: 150px; }
+    .name { font-weight: 900; color: #fff; display: flex; gap: 8px; justify-content: space-between; align-items: flex-start; }
+    .badge { flex: 0 0 auto; border: 1px solid rgba(52,211,153,.25); background: rgba(52,211,153,.1); color: #86efac; border-radius: 999px; padding: 3px 7px; font-size: 10px; }
+    .pq { color: #cbd5e1; font-size: 13px; line-height: 1.45; margin-top: 9px; }
+    .detalle { color: #94a3b8; }
+    a { color: #67e8f9; word-break: break-all; }
+    .empty, .error { border: 1px dashed rgba(148,163,184,.25); border-radius: 18px; padding: 24px; color: #94a3b8; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Catálogo de Herramientas IA</h1>
+    <p class="sub">La PWA real del catálogo de QuantumHive. Lee la base dedicada del catálogo y organiza herramientas por objetivo, división, subdivisión y stack definitivo.</p>
+    <div class="bar">
+      <input id="q" placeholder="Buscar por herramienta, objetivo, detalle, stack..." />
+      <span class="pill" id="db">gbngjsulhqcwgkqoxozy</span>
+    </div>
+  </header>
+  <main>
+    <div class="tabs">
+      <button class="tab active" data-view="objetivo">Por objetivo</button>
+      <button class="tab" data-view="stack">Stack definitivo</button>
+    </div>
+    <section id="view-objetivo"><div class="empty">Cargando catálogo...</div></section>
+    <section id="view-stack" class="hidden"><div class="empty">Cargando stack...</div></section>
+  </main>
+  <script>
+    const SUPABASE_URL = 'https://gbngjsulhqcwgkqoxozy.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_Ccr97dXoIQi4t5O_fBLPOg_bJTFppzH';
+    const headers = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` };
+    let DATA = { divs: [], subs: [], maps: [], stack: [] };
+    const $ = (id) => document.getElementById(id);
+    const esc = (v) => String(v ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const api = async (path) => {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, { headers });
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      return res.json();
+    };
+    const badge = (estado) => estado ? `<span class="badge">${esc(estado)}</span>` : '';
+    const repoLink = (url) => url ? `<p class="pq"><a href="${esc(url)}" target="_blank" rel="noreferrer">${esc(url)}</a></p>` : '';
+    function toolCard(h) {
+      return `<div class="card" data-text="${esc(`${h.nombre} ${h.para_que || ''} ${h.detalle || ''}`.toLowerCase())}"><div class="name"><span>${esc(h.nombre)}</span>${badge(h.estado)}</div>${h.para_que ? `<div class="pq">${esc(h.para_que)}</div>` : ''}${h.detalle ? `<div class="pq detalle">${esc(h.detalle)}</div>` : ''}${repoLink(h.repo_url)}</div>`;
+    }
+    function renderObjetivo() {
+      const bySub = {};
+      DATA.maps.forEach(m => { if (m.herramientas) (bySub[m.subdivision_id] ||= []).push(m.herramientas); });
+      const subsByDiv = {};
+      DATA.subs.forEach(s => { (subsByDiv[s.division_id] ||= []).push(s); });
+      let html = '';
+      DATA.divs.forEach((d, i) => {
+        const subs = subsByDiv[d.id] || [];
+        let total = 0;
+        let body = '';
+        subs.forEach(s => {
+          const tools = bySub[s.id] || [];
+          total += tools.length;
+          if (!tools.length) return;
+          body += `<div class="sub-block"><div class="sub-h">${esc(s.nombre)}</div><div class="tools">${tools.map(toolCard).join('')}</div></div>`;
+        });
+        html += `<details class="division" ${i === 0 ? 'open' : ''}><summary><span class="dot">${i + 1}</span><span><h2>${esc(d.nombre)}</h2>${d.descripcion ? `<div class="ddesc">${esc(d.descripcion)}</div>` : ''}</span><span class="dcount">${total}</span></summary><div class="subs">${body || '<div class="empty">Sin herramientas en esta división.</div>'}</div></details>`;
+      });
+      $('view-objetivo').innerHTML = html || '<div class="empty">Sin datos.</div>';
+    }
+    function renderStack() {
+      $('view-stack').innerHTML = DATA.stack.map(c => `<details class="division"><summary><span class="dot">${esc(c.clave)}</span><span><h2>${esc(c.categoria)}</h2>${c.estrategia ? `<div class="ddesc">${esc(c.estrategia)}</div>` : ''}</span><span class="dcount">${(c.stack_items || []).length}</span></summary><div class="subs"><div class="tools">${(c.stack_items || []).map(it => `<div class="card" data-text="${esc(`${it.herramienta} ${it.nota || ''}`.toLowerCase())}"><div class="name"><span>${esc(it.herramienta)}</span>${badge(it.estado)}</div>${it.nota ? `<div class="pq">${esc(it.nota)}</div>` : ''}${repoLink(it.repo_url)}</div>`).join('')}</div></div></details>`).join('') || '<div class="empty">Sin stack cargado.</div>';
+    }
+    function filter() {
+      const q = $('q').value.trim().toLowerCase();
+      document.querySelectorAll('.card').forEach(card => { card.style.display = !q || card.dataset.text.includes(q) ? '' : 'none'; });
+    }
+    document.querySelectorAll('.tab').forEach(tab => tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      $('view-objetivo').classList.toggle('hidden', tab.dataset.view !== 'objetivo');
+      $('view-stack').classList.toggle('hidden', tab.dataset.view !== 'stack');
+      filter();
+    }));
+    $('q').addEventListener('input', filter);
+    Promise.all([
+      api('divisiones?select=*&order=orden'),
+      api('subdivisiones?select=*&order=orden'),
+      api('herramienta_subdivision?select=subdivision_id,herramientas(id,nombre,repo_url,para_que,estado,detalle)'),
+      api('stack_categorias?select=clave,categoria,estrategia,fase,orden,stack_items(herramienta,repo_url,estado,nota,fase)&order=orden'),
+    ]).then(([divs, subs, maps, stack]) => { DATA = { divs, subs, maps, stack }; renderObjetivo(); renderStack(); }).catch(err => { $('view-objetivo').innerHTML = `<div class="error">No se pudo cargar Supabase: ${esc(err.message)}</div>`; });
+  </script>
+</body>
+</html>

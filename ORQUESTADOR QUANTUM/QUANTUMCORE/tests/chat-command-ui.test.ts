@@ -74,7 +74,7 @@ describe('QuantumCore chat command UI', () => {
     assert.match(css, /\.reasoning-level-dropdown/);
     assert.match(css, /\.header-brain-model-row/);
     assert.match(css, /\.sidebar-edge-toggle[\s\S]*top:\s*50%/);
-    assert.match(css, /\.sidebar-nav-link[\s\S]*color:\s*rgba\(216, 180, 254/);
+    assert.match(css, /\.sidebar-nav-link[\s\S]*color:\s*#ffffff/);
   });
 
   it('moves the real QuantumCore brand to the lateral sidebar and removes it from the chat header', () => {
@@ -93,7 +93,7 @@ describe('QuantumCore chat command UI', () => {
     assert.doesNotMatch(chat, /Grounding:/);
   });
 
-  it('uses the requested chat background and black text glow for all sidebar labels', () => {
+  it('uses the requested chat background and black text shadow for all sidebar labels', () => {
     const css = readProjectFile('src/index.css');
 
     assert.equal(existsSync(join(root, 'public/brand/custom/quantumhive_isotipo_v01_transparente_recortado.png')), true);
@@ -103,6 +103,8 @@ describe('QuantumCore chat command UI', () => {
     assert.match(css, /\.chat-bg-pattern-disabled/);
     assert.match(css, /\.sidebar-nav-link[\s\S]*text-shadow:[\s\S]*rgba\(0, 0, 0/);
     assert.match(css, /\.sidebar-section-label[\s\S]*text-shadow:[\s\S]*rgba\(0, 0, 0/);
+    assert.match(css, /\.sidebar-nav-link[\s\S]*color:\s*#ffffff/);
+    assert.match(css, /\.sidebar-section-label[\s\S]*color:\s*#ffffff/);
   });
 
   it('defines hardware-accelerated glass, tilt, stagger, and stealth sidebar classes', () => {
@@ -133,6 +135,18 @@ describe('QuantumCore chat command UI', () => {
     assert.match(css, /\.sidebar-section-trigger[\s\S]*font-weight:\s*950/);
     assert.match(css, /\.sidebar-section-label[\s\S]*font-size:\s*0\.68rem/);
     assert.match(css, /\.sidebar-nav-link[\s\S]*font-size:\s*0\.74rem/);
+  });
+
+  it('keeps the sidebar close control large and clickable', () => {
+    const layout = readProjectFile('src/components/Layout.tsx');
+    const css = readProjectFile('src/index.css');
+
+    assert.match(layout, /sidebarCollapsed/);
+    assert.match(layout, /aria-label="Ocultar navegación"/);
+    assert.match(layout, /aria-label="Mostrar navegación"/);
+    assert.match(css, /\.sidebar-edge-toggle[\s\S]*width:\s*2\.65rem/);
+    assert.match(css, /\.sidebar-edge-toggle[\s\S]*background:\s*rgba\(2, 6, 23, 0\.92\)/);
+    assert.match(css, /\.sidebar-edge-toggle[\s\S]*pointer-events:\s*auto/);
   });
 
   it('lets the chat header router stretch across the available plane', () => {
