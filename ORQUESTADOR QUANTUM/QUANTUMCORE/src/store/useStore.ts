@@ -170,6 +170,8 @@ interface AppState {
 
 const DOMINUS_PRIME_AGENT_ID = '11111111-1111-4111-8111-111111111111';
 const INGESTADOR_VIDEOS_AGENT_ID = '22222222-2222-4222-8222-222222222222';
+const PITCH_MASTER_AGENT_ID = 'f496b1ed-e609-43b6-a2f1-c64ddc9529cb';
+const INGESTADOR_PDF_AGENT_ID = '33333333-3333-4333-8333-333333333333';
 
 const SEED_AGENTS: Agent[] = [
   {
@@ -198,6 +200,32 @@ const SEED_AGENTS: Agent[] = [
     permissions: ['catalogo_multimedia', 'ingest_links', 'analyze_video', 'classify_taxonomy', 'dedupe_tools', 'score_tools', 'compare_tools', 'publish_catalog_candidates'],
     approvalPolicy: 'automatico_si_confianza_alta',
   },
+  {
+    id: INGESTADOR_PDF_AGENT_ID,
+    name: 'Ingestador de PDFs y Conversaciones',
+    role: 'Agente especializado en leer PDFs largos, manuales técnicos y conversaciones. Extrae datos estructurados, resume y alimenta la memoria semántica (Memanto) con contexto denso.',
+    macroDivision: 'General',
+    status: 'active',
+    preferredModel: 'vertex',
+    brainProviderId: 'vertex',
+    defaultModelId: 'gemini',
+    memoryScope: 'documentos,pdfs,conversaciones,memanto',
+    permissions: ['read_pdfs', 'parse_conversations', 'write_memanto'],
+    approvalPolicy: 'automatico_si_confianza_alta',
+  },
+  {
+    id: PITCH_MASTER_AGENT_ID,
+    name: 'Pitch Master',
+    role: 'Documentador de Inversores',
+    macroDivision: 'General',
+    status: 'active',
+    preferredModel: 'vertex',
+    brainProviderId: 'vertex',
+    defaultModelId: 'gemini',
+    memoryScope: 'inversores,pitch,documentos',
+    permissions: ['read_context', 'write_memory'],
+    approvalPolicy: 'required_for_sensitive_actions',
+  },
   { id: uuidv4(), name: 'Asistente Global', role: 'Orquestador personal central', macroDivision: 'General', status: 'active', preferredModel: 'vertex' },
   { id: uuidv4(), name: 'CEO Carta Viva', role: 'Responsable MVP comercial Carta Viva', macroDivision: 'Carta Viva', status: 'active', preferredModel: 'vertex' },
   { id: uuidv4(), name: 'CEO HumanIA', role: 'Responsable HumanIA Chat, World y agentes', macroDivision: 'HumanIA', status: 'active', preferredModel: 'vertex' },
@@ -207,7 +235,7 @@ const SEED_AGENTS: Agent[] = [
 ];
 
 function ensureCoreAgents(agents: Agent[]): Agent[] {
-  const coreAgents = SEED_AGENTS.filter(agent => [DOMINUS_PRIME_AGENT_ID, INGESTADOR_VIDEOS_AGENT_ID].includes(agent.id));
+  const coreAgents = SEED_AGENTS.filter(agent => [DOMINUS_PRIME_AGENT_ID, INGESTADOR_VIDEOS_AGENT_ID, PITCH_MASTER_AGENT_ID, INGESTADOR_PDF_AGENT_ID].includes(agent.id));
   const existingIds = new Set(agents.map(agent => agent.id));
   const missingCoreAgents = coreAgents.filter(agent => !existingIds.has(agent.id));
   return [...agents, ...missingCoreAgents];
