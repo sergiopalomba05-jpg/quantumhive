@@ -1,10 +1,11 @@
-import { createClient } from "@supabase/supabase-js";
+/**
+ * Backward-compatible Supabase client.
+ * Now delegates to dbRouter for the core connection.
+ * 
+ * All existing code that imports `supabase` from this file
+ * will continue to work without changes.
+ */
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || "https://okknbcumosciujogcqtc.supabase.co";
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || "sb_publishable_lfCC9gDWnL--ARhnZlLDXw_pgJsZqAs";
+import { supabase, dbRouter } from './dbRouter.js';
 
-if (!supabaseUrl || !supabaseKey) {
-  console.warn("⚠️ Supabase credentials are missing. Make sure to set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env file.");
-}
-
-export const supabase = createClient(supabaseUrl, supabaseKey);
+export { supabase, dbRouter };

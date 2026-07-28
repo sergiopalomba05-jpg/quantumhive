@@ -78,6 +78,38 @@ function loadGraph(): GraphifyGraph {
   }
 }
 
+export function saveGraph(graphData: GraphifyGraph) {
+  const filePath = getGraphPath();
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, JSON.stringify(graphData, null, 2), 'utf-8');
+  cache = null; // Invalidate cache
+}
+
+export function updateKnowledgeGraph(newNodes: any[], newEdges: any[]) {
+  const currentGraph = loadGraph();
+  
+  // Merge nodes (update if exists)
+  for (const nn of newNodes) {
+    const idx = currentGraph.nodes!.findIndex(n => n.id === nn.id);
+    if (idx >= 0) {
+      currentGraph.nodes![idx] = { ...currentGraph.nodes![idx], ...nn };
+    } else {
+      currentGraph.nodes!.push(nn);
+    }
+  }
+
+  // Merge edges
+  for (const ne of newEdges) {
+    // Avoid exact duplicates
+    const exists = currentGraph.edges!.some(e => e.source === ne.source && e.target === ne.target && e.relation === ne.relation);
+    if (!exists) {
+      currentGraph.edges!.push(ne);
+    }
+  }
+
+  saveGraph(currentGraph);
+}
+
 function computeStats(graph: GraphifyGraph): GraphStats {
   const nodes = graph.nodes || [];
   const edges = graph.edges || [];

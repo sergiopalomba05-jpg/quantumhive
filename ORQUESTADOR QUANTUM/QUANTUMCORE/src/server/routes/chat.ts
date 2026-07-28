@@ -7,10 +7,60 @@ import { ThinkingLevel } from "@google/genai";
 import { BRAIN_MODELS, resolveBrainSelection, resolveVsBrainSelection } from "../../core/brainRouter";
 import { buildDominusContextPack, extractMemoryProposal } from "../../core/dominusContext";
 import { resolveProviderSelection } from "../../core/providerRouter";
-import { generateWithProvider } from "../../core/providerClients";
-import { searchGraphNodes } from "./graph";
+import { generateWithProvider } from "../../core/providerClients.js";
+import { searchGraphNodes } from "./graph.js";
+import { workerMessageBus, getActiveWorkers } from "../../core/workerManager.js";
+import { recall, remember } from "../../core/mementoClient.js";
+import { dbRouter } from "../../core/providers/dbRouter.js";
+import { executeCloudSkill, loadCloudSkills, saveCloudSkill } from "../../core/cloudExecutor.js";
 
 export const chatRouter = Router();
+
+chatRouter.get("/workers/status", (req, res) => {
+  res.json({ workers: getActiveWorkers() });
+});
+
+// Database Router endpoints
+chatRouter.get("/databases", (req, res) => {
+  res.json({ databases: dbRouter.listDatabases() });
+});
+
+chatRouter.post("/databases", async (req, res) => {
+  const { id, name, scope, supabaseUrl, supabaseAnonKey, description } = req.body;
+  if (!scope || !supabaseUrl || !supabaseAnonKey) {
+    res.status(400).json({ error: "scope, supabaseUrl and supabaseAnonKey are required" });
+    return;
+  }
+  const ok = await dbRouter.addProjectDatabase({ id: id || scope, name: name || scope, scope, supabaseUrl, supabaseAnonKey, description });
+  res.json({ success: ok });
+});
+
+// Cloud Skill endpoints
+chatRouter.get("/cloud-skills", async (req, res) => {
+  const skills = await loadCloudSkills();
+  res.json({ skills });
+});
+
+chatRouter.post("/cloud-skills", async (req, res) => {
+  const ok = await saveCloudSkill(req.body);
+  res.json({ success: ok });
+});
+
+chatRouter.post("/cloud-skills/:id/execute", async (req, res) => {
+  const result = await executeCloudSkill(req.params.id, req.body.args || {});
+  res.json(result);
+});
+
+// Memanto status
+chatRouter.get("/memanto/status", async (req, res) => {
+  try {
+    const { getMementoStatus } = await import("../../core/mementoClient.js");
+    const status = await getMementoStatus();
+    res.json(status);
+  } catch {
+    res.json({ available: false, url: 'unknown' });
+  }
+});
 
 // 1. Google Search Data (gemini-2.5-flash)
 chatRouter.post("/chat", async (req, res) => {
@@ -90,13 +140,22 @@ chatRouter.post("/agents/:agentId/chat", async (req, res) => {
 
     const graphNodes = searchGraphNodes(message, 10);
 
+    // Memanto semantic recall (graceful degradation if unavailable)
+    let mementoMemories: any[] = [];
+    try {
+      const recallResult = await recall(message, { limit: 10 });
+      mementoMemories = recallResult.memories;
+    } catch (e) {
+      // Memanto not available — continue without semantic memory
+    }
+
     let repoContext;
     if (repoId) {
       const { data: repoMemories } = await supabase
         .from("memories")
         .select("metadata")
         .eq("scope", "global")
-        .eq("metadata->>kind", "github_connected_repo");
+        .eq("metadata->kind", "github_connected_repo");
 
       const repoMemory = repoMemories?.find(row => (row.metadata as any)?.repo?.id === repoId);
 
@@ -116,6 +175,7 @@ chatRouter.post("/agents/:agentId/chat", async (req, res) => {
       message,
       graphNodes,
       repo: repoContext,
+      mementoMemories,
     });
 
     if (brain.mode === "vs_2" && brain.usedModelIds?.length) {
@@ -149,10 +209,21 @@ chatRouter.post("/agents/:agentId/chat", async (req, res) => {
       return;
     }
 
+    // Check for pending worker messages to inject into the CEO's context
+    let pendingWorkerUpdates = '';
+    if (workerMessageBus.length > 0) {
+      pendingWorkerUpdates = '\n\n[MENSAJES PENDIENTES DE SUBAGENTES (Workers)]\n';
+      while (workerMessageBus.length > 0) {
+        const msg = workerMessageBus.shift();
+        pendingWorkerUpdates += `- Worker ${msg?.workerId}: ${msg?.message}\n`;
+      }
+      pendingWorkerUpdates += 'Toma estos resultados en cuenta para responder o darles nuevas instrucciones.\n\n';
+    }
+
     const providerSelection = resolveProviderSelection({ brainMode, providerId, modelId, repoId, message });
     const response = await generateWithProvider({
       selection: providerSelection,
-      prompt: context.prompt,
+      prompt: context.prompt + pendingWorkerUpdates,
     });
 
     const extracted = extractMemoryProposal(response.text || "");

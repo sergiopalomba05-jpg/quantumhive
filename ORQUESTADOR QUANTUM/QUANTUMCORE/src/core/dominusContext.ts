@@ -1,3 +1,5 @@
+import { recall, remember, type MementoMemory, type MemoryType } from './mementoClient.js';
+
 interface DominusAgentContext {
   name: string;
   role: string;
@@ -27,6 +29,12 @@ interface RepoContext {
   url: string;
 }
 
+interface MementoContextItem {
+  content: string;
+  type: string;
+  importance: number;
+}
+
 interface BuildDominusContextInput {
   agent: DominusAgentContext;
   systemCore: string;
@@ -35,6 +43,7 @@ interface BuildDominusContextInput {
   message: string;
   graphNodes?: GraphNodeContext[];
   repo?: RepoContext;
+  mementoMemories?: MementoContextItem[];
 }
 
 export function buildDominusContextPack(input: BuildDominusContextInput) {
@@ -65,6 +74,19 @@ export function buildDominusContextPack(input: BuildDominusContextInput) {
       ].join('\n')
     : '';
 
+  const mementoSection = input.mementoMemories && input.mementoMemories.length > 0
+    ? [
+        'MEMORIA SEMÁNTICA (Memanto)',
+        'Recuerdos relevantes recuperados de tu memoria a largo plazo:',
+        ...input.mementoMemories.map(m =>
+          `- [${m.type}] (importancia: ${m.importance.toFixed(1)}): ${m.content}`
+        ),
+        '',
+        'Usa estos recuerdos para dar una respuesta informada y personalizada.',
+        '',
+      ].join('\n')
+    : '';
+
   const repoSection = input.repo
     ? [
         'REPOSITORIO CONECTADO',
@@ -90,6 +112,7 @@ export function buildDominusContextPack(input: BuildDominusContextInput) {
     memoriesText,
     '',
     graphSection,
+    mementoSection,
     repoSection,
     'INSTRUCCION DE MEMORIA',
     memoryProposalInstruction,

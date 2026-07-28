@@ -1,6 +1,7 @@
-import { ai } from './providers/ai';
-import type { ProviderSelectionResult } from './providerRouter';
 import { enqueueRunnerJob, waitForRunnerJob, getRunnerDynamicTools } from '../server/routes/runner.js';
+import { spawnWorker, killWorker, messageWorker, workerMessageBus } from './workerManager.js';
+import { updateKnowledgeGraph } from '../server/routes/graph.js';
+import { remember as mementoRemember } from './mementoClient.js';
 
 export interface ProviderChatRequest {
   selection: ProviderSelectionResult;
@@ -15,7 +16,63 @@ export interface ProviderChatResult {
   modelId: string;
 }
 
-async function generateWithVertex(modelId: string, prompt: string, repoFullName?: string): Promise<string> {
+const ceoTools = [
+  {
+    name: "spawn_subagent",
+    description: "Spawns a background subagent to perform a task. Use this to delegate work.",
+    parameters: {
+      type: "OBJECT",
+      properties: { role: { type: "STRING" }, task: { type: "STRING" } },
+      required: ["role", "task"]
+    }
+  },
+  {
+    name: "message_subagent",
+    description: "Sends a message or additional instruction to an existing subagent.",
+    parameters: {
+      type: "OBJECT",
+      properties: { workerId: { type: "STRING" }, message: { type: "STRING" } },
+      required: ["workerId", "message"]
+    }
+  },
+  {
+    name: "kill_subagent",
+    description: "Terminates a subagent.",
+    parameters: {
+      type: "OBJECT",
+      properties: { workerId: { type: "STRING" } },
+      required: ["workerId"]
+    }
+  },
+  {
+    name: "remember_knowledge",
+    description: "Store important knowledge (facts, decisions, preferences, rules, people, projects, architecture) in the OS's long-term semantic memory. Use this when the user shares something worth remembering across sessions. This saves to both the Knowledge Graph and Memanto semantic memory.",
+    parameters: {
+      type: "OBJECT",
+      properties: { 
+        content: { type: "STRING", description: "The knowledge to remember, in clear natural language." },
+        type: { type: "STRING", description: "One of: fact, preference, decision, rule, goal, context, person, project, architecture, business, constraint, feedback, misc" },
+        importance: { type: "NUMBER", description: "0.0 to 1.0 — how important is this knowledge?" },
+        tags: { type: "ARRAY", items: { type: "STRING" }, description: "Optional tags for categorization" }
+      },
+      required: ["content", "type"]
+    }
+  }
+];
+
+const workerTools = [
+  {
+    name: "send_message_to_ceo",
+    description: "Send your final results or ask for clarification from the CEO.",
+    parameters: {
+      type: "OBJECT",
+      properties: { message: { type: "STRING" } },
+      required: ["message"]
+    }
+  }
+];
+
+async function generateWithVertex(modelId: string, prompt: string, repoFullName?: string, workerId?: string): Promise<string> {
   const tools: any = [];
   if (repoFullName) {
     tools.push({
@@ -119,6 +176,13 @@ async function generateWithVertex(modelId: string, prompt: string, repoFullName?
     });
   }
 
+  // Inject orchestration tools
+  if (workerId) {
+    tools.push({ functionDeclarations: workerTools });
+  } else {
+    tools.push({ functionDeclarations: ceoTools });
+  }
+
   let currentPrompt = prompt;
   let response = await ai.models.generateContent({ 
     model: modelId, 
@@ -160,6 +224,33 @@ async function generateWithVertex(modelId: string, prompt: string, repoFullName?
       } catch (err: any) {
         result = { status: 'error', error: err.message };
       }
+    } else if (call.name === "spawn_subagent" && !workerId) {
+      const newId = spawnWorker(call.args.role, call.args.task, 'gcp-vertex-ai', modelId);
+      result = { status: 'success', workerId: newId, message: "Worker spawned and running in background." };
+    } else if (call.name === "message_subagent" && !workerId) {
+      const ok = await messageWorker(call.args.workerId, call.args.message);
+      result = { status: ok ? 'success' : 'error', message: ok ? "Message sent" : "Worker not found" };
+    } else if (call.name === "kill_subagent" && !workerId) {
+      const ok = killWorker(call.args.workerId);
+      result = { status: ok ? 'success' : 'error', message: ok ? "Worker killed" : "Worker not found" };
+    } else if (call.name === "send_message_to_ceo" && workerId) {
+      workerMessageBus.push({ workerId, message: call.args.message });
+      result = { status: 'success', message: "Message sent to CEO." };
+    } else if (call.name === "remember_knowledge" && !workerId) {
+      // Dual write: Memanto (semantic) + Graph (structural)
+      const mOk = await mementoRemember({
+        content: call.args.content,
+        type: call.args.type || 'misc',
+        importance: call.args.importance || 0.5,
+        tags: call.args.tags || [],
+      });
+      // Also store in graph for backward compat
+      const nodeId = call.args.content.substring(0, 30).replace(/\s+/g, '_').toLowerCase();
+      updateKnowledgeGraph(
+        [{ id: nodeId, label: call.args.content.substring(0, 60), type: call.args.type, summary: call.args.content }],
+        []
+      );
+      result = { status: 'success', mementoStored: mOk, message: "Knowledge stored in semantic memory and graph." };
     } else if (call.name === "execute_local_command" || call.name === "view_file" || call.name === "write_to_file" || call.name === "multi_replace_file_content") {
       try {
         const job = enqueueRunnerJob(call.name, call.args);
@@ -197,7 +288,7 @@ async function generateWithVertex(modelId: string, prompt: string, repoFullName?
   return response.text || '';
 }
 
-async function generateWithOpenAICompatible(baseUrl: string, apiKey: string, modelId: string, prompt: string, repoFullName?: string): Promise<string> {
+async function generateWithOpenAICompatible(baseUrl: string, apiKey: string, modelId: string, prompt: string, repoFullName?: string, workerId?: string): Promise<string> {
   const tools: any[] = [];
   
   if (repoFullName) {
@@ -280,6 +371,18 @@ async function generateWithOpenAICompatible(baseUrl: string, apiKey: string, mod
     });
   }
 
+  // Inject orchestration tools
+  const convertToOpenAI = (arr: any[]) => arr.map(t => ({
+    type: "function",
+    function: { name: t.name, description: t.description, parameters: { type: "object", properties: t.parameters.properties, required: t.parameters.required } }
+  }));
+  
+  if (workerId) {
+    tools.push(...convertToOpenAI(workerTools));
+  } else {
+    tools.push(...convertToOpenAI(ceoTools));
+  }
+
   let messages: any[] = [{ role: 'user', content: prompt }];
   let iterations = 0;
   let finalResponse = '';
@@ -324,10 +427,35 @@ async function generateWithOpenAICompatible(baseUrl: string, apiKey: string, mod
         
         let toolResultStr = "";
 
-        if (name === "query_github_repo" && repoFullName) {
+         if (name === "query_github_repo" && repoFullName) {
            // Reuse the github logic (simplified)
            toolResultStr = JSON.stringify({ status: "error", error: "Please use local runner for repo files." });
-        } else if (name === "execute_local_command" || name === "view_file" || name === "write_to_file" || name === "multi_replace_file_content") {
+         } else if (name === "spawn_subagent" && !workerId) {
+           const newId = spawnWorker(args.role, args.task, 'openai-api', modelId);
+           toolResultStr = JSON.stringify({ status: 'success', workerId: newId, message: "Worker spawned." });
+         } else if (name === "message_subagent" && !workerId) {
+           const ok = await messageWorker(args.workerId, args.message);
+           toolResultStr = JSON.stringify({ status: ok ? 'success' : 'error' });
+         } else if (name === "kill_subagent" && !workerId) {
+           const ok = killWorker(args.workerId);
+           toolResultStr = JSON.stringify({ status: ok ? 'success' : 'error' });
+         } else if (name === "send_message_to_ceo" && workerId) {
+           workerMessageBus.push({ workerId, message: args.message });
+           toolResultStr = JSON.stringify({ status: 'success' });
+         } else if (name === "remember_knowledge" && !workerId) {
+           const mOk = await mementoRemember({
+             content: args.content,
+             type: args.type || 'misc',
+             importance: args.importance || 0.5,
+             tags: args.tags || [],
+           });
+           const nodeId = (args.content || '').substring(0, 30).replace(/\s+/g, '_').toLowerCase();
+           updateKnowledgeGraph(
+             [{ id: nodeId, label: (args.content || '').substring(0, 60), type: args.type, summary: args.content }],
+             []
+           );
+           toolResultStr = JSON.stringify({ status: 'success', mementoStored: mOk, message: "Knowledge stored." });
+         } else if (name === "execute_local_command" || name === "view_file" || name === "write_to_file" || name === "multi_replace_file_content") {
            try {
              const job = enqueueRunnerJob(name, args);
              const finishedJob = await waitForRunnerJob(job.id, 60000);
@@ -366,13 +494,13 @@ async function generateWithOpenAICompatible(baseUrl: string, apiKey: string, mod
   return finalResponse;
 }
 
-export async function generateWithProvider(request: ProviderChatRequest): Promise<ProviderChatResult> {
+export async function generateWithProvider(request: ProviderChatRequest, workerId?: string): Promise<ProviderChatResult> {
   const env = request.env || process.env;
   const { selection, prompt } = request;
 
   if (selection.providerId === 'gcp-vertex-ai') {
     return {
-      text: await generateWithVertex(selection.modelId, prompt, request.repoFullName),
+      text: await generateWithVertex(selection.modelId, prompt, request.repoFullName, workerId),
       providerId: selection.providerId,
       modelId: selection.modelId,
     };
@@ -381,7 +509,7 @@ export async function generateWithProvider(request: ProviderChatRequest): Promis
   if (selection.providerId === 'openai-api') {
     if (!env.OPENAI_API_KEY) throw new Error('OPENAI_API_KEY is not configured');
     return {
-      text: await generateWithOpenAICompatible('https://api.openai.com/v1/chat/completions', env.OPENAI_API_KEY, selection.modelId, prompt, request.repoFullName),
+      text: await generateWithOpenAICompatible('https://api.openai.com/v1/chat/completions', env.OPENAI_API_KEY, selection.modelId, prompt, request.repoFullName, workerId),
       providerId: selection.providerId,
       modelId: selection.modelId,
     };
@@ -390,7 +518,7 @@ export async function generateWithProvider(request: ProviderChatRequest): Promis
   if (selection.providerId === 'openrouter-api') {
     if (!env.OPENROUTER_API_KEY) throw new Error('OPENROUTER_API_KEY is not configured');
     return {
-      text: await generateWithOpenAICompatible('https://openrouter.ai/api/v1/chat/completions', env.OPENROUTER_API_KEY, selection.modelId, prompt, request.repoFullName),
+      text: await generateWithOpenAICompatible('https://openrouter.ai/api/v1/chat/completions', env.OPENROUTER_API_KEY, selection.modelId, prompt, request.repoFullName, workerId),
       providerId: selection.providerId,
       modelId: selection.modelId,
     };
@@ -399,7 +527,7 @@ export async function generateWithProvider(request: ProviderChatRequest): Promis
   if (selection.providerId.startsWith('custom-') && selection.customProvider) {
     const chatUrl = selection.customProvider.baseUrl.replace(/\/$/, '') + '/chat/completions';
     return {
-      text: await generateWithOpenAICompatible(chatUrl, selection.customProvider.apiKey, selection.modelId, prompt, request.repoFullName),
+      text: await generateWithOpenAICompatible(chatUrl, selection.customProvider.apiKey, selection.modelId, prompt, request.repoFullName, workerId),
       providerId: selection.providerId,
       modelId: selection.modelId,
     };
