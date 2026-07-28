@@ -1,4 +1,4 @@
-# QuantumCore — Whitepaper Técnico v1.0
+# QuantumCore — Libro Blanco Técnico v1.0
 
 ## Resumen Ejecutivo
 QuantumCore es un Sistema Operativo de Inteligencia Artificial Empaquetado diseñado para orquestar múltiples agentes autónomos, herramientas y proyectos desde un motor centralizado multi-nube. A diferencia de los chatbots o asistentes de IA tradicionales, QuantumCore actúa como el sistema nervioso central de una operación completa de desarrollo de software y negocios.

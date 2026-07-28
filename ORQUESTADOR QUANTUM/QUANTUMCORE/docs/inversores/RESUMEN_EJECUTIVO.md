@@ -1,4 +1,4 @@
-# QuantumCore — One Pager
+# QuantumCore — Resumen Ejecutivo
 
 ## ¿Qué es?
 **QuantumCore** es el primer Sistema Operativo de IA empaquetado, multi-nube y multi-proyecto. Un motor centralizado que orquesta agentes autónomos, herramientas y bases de datos para operar negocios digitales completos.

@@ -1,4 +1,4 @@
-# QuantumCore — Feature Matrix (Comparación Competitiva)
+# QuantumCore — Matriz de Características (Comparación Competitiva)
 
 ## Comparativa con Soluciones de IA del Mercado
 
