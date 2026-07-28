@@ -16,7 +16,7 @@ describe('brain router', () => {
     const result = resolveBrainSelection({ brainMode: 'manual', modelId: 'claude-sonnet-5', message: 'escribi codigo' });
 
     assert.equal(result.requestedModelId, 'claude-sonnet-5');
-    assert.equal(result.usedModelId, 'gemini-3.6-flash');
+    assert.equal(result.usedModelId, 'gemini-2.5-flash');
     assert.equal(result.provider, 'vertex');
     assert.equal(result.fallbackUsed, true);
     assert.match(result.fallbackReason || '', /todavia no conectado/i);
@@ -25,7 +25,7 @@ describe('brain router', () => {
   it('recommends code-capable catalog entries without forcing them in auto mode', () => {
     const result = resolveBrainSelection({ brainMode: 'auto', message: 'revisa este codigo y escribi el fix' });
 
-    assert.equal(result.usedModelId, 'gemini-3.6-flash');
+    assert.equal(result.usedModelId, 'gemini-2.5-flash');
     assert.equal(result.recommendedModelId, 'claude-sonnet-5');
     assert.equal(result.fallbackUsed, true);
   });
@@ -55,7 +55,7 @@ describe('brain router', () => {
 
     assert.equal(result.mode, 'vs_2');
     assert.deepEqual(result.usedModelIds, ['gemini-2.5-flash', 'gemini-2.5-pro']);
-    assert.equal(result.synthesizerModelId, 'gemini-3.5-flash');
+    assert.equal(result.synthesizerModelId, 'gemini-2.5-pro');
     assert.equal(result.provider, 'vertex');
     assert.equal(result.fallbackUsed, true);
     assert.match(result.fallbackReason || '', /solo modelos conectados/i);

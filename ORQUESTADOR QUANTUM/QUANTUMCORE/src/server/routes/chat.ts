@@ -13,6 +13,7 @@ import { workerMessageBus, getActiveWorkers } from "../../core/workerManager.js"
 import { recall, remember } from "../../core/mementoClient.js";
 import { dbRouter } from "../../core/providers/dbRouter.js";
 import { executeCloudSkill, loadCloudSkills, saveCloudSkill } from "../../core/cloudExecutor.js";
+import { searchTools, getCatalogStats } from "../../core/videoIngestStore.js";
 
 export const chatRouter = Router();
 
@@ -245,5 +246,49 @@ chatRouter.post("/agents/:agentId/chat", async (req, res) => {
   } catch (error: any) {
     console.error("Dominus chat error:", error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+// ─── Consultar Catálogo (herramientas IA) ───────────────────────────
+// Dominus o cualquier agente puede consultar qué herramientas hay para una tarea
+chatRouter.get("/catalogo/consultar", async (req, res) => {
+  try {
+    const q = typeof req.query.q === "string" ? req.query.q : "";
+    if (!q) {
+      // Sin query → devolver stats generales
+      const stats = await getCatalogStats();
+      res.json({
+        tipo: "stats",
+        mensaje: `El catálogo tiene ${stats.total} herramientas. Divisiones: ${Object.entries(stats.byCategoria).map(([k, v]) => `${k} (${v})`).join(", ")}`,
+        stats,
+      });
+      return;
+    }
+
+    const tools = await searchTools(q, 10);
+    if (tools.length === 0) {
+      res.json({
+        tipo: "sin_resultados",
+        mensaje: `No encontré herramientas para "${q}" en el catálogo. Podés enviar un link de una herramienta para que la catalogue.`,
+        herramientas: [],
+      });
+      return;
+    }
+
+    res.json({
+      tipo: "resultados",
+      mensaje: `Encontré ${tools.length} herramienta(s) para "${q}":`,
+      herramientas: tools.map((t) => ({
+        nombre: t.nombre,
+        repo_url: t.repo_url,
+        para_que: t.para_que,
+        categoria: t.categoria,
+        estado: t.estado,
+        calidad: t.calidad,
+        tags: t.tags,
+      })),
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
   }
 });

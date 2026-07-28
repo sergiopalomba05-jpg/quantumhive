@@ -127,16 +127,28 @@ describe('QuantumCore chat command UI', () => {
 
   it('restores readable sidebar hover glow over the image background', () => {
     const css = readProjectFile('src/index.css');
+    const sidebar = readProjectFile('src/components/Sidebar.tsx');
 
+    assert.match(sidebar, /sidebar-concept-tree/);
+    assert.match(sidebar, /sidebar-macro-node/);
+    assert.match(sidebar, /sidebar-subtree/);
+    assert.match(sidebar, /sidebar-subnode-branch/);
     assert.match(css, /\.sidebar-nav-idle:hover[\s\S]*background:\s*rgba\(5, 8, 13/);
     assert.match(css, /\.sidebar-nav-idle:hover[\s\S]*box-shadow:[\s\S]*rgba\(0, 0, 0/);
     assert.match(css, /\.sidebar-nav-idle:hover[\s\S]*text-shadow:[\s\S]*rgba\(0, 0, 0/);
     assert.match(css, /\.sidebar-section-trigger:hover[\s\S]*background:\s*rgba\(5, 8, 13/);
     assert.match(css, /\.sidebar-section-trigger[\s\S]*font-weight:\s*950/);
-    assert.match(css, /\.sidebar-section-label[\s\S]*font-size:\s*0\.8rem/);
+    assert.match(css, /\.sidebar-section-label[\s\S]*font-size:\s*0\.92rem/);
     assert.match(css, /\.sidebar-section-label[\s\S]*letter-spacing:\s*0\.08em/);
+    assert.match(css, /\.sidebar-section-label[\s\S]*-webkit-text-stroke:\s*0\.35px rgba\(34, 197, 94/);
     assert.match(css, /\.sidebar-section-trigger[\s\S]*background:\s*rgba\(2, 6, 23, 0\.42\)/);
-    assert.match(css, /\.sidebar-nav-link[\s\S]*font-size:\s*0\.74rem/);
+    assert.match(css, /\.sidebar-section-trigger[\s\S]*0 12px 26px rgba\(0, 0, 0, 0\.62\)/);
+    assert.match(css, /\.sidebar-nav-link[\s\S]*font-size:\s*0\.82rem/);
+    assert.match(css, /\.sidebar-nav-link[\s\S]*-webkit-text-stroke:\s*0\.3px rgba\(34, 197, 94/);
+    assert.match(css, /\.sidebar-subnode-tab[\s\S]*0 12px 26px rgba\(0, 0, 0, 0\.62\)/);
+    assert.match(css, /\.sidebar-subnode-tab[\s\S]*background:\s*rgba\(2, 6, 23, 0\.48\)/);
+    assert.match(css, /\.sidebar-subtree::before[\s\S]*background:\s*linear-gradient/);
+    assert.match(css, /\.sidebar-subnode-branch::before[\s\S]*background:\s*linear-gradient/);
   });
 
   it('keeps the sidebar close control compact and visually integrated', () => {

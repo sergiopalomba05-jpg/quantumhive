@@ -157,8 +157,22 @@ export async function addProjectDatabase(config: DatabaseConfig): Promise<boolea
 // Auto-register the core database on module load
 registerDatabase(CORE_CONFIG);
 
+// Ingesta / Catálogo de Herramientas IA (proyecto Supabase separado)
+const INGEST_CONFIG: DatabaseConfig = {
+  id: 'ingest',
+  name: 'Catálogo de Herramientas IA',
+  scope: 'ingest',
+  supabaseUrl: process.env.SUPABASE_INGEST_URL || 'https://gbngjsulhqcwgkqoxozy.supabase.co',
+  supabaseAnonKey: process.env.SUPABASE_INGEST_ANON_KEY || 'sb_publishable_Ccr97dXoIQi4t5O_fBLPOg_bJTFppzH',
+  description: 'Base de datos del catálogo de herramientas IA — ingesta de videos, reels y links',
+};
+registerDatabase(INGEST_CONFIG);
+
 // Export a convenience alias for the core client (backward compatibility)
 export const supabase = getClient('core');
+
+// Export a convenience alias for the ingest client
+export const supabaseIngest = getClient('ingest');
 
 // Export the router as a namespace
 export const dbRouter = {

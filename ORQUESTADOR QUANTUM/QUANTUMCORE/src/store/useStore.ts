@@ -152,6 +152,7 @@ interface AppState {
   addWorkflowDefinition: (workflow: WorkflowDefinition) => void;
   updateWorkflowDefinition: (id: string, updates: Partial<WorkflowDefinition>) => void;
   addWorkflowRun: (run: WorkflowRun) => void;
+  addMcpServer: (server: MCPServerDefinition) => void;
 
 
   onboardingCompleted: boolean;
@@ -195,7 +196,7 @@ const SEED_AGENTS: Agent[] = [
     status: 'active',
     preferredModel: 'vertex',
     brainProviderId: 'vertex',
-    defaultModelId: 'gemini-3.6-flash',
+    defaultModelId: 'gemini-2.5-flash',
     memoryScope: 'catalogo_multimedia,herramientas,taxonomia,video_ingest,comparativas',
     permissions: ['catalogo_multimedia', 'ingest_links', 'analyze_video', 'classify_taxonomy', 'dedupe_tools', 'score_tools', 'compare_tools', 'publish_catalog_candidates'],
     approvalPolicy: 'automatico_si_confianza_alta',
@@ -1235,6 +1236,9 @@ export const useStore = create<AppState>()(
   })),
   addWorkflowRun: (run) => set((state) => ({
     workflowRuns: [run, ...state.workflowRuns],
+  })),
+  addMcpServer: (server) => set((state) => ({
+    mcpServerDefinitions: [...state.mcpServerDefinitions, server],
   })),
 
 

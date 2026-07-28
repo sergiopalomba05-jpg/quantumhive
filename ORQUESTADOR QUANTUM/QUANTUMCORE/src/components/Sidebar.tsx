@@ -200,29 +200,32 @@ export function Sidebar({ variant = 'desktop', collapsed = false }: SidebarProps
         )}
 
         {/* Macro Areas */}
-        <div className="space-y-4">
+        <div className="sidebar-concept-tree space-y-4">
           {macroAreas.map(area => {
+            const AreaIcon = area.icon;
 
             return (
-              <div key={area.id} className="space-y-1">
+              <div key={area.id} className="sidebar-macro-node space-y-1">
                 <button
                   onClick={() => toggleGroup(area.id)}
-                  className="sidebar-section-trigger w-full flex items-center justify-between px-3 py-1 text-slate-400 hover:text-slate-100 transition-colors"
+                  className="sidebar-section-trigger w-full flex items-center justify-between px-3 py-2 text-slate-400 hover:text-slate-100 transition-colors"
                 >
                   <span className="sidebar-section-label flex items-center gap-2">
+                    <AreaIcon size={15} className="sidebar-macro-icon shrink-0" />
                     {area.title}
                   </span>
                   {expandedGroups[area.id] ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
                 </button>
 
                 {expandedGroups[area.id] && (
-                  <div className="space-y-0.5 pl-2">
+                  <div className="sidebar-subtree space-y-1 pl-5">
                     {area.links.map(link => (
-                      <div key={link.to} className="flex group relative">
+                      <div key={link.to} className="sidebar-subnode flex group relative">
+                        <span className="sidebar-subnode-branch" aria-hidden="true" />
                         <NavLink
                           to={link.to}
                           className={({ isActive }) => cn(
-                            "sidebar-nav-link flex-1",
+                            "sidebar-nav-link flex-1 sidebar-subnode-tab",
                             isActive ? "sidebar-nav-active" : "sidebar-nav-idle"
                           )}
                         >

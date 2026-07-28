@@ -17,11 +17,11 @@ describe('GCP Vertex model registry', () => {
   it('marks only Cloud Run verified Gemini models as router-ready', () => {
     const routerReady = GCP_VERTEX_MODELS.filter((model) => model.routerReady).map((model) => model.id);
 
-    assert.ok(routerReady.includes('gemini-3.6-flash'));
-    assert.ok(routerReady.includes('gemini-3.5-flash'));
     assert.ok(routerReady.includes('gemini-2.5-flash'));
     assert.ok(routerReady.includes('gemini-2.5-pro'));
-    assert.equal(BRAIN_MODELS.filter((model) => model.provider === 'vertex' && model.status === 'available').length >= 5, true);
+    assert.equal(routerReady.includes('gemini-3.6-flash'), false);
+    assert.equal(routerReady.includes('gemini-3.5-flash'), false);
+    assert.equal(BRAIN_MODELS.filter((model) => model.provider === 'vertex' && model.status === 'available').length >= 2, true);
   });
 
   it('returns provider metadata without secret values', () => {

@@ -90,7 +90,7 @@ async function runWorkerLoop(workerId: string, providerId: string, modelId: stri
     fullPrompt += '\n\nMODEL:';
 
     const selection = resolveProviderSelection({ 
-      brainMode: 'normal', 
+      brainMode: 'auto', 
       providerId: providerId, 
       modelId: modelId, 
       message: fullPrompt 

@@ -32,7 +32,7 @@ export interface ResolvedBrainSelection {
   synthesizerModelId?: string;
 }
 
-export const DEFAULT_CONNECTED_MODEL_ID = 'gemini-3.6-flash';
+export const DEFAULT_CONNECTED_MODEL_ID = 'gemini-2.5-flash';
 
 export const BRAIN_MODELS: BrainModelDefinition[] = [
   {
@@ -41,7 +41,7 @@ export const BRAIN_MODELS: BrainModelDefinition[] = [
     shortLabel: '3.6 FLASH',
     logoLabel: 'Gemini',
     provider: 'vertex',
-    status: 'available',
+    status: 'not_connected',
     icon: 'gemini',
     recommendedFor: ['general', 'rapido', 'agente', 'balanced'],
     description: 'Último modelo Stable. Balance velocidad/inteligencia. Default del sistema.',
@@ -52,7 +52,7 @@ export const BRAIN_MODELS: BrainModelDefinition[] = [
     shortLabel: '3.5 FLASH',
     logoLabel: 'Gemini',
     provider: 'vertex',
-    status: 'available',
+    status: 'not_connected',
     icon: 'gemini',
     recommendedFor: ['thinking', 'analisis', 'code', 'agente'],
     description: 'Modelo más inteligente para agentic y coding tasks. Stable.',
@@ -198,13 +198,13 @@ export function resolveBrainSelection(request: BrainSelectionRequest): ResolvedB
 }
 
 export function resolveVsBrainSelection(request: BrainSelectionRequest): ResolvedBrainSelection {
-  const requested = request.vsModelIds?.length ? request.vsModelIds : ['gemini-3.6-flash', 'gemini-3.5-flash'];
+  const requested = request.vsModelIds?.length ? request.vsModelIds : ['gemini-2.5-flash', 'gemini-2.5-pro'];
   const connected = requested
     .map((id) => BRAIN_MODELS.find((model) => model.id === id))
     .filter((model): model is BrainModelDefinition => model?.status === 'available' && model.provider === 'vertex');
   const usedModelIds = Array.from(new Set(connected.map((model) => model.id))).slice(0, 2);
 
-  for (const fallbackId of ['gemini-3.6-flash', 'gemini-3.5-flash']) {
+  for (const fallbackId of ['gemini-2.5-flash', 'gemini-2.5-pro']) {
     if (usedModelIds.length >= 2) break;
     if (!usedModelIds.includes(fallbackId)) usedModelIds.push(fallbackId);
   }
@@ -216,7 +216,7 @@ export function resolveVsBrainSelection(request: BrainSelectionRequest): Resolve
     requestedModelId: request.modelId || requested[0] || DEFAULT_CONNECTED_MODEL_ID,
     usedModelId: usedModelIds[0] || DEFAULT_CONNECTED_MODEL_ID,
     usedModelIds,
-    synthesizerModelId: 'gemini-3.5-flash',
+    synthesizerModelId: 'gemini-2.5-pro',
     provider: 'vertex',
     fallbackUsed,
     fallbackReason: fallbackUsed ? 'V.S 2 Cerebros usa solo modelos conectados de Vertex Gemini en esta fase.' : undefined,

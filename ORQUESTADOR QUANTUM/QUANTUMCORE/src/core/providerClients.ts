@@ -2,6 +2,8 @@ import { enqueueRunnerJob, waitForRunnerJob, getRunnerDynamicTools } from '../se
 import { spawnWorker, killWorker, messageWorker, workerMessageBus } from './workerManager.js';
 import { updateKnowledgeGraph } from '../server/routes/graph.js';
 import { remember as mementoRemember } from './mementoClient.js';
+import { ai } from './providers/ai.js';
+import type { ProviderSelectionResult } from './providerRouter.js';
 
 export interface ProviderChatRequest {
   selection: ProviderSelectionResult;
@@ -183,11 +185,15 @@ async function generateWithVertex(modelId: string, prompt: string, repoFullName?
     tools.push({ functionDeclarations: ceoTools });
   }
 
+  const vertexTools = tools.length > 0
+    ? [{ functionDeclarations: tools.flatMap((tool) => tool.functionDeclarations || []) }]
+    : undefined;
+
   let currentPrompt = prompt;
   let response = await ai.models.generateContent({ 
     model: modelId, 
     contents: currentPrompt,
-    config: tools.length > 0 ? { tools } : undefined
+    config: vertexTools ? { tools: vertexTools } : undefined
   });
 
   // Simple function calling loop (max 3 iterations)
@@ -195,11 +201,12 @@ async function generateWithVertex(modelId: string, prompt: string, repoFullName?
   while (response.functionCalls && response.functionCalls.length > 0 && iterations < 3) {
     iterations++;
     const call = response.functionCalls[0];
+    const callArgs = (call.args || {}) as Record<string, any>;
     let result = {};
     
     if (call.name === "query_github_repo" && repoFullName) {
       try {
-        const action = call.args.action;
+        const action = callArgs.action;
         const token = process.env.GITHUB_TOKEN || '';
         const headers = { 'Accept': 'application/vnd.github+json', 'User-Agent': 'QuantumCore' };
         if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -207,7 +214,7 @@ async function generateWithVertex(modelId: string, prompt: string, repoFullName?
         let url = '';
         if (action === 'list_branches') url = `https://api.github.com/repos/${repoFullName}/branches`;
         else if (action === 'list_commits') url = `https://api.github.com/repos/${repoFullName}/commits`;
-        else if (action === 'get_file' && call.args.path) url = `https://api.github.com/repos/${repoFullName}/contents/${call.args.path}`;
+        else if (action === 'get_file' && callArgs.path) url = `https://api.github.com/repos/${repoFullName}/contents/${callArgs.path}`;
         
         if (url) {
           const res = await fetch(url, { headers });
@@ -225,35 +232,35 @@ async function generateWithVertex(modelId: string, prompt: string, repoFullName?
         result = { status: 'error', error: err.message };
       }
     } else if (call.name === "spawn_subagent" && !workerId) {
-      const newId = spawnWorker(call.args.role, call.args.task, 'gcp-vertex-ai', modelId);
+      const newId = spawnWorker(callArgs.role, callArgs.task, 'gcp-vertex-ai', modelId);
       result = { status: 'success', workerId: newId, message: "Worker spawned and running in background." };
     } else if (call.name === "message_subagent" && !workerId) {
-      const ok = await messageWorker(call.args.workerId, call.args.message);
+      const ok = await messageWorker(callArgs.workerId, callArgs.message);
       result = { status: ok ? 'success' : 'error', message: ok ? "Message sent" : "Worker not found" };
     } else if (call.name === "kill_subagent" && !workerId) {
-      const ok = killWorker(call.args.workerId);
+      const ok = killWorker(callArgs.workerId);
       result = { status: ok ? 'success' : 'error', message: ok ? "Worker killed" : "Worker not found" };
     } else if (call.name === "send_message_to_ceo" && workerId) {
-      workerMessageBus.push({ workerId, message: call.args.message });
+      workerMessageBus.push({ workerId, message: callArgs.message });
       result = { status: 'success', message: "Message sent to CEO." };
     } else if (call.name === "remember_knowledge" && !workerId) {
       // Dual write: Memanto (semantic) + Graph (structural)
       const mOk = await mementoRemember({
-        content: call.args.content,
-        type: call.args.type || 'misc',
-        importance: call.args.importance || 0.5,
-        tags: call.args.tags || [],
+        content: callArgs.content,
+        type: callArgs.type || 'misc',
+        importance: callArgs.importance || 0.5,
+        tags: callArgs.tags || [],
       });
       // Also store in graph for backward compat
-      const nodeId = call.args.content.substring(0, 30).replace(/\s+/g, '_').toLowerCase();
+      const nodeId = callArgs.content.substring(0, 30).replace(/\s+/g, '_').toLowerCase();
       updateKnowledgeGraph(
-        [{ id: nodeId, label: call.args.content.substring(0, 60), type: call.args.type, summary: call.args.content }],
+        [{ id: nodeId, label: callArgs.content.substring(0, 60), type: callArgs.type, summary: callArgs.content }],
         []
       );
       result = { status: 'success', mementoStored: mOk, message: "Knowledge stored in semantic memory and graph." };
     } else if (call.name === "execute_local_command" || call.name === "view_file" || call.name === "write_to_file" || call.name === "multi_replace_file_content") {
       try {
-        const job = enqueueRunnerJob(call.name, call.args);
+        const job = enqueueRunnerJob(call.name, callArgs);
         const finishedJob = await waitForRunnerJob(job.id, 60000); // 60s timeout
         result = { status: finishedJob.status, result: finishedJob.result };
       } catch (err: any) {
@@ -264,7 +271,7 @@ async function generateWithVertex(modelId: string, prompt: string, repoFullName?
       if (dynamicTool) {
         try {
           const runnerToolName = dynamicTool.source === 'mcp' ? 'call_mcp_tool' : 'call_skill';
-          const runnerArgs = { serverId: dynamicTool.serverId, toolName: call.name, args: call.args };
+          const runnerArgs = { serverId: dynamicTool.serverId, toolName: call.name, args: callArgs };
           const job = enqueueRunnerJob(runnerToolName, runnerArgs);
           const finishedJob = await waitForRunnerJob(job.id, 60000);
           result = { status: finishedJob.status, result: finishedJob.result };
@@ -281,7 +288,7 @@ async function generateWithVertex(modelId: string, prompt: string, repoFullName?
         { role: 'model', parts: [{ functionCall: call }] },
         { role: 'user', parts: [{ functionResponse: { name: call.name, response: result } }] }
       ],
-      config: { tools }
+      config: vertexTools ? { tools: vertexTools } : undefined
     });
   }
 
@@ -535,4 +542,3 @@ export async function generateWithProvider(request: ProviderChatRequest, workerI
 
   throw new Error(`Provider ${selection.providerId} is not executable yet`);
 }
-
