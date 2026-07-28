@@ -1,0 +1,69 @@
+- iframe [ref=f8e5]:
+  - generic [ref=f9e1]:
+    - generic [ref=f9e2]:
+      - link "MiMo" [ref=f9e4] [cursor=pointer]:
+        - /url: /zh/
+        - img "Xiaomi MiMo" [ref=f9e5]
+      - generic [ref=f9e7]:
+        - navigation "Main navigation" [ref=f9e8]:
+          - button "产品" [ref=f9e10] [cursor=pointer]
+          - link "博客" [ref=f9e14] [cursor=pointer]:
+            - /url: /zh/#blog
+          - link "加入我们" [ref=f9e15] [cursor=pointer]:
+            - /url: /zh/#joinUs
+        - button "Language" [ref=f9e17] [cursor=pointer]
+      - generic [ref=f9e20]:
+        - generic [ref=f9e21]:
+          - heading "MiMo Code" [level=1] [ref=f9e22]
+          - paragraph [ref=f9e23]
+        - generic [ref=f9e25]:
+          - group "安装平台" [ref=f9e26]:
+            - button "Linux / macOS" [pressed] [ref=f9e27] [cursor=pointer]
+            - button "Windows" [ref=f9e28] [cursor=pointer]
+          - generic [ref=f9e29]: ">_ curl -fsSL https://mimo.xiaomi.com/install | bash"
+          - button "复制命令" [ref=f9e30] [cursor=pointer]:
+            - generic: 已复制
+        - generic [ref=f9e33]:
+          - link "GitHub" [ref=f9e34] [cursor=pointer]:
+            - /url: https://github.com/XiaomiMiMo/MiMo-Code
+          - link "文档" [ref=f9e38] [cursor=pointer]:
+            - /url: /zh/mimocode/start
+          - link "Blog" [ref=f9e43] [cursor=pointer]:
+            - /url: /zh/blog/mimo-code-long-horizon
+    - generic [ref=f9e47]:
+      - heading "为什么选择 MiMo Code" [level=2] [ref=f9e48]
+      - generic [ref=f9e49]:
+        - article [ref=f9e50]:
+          - generic [ref=f9e52]:
+            - heading [level=3] [ref=f9e53]
+            - paragraph [ref=f9e55]: 无需登录，开箱即用，免费体验比肩 Claude Sonnet 4.6 级别多模态模型。
+        - article [ref=f9e56]:
+          - generic [ref=f9e57]:
+            - heading [level=3] [ref=f9e58]
+            - paragraph [ref=f9e60]: MiMo 模型与 Agent 协同优化，复杂编码任务一次搞定。
+        - article [ref=f9e62]:
+          - generic [ref=f9e64]:
+            - heading [level=3] [ref=f9e65]
+            - paragraph [ref=f9e67]: 知识自动沉淀，配合记忆整理。上百轮对话，也不丢失关键信息，智商始终在线。
+        - article [ref=f9e68]:
+          - generic [ref=f9e69]:
+            - heading [level=3] [ref=f9e70]
+            - paragraph [ref=f9e72]: 基于使用反馈持续学习与优化，模型能力、工具链、工作流随你的项目共同成长。越用越懂你，越用越顺手，打造专属智能开发伙伴。
+        - article [ref=f9e74]:
+          - generic [ref=f9e76]:
+            - heading [level=3] [ref=f9e77]
+            - paragraph [ref=f9e79]: 一个人的专业开发团队，从想法到产品的工业级交付
+    - contentinfo [ref=f9e80]:
+      - generic [ref=f9e81]:
+        - generic [ref=f9e82]: Copyright©2025 Xiaomi. All Rights Reserved
+        - generic [ref=f9e83]: "|"
+        - link "Xiaomi MiMo Open Platform Service Agreement" [ref=f9e84] [cursor=pointer]:
+          - /url: "#service-agreement"
+        - generic [ref=f9e85]: "|"
+        - link "Xiaomi MiMo Open Platform Privacy Policy" [ref=f9e86] [cursor=pointer]:
+          - /url: "#privacy-policy"
+        - generic [ref=f9e87]: "|"
+        - link "Cookie Policy" [ref=f9e88] [cursor=pointer]:
+          - /url: "#cookie-policy"
+        - generic [ref=f9e89]: "|"
+        - button "Cookie Preferences" [ref=f9e90] [cursor=pointer]

@@ -1,0 +1,70 @@
+- generic [ref=f8e1]:
+  - link "Omitir e ir al contenido" [ref=f8e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=f8e6]:
+    - generic [ref=f8e8]:
+      - navigation "Barra lateral":
+        - generic:
+          - generic:
+            - generic:
+              - button "Abrir barra lateral"
+        - generic:
+          - generic:
+            - link "Nuevo chat":
+              - /url: /
+          - generic:
+            - button "Buscar"
+          - generic:
+            - button "Recientes"
+        - generic:
+          - generic:
+            - button "Abrir el menú de perfil"
+      - generic [ref=f8e9]:
+        - heading "Historial del chat" [level=2] [ref=f8e10]
+        - generic [ref=f8e11]:
+          - navigation "Historial del chat" [ref=f8e12]:
+            - generic [ref=f8e15]:
+              - link "Local" [ref=f8e16] [cursor=pointer]:
+                - /url: /
+                - generic [ref=f8e17]: ChatGPT
+              - generic [ref=f8e18]:
+                - button "Buscar" [ref=f8e19] [cursor=pointer]
+                - button "Cerrar barra lateral" [expanded] [ref=f8e22]
+            - list [ref=f8e26]:
+              - listitem [ref=f8e27]:
+                - link "Nuevo chat" [ref=f8e28] [cursor=pointer]:
+                  - /url: /
+              - listitem
+            - link "Biblioteca" [ref=f8e35] [cursor=pointer]:
+              - /url: /library
+            - link "Programadas" [ref=f8e42] [cursor=pointer]:
+              - /url: /scheduled
+            - link "Complementos" [ref=f8e49] [cursor=pointer]:
+              - /url: /plugins
+            - generic [ref=f8e56]: Más
+          - button "Sergio Palomba Plus, abrir menú de perfil" [ref=f8e67] [cursor=pointer]:
+            - generic [ref=f8e71]:
+              - generic [ref=f8e72]: Sergio Palomba
+              - generic [ref=f8e74]: Plus
+            - button "Descargar aplicaciones" [ref=f8e79]
+    - generic [ref=f8e85]:
+      - generic [ref=f8e86]:
+        - banner:
+          - button "Activar chat temporal" [ref=f8e92] [cursor=pointer]
+      - main [ref=f8e96]:
+        - generic [ref=f8e98]:
+          - generic:
+            - generic:
+              - generic:
+                - button
+            - generic: ChatGPT puede cometer errores. Considera verificar la información importante.
+            - generic [ref=f8e104]:
+              - generic [ref=f8e108]:
+                - button "Añadir archivos y más" [ref=f8e111] [cursor=pointer]
+                - textbox "Chatear con ChatGPT" [active] [ref=f8e114]:
+                  - /placeholder: Envía un mensaje a ChatGPT
+                - button "Enviar prompt" [disabled] [ref=f8e117]
+              - button [ref=f8e120]
+              - button [ref=f8e121]
+  - alert [ref=f8e122]
+  - status [ref=f8e123]

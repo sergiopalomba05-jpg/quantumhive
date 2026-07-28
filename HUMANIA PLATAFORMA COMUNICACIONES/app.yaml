@@ -1,0 +1,17 @@
+# Configuration file for Google App Engine deployment
+# Supported for both App Engine Standard (Node.js 20 runtime) and App Engine Flexible (using custom Dockerfile)
+
+runtime: nodejs20
+
+# Optional settings for standard environment scaling and resource allocation
+instance_class: F1
+
+automatic_scaling:
+  target_cpu_utilization: 0.65
+  min_instances: 0
+  max_instances: 5
+
+# Environment variables to pass to the application
+env_variables:
+  NODE_ENV: "production"
+  # Set your secrets and keys such as GEMINI_API_KEY in the Google Cloud Console / Secret Manager

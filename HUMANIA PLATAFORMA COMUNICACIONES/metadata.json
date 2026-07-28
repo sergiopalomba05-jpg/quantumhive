@@ -1,0 +1,11 @@
+{
+  "name": "Remix: Communication Core",
+  "description": "A high-fidelity immersive communication applet with real-time video simulation, glassmorphic filters, and interactive AI contact sessions driven by Gemini.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

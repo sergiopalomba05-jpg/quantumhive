@@ -1,0 +1,70 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "The user's private settings, minutes balance, and preferences.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "availableSeconds": { "type": "number" },
+        "isMemoryPlanActive": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Contact": {
+      "title": "Contact Node",
+      "description": "An AI agent avatar or imported Google contact.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "avatar": { "type": "string" },
+        "role": { "type": "string" },
+        "tagline": { "type": "string" },
+        "statusText": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "category": { "type": "string" },
+        "personalityStyle": { "type": "string" },
+        "voiceTone": { "type": "string" },
+        "avatarStyle": { "type": "string" },
+        "hasMemory": { "type": "boolean" },
+        "isGoogleContact": { "type": "boolean" },
+        "googleContactId": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "name"]
+    },
+    "Message": {
+      "title": "Chat Message",
+      "description": "A message sent in a chat connection with an agent.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "sender": { "type": "string" },
+        "content": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "sender", "content"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile data including balance and memory subscription."
+    },
+    "/users/{userId}/contacts/{contactId}": {
+      "schema": "Contact",
+      "description": "Collection of avatars/agents hired or imported by this user."
+    },
+    "/users/{userId}/contacts/{contactId}/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Subcollection of chat histories with each specific agent."
+    }
+  }
+}

@@ -1,0 +1,164 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - heading "Welcome to QuantumHive Control Plane" [level=2] [ref=e10]
+      - paragraph [ref=e11]: Este panel centraliza tus ideas, proyectos, agentes, memoria, videos, herramientas, tareas, integraciones y decisiones para que no pierdas contexto entre sesiones.
+    - generic [ref=e12]:
+      - button "Iniciar tutorial interactivo" [ref=e13]
+      - button "Ver Manual / Help Center" [ref=e18]
+      - button "Explorar por mi cuenta" [ref=e22]
+  - generic [ref=e24]:
+    - complementary [ref=e25]:
+      - generic [ref=e26]:
+        - generic [ref=e37]:
+          - img "QuantumHive" [ref=e38]
+          - heading "QuantumHive" [level=1] [ref=e39]
+          - generic [ref=e40]: Quantum Core
+        - generic [ref=e41]: Sala de Control
+      - generic [ref=e43]:
+        - generic [ref=e44]:
+          - heading "Próxima Mejor Acción" [level=3] [ref=e46]
+          - paragraph [ref=e47]: Revisar Resumen Diario y confirmar 2 aprobaciones pendientes.
+        - generic [ref=e48]:
+          - heading "Favoritos" [level=3] [ref=e49]
+          - generic [ref=e52]:
+            - generic [ref=e53]:
+              - link "Chat Central" [ref=e54] [cursor=pointer]:
+                - /url: /chat
+              - button [ref=e58]
+            - generic [ref=e61]:
+              - link "Resumen Diario" [ref=e62] [cursor=pointer]:
+                - /url: /brief
+              - button [ref=e67]
+            - generic [ref=e70]:
+              - link "Inbox de Ideas" [ref=e71] [cursor=pointer]:
+                - /url: /ideas
+              - button [ref=e75]
+            - generic [ref=e78]:
+              - link "Tareas" [ref=e79] [cursor=pointer]:
+                - /url: /tasks
+              - button [ref=e84]
+        - generic [ref=e87]:
+          - generic [ref=e88]:
+            - button "A. Centro de Comando" [ref=e89]
+            - generic [ref=e93]:
+              - generic [ref=e94]:
+                - link "Panel" [ref=e95] [cursor=pointer]:
+                  - /url: /
+                - button [ref=e102]
+              - generic [ref=e105]:
+                - link "Empezar Acá" [ref=e106] [cursor=pointer]:
+                  - /url: /start
+                - button [ref=e110]
+              - generic [ref=e113]:
+                - link "Resumen Diario" [ref=e114] [cursor=pointer]:
+                  - /url: /brief
+                - button [ref=e119]
+              - generic [ref=e122]:
+                - link "Cola de Aprobación" [ref=e123] [cursor=pointer]:
+                  - /url: /approvals
+                - button [ref=e128]
+              - generic [ref=e131]:
+                - link "Actividad / Notificaciones" [ref=e132] [cursor=pointer]:
+                  - /url: /events
+                - button [ref=e136]
+          - generic [ref=e139]:
+            - button "B. Captura e Inbox" [ref=e140]
+            - generic [ref=e144]:
+              - generic [ref=e145]:
+                - link "Inbox de Ideas" [ref=e146] [cursor=pointer]:
+                  - /url: /ideas
+                - button [ref=e150]
+              - generic [ref=e153]:
+                - link "Bandeja de Videos" [ref=e154] [cursor=pointer]:
+                  - /url: /video-inbox
+                - button [ref=e159]
+              - generic [ref=e162]:
+                - link "Notas de Voz" [ref=e163] [cursor=pointer]:
+                  - /url: /voice
+                - button [ref=e168]
+          - button "C. Proyectos y Ejecución" [ref=e172]
+          - button "D. Agentes y Chat" [ref=e177]
+          - button "E. Conocimiento y Memoria" [ref=e182]
+          - button "F. Inteligencia y Automatización" [ref=e187]
+          - button "G. Bases de Datos, Workspace e Integr." [ref=e192]
+          - button "H. Entorno de Desarrollo" [ref=e197]
+    - button "Ocultar navegación" [ref=e202]
+    - main [ref=e207]:
+      - generic [ref=e208]:
+        - generic [ref=e209]:
+          - generic [ref=e210]:
+            - heading "Chats" [level=2] [ref=e211]
+            - textbox "Search conversations..." [ref=e218]
+          - generic [ref=e219]:
+            - generic [ref=e225] [cursor=pointer]:
+              - generic [ref=e226]: Dominus Prime
+              - generic [ref=e228]: "Orquestador General de QuantumCore y CEO II operativo de QuantumHive. Segundo cerebro operativo de Sergio: centraliza contexto, coordina agentes, prioriza proyectos, protege la vision, arma context packs y convierte decisiones en tareas, memoria, eventos y auditoria trazable."
+            - generic [ref=e234] [cursor=pointer]:
+              - generic [ref=e235]: Asistente Global
+              - generic [ref=e237]: Orquestador personal central
+            - generic [ref=e243] [cursor=pointer]:
+              - generic [ref=e244]: CEO Carta Viva
+              - generic [ref=e246]: Responsable MVP comercial Carta Viva
+            - generic [ref=e252] [cursor=pointer]:
+              - generic [ref=e253]: CEO HumanIA
+              - generic [ref=e255]: Responsable HumanIA Chat, World y agentes
+            - generic [ref=e261] [cursor=pointer]:
+              - generic [ref=e262]: CEO Infraestructura
+              - generic [ref=e264]: Responsable Cloud Run, Firestore, Vertex, Azure
+            - generic [ref=e270] [cursor=pointer]:
+              - generic [ref=e271]: CEO Avatar Engine
+              - generic [ref=e273]: Responsable videos, avatares y assets
+            - generic [ref=e279] [cursor=pointer]:
+              - generic [ref=e280]: CEO Trading
+              - generic [ref=e282]: Placeholder futuro trading
+        - generic [ref=e283]:
+          - generic [ref=e284]:
+            - generic [ref=e290]:
+              - generic [ref=e291]: Dominus Prime
+              - generic [ref=e292]: Online
+            - generic [ref=e294]:
+              - generic [ref=e295]:
+                - button "Potenciar inteligencia" [ref=e296]
+                - text: Potenciar inteligencia
+              - generic [ref=e309]: "Grounding: ON"
+          - generic [ref=e313]:
+            - generic [ref=e314]:
+              - generic [ref=e315]:
+                - generic [ref=e316]: Brain Router
+                - generic [ref=e317]: Cerebro libre. Dominus recomienda, vos decidis.
+              - combobox [ref=e318]:
+                - option "Auto" [selected]
+                - option "Manual"
+                - option "Consejo"
+            - generic [ref=e319]:
+              - button "Gemini logo 2.5 FLASH Gemini" [ref=e320]:
+                - generic "Gemini logo" [ref=e321]
+                - generic [ref=e326]:
+                  - generic [ref=e327]: 2.5 FLASH
+                  - generic [ref=e328]: Gemini
+              - button "Gemini logo 2.5 PRO Gemini" [ref=e330]:
+                - generic "Gemini logo" [ref=e331]
+                - generic [ref=e336]:
+                  - generic [ref=e337]: 2.5 PRO
+                  - generic [ref=e338]: Gemini
+              - button "OpenAI logo GPT OpenAI" [ref=e340]:
+                - generic "OpenAI logo" [ref=e341]
+                - generic [ref=e344]:
+                  - generic [ref=e345]: GPT
+                  - generic [ref=e346]: OpenAI
+              - button "Anthropic logo CLAUDE Anthropic" [ref=e348]:
+                - generic "Anthropic logo" [ref=e349]
+                - generic [ref=e352]:
+                  - generic [ref=e353]: CLAUDE
+                  - generic [ref=e354]: Anthropic
+              - button "Kimi logo KIMI Kimi" [ref=e356]:
+                - generic "Kimi logo" [ref=e357]
+                - generic [ref=e361]:
+                  - generic [ref=e362]: KIMI
+                  - generic [ref=e363]: Kimi
+          - generic [ref=e365]: "Start a conversation with Dominus Prime.Orquestador General de QuantumCore y CEO II operativo de QuantumHive. Segundo cerebro operativo de Sergio: centraliza contexto, coordina agentes, prioriza proyectos, protege la vision, arma context packs y convierte decisiones en tareas, memoria, eventos y auditoria trazable."
+          - generic [ref=e368]:
+            - textbox "Transmitir instrucción a Dominus Prime..." [ref=e369]
+            - button [disabled] [ref=e370]
+    - button "Abrir asistente contextual" [ref=e374]

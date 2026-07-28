@@ -50,11 +50,10 @@ logging.basicConfig(
 logger = logging.getLogger("yas-papeo")
 
 # ── Config ────────────────────────────────────────────────────────────────────
-TELEGRAM_BOT_TOKEN: str = os.environ["TELEGRAM_BOT_TOKEN"]
-TELEGRAM_WEBHOOK_SECRET: str = os.environ.get("TELEGRAM_WEBHOOK_SECRET", "")
-GEMINI_API_KEY: str = os.environ["GEMINI_API_KEY"]
-GEMINI_MODEL: str = os.environ.get("GEMINI_MODEL", "gemini-3.1-flash-lite")
-GEMINI_TTS_MODEL: str = os.environ.get("GEMINI_TTS_MODEL", "gemini-3.1-flash-tts-preview")
+TELEGRAM_BOT_TOKEN: str = os.environ["TELEGRAM_BOT_TOKEN"].strip()
+TELEGRAM_WEBHOOK_SECRET: str = os.environ.get("TELEGRAM_WEBHOOK_SECRET", "").strip()
+GEMINI_MODEL: str = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash-lite")
+GEMINI_TTS_MODEL: str = os.environ.get("GEMINI_TTS_MODEL", "gemini-2.5-flash-preview-tts")
 TTS_VOICE: str = os.environ.get("TTS_VOICE", "Kore")
 WEBHOOK_URL: str = os.environ.get("WEBHOOK_URL", "")
 PORT: int = int(os.environ.get("PORT", 8080))
@@ -63,7 +62,7 @@ USE_POLLING: bool = os.environ.get("TELEGRAM_USE_POLLING", "false").lower() == "
 # system_prompt.md lives next to this file — works regardless of cwd
 SYSTEM_PROMPT: str = (Path(__file__).parent / "system_prompt.md").read_text(encoding="utf-8")
 
-genai_client = genai.Client(api_key=GEMINI_API_KEY)
+genai_client = genai.Client()
 
 # ── In-memory chat history ────────────────────────────────────────────────────
 # {chat_id: list[types.Content]}
@@ -227,7 +226,7 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     chat_id = update.effective_chat.id
     chat_histories.pop(chat_id, None)
     await update.message.reply_text(
-        "¡Hola, hermosa! 🌸 Soy quien te atiende por acá en Yas Papeo. "
+        "¡Hola, hermosa! 🌸 Soy quien te atiende por acá en Yaspapeobeauty. "
         "¿En qué te puedo ayudar con tu pelo hoy? ✨"
     )
 

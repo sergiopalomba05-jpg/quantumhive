@@ -1,0 +1,118 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e7]:
+        - img "QuantumCore" [ref=e8]
+        - generic [ref=e9]:
+          - heading "QuantumCore" [level=1] [ref=e10]
+          - generic [ref=e11]: Sistema Operativo
+      - generic [ref=e12]: Sala de Control
+    - generic [ref=e14]:
+      - generic [ref=e15]:
+        - heading "Próxima Mejor Acción" [level=3] [ref=e17]
+        - paragraph [ref=e18]: Revisar Resumen Diario y confirmar 2 aprobaciones pendientes.
+      - generic [ref=e19]:
+        - heading "Favoritos" [level=3] [ref=e20]
+        - generic [ref=e23]:
+          - generic [ref=e24]:
+            - link "Chat Central" [ref=e25] [cursor=pointer]:
+              - /url: /chat
+            - button [ref=e29]
+          - generic [ref=e32]:
+            - link "Resumen Diario" [ref=e33] [cursor=pointer]:
+              - /url: /brief
+            - button [ref=e38]
+          - generic [ref=e41]:
+            - link "Inbox de Ideas" [ref=e42] [cursor=pointer]:
+              - /url: /ideas
+            - button [ref=e46]
+          - generic [ref=e49]:
+            - link "Tareas" [ref=e50] [cursor=pointer]:
+              - /url: /tasks
+            - button [ref=e55]
+      - generic [ref=e58]:
+        - generic [ref=e59]:
+          - button "A. Centro de Comando" [ref=e60]
+          - generic [ref=e64]:
+            - generic [ref=e65]:
+              - link "Panel" [ref=e66] [cursor=pointer]:
+                - /url: /
+              - button [ref=e73]
+            - generic [ref=e76]:
+              - link "Empezar Acá" [ref=e77] [cursor=pointer]:
+                - /url: /start
+              - button [ref=e81]
+            - generic [ref=e84]:
+              - link "Resumen Diario" [ref=e85] [cursor=pointer]:
+                - /url: /brief
+              - button [ref=e90]
+            - generic [ref=e93]:
+              - link "Cola de Aprobación" [ref=e94] [cursor=pointer]:
+                - /url: /approvals
+              - button [ref=e99]
+            - generic [ref=e102]:
+              - link "Actividad / Notificaciones" [ref=e103] [cursor=pointer]:
+                - /url: /events
+              - button [ref=e107]
+        - generic [ref=e110]:
+          - button "B. Captura e Inbox" [ref=e111]
+          - generic [ref=e115]:
+            - generic [ref=e116]:
+              - link "Inbox de Ideas" [ref=e117] [cursor=pointer]:
+                - /url: /ideas
+              - button [ref=e121]
+            - generic [ref=e124]:
+              - link "Bandeja de Videos" [ref=e125] [cursor=pointer]:
+                - /url: /video-inbox
+              - button [ref=e130]
+            - generic [ref=e133]:
+              - link "Notas de Voz" [ref=e134] [cursor=pointer]:
+                - /url: /voice
+              - button [ref=e139]
+        - generic [ref=e142]:
+          - button "C. Proyectos y Ejecución" [ref=e143]
+          - generic [ref=e147]:
+            - generic [ref=e148]:
+              - link "Proyectos" [ref=e149] [cursor=pointer]:
+                - /url: /projects
+              - button [ref=e153]
+            - generic [ref=e156]:
+              - link "Tareas" [ref=e157] [cursor=pointer]:
+                - /url: /tasks
+              - button [ref=e162]
+            - generic [ref=e165]:
+              - link "Planificador Visual" [ref=e166] [cursor=pointer]:
+                - /url: /planner
+              - button [ref=e172]
+            - generic [ref=e175]:
+              - link "Conector de Repos" [ref=e176] [cursor=pointer]:
+                - /url: /repo-connector
+              - button [ref=e183]
+        - button "D. Agentes y Chat" [ref=e187]
+        - button "E. Conocimiento y Memoria" [ref=e192]
+        - button "F. Inteligencia y Automatización" [ref=e197]
+        - button "G. Bases de Datos, Workspace e Integr." [ref=e202]
+        - button "H. Entorno de Desarrollo" [ref=e207]
+  - button "Ocultar navegación" [ref=e211]
+  - main [ref=e216]:
+    - generic [ref=e217]:
+      - generic [ref=e218]:
+        - generic [ref=e219]:
+          - heading "Chats" [level=2] [ref=e220]
+          - textbox "Search conversations..." [ref=e227]
+        - generic [ref=e234] [cursor=pointer]:
+          - generic [ref=e235]: Dominus Prime
+          - generic [ref=e237]: "Orquestador General de QuantumCore y CEO II operativo de QuantumHive. Segundo cerebro operativo de Sergio: centraliza contexto, coordina agentes, prioriza proyectos, protege la vision, arma context packs y convierte decisiones en tareas, memoria, eventos y auditoria trazable."
+      - generic [ref=e238]:
+        - group [ref=e241]:
+          - generic "Auto · Normal" [ref=e242] [cursor=pointer]
+          - option "Auto" [selected]
+          - option "Manual"
+          - option "V.S 2 Cerebros"
+          - option "Razonamiento Normal" [selected]
+          - option "Razonamiento Alto"
+        - generic [ref=e243]: "Iniciar conversación.Orquestador General de QuantumCore y CEO II operativo de QuantumHive. Segundo cerebro operativo de Sergio: centraliza contexto, coordina agentes, prioriza proyectos, protege la vision, arma context packs y convierte decisiones en tareas, memoria, eventos y auditoria trazable."
+        - generic [ref=e246]:
+          - textbox "Transmitir instrucción..." [ref=e247]
+          - button [disabled] [ref=e248]
+  - button "Abrir asistente contextual" [ref=e252]

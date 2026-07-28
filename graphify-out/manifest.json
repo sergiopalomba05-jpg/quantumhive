@@ -15,9 +15,9 @@
     "semantic_hash": ""
   },
   "agencia/clientes/yas-papeo/app.py": {
-    "mtime": 1783401057.7065496,
-    "ast_hash": "6f96fb914fa4ea0489be61f89508fea5",
-    "semantic_hash": "6f96fb914fa4ea0489be61f89508fea5"
+    "mtime": 1784209886.1909618,
+    "ast_hash": "ec8be42eb86a1d0f9590fc55133c9f19",
+    "semantic_hash": ""
   },
   "agencia/core/investigador/agente_investigador.py": {
     "mtime": 1781585497.112898,
@@ -430,8 +430,8 @@
     "semantic_hash": "ee09878f17a1e569a182538f08826c39"
   },
   "agencia/clientes/yas-papeo/system_prompt.md": {
-    "mtime": 1783401124.2657597,
-    "ast_hash": "3c07f21716f3d11d64bb41ccf8ccdf40",
+    "mtime": 1784201256.9848728,
+    "ast_hash": "77bac581e4ffadb0b92c19fd91b01165",
     "semantic_hash": ""
   },
   "agencia/core/README.md": {
@@ -5770,8 +5770,8 @@
     "semantic_hash": ""
   },
   "planes-a-llevar-a-cabo/README.md": {
-    "mtime": 1783564434.666815,
-    "ast_hash": "f5b7117eb9af4e85fdcc4a984413a5c0",
+    "mtime": 1784659548.037736,
+    "ast_hash": "d3ea3ce8cc9ed3e3465096307958e7dd",
     "semantic_hash": ""
   },
   "procesos-aprendidos/README.md": {
@@ -8665,8 +8665,8 @@
     "semantic_hash": ""
   },
   "landing/script.js": {
-    "mtime": 1783694087.2947848,
-    "ast_hash": "955b3a244f2b6155944bebae706f0b72",
+    "mtime": 1785144434.2220104,
+    "ast_hash": "55bb573d0afe1d91774665338bc07466",
     "semantic_hash": ""
   },
   ".playwright-mcp/page-2026-07-10T08-15-59-278Z.yml": {
@@ -8830,8 +8830,8 @@
     "semantic_hash": ""
   },
   "landing/index.html": {
-    "mtime": 1784136165.94117,
-    "ast_hash": "69bfd793e698ea0ef81c8f0292ce5f05",
+    "mtime": 1785144300.4053926,
+    "ast_hash": "21f9e72bd0774c1a98410a783444a1a4",
     "semantic_hash": ""
   },
   ".playwright-mcp/Gemini-Generated-Image-nngh5fnngh5fnngh.png": {
@@ -8995,8 +8995,8 @@
     "semantic_hash": ""
   },
   "landing/empleados-virtuales/gastronomia/carta-viva/index.html": {
-    "mtime": 1784134333.291849,
-    "ast_hash": "24a8831151ac11135a2546c4cc0325a8",
+    "mtime": 1784307115.6543746,
+    "ast_hash": "fb311d0ce1a8a6ac882f3e3bcc461f1a",
     "semantic_hash": ""
   },
   "paquete-pipeline-avatar-minimo/README_PAQUETE.md": {
@@ -9160,68 +9160,13 @@
     "semantic_hash": ""
   },
   "agencia/motor madre/motor-avatares-run/get_state_refs.js": {
-    "mtime": 1784150990.7598586,
+    "mtime": 1783720763.2565093,
     "ast_hash": "52515361739f842ccfa737e56d3656ce",
     "semantic_hash": ""
   },
   "agencia/motor madre/motor-avatares-run/metadata.json": {
-    "mtime": 1784150990.7598586,
+    "mtime": 1783720763.2565093,
     "ast_hash": "07aba4ba13e5988919040c0427ca2708",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motor-avatares-run/package.json": {
-    "mtime": 1784150990.7598586,
-    "ast_hash": "c7434dcee7c8add85e8bd23593ddf4de",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motor-avatares-run/server.py": {
-    "mtime": 1784150990.8220627,
-    "ast_hash": "22e478a600f19e6107266db9a0fdda90",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motor-avatares-run/server.ts": {
-    "mtime": 1784150990.8220627,
-    "ast_hash": "c99deb5b0993efdfaf120f138a76beec",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motor-avatares-run/src/App.tsx": {
-    "mtime": 1784150990.8220627,
-    "ast_hash": "12369019f529427bc6e35cd129f858e3",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motor-avatares-run/src/main.tsx": {
-    "mtime": 1784150990.8220627,
-    "ast_hash": "a0bcc3ffa5e95e1965f94969ab488283",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motor-avatares-run/src/menuData.ts": {
-    "mtime": 1784150990.8376875,
-    "ast_hash": "c39fc67b6bbb36151afb61712bbff370",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motor-avatares-run/src/systemPrompt.ts": {
-    "mtime": 1784150990.8376875,
-    "ast_hash": "ab87d0547e54390c351179492ebc5173",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motor-avatares-run/src/types.ts": {
-    "mtime": 1784150990.8376875,
-    "ast_hash": "589d170be46b06fb8db4adb11d030fd2",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motor-avatares-run/test.js": {
-    "mtime": 1784150990.8376875,
-    "ast_hash": "491dce918db60bd6399771152ca0fe38",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motor-avatares-run/tsconfig.json": {
-    "mtime": 1784150990.8376875,
-    "ast_hash": "aca6cdac13db39d03d9b95866834d84f",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motor-avatares-run/vite.config.ts": {
-    "mtime": 1784150990.8376875,
-    "ast_hash": "cfc596836379397756c305b60b69ba06",
     "semantic_hash": ""
   },
   "agencia/motor madre/motor-avatares-video-test/get_state_refs.js": {
@@ -9245,13 +9190,13 @@
     "semantic_hash": ""
   },
   "agencia/motor madre/motor-avatares-video-test/server.ts": {
-    "mtime": 1784150990.9465907,
-    "ast_hash": "c99deb5b0993efdfaf120f138a76beec",
+    "mtime": 1784305825.858843,
+    "ast_hash": "a6f40fa901d9dee30b511807558a5123",
     "semantic_hash": ""
   },
   "agencia/motor madre/motor-avatares-video-test/src/App.tsx": {
-    "mtime": 1784150990.9465907,
-    "ast_hash": "9cb7096437cb7f334a7c594db073aabe",
+    "mtime": 1784305825.8628414,
+    "ast_hash": "0286e619aebb7cbae543c19e9d269394",
     "semantic_hash": ""
   },
   "agencia/motor madre/motor-avatares-video-test/src/main.tsx": {
@@ -9260,8 +9205,8 @@
     "semantic_hash": ""
   },
   "agencia/motor madre/motor-avatares-video-test/src/menuData.ts": {
-    "mtime": 1784150990.9622202,
-    "ast_hash": "c39fc67b6bbb36151afb61712bbff370",
+    "mtime": 1784305825.86684,
+    "ast_hash": "de88d3d6a8fb72acc1d79297eb65a653",
     "semantic_hash": ""
   },
   "agencia/motor madre/motor-avatares-video-test/src/systemPrompt.ts": {
@@ -10195,8 +10140,8 @@
     "semantic_hash": ""
   },
   "agencia/motor madre/PIPELINE INGESTA MENUS/docs/avatar-musetalk-vm-handoff.md": {
-    "mtime": 1784150984.3683426,
-    "ast_hash": "64cb633dc67a59158c411b09023783dd",
+    "mtime": 1784277019.3613472,
+    "ast_hash": "6285f9f5636d5cd4db7c09d98e337294",
     "semantic_hash": ""
   },
   "agencia/motor madre/PIPELINE INGESTA MENUS/inputs/menus/menu_ejemplo.txt": {
@@ -10274,29 +10219,19 @@
     "ast_hash": "c5b5e3653c97178781947e163e3dd630",
     "semantic_hash": ""
   },
-  "agencia/motor madre/motor-avatares-run/README.md": {
-    "mtime": 1784150990.6869247,
-    "ast_hash": "ebb85803dd00444f1cb7a9d929fd39ff",
-    "semantic_hash": ""
-  },
   "agencia/motor madre/motor-avatares-run/cloudbuild-deploy.yaml": {
-    "mtime": 1784150990.7442353,
+    "mtime": 1783720763.254152,
     "ast_hash": "310ceecfcdfd5da8668e03c5b463fe0f",
     "semantic_hash": ""
   },
   "agencia/motor madre/motor-avatares-run/cloudbuild.yaml": {
-    "mtime": 1784150990.7442353,
+    "mtime": 1783720763.254152,
     "ast_hash": "c2493f1f4a2a37ffd79721b352575ab6",
     "semantic_hash": ""
   },
   "agencia/motor madre/motor-avatares-run/index.html": {
-    "mtime": 1784150990.7598586,
+    "mtime": 1783720763.2565093,
     "ast_hash": "ab26bd0dac18c0c7749e215ef2df8044",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motor-avatares-run/server_output.txt": {
-    "mtime": 1784150990.8220627,
-    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
     "semantic_hash": ""
   },
   "agencia/motor madre/motor-avatares-video-test/README.md": {
@@ -12915,12 +12850,7 @@
     "semantic_hash": ""
   },
   "agencia/motor madre/motor-avatares-run/assets/avatar-bienvenido.webp": {
-    "mtime": 1784150990.7442353,
-    "ast_hash": "8f205059aafb0c2eef3f9f666ca7aa07",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motor-avatares-run/public/avatar-bienvenido.webp": {
-    "mtime": 1784150990.8064363,
+    "mtime": 1783720763.254152,
     "ast_hash": "8f205059aafb0c2eef3f9f666ca7aa07",
     "semantic_hash": ""
   },
@@ -13174,21 +13104,6 @@
     "ast_hash": "8bc32d97bdc8f9a678b72a46de61c2c5",
     "semantic_hash": ""
   },
-  "agencia/motor madre/motor-avatares-video-test/public/avatar-videos/sol/v1/connector_entradas.webm": {
-    "mtime": 1784150990.9112482,
-    "ast_hash": "acb1c23e16da478ea28f64a508168554",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motor-avatares-video-test/public/avatar-videos/sol/v1/connector_idle.webm": {
-    "mtime": 1784150990.915339,
-    "ast_hash": "1b2c57e484a5ac6fe6aa3a16711ff22e",
-    "semantic_hash": ""
-  },
-  "agencia/motor madre/motor-avatares-video-test/public/avatar-videos/sol/v1/connector_welcome.webm": {
-    "mtime": 1784150990.9465907,
-    "ast_hash": "7fd14c7d0ec015fddf7faabe8ca54bc7",
-    "semantic_hash": ""
-  },
   "agencia/motor madre/versiones-obsoletas/la-escaloneta-3d/bienbenido a la escaloneta.mp4": {
     "mtime": 1784150991.2447493,
     "ast_hash": "8bc32d97bdc8f9a678b72a46de61c2c5",
@@ -13217,6 +13132,2956 @@
   "agencia/motor madre/voz-cartesia.mp3": {
     "mtime": 1784150991.7901654,
     "ast_hash": "359fb3c696efacde1eaf656f212b4cc5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/get_state_refs.js": {
+    "mtime": 1784150990.7598586,
+    "ast_hash": "52515361739f842ccfa737e56d3656ce",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/metadata.json": {
+    "mtime": 1784150990.7598586,
+    "ast_hash": "07aba4ba13e5988919040c0427ca2708",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/package.json": {
+    "mtime": 1784150990.7598586,
+    "ast_hash": "c7434dcee7c8add85e8bd23593ddf4de",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/server.py": {
+    "mtime": 1784150990.8220627,
+    "ast_hash": "22e478a600f19e6107266db9a0fdda90",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/server.ts": {
+    "mtime": 1784150990.8220627,
+    "ast_hash": "c99deb5b0993efdfaf120f138a76beec",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/src/App.tsx": {
+    "mtime": 1784150990.8220627,
+    "ast_hash": "12369019f529427bc6e35cd129f858e3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/src/main.tsx": {
+    "mtime": 1784150990.8220627,
+    "ast_hash": "a0bcc3ffa5e95e1965f94969ab488283",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/src/menuData.ts": {
+    "mtime": 1784150990.8376875,
+    "ast_hash": "c39fc67b6bbb36151afb61712bbff370",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/src/systemPrompt.ts": {
+    "mtime": 1784150990.8376875,
+    "ast_hash": "ab87d0547e54390c351179492ebc5173",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/src/types.ts": {
+    "mtime": 1784150990.8376875,
+    "ast_hash": "589d170be46b06fb8db4adb11d030fd2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/test.js": {
+    "mtime": 1784150990.8376875,
+    "ast_hash": "491dce918db60bd6399771152ca0fe38",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/tsconfig.json": {
+    "mtime": 1784150990.8376875,
+    "ast_hash": "aca6cdac13db39d03d9b95866834d84f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/vite.config.ts": {
+    "mtime": 1784150990.8376875,
+    "ast_hash": "cfc596836379397756c305b60b69ba06",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/README.md": {
+    "mtime": 1784150990.6869247,
+    "ast_hash": "ebb85803dd00444f1cb7a9d929fd39ff",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/cloudbuild-deploy.yaml": {
+    "mtime": 1784150990.7442353,
+    "ast_hash": "310ceecfcdfd5da8668e03c5b463fe0f",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/cloudbuild.yaml": {
+    "mtime": 1784150990.7442353,
+    "ast_hash": "c2493f1f4a2a37ffd79721b352575ab6",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/index.html": {
+    "mtime": 1784150990.7598586,
+    "ast_hash": "ab26bd0dac18c0c7749e215ef2df8044",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/server_output.txt": {
+    "mtime": 1784150990.8220627,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/assets/avatar-bienvenido.webp": {
+    "mtime": 1784150990.7442353,
+    "ast_hash": "8f205059aafb0c2eef3f9f666ca7aa07",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run1/public/avatar-bienvenido.webp": {
+    "mtime": 1784150990.8064363,
+    "ast_hash": "8f205059aafb0c2eef3f9f666ca7aa07",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/ChatGPT Image 10 jul 2026, 05_53_14 p.m..png": {
+    "mtime": 1783716795.8102276,
+    "ast_hash": "5467d56fad2ea08387505f5c065034ab",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/a393013c-5dff-4ae9-8e21-dde5399662b1 (2).png": {
+    "mtime": 1784152289.224769,
+    "ast_hash": "b0879bce4f8b1373d407781a570b3084",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/sol carta.png": {
+    "mtime": 1784226825.0697305,
+    "ast_hash": "d69dbf275b61776c25b793aa3a786bd9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/sol menu.png": {
+    "mtime": 1784226512.4447455,
+    "ast_hash": "7e26a5ad1a96d9411c54970083539b64",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/editados finales/CORTADOS/idle 1.mp4": {
+    "mtime": 1784230078.9874253,
+    "ast_hash": "ba89526d077ee32d95f21e5dfffd0cc7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/editados finales/CORTADOS/idle 3 acomodandose el pelo (online-video-cutter.com).mp4": {
+    "mtime": 1784249785.99973,
+    "ast_hash": "24b8a215067e03daee19c8f4cf83c540",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/editados finales/CORTADOS/idle 3.mp4": {
+    "mtime": 1784248795.2102723,
+    "ast_hash": "4867230c95391bb566fbec364a041e53",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/editados finales/CORTADOS/idle 4.mp4": {
+    "mtime": 1784251432.1870234,
+    "ast_hash": "964583b5bdd80e4019bde1dc920dabda",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/editados finales/CORTADOS/idle 5 cuando tarda mucho (online-video-cutter.com).mp4": {
+    "mtime": 1784250949.8286538,
+    "ast_hash": "0ceff84c1ba30f2fbc7df4cc97d79473",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/editados finales/CORTADOS/idle6.mp4": {
+    "mtime": 1784266041.9372492,
+    "ast_hash": "9d77661a64352cd521cb2392f229a58d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/editados finales/CORTADOS/invitacion a charlar.mp4": {
+    "mtime": 1784261422.968,
+    "ast_hash": "5f17a1a6992d6896e2818ffe3ab6f160",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/editados finales/CORTADOS/mirando derecha.mp4": {
+    "mtime": 1784260928.4769294,
+    "ast_hash": "d1bff341a80cdbd68012c47e432d1e15",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/editados finales/CORTADOS/mirando izquierda.mp4": {
+    "mtime": 1784260461.2517898,
+    "ast_hash": "44de6e3d6ddb120f55a6ecf693af617d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/editados finales/CORTADOS/saludo bienvenida.mp4": {
+    "mtime": 1784250379.7299793,
+    "ast_hash": "02bd514cf6f5949a41e7f4845f5386f3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/editados finales/CORTADOS/saludo despedida.mp4": {
+    "mtime": 1784250639.970713,
+    "ast_hash": "b2a67d35fde74da2e46b40ea8eec0e91",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/editados finales/CORTADOS/tomando pedido (online-video-cutter.com).mp4": {
+    "mtime": 1784249440.6227305,
+    "ast_hash": "6ae9f1e1157a2cc2ce204ef53fef51c5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/editados finales/hablando 1.mp4": {
+    "mtime": 1784229527.798818,
+    "ast_hash": "9cdf8bf06be9cb11d55a81abc0d33243",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/editados finales/hablando 2.mp4": {
+    "mtime": 1784229605.0145113,
+    "ast_hash": "db123ac8c68557c03f1edec039fa87c2",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/editados finales/hablando 3.mp4": {
+    "mtime": 1784229665.624286,
+    "ast_hash": "0e8b4b53ba54cbd0332cb3dd93b73560",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/editados finales/mirando a la derecha (online-video-cutter.com).mp4": {
+    "mtime": 1784249647.7298963,
+    "ast_hash": "f11a9360b86243e07f6b56dad152ad96",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/editados finales/mirando a la izquiera (online-video-cutter.com).mp4": {
+    "mtime": 1784249562.0967367,
+    "ast_hash": "b882ea10a9d145515c02ca024e39bb35",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/loop 5.mp4": {
+    "mtime": 1784227427.9148228,
+    "ast_hash": "6cd4a3120923aff060c8e749eb070683",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/loop1.mp4": {
+    "mtime": 1784206482.7516544,
+    "ast_hash": "7683c0425ad6e482ff22886a981c86a3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/loop4.mp4": {
+    "mtime": 1784208089.6641805,
+    "ast_hash": "ecb5886fb2611c48460a779ca29bd4e1",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/foto avatar sol/mirando-izquierda.mp4": {
+    "mtime": 1784208232.117544,
+    "ast_hash": "099dbedb8bbe6100be838a74d7227a44",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/firebase-applet-config.json": {
+    "mtime": 1784440072.9183016,
+    "ast_hash": "8f1e4ea253b41230d7efba8635d995ab",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/firebase-blueprint.json": {
+    "mtime": 1784440072.822822,
+    "ast_hash": "6c24612ed52dc151fb19de7c633547cb",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/metadata.json": {
+    "mtime": 1784440071.0245712,
+    "ast_hash": "84ead6d3e2f54cff15436645e863abab",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/package.json": {
+    "mtime": 1784440071.1652143,
+    "ast_hash": "f928ff048359c003df8076acc480d5a9",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/server.ts": {
+    "mtime": 1784440072.697826,
+    "ast_hash": "8b4dd4661bd67ab166e896567f39c18d",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/App.tsx": {
+    "mtime": 1784440071.368323,
+    "ast_hash": "8b28193eebae286c5ae3c195c197d98d",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/components/ActiveCallHeader.tsx": {
+    "mtime": 1784440071.493323,
+    "ast_hash": "78c9567d662c81ef4a552b1d44c56330",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/components/AgentCreator.tsx": {
+    "mtime": 1784440071.7290912,
+    "ast_hash": "2c259208440aabad53a269b41ac02eaf",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/components/BillingHub.tsx": {
+    "mtime": 1784440071.682196,
+    "ast_hash": "fba64f11e3ec0d84ff6e6dee4108b7fb",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/components/CalendarHub.tsx": {
+    "mtime": 1784440071.8228235,
+    "ast_hash": "b0214cd389ee1c7543dcc95730d8a362",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/components/ChatOverlay.tsx": {
+    "mtime": 1784440071.5402133,
+    "ast_hash": "a8381fc42f1e3ec8e24c23327051d0ed",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/components/ClassroomHub.tsx": {
+    "mtime": 1784440071.9634557,
+    "ast_hash": "b832c0d0483cfd54d87c348ea36543c2",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/components/ContactCard.tsx": {
+    "mtime": 1784440071.4464476,
+    "ast_hash": "abf83cb53e2e9f3723fe7bd48be1bcff",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/components/GmailHub.tsx": {
+    "mtime": 1784440071.9009492,
+    "ast_hash": "d427b22d3115acb12b574eef650d6e29",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/components/InteractiveTour.tsx": {
+    "mtime": 1784440072.072824,
+    "ast_hash": "ed1c932377911d4c7af72e1d88280400",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/components/ProfessionalServices.tsx": {
+    "mtime": 1784440071.7759488,
+    "ast_hash": "86e5c600c2a5682c470a0ec8ece1eb92",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/components/TranslationHub.tsx": {
+    "mtime": 1784440072.0259528,
+    "ast_hash": "23c486b99d1047aca0f1a9010e022e74",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/components/VideoCanvas.tsx": {
+    "mtime": 1784440071.6339617,
+    "ast_hash": "caad123feb98ee3e3d024de884c46bd8",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/components/VmConfigurator.tsx": {
+    "mtime": 1784440071.5870738,
+    "ast_hash": "eeddf04480bde84882e14600480b2f5c",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/lib/classroom.ts": {
+    "mtime": 1784440072.5259655,
+    "ast_hash": "db317760354ca9ef801ba71575f55f10",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/lib/firebase.ts": {
+    "mtime": 1784440072.3853233,
+    "ast_hash": "0762c01d6882366588a45246cdd4f410",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/lib/gmail.ts": {
+    "mtime": 1784440072.494716,
+    "ast_hash": "13169a4007f33ec763c8fc73817f9c0e",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/lib/googleCalendar.ts": {
+    "mtime": 1784440072.4634643,
+    "ast_hash": "909962549b5602dc3fee63f6d97d8c23",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/lib/googleContacts.ts": {
+    "mtime": 1784440072.4165733,
+    "ast_hash": "45ab059cab0f511959625e4cec06f1bb",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/lib/translations.ts": {
+    "mtime": 1784440072.5728247,
+    "ast_hash": "7744b3d290e1d7066fe5ce5014bd1048",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/main.tsx": {
+    "mtime": 1784440071.2902133,
+    "ast_hash": "2b36426d5ad7e08ef79746aa524f4fb7",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/types.ts": {
+    "mtime": 1784440071.3995864,
+    "ast_hash": "64bbb2d0248f961aed30a07612471cad",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/tsconfig.json": {
+    "mtime": 1784440072.6040912,
+    "ast_hash": "8827451c4e35790dd3f3538c265e7d15",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/vite.config.ts": {
+    "mtime": 1784440072.7290747,
+    "ast_hash": "9c319043c25764dfe83b687f74637c6c",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/firebase-applet-config.json": {
+    "mtime": 1784568173.666416,
+    "ast_hash": "ff88ea54225ca8a3cfa16ed5ee197856",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/metadata.json": {
+    "mtime": 1784568173.416432,
+    "ast_hash": "7a023c0b8fe0889510a9770a45b9a464",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/package.json": {
+    "mtime": 1784568173.822663,
+    "ast_hash": "f0ab683313dff2cda6dfed8ae3245f2c",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/server.ts": {
+    "mtime": 1784568173.8539145,
+    "ast_hash": "1331cedef6912a0edc631ebdd94d932a",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/App.tsx": {
+    "mtime": 1784568173.9164138,
+    "ast_hash": "565816a94a6f32b5c389e6e3065d8ace",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/components/Breadcrumbs.tsx": {
+    "mtime": 1784568174.244537,
+    "ast_hash": "c2014c56ed15845d77abc787aa31cfdb",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/components/CommandPalette.tsx": {
+    "mtime": 1784568174.088289,
+    "ast_hash": "23eb3151a8c52b28eb2c5b8c17fc041b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/components/Layout.tsx": {
+    "mtime": 1784568174.135177,
+    "ast_hash": "6afae5cf5c1f3109a3b288d7ee58796e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/components/Sidebar.tsx": {
+    "mtime": 1784568174.1820598,
+    "ast_hash": "6e1f2772f46f583ca367ba74f8f7b83b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/components/assistants/ContextualAssistantWidget.tsx": {
+    "mtime": 1784568174.6664147,
+    "ast_hash": "46100de0b0561715b14181184c0d2da4",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/components/help/HelpCenter.tsx": {
+    "mtime": 1784568174.6039119,
+    "ast_hash": "096c95fcedec66f387bdd83c22b11ad1",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/components/onboarding/OnboardingModal.tsx": {
+    "mtime": 1784568174.36954,
+    "ast_hash": "bf917aedccec5a4d67aee134e519fb7b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/components/onboarding/TooltipInfo.tsx": {
+    "mtime": 1784568174.4164283,
+    "ast_hash": "4aef8324f3f56635aa3e47af70446101",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/components/onboarding/TourButton.tsx": {
+    "mtime": 1784568174.5414143,
+    "ast_hash": "3609b267bbdd0126c4e981da8bfa3474",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/components/onboarding/TourProvider.tsx": {
+    "mtime": 1784568174.4789143,
+    "ast_hash": "4393c40e2cd92b57ef8f60adace2b061",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/data/helpContent.ts": {
+    "mtime": 1784568174.713292,
+    "ast_hash": "95e2d742c5e78a3b6c47e219458b7e83",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/data/tourSteps.ts": {
+    "mtime": 1784568174.7601635,
+    "ast_hash": "208d290679c6223f05d67c333ed8be76",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/i18n/es.ts": {
+    "mtime": 1784568176.4789095,
+    "ast_hash": "e50cbf92dc009ce5752f73bca5a6176b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/lib/firebase.ts": {
+    "mtime": 1784568174.807036,
+    "ast_hash": "5db7a005d9d060a4744cc9665d598359",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/lib/utils.ts": {
+    "mtime": 1784568174.8382907,
+    "ast_hash": "aa09a09ba3b69d5d67183eddf70adaa1",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/main.tsx": {
+    "mtime": 1784568174.0257876,
+    "ast_hash": "2b36426d5ad7e08ef79746aa524f4fb7",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/AgentBuilder.tsx": {
+    "mtime": 1784568176.1976595,
+    "ast_hash": "d144f481f3cb2578c51571ef05c64e85",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/ApprovalQueue.tsx": {
+    "mtime": 1784568174.885164,
+    "ast_hash": "3ddad3ee7cf4062ce1260dfb7b075a50",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/AuditLog.tsx": {
+    "mtime": 1784568174.9476643,
+    "ast_hash": "2e3223cecde79fd711d52ae0ebe27bba",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/BrainRegistry.tsx": {
+    "mtime": 1784568176.260176,
+    "ast_hash": "eaab758a39d03d7b411f97fa7506df2b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/ChatCentral.tsx": {
+    "mtime": 1784568175.0101614,
+    "ast_hash": "d7896271d2375b87d74c675970bf8ca1",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/CommunicationChannels.tsx": {
+    "mtime": 1784568176.0101638,
+    "ast_hash": "13b808be533320e700df26a55b610711",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/ConnectionsRegistry.tsx": {
+    "mtime": 1784568175.057052,
+    "ast_hash": "1b619b2e759ef07a1d1f614924e3d482",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/ContextPacks.tsx": {
+    "mtime": 1784568175.1039128,
+    "ast_hash": "9fc342fd6d896e33c976e463fea38e7b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/DailyBrief.tsx": {
+    "mtime": 1784568175.1664112,
+    "ast_hash": "dddae908c8ef4c87161fc5598995fff4",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/Dashboard.tsx": {
+    "mtime": 1784568175.2289124,
+    "ast_hash": "aa10ab693a8900a1c08eb234129347e8",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/Databases.tsx": {
+    "mtime": 1784568176.3070526,
+    "ast_hash": "3c63c3921350443f107b356cba15d3c1",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/DevEnvironment.tsx": {
+    "mtime": 1784568175.2757864,
+    "ast_hash": "a712e1add8900e261cbc76c55bb08877",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/GenericViews.tsx": {
+    "mtime": 1784568175.338287,
+    "ast_hash": "c695082c6b0853ee558eefcb837cb8c3",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/Ideas.tsx": {
+    "mtime": 1784568175.3851757,
+    "ast_hash": "e205ba39b5570c562c22c29e31f471f6",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/KnowledgeGraph.tsx": {
+    "mtime": 1784568175.7914264,
+    "ast_hash": "87ade71466420e1ce60fb16f2b6471e5",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/LiveAssistant.tsx": {
+    "mtime": 1784568175.4476657,
+    "ast_hash": "de8c53ff2af00a0fe2d854577f7f8f7b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/LiveCommand.tsx": {
+    "mtime": 1784568175.49454,
+    "ast_hash": "66ddd37ebe8353c7620f771d41d9b255",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/McpHub.tsx": {
+    "mtime": 1784568176.1039279,
+    "ast_hash": "1c350ff4fa1bc8b9593d392bd18b513f",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/Projects.tsx": {
+    "mtime": 1784568175.5414143,
+    "ast_hash": "2961fc018796e47c9e630232bd3d761e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/PromptStudio.tsx": {
+    "mtime": 1784568175.8851748,
+    "ast_hash": "9589cf9ffe5ee30fe422b507e3afd9e0",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/RelationshipGraph.tsx": {
+    "mtime": 1784568175.588286,
+    "ast_hash": "57c2d7b2b44fb69b12c7bd3d8ed5bf8c",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/RepoConnector.tsx": {
+    "mtime": 1784568176.1507995,
+    "ast_hash": "93d4e8dc1702b6518219a69d3c0d9771",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/SkillAdvisor.tsx": {
+    "mtime": 1784568175.7445529,
+    "ast_hash": "89b31ab1ec8662a9d8ccbf5f9b3c64b5",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/StartHere.tsx": {
+    "mtime": 1784568175.94767,
+    "ast_hash": "88a4f6937aaf8f7d4b4b7a11ff3281f6",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/VideoInbox.tsx": {
+    "mtime": 1784568175.6508012,
+    "ast_hash": "4a4179213aba490914f6a6cb52c6f134",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/VisualPlanner.tsx": {
+    "mtime": 1784568175.8383026,
+    "ast_hash": "3bbf7b7d7d30daf6d7602c4f6fb11235",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/WorkerRegistry.tsx": {
+    "mtime": 1784568176.0570378,
+    "ast_hash": "46eb60b599bf5e3b79fa67a50b5d6e7f",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/pages/WorkspaceIntegrations.tsx": {
+    "mtime": 1784568175.6976604,
+    "ast_hash": "67cca10bc9cd0dd3cf661ccd33ef7c61",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/services/system.ts": {
+    "mtime": 1784568176.3539097,
+    "ast_hash": "05d9c285e694cb3fd95105e070d6075b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/store/useStore.ts": {
+    "mtime": 1784568176.3851638,
+    "ast_hash": "575db374278eb24181d2d7a666bbaafa",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/src/types/index.ts": {
+    "mtime": 1784568176.4320366,
+    "ast_hash": "552081f8810c4f6b1e3d9f706662efdf",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/tsconfig.json": {
+    "mtime": 1784568176.5257866,
+    "ast_hash": "8827451c4e35790dd3f3538c265e7d15",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/vite.config.ts": {
+    "mtime": 1784568176.57266,
+    "ast_hash": "9c319043c25764dfe83b687f74637c6c",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/firebase-applet-config.json": {
+    "mtime": 1784541842.5828793,
+    "ast_hash": "ff88ea54225ca8a3cfa16ed5ee197856",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/metadata.json": {
+    "mtime": 1784541842.3497846,
+    "ast_hash": "7a023c0b8fe0889510a9770a45b9a464",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/package.json": {
+    "mtime": 1785140093.698415,
+    "ast_hash": "fd6c8ef09f8741c7d873be8c67c82b69",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/server.ts": {
+    "mtime": 1784624678.0165782,
+    "ast_hash": "1cb4158e96fa1eaa36dbd9dcf4a5ec28",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/App.tsx": {
+    "mtime": 1785080215.802307,
+    "ast_hash": "9b8a464c051b5f9df6a9dc739bffd21b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/componentes/memoria/SeccionMemoriaYOrganizacion.tsx": {
+    "mtime": 1785029740.1334784,
+    "ast_hash": "14fc4084980ac77b98562522bd277fbe",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/components/Breadcrumbs.tsx": {
+    "mtime": 1784541843.0525174,
+    "ast_hash": "c2014c56ed15845d77abc787aa31cfdb",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/components/CommandPalette.tsx": {
+    "mtime": 1784858612.6117408,
+    "ast_hash": "616a0da5576191ffe6554cf0703c7652",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/components/ErrorBoundary.tsx": {
+    "mtime": 1784680324.220049,
+    "ast_hash": "540c47f7269ed2d16604ea2ecd03eebc",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/components/Layout.tsx": {
+    "mtime": 1785118640.97113,
+    "ast_hash": "c1064edf120703368bb9c915555c27ca",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/components/Sidebar.tsx": {
+    "mtime": 1785080199.0816562,
+    "ast_hash": "044ff7d6f09b41a6419c1503094457e7",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/components/assistants/ContextualAssistantWidget.tsx": {
+    "mtime": 1784616416.8284423,
+    "ast_hash": "3f4378c462090c742c9b2df4447f8536",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/components/assistants/SectionAssistantPrompt.tsx": {
+    "mtime": 1784616438.0700355,
+    "ast_hash": "a8ba226b07fde4fec5d16c7e563cb48d",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/components/assistants/sectionPromptModel.ts": {
+    "mtime": 1784616277.2790213,
+    "ast_hash": "8ddb5c10db2998efa8316a75226e5d84",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/components/help/HelpCenter.tsx": {
+    "mtime": 1784858613.2675288,
+    "ast_hash": "a2ba015fc4063ca9fa5ccd19325d996a",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/components/onboarding/OnboardingModal.tsx": {
+    "mtime": 1784858613.3714964,
+    "ast_hash": "038fee94f47b32df332f7054b3c98f2b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/components/onboarding/TooltipInfo.tsx": {
+    "mtime": 1784858613.4674647,
+    "ast_hash": "d7f14eb8a0ca839b6c13344bddb38fce",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/components/onboarding/TourButton.tsx": {
+    "mtime": 1784858613.5314448,
+    "ast_hash": "2722bf350b041eb1a18c7eb6097fb411",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/components/onboarding/TourProvider.tsx": {
+    "mtime": 1784858613.6014225,
+    "ast_hash": "f4f50c135a476314dfa0e1925fbfda76",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/components/workflows/WorkflowCanvas.tsx": {
+    "mtime": 1784616443.457844,
+    "ast_hash": "73b36d5cec46a047ad7b59605d7d47ee",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/components/workflows/WorkflowNodeLibrary.tsx": {
+    "mtime": 1784616449.111565,
+    "ast_hash": "f115f9662cf098d19ecf47eb2533521e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/components/workflows/WorkflowRunPanel.tsx": {
+    "mtime": 1784616449.268032,
+    "ast_hash": "afb88fb57f7fd705e13824d4f330d188",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/providers/ai.ts": {
+    "mtime": 1784625290.9700224,
+    "ast_hash": "f019bd64da6a2f9a642a84b5209ea763",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/providers/supabase.ts": {
+    "mtime": 1784758960.5309546,
+    "ast_hash": "ef29e5e217a4e8ac26d84dce509b4e29",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/data/helpContent.ts": {
+    "mtime": 1784541843.37577,
+    "ast_hash": "6d8d673535d05de47ebd38819b402f70",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/data/tourSteps.ts": {
+    "mtime": 1784541843.4226406,
+    "ast_hash": "208d290679c6223f05d67c333ed8be76",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/i18n/es.ts": {
+    "mtime": 1784858614.1722414,
+    "ast_hash": "1825a1937390b3fedadb1202c5b51bb6",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/lib/controlRoomTheme.ts": {
+    "mtime": 1784587237.1158438,
+    "ast_hash": "2ead51f9d193c0a163542a8fb05e54f1",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/lib/conversationIngestion.ts": {
+    "mtime": 1784693800.07609,
+    "ast_hash": "92bd52d18d7b7b9aca6d0c97b26eef38",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/lib/firebase.ts": {
+    "mtime": 1784541843.4616797,
+    "ast_hash": "5db7a005d9d060a4744cc9665d598359",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/lib/runtime.ts": {
+    "mtime": 1784545700.8795755,
+    "ast_hash": "a94c147c9a7b4b91ea9c96228edaab26",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/lib/supabase.ts": {
+    "mtime": 1784858614.7240624,
+    "ast_hash": "d12a192798994c5de9c046242e003a5c",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/lib/utils.ts": {
+    "mtime": 1784541843.4903631,
+    "ast_hash": "aa09a09ba3b69d5d67183eddf70adaa1",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/lib/visualProfiles.ts": {
+    "mtime": 1784592981.1536982,
+    "ast_hash": "98755998d627bb32e27c62741dde2f1e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/main.tsx": {
+    "mtime": 1784680331.889618,
+    "ast_hash": "87c46e239784fd1a261d3d7fe1bb6761",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/AgentBuilder.tsx": {
+    "mtime": 1784858615.1179385,
+    "ast_hash": "5e256299d2b70c2f68a4626ee32eb75d",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/ApprovalQueue.tsx": {
+    "mtime": 1784858615.2769027,
+    "ast_hash": "7301db3584cd6da34d7346f2ccfe5f17",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/AuditLog.tsx": {
+    "mtime": 1784858615.3738558,
+    "ast_hash": "4f0ec086429bfc91d34d5d2da3924c1a",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/BrainRegistry.tsx": {
+    "mtime": 1784858615.4948163,
+    "ast_hash": "8a7297d9259b436a23a2db809c89f92f",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/ChatCentral.tsx": {
+    "mtime": 1785144669.926762,
+    "ast_hash": "76a0035274d31a30a528064cac1fa862",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/CommunicationChannels.tsx": {
+    "mtime": 1784858615.7797275,
+    "ast_hash": "e06e5da1dad1b0baca99ff8a18ca643f",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/ConnectionsRegistry.tsx": {
+    "mtime": 1784858615.8986876,
+    "ast_hash": "3e0f502fb7f7da0232b5ad467275294b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/ContextPacks.tsx": {
+    "mtime": 1784858616.0486398,
+    "ast_hash": "29a3b591502c8aa75fa933e951ea7d70",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/DailyBrief.tsx": {
+    "mtime": 1784858616.20159,
+    "ast_hash": "e092f041ca1b9c76848f45745791d5bf",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/Dashboard.tsx": {
+    "mtime": 1784858616.3265603,
+    "ast_hash": "c9a8cd2c916513a9f7520006985beef4",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/Databases.tsx": {
+    "mtime": 1784858616.4035256,
+    "ast_hash": "b90c3b5642eee670bb609fa79861ac0b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/DevEnvironment.tsx": {
+    "mtime": 1784858616.6254666,
+    "ast_hash": "4c1418ff01c0dda6a5830ecf08c0c17d",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/GenericViews.tsx": {
+    "mtime": 1784858616.7464166,
+    "ast_hash": "4de4e0eb46357360dc529b8a2d7f5090",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/Ideas.tsx": {
+    "mtime": 1784858616.835387,
+    "ast_hash": "0f2f0b8dc9945691ae08302ee8401b1b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/KnowledgeGraph.tsx": {
+    "mtime": 1785131608.675002,
+    "ast_hash": "0f2fbaf2089a8d3a9042c9b2d0eec229",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/LiveAssistant.tsx": {
+    "mtime": 1784858617.0963054,
+    "ast_hash": "c90d8923fa9a2b561653b3d8d0a0a96b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/LiveCommand.tsx": {
+    "mtime": 1784858617.2662506,
+    "ast_hash": "95facee70810baa1df084419ed6c7e9d",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/McpHub.tsx": {
+    "mtime": 1784858617.3352275,
+    "ast_hash": "34e037e55114bdf79c0246a935791db3",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/Projects.tsx": {
+    "mtime": 1784858617.4291978,
+    "ast_hash": "ddb701fcab9b28ca30e171874b06685b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/PromptStudio.tsx": {
+    "mtime": 1784858617.5471592,
+    "ast_hash": "7bce1abaa7aa24903145c926e20268db",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/RelationshipGraph.tsx": {
+    "mtime": 1784858617.683118,
+    "ast_hash": "f4501a0d7204777bcc30359c3d6168da",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/RepoConnector.tsx": {
+    "mtime": 1784952049.950269,
+    "ast_hash": "1bce8f599a0bd4c6b5cf91ed6cb1ace3",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/SkillAdvisor.tsx": {
+    "mtime": 1784858617.8360662,
+    "ast_hash": "04b685a92c4a3263003340fc1c5162f6",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/StartHere.tsx": {
+    "mtime": 1784858618.0350032,
+    "ast_hash": "cc113f654d3477a60a315a344a79a54d",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/VideoInbox.tsx": {
+    "mtime": 1785131677.736968,
+    "ast_hash": "fadd826d85f2e8463f796577280e145d",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/VisualPlanner.tsx": {
+    "mtime": 1784858618.1309729,
+    "ast_hash": "ca568f5643091e00bb5e89cb0b44eb91",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/WorkerRegistry.tsx": {
+    "mtime": 1784858618.2679286,
+    "ast_hash": "bb44e014249a973cb0ed9fe933b1676d",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/WorkspaceIntegrations.tsx": {
+    "mtime": 1784858618.4028857,
+    "ast_hash": "8aec31abdd4b2261527792d14061442e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/server/app.ts": {
+    "mtime": 1785140027.1101916,
+    "ast_hash": "d5a111f4dd8d03024419c6cfac69fd67",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/server/config/upload.ts": {
+    "mtime": 1784624643.098765,
+    "ast_hash": "53847ed4bbedd6840ffa2adac99cd2e6",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/server/routes/chat.ts": {
+    "mtime": 1785134778.2291734,
+    "ast_hash": "b4eced36b4c423022e9cfeb39d30ae8d",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/server/routes/live.ts": {
+    "mtime": 1784858618.751776,
+    "ast_hash": "7616f1df4fa32c6d640f2f4dc4451a6c",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/server/routes/vision.ts": {
+    "mtime": 1784765473.0312476,
+    "ast_hash": "b6fcb6d556c2cfe64d1aead098492de4",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/services/system.ts": {
+    "mtime": 1784858618.8547404,
+    "ast_hash": "1f3c5e7c976d6cbc1135d2f102c6112a",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/store/useStore.ts": {
+    "mtime": 1785081112.1205816,
+    "ast_hash": "f8ddfa50a1c11560b6beb4f55ba127a2",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/types/index.ts": {
+    "mtime": 1784951612.2890704,
+    "ast_hash": "375efdcbedd84b120ceb31a0098ea715",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/workflows/catalog.ts": {
+    "mtime": 1784616193.6821456,
+    "ast_hash": "22126227a859a8361aff257ad44c4df1",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/workflows/n8nTemplates.ts": {
+    "mtime": 1784616620.0308416,
+    "ast_hash": "2488ae926fe6b07b5dba97c8c06af3ac",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/workflows/runtime.ts": {
+    "mtime": 1784616201.1106017,
+    "ast_hash": "4fb1e3f276fe224cd1b9cceb31ce36d6",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/workflows/types.ts": {
+    "mtime": 1784616177.6532547,
+    "ast_hash": "2dbd885853c7642c47781b4b8ffc53b5",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/supabase/migrations/20260721091700_init_schema.sql": {
+    "mtime": 1784625465.522735,
+    "ast_hash": "f43e7edbe380f59e28fc1991992cb4be",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/supabase/migrations/20260721094335_add_ui_fields_to_agents.sql": {
+    "mtime": 1784627026.9312024,
+    "ast_hash": "167387046e86d8ce92e49b023cda9457",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/supabase/migrations/20260721164138_sync_core_entities.sql": {
+    "mtime": 1784858619.6604848,
+    "ast_hash": "5d2ac7a8fa8e649825393ac7a2d210c4",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/supabase/migrations/20260722120000_add_dominus_agent_memory_fields.sql": {
+    "mtime": 1784706584.4756143,
+    "ast_hash": "58a71d24219ca82a0adab89756e648d4",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/supabase/migrations/20260722123000_seed_dominus_operational_memory.sql": {
+    "mtime": 1784747121.2648604,
+    "ast_hash": "26fe523d513d9895ac92f4191072a33e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/agent-schema-migration.test.ts": {
+    "mtime": 1784747072.304688,
+    "ast_hash": "4ccf14b915ef6e935c6dc628283bbae6",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/agent-workflow.test.ts": {
+    "mtime": 1784616277.4833045,
+    "ast_hash": "a5ab5d2ab24d7593993936d91e63435c",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/assistant-prompt.test.ts": {
+    "mtime": 1784616274.395018,
+    "ast_hash": "93fc768d7121026c7df335184f6547b9",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/control-room-theme.test.ts": {
+    "mtime": 1784584114.143957,
+    "ast_hash": "847867a704471dfd5de81bdb22adee0e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/conversation-ingestion.test.ts": {
+    "mtime": 1784693736.6488786,
+    "ast_hash": "ad193c32b07fb34c2d8b8ee643971444",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/runtime.test.ts": {
+    "mtime": 1784545603.8418927,
+    "ast_hash": "32017b316f778d285047b043e08686b7",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/visual-profiles.test.ts": {
+    "mtime": 1784592610.4626532,
+    "ast_hash": "1d6b8f5e46435c991c8064391181b72a",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/workflow-runtime.test.ts": {
+    "mtime": 1784616201.3149514,
+    "ast_hash": "f4452d239356541a370cc93620c5382f",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/workflow-store.test.ts": {
+    "mtime": 1784704969.6162083,
+    "ast_hash": "557152c35fe82c2a38b94d405c694070",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tsconfig.json": {
+    "mtime": 1784541845.1043255,
+    "ast_hash": "8827451c4e35790dd3f3538c265e7d15",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/vite.config.ts": {
+    "mtime": 1784541845.1319857,
+    "ast_hash": "9c319043c25764dfe83b687f74637c6c",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/firebase-applet-config.json": {
+    "mtime": 1784541842.5828793,
+    "ast_hash": "ff88ea54225ca8a3cfa16ed5ee197856",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/metadata.json": {
+    "mtime": 1784541842.3497846,
+    "ast_hash": "7a023c0b8fe0889510a9770a45b9a464",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/package.json": {
+    "mtime": 1784545636.0330262,
+    "ast_hash": "7825b97324080c3e06097edcf375a052",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/server.ts": {
+    "mtime": 1784545636.0262196,
+    "ast_hash": "279a00f802672c0c7591e7da2e271961",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/App.tsx": {
+    "mtime": 1784541842.7717578,
+    "ast_hash": "565816a94a6f32b5c389e6e3065d8ace",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/components/Breadcrumbs.tsx": {
+    "mtime": 1784541843.0525174,
+    "ast_hash": "c2014c56ed15845d77abc787aa31cfdb",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/components/CommandPalette.tsx": {
+    "mtime": 1784541842.912855,
+    "ast_hash": "23eb3151a8c52b28eb2c5b8c17fc041b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/components/Layout.tsx": {
+    "mtime": 1784541842.9597135,
+    "ast_hash": "bbeaa0f32431a02e84a724c606bc7450",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/components/Sidebar.tsx": {
+    "mtime": 1784541843.0056436,
+    "ast_hash": "6e1f2772f46f583ca367ba74f8f7b83b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/components/help/HelpCenter.tsx": {
+    "mtime": 1784541843.3445153,
+    "ast_hash": "096c95fcedec66f387bdd83c22b11ad1",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/components/onboarding/OnboardingModal.tsx": {
+    "mtime": 1784541843.09972,
+    "ast_hash": "bf917aedccec5a4d67aee134e519fb7b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/components/onboarding/TooltipInfo.tsx": {
+    "mtime": 1784541843.1466117,
+    "ast_hash": "4aef8324f3f56635aa3e47af70446101",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/components/onboarding/TourButton.tsx": {
+    "mtime": 1784541843.2663925,
+    "ast_hash": "3609b267bbdd0126c4e981da8bfa3474",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/components/onboarding/TourProvider.tsx": {
+    "mtime": 1784541843.1959445,
+    "ast_hash": "4393c40e2cd92b57ef8f60adace2b061",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/data/helpContent.ts": {
+    "mtime": 1784541843.37577,
+    "ast_hash": "6d8d673535d05de47ebd38819b402f70",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/data/tourSteps.ts": {
+    "mtime": 1784541843.4226406,
+    "ast_hash": "208d290679c6223f05d67c333ed8be76",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/i18n/es.ts": {
+    "mtime": 1784541845.0376565,
+    "ast_hash": "e50cbf92dc009ce5752f73bca5a6176b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/lib/firebase.ts": {
+    "mtime": 1784541843.4616797,
+    "ast_hash": "5db7a005d9d060a4744cc9665d598359",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/lib/runtime.ts": {
+    "mtime": 1784545700.8795755,
+    "ast_hash": "a94c147c9a7b4b91ea9c96228edaab26",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/lib/utils.ts": {
+    "mtime": 1784541843.4903631,
+    "ast_hash": "aa09a09ba3b69d5d67183eddf70adaa1",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/main.tsx": {
+    "mtime": 1784541842.867629,
+    "ast_hash": "2b36426d5ad7e08ef79746aa524f4fb7",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/AgentBuilder.tsx": {
+    "mtime": 1784541844.7890935,
+    "ast_hash": "d144f481f3cb2578c51571ef05c64e85",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/ApprovalQueue.tsx": {
+    "mtime": 1784541843.55406,
+    "ast_hash": "3ddad3ee7cf4062ce1260dfb7b075a50",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/AuditLog.tsx": {
+    "mtime": 1784541843.5990465,
+    "ast_hash": "2e3223cecde79fd711d52ae0ebe27bba",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/BrainRegistry.tsx": {
+    "mtime": 1784541844.8359687,
+    "ast_hash": "eaab758a39d03d7b411f97fa7506df2b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/ChatCentral.tsx": {
+    "mtime": 1784541843.6315215,
+    "ast_hash": "d7896271d2375b87d74c675970bf8ca1",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/CommunicationChannels.tsx": {
+    "mtime": 1784541844.600319,
+    "ast_hash": "13b808be533320e700df26a55b610711",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/ConnectionsRegistry.tsx": {
+    "mtime": 1784541843.6921656,
+    "ast_hash": "1b619b2e759ef07a1d1f614924e3d482",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/ContextPacks.tsx": {
+    "mtime": 1784541843.7412066,
+    "ast_hash": "9fc342fd6d896e33c976e463fea38e7b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/DailyBrief.tsx": {
+    "mtime": 1784541843.7902656,
+    "ast_hash": "dddae908c8ef4c87161fc5598995fff4",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/Dashboard.tsx": {
+    "mtime": 1784541843.8335612,
+    "ast_hash": "aa10ab693a8900a1c08eb234129347e8",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/Databases.tsx": {
+    "mtime": 1784541844.8863099,
+    "ast_hash": "3c63c3921350443f107b356cba15d3c1",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/DevEnvironment.tsx": {
+    "mtime": 1784541843.8804336,
+    "ast_hash": "a712e1add8900e261cbc76c55bb08877",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/GenericViews.tsx": {
+    "mtime": 1784541843.9273276,
+    "ast_hash": "c695082c6b0853ee558eefcb837cb8c3",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/Ideas.tsx": {
+    "mtime": 1784541843.974183,
+    "ast_hash": "e205ba39b5570c562c22c29e31f471f6",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/KnowledgeGraph.tsx": {
+    "mtime": 1784541844.397199,
+    "ast_hash": "87ade71466420e1ce60fb16f2b6471e5",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/LiveAssistant.tsx": {
+    "mtime": 1784541844.038225,
+    "ast_hash": "de8c53ff2af00a0fe2d854577f7f8f7b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/LiveCommand.tsx": {
+    "mtime": 1784545636.0290298,
+    "ast_hash": "8a875465f52919d2800fe7497c92f789",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/McpHub.tsx": {
+    "mtime": 1784541844.6786637,
+    "ast_hash": "1c350ff4fa1bc8b9593d392bd18b513f",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/Projects.tsx": {
+    "mtime": 1784541844.1458092,
+    "ast_hash": "2961fc018796e47c9e630232bd3d761e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/PromptStudio.tsx": {
+    "mtime": 1784541844.4915535,
+    "ast_hash": "9589cf9ffe5ee30fe422b507e3afd9e0",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/RelationshipGraph.tsx": {
+    "mtime": 1784541844.192684,
+    "ast_hash": "57c2d7b2b44fb69b12c7bd3d8ed5bf8c",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/RepoConnector.tsx": {
+    "mtime": 1784541844.7255392,
+    "ast_hash": "93d4e8dc1702b6518219a69d3c0d9771",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/SkillAdvisor.tsx": {
+    "mtime": 1784541844.3503242,
+    "ast_hash": "89b31ab1ec8662a9d8ccbf5f9b3c64b5",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/StartHere.tsx": {
+    "mtime": 1784541844.5384285,
+    "ast_hash": "88a4f6937aaf8f7d4b4b7a11ff3281f6",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/VideoInbox.tsx": {
+    "mtime": 1784541844.239557,
+    "ast_hash": "4a4179213aba490914f6a6cb52c6f134",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/VisualPlanner.tsx": {
+    "mtime": 1784541844.4511995,
+    "ast_hash": "3bbf7b7d7d30daf6d7602c4f6fb11235",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/WorkerRegistry.tsx": {
+    "mtime": 1784541844.6312118,
+    "ast_hash": "46eb60b599bf5e3b79fa67a50b5d6e7f",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/pages/WorkspaceIntegrations.tsx": {
+    "mtime": 1784541844.3020723,
+    "ast_hash": "67cca10bc9cd0dd3cf661ccd33ef7c61",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/services/system.ts": {
+    "mtime": 1784541844.9131203,
+    "ast_hash": "05d9c285e694cb3fd95105e070d6075b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/store/useStore.ts": {
+    "mtime": 1784541844.9600093,
+    "ast_hash": "54534d5be53dab1885dc838c1c151229",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/src/types/index.ts": {
+    "mtime": 1784541845.006389,
+    "ast_hash": "5a62da882d546f7e2ecc51058d961f10",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/tests/runtime.test.ts": {
+    "mtime": 1784545603.8418927,
+    "ast_hash": "32017b316f778d285047b043e08686b7",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/tsconfig.json": {
+    "mtime": 1784541845.1043255,
+    "ast_hash": "8827451c4e35790dd3f3538c265e7d15",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/vite.config.ts": {
+    "mtime": 1784541845.1319857,
+    "ast_hash": "9c319043c25764dfe83b687f74637c6c",
+    "semantic_hash": ""
+  },
+  "carta-viva-run/package.json": {
+    "mtime": 1784345104.8056185,
+    "ast_hash": "a3c03d70fc76d460a777ac642714935d",
+    "semantic_hash": ""
+  },
+  "carta-viva-run/server.js": {
+    "mtime": 1784345122.6599069,
+    "ast_hash": "53f72e95e3f3053df792a3278ff7140b",
+    "semantic_hash": ""
+  },
+  "scripts/resize-c-drive-startup.ps1": {
+    "mtime": 1784406587.5644255,
+    "ast_hash": "5ee792fa55f24bf108263a98961626a6",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-20T22-59-02-963Z.yml": {
+    "mtime": 1784588342.9713905,
+    "ast_hash": "3936555bebebf0c1a81c1ba23b31e745",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-20T23-02-05-711Z.yml": {
+    "mtime": 1784588525.7184477,
+    "ast_hash": "70b931c0d48391ce2452d8e6df8397ce",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-20T23-39-23-238Z.yml": {
+    "mtime": 1784590763.2417047,
+    "ast_hash": "1079247c1a2e1f1d8b243c69dafd0cfc",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-20T23-40-59-150Z.yml": {
+    "mtime": 1784590859.1692302,
+    "ast_hash": "490f0415e3838f35011df003becc1805",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-22T05-49-11-101Z.yml": {
+    "mtime": 1784699351.1066208,
+    "ast_hash": "1c7257ee5bba3b7b41526b2048a75ef0",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-22T05-50-26-729Z.yml": {
+    "mtime": 1784699426.7413588,
+    "ast_hash": "e5008563bdc7a547e8d977c66a2fb1ac",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-22T06-00-35-183Z.yml": {
+    "mtime": 1784700035.186238,
+    "ast_hash": "a887f15f75622a25cda3a229a4600b06",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-22T06-08-04-229Z.yml": {
+    "mtime": 1784700484.2324822,
+    "ast_hash": "63bb498847e7c6d84293f1ecc9234a9c",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/README.md": {
+    "mtime": 1784440073.0120711,
+    "ast_hash": "38cd91648a6bbc0048b1b9568bd2cc64",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/app.yaml": {
+    "mtime": 1784440072.9651797,
+    "ast_hash": "4cd403ca18d97ba189cb17b4c141d1c2",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/index.html": {
+    "mtime": 1784440072.6509666,
+    "ast_hash": "1f67b2c9c562ff8c24eb774ee04b8868",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/plan conversaciones/CREACION DE APP GOOGLE IA STUDIO.txt": {
+    "mtime": 1784433643.274976,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/plan conversaciones/README CON AGREGADO NOVIOSAS.txt": {
+    "mtime": 1784433623.9388714,
+    "ast_hash": "78e4068ed1902f2487ecc967a07a6890",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/plan conversaciones/README.txt": {
+    "mtime": 1784432656.7269955,
+    "ast_hash": "481b0aa9a72c52c35b6646222a053630",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/plan conversaciones/conversacion gemini costado idea general.txt": {
+    "mtime": 1784499101.603485,
+    "ast_hash": "11e7fffb3df563d3d75c34ce17bcd472",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/plan conversaciones/plan multinuve.txt": {
+    "mtime": 1784499043.6470523,
+    "ast_hash": "b362ccc33f56174dad9347303983a901",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/README.md": {
+    "mtime": 1784568176.666409,
+    "ast_hash": "5048aeac26bc0a99b4d432a9540fe37e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/CLON/index.html": {
+    "mtime": 1784568173.7601633,
+    "ast_hash": "c6cdc88c3abec682e37d1f35b7b4ad0b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/README.md": {
+    "mtime": 1784541845.2254398,
+    "ast_hash": "5048aeac26bc0a99b4d432a9540fe37e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/DOMINUS_PRIME_CONSTITUTION.md": {
+    "mtime": 1784704849.132872,
+    "ast_hash": "10275bc9f7d5a7c265120b39f3ff7d07",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/DOMINUS_PRIME_SYSTEM_CORE.md": {
+    "mtime": 1784704849.128872,
+    "ast_hash": "64cf3eb48d842fbb6182bcc0b4660254",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/QUANTUMCORE_CONTEXTO_OPERATIVO.md": {
+    "mtime": 1784755631.803947,
+    "ast_hash": "1913eacaa8f86c1d07e9f7d4d7b6bcc9",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/QUANTUMCORE_HISTORIAL_IMPLEMENTACION.md": {
+    "mtime": 1784701965.4653673,
+    "ast_hash": "41ffc7fa06d36ea4699e07e8d978b2b5",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/QUANTUMCORE_VISION.md": {
+    "mtime": 1784755601.971794,
+    "ast_hash": "33d0ce5c03da5e2306e2c8cec6c35201",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/superpowers/specs/2026-07-22-dominus-brain-router-hibrido-design.md": {
+    "mtime": 1784765473.0352466,
+    "ast_hash": "01785ac2e633f8889099040e763ddae9",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/index.html": {
+    "mtime": 1784608425.0986662,
+    "ast_hash": "1767453a7ed02e6e61a4b82efc17f258",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/README.md": {
+    "mtime": 1784541845.2254398,
+    "ast_hash": "5048aeac26bc0a99b4d432a9540fe37e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/index.html": {
+    "mtime": 1784541842.656233,
+    "ast_hash": "c6cdc88c3abec682e37d1f35b7b4ad0b",
+    "semantic_hash": ""
+  },
+  "carta-viva-run/public/index.html": {
+    "mtime": 1784344908.7785504,
+    "ast_hash": "a40d036ce23ae2b4b1cf1bb4fde75324",
+    "semantic_hash": ""
+  },
+  "chatgpt-shared-conversation-full.txt": {
+    "mtime": 1784700523.8547091,
+    "ast_hash": "7e94e982ec6769b22bea29953d3fc0f8",
+    "semantic_hash": ""
+  },
+  "contrase\u00f1a de poryecto supabase quantumcore.txt": {
+    "mtime": 1784626130.252988,
+    "ast_hash": "e6ce9300c96a7b92f0aba7969a96586e",
+    "semantic_hash": ""
+  },
+  "docs/procesos-aprendidos/01_vertex_ai_cloud_run_deploy_fix.md": {
+    "mtime": 1784624234.5774424,
+    "ast_hash": "4436e5ba1a974da0f75a9dbca1534fe7",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-07-20-avatar-cache-engine-mvp.md": {
+    "mtime": 1784523140.7524962,
+    "ast_hash": "f474a0d707dc145320ac3ef553aabb56",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-07-20-quantumhive-idea-to-project-humania.md": {
+    "mtime": 1784523989.7155764,
+    "ast_hash": "65c54a1490257d97553601538f4b833c",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-07-20-quantumhive-visual-workflow-builder.md": {
+    "mtime": 1784575297.1327329,
+    "ast_hash": "5c4d9b4aa86621c7207e8413273cb378",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-07-20-quantumhive-visual-workflow-builder-design.md": {
+    "mtime": 1784575265.2508507,
+    "ast_hash": "c5eb1365c9993bfa552ab420ce2e56cb",
+    "semantic_hash": ""
+  },
+  "planes-a-llevar-a-cabo/2026-07-21-agente-avatar-pantalla-design.md": {
+    "mtime": 1784659545.3619785,
+    "ast_hash": "c6da07b269a9e37364d38c13bef1b0d0",
+    "semantic_hash": ""
+  },
+  "roblox-quantum/intro.txt": {
+    "mtime": 1784506226.5615206,
+    "ast_hash": "0034e01efea6b709413fff72eb64ef22",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/assets/images/ares_avatar_1784422343159.jpg": {
+    "mtime": 1784440072.3384652,
+    "ast_hash": "656407bf41a05f8256cdc9b3d9ce0536",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/assets/images/eva_avatar_1784421081920.jpg": {
+    "mtime": 1784440072.2134488,
+    "ast_hash": "9c63a53dd08791f24bd80c4416d172fd",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/assets/images/liam_avatar_1784421092551.jpg": {
+    "mtime": 1784440072.166575,
+    "ast_hash": "f80591e1858f2d0ffdbf6f15a677a302",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/assets/images/oliver_avatar_1784421103480.jpg": {
+    "mtime": 1784440072.2603235,
+    "ast_hash": "c1bd4f9f2090f8f4a7b9ed161d9c467b",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/assets/images/quantum_hive_logo_1784422357237.jpg": {
+    "mtime": 1784440072.2915733,
+    "ast_hash": "3e8775a533e659b026f84fba7460bbf6",
+    "semantic_hash": ""
+  },
+  "HUMANIA PLATAFORMA COMUNICACIONES/src/assets/images/sophia_avatar_1784421072262.jpg": {
+    "mtime": 1784440072.1197,
+    "ast_hash": "7aacb698910f6a61657821464f93b0e9",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-001.jpeg": {
+    "mtime": 1784586173.8406844,
+    "ast_hash": "088b83db25195351ed3050c521b472d4",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-002.jpeg": {
+    "mtime": 1784586174.3775256,
+    "ast_hash": "a37aecd0115eec6a6c5d918e6e28020b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-003.jpeg": {
+    "mtime": 1784586174.541471,
+    "ast_hash": "9a1938ab0a720f56e48148db6c87fe2c",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-004.jpeg": {
+    "mtime": 1784586174.8603702,
+    "ast_hash": "237285a6bef28c9ae7c1464b70103820",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-005.jpeg": {
+    "mtime": 1784586174.0586245,
+    "ast_hash": "1273204299e8782fbc7c6278a5ebb68b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-006.jpeg": {
+    "mtime": 1784586174.2285733,
+    "ast_hash": "df2eb6e6eb53ef7b55f840428cdf3eaf",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-007.jpeg": {
+    "mtime": 1784586176.6358037,
+    "ast_hash": "ac3109e8c85fd8410da65562332e7b7d",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-008.jpeg": {
+    "mtime": 1784586177.4545417,
+    "ast_hash": "82536ccb701ad5b7b3259072a8bc41e4",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-009.jpeg": {
+    "mtime": 1784586176.1429608,
+    "ast_hash": "2dc265b7f9c6fc629da82728801ea57b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-010.jpeg": {
+    "mtime": 1784586177.6024947,
+    "ast_hash": "8003e089aecc13cf8f4b845c66bf5141",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-011.jpeg": {
+    "mtime": 1784586177.7104602,
+    "ast_hash": "a5b7cb586f37dbbf672e232d58135490",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-012.jpeg": {
+    "mtime": 1784586178.2962735,
+    "ast_hash": "f0b66a8ecaa1394268c88bd92805cd79",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-013.jpeg": {
+    "mtime": 1784586171.4467645,
+    "ast_hash": "06ac54ca663b6812bbb6c43df6d16e77",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-014.jpeg": {
+    "mtime": 1784586171.704682,
+    "ast_hash": "ea0fff4d91b7aa0c9ee4dc147d342d69",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-015.jpeg": {
+    "mtime": 1784586171.8416398,
+    "ast_hash": "9f529b5fd1ec0890987894c68b37b1fd",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-016.jpeg": {
+    "mtime": 1784586172.0342603,
+    "ast_hash": "13506ff00d33074225dadd696854f677",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-017.jpeg": {
+    "mtime": 1784581080.9117484,
+    "ast_hash": "8178f769afc67af085973b87df8ec2e8",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-018.jpeg": {
+    "mtime": 1784581080.9117484,
+    "ast_hash": "8178f769afc67af085973b87df8ec2e8",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-019.jpeg": {
+    "mtime": 1784586179.9089181,
+    "ast_hash": "e7b3906d0d0999d920c4e379f2afaa70",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-020.jpeg": {
+    "mtime": 1784586180.0548723,
+    "ast_hash": "82bd2aeb628c9385f105a91740ebba6d",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-021.jpeg": {
+    "mtime": 1784586180.44175,
+    "ast_hash": "24185fa2819be2f4a1ccff2ce734adde",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/backgrounds/backgrounds-022.jpeg": {
+    "mtime": 1784586180.5807042,
+    "ast_hash": "90feabc24ad439e1525d6241ac88dae0",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/cards/cards-001.jpeg": {
+    "mtime": 1784586179.741282,
+    "ast_hash": "477133080538dcf64205e17712dcacd9",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/cards/cards-002.jpeg": {
+    "mtime": 1784586180.2008252,
+    "ast_hash": "a5fd4d1a5fea8409110c31376c2e8688",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/cards/cards-003.jpeg": {
+    "mtime": 1784586180.367772,
+    "ast_hash": "cda584a4f1b148d0f5e1f38c2848c0a4",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/cards/cards-004.jpeg": {
+    "mtime": 1784586180.5117266,
+    "ast_hash": "29158ebe2cf2911eb8af05675874cce0",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/cards/cards-005.jpeg": {
+    "mtime": 1784586174.9563403,
+    "ast_hash": "563aaacf48af5ca834d50d594d3644f6",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/cards/cards-006.jpeg": {
+    "mtime": 1784586176.896721,
+    "ast_hash": "6a42f1ce41281a59740752b6b58fd51e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/cards/cards-007.jpeg": {
+    "mtime": 1784586177.0816607,
+    "ast_hash": "fb40632300d03c575250d2bb49660cdd",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/cards/cards-008.jpeg": {
+    "mtime": 1784586178.3782492,
+    "ast_hash": "14e87bba14c771a6073b44bbf4ca0a4b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/cards/cards-009.jpeg": {
+    "mtime": 1784586171.9286108,
+    "ast_hash": "8c8f3d2b0ccfbe45cb48da19bc0e2853",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/cards/cards-010.jpeg": {
+    "mtime": 1784586172.1192315,
+    "ast_hash": "b238a7e0f24f3f2b06aef9c4443129ab",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/cards/cards-011.jpeg": {
+    "mtime": 1784586172.2082026,
+    "ast_hash": "03a13a2117377c98df4ee73a99ad6ee7",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/cards/cards-012.jpeg": {
+    "mtime": 1784586175.6701126,
+    "ast_hash": "d2379a3fedc980c73ba2623746259d46",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/chips/chips-001.jpeg": {
+    "mtime": 1784586178.8309028,
+    "ast_hash": "e50e41f7606df57f4f7d27073a74441f",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/chips/chips-002.jpeg": {
+    "mtime": 1784586178.96586,
+    "ast_hash": "522b15837f1f85c93fa9b6c4c7cbc63d",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/chips/chips-003.jpeg": {
+    "mtime": 1784586179.5173135,
+    "ast_hash": "c12f824ee58af0eddfd2360ea3f9129a",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/chips/chips-004.jpeg": {
+    "mtime": 1784586179.8339424,
+    "ast_hash": "3bdd3db077a1827b5fabe022241c44bf",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/curated/bg-agent-builder.jpeg": {
+    "mtime": 1784586180.2917986,
+    "ast_hash": "e071ec0b52b7eb78e9e0a3101cee29ee",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/curated/bg-chip-systems.jpeg": {
+    "mtime": 1784586179.8339424,
+    "ast_hash": "3bdd3db077a1827b5fabe022241c44bf",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/curated/bg-dashboard-command.jpeg": {
+    "mtime": 1784586174.8603702,
+    "ast_hash": "237285a6bef28c9ae7c1464b70103820",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/curated/bg-global-command.jpeg": {
+    "mtime": 1784586173.8406844,
+    "ast_hash": "088b83db25195351ed3050c521b472d4",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/curated/bg-mobile-hive.jpeg": {
+    "mtime": 1784586178.2962735,
+    "ast_hash": "f0b66a8ecaa1394268c88bd92805cd79",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/curated/bg-workflow-canvas.jpeg": {
+    "mtime": 1784586178.8968816,
+    "ast_hash": "4f49119c7093d3a64292357b635db742",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/curated/logo-lockup.jpeg": {
+    "mtime": 1784586172.3051715,
+    "ast_hash": "e258d75268aafba7bca540cb8ea72011",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/curated/logo-mark.jpeg": {
+    "mtime": 1784586170.7090003,
+    "ast_hash": "5b05e312dab4cb83a5aae31da214a6c3",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/curated/sidebar-primary.jpeg": {
+    "mtime": 1784586171.9286108,
+    "ast_hash": "8c8f3d2b0ccfbe45cb48da19bc0e2853",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/curated/texture-card-honeycomb.jpeg": {
+    "mtime": 1784586180.5117266,
+    "ast_hash": "29158ebe2cf2911eb8af05675874cce0",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/curated/texture-organic-hive.jpeg": {
+    "mtime": 1784586175.6701126,
+    "ast_hash": "d2379a3fedc980c73ba2623746259d46",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/curated/texture-sidebar-graphite.jpeg": {
+    "mtime": 1784586173.4388106,
+    "ast_hash": "a8242179761d2437f3a04c885005ebb7",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/curated/top-panel-primary.jpeg": {
+    "mtime": 1784586175.6701126,
+    "ast_hash": "d2379a3fedc980c73ba2623746259d46",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/logos/logos-001.jpeg": {
+    "mtime": 1784586172.2551885,
+    "ast_hash": "e6d4974cdc8031bd6dc5bac9707089ae",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/logos/logos-002.jpeg": {
+    "mtime": 1784586172.3051715,
+    "ast_hash": "e258d75268aafba7bca540cb8ea72011",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/logos/logos-003.jpeg": {
+    "mtime": 1784586170.7090003,
+    "ast_hash": "5b05e312dab4cb83a5aae31da214a6c3",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/source/source-001.jpeg": {
+    "mtime": 1784586179.223883,
+    "ast_hash": "b8cfca8df7b353f5a87b1f2a1c2a10db",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/source/source-002.jpeg": {
+    "mtime": 1784586179.6051066,
+    "ast_hash": "36c508205ffa6df7bd1ba4b7f6abd0a8",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/source/source-003.jpeg": {
+    "mtime": 1784586180.2917986,
+    "ast_hash": "e071ec0b52b7eb78e9e0a3101cee29ee",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/source/source-004.jpeg": {
+    "mtime": 1784586174.7324095,
+    "ast_hash": "38276be4f68c26584650a7ceb1dbba8a",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/source/source-005.jpeg": {
+    "mtime": 1784586177.2646036,
+    "ast_hash": "1acf326b012af992a450bdd0c66478ad",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/source/source-006.jpeg": {
+    "mtime": 1784586178.061349,
+    "ast_hash": "7eb85cf6bad4f6d1ce61b423969f6405",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/source/source-007.jpeg": {
+    "mtime": 1784586178.2123013,
+    "ast_hash": "27d3713613921823187aa0bc061c2d77",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/source/source-008.jpeg": {
+    "mtime": 1784586172.409139,
+    "ast_hash": "22c6bcdeb4348de2d8e5c17c5be4cd6e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/source/source-009.jpeg": {
+    "mtime": 1784586172.770024,
+    "ast_hash": "db396842a4e156ec1157f79319082a57",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/source/source-010.jpeg": {
+    "mtime": 1784586172.8589952,
+    "ast_hash": "44f101aaecfcaef7a01d3994145bcf6e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/source/source-011.jpeg": {
+    "mtime": 1784586173.5437763,
+    "ast_hash": "07dea1a4f5478ac7f91732634097bf55",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/source/source-012.jpeg": {
+    "mtime": 1784586173.7367167,
+    "ast_hash": "bcac388e3dbcf18fe1ffabc29136775f",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/source/source-013.jpeg": {
+    "mtime": 1784586173.9526587,
+    "ast_hash": "1eaf0f94be74037f84c55af3cb6c8c6a",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/source/source-014.jpeg": {
+    "mtime": 1784586172.505108,
+    "ast_hash": "e988fa26b82885d69876a6059c615ef1",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/textures/textures-001.jpeg": {
+    "mtime": 1784586172.9729583,
+    "ast_hash": "8290755b486001f0850f1dcd24f63e01",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/textures/textures-002.jpeg": {
+    "mtime": 1784586173.2208798,
+    "ast_hash": "901e4b10733e9ff61ddecff2115781fe",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/textures/textures-003.jpeg": {
+    "mtime": 1784586173.3498404,
+    "ast_hash": "08e9e8bcf4186016e88a6521336e8ffa",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/textures/textures-004.jpeg": {
+    "mtime": 1784586173.4388106,
+    "ast_hash": "a8242179761d2437f3a04c885005ebb7",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/textures/textures-005.jpeg": {
+    "mtime": 1784586170.7959757,
+    "ast_hash": "c85ac01e68b1d2d214fdd3c24683d56f",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/textures/textures-006.jpeg": {
+    "mtime": 1784586170.880947,
+    "ast_hash": "77ea97f16294e6cd0d5c1e5dbc7ce800",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/textures/textures-007.jpeg": {
+    "mtime": 1784586170.9529226,
+    "ast_hash": "ac96764b4834f6c28ed4c517a3ec5b9e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/textures/textures-008.jpeg": {
+    "mtime": 1784586171.0398934,
+    "ast_hash": "07a6448cc0363ad0e4ab6d032995d618",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/workflow/workflow-001.jpeg": {
+    "mtime": 1784586178.7569275,
+    "ast_hash": "81b9859762d553d2584a84f8ae457194",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/workflow/workflow-002.jpeg": {
+    "mtime": 1784586178.8968816,
+    "ast_hash": "4f49119c7093d3a64292357b635db742",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/workflow/workflow-003.jpeg": {
+    "mtime": 1784586179.0389063,
+    "ast_hash": "58b62e7b327f8fae28ad13c33600bc69",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/workflow/workflow-004.jpeg": {
+    "mtime": 1784586179.133912,
+    "ast_hash": "7653b1e4fd8cb6d5d2b1fe996261c2ce",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/favicon.svg": {
+    "mtime": 1784588405.2654872,
+    "ast_hash": "177a29cf3e3400f0d0a18bd5b3d27785",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/4-texturas-de-fondo-globales/img-001.jpeg": {
+    "mtime": 1784586172.9729583,
+    "ast_hash": "8290755b486001f0850f1dcd24f63e01",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/4-texturas-de-fondo-globales/img-002.jpeg": {
+    "mtime": 1784586173.2208798,
+    "ast_hash": "901e4b10733e9ff61ddecff2115781fe",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/4-texturas-de-fondo-globales/img-003.jpeg": {
+    "mtime": 1784586173.3498404,
+    "ast_hash": "08e9e8bcf4186016e88a6521336e8ffa",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/4-texturas-de-fondo-globales/img-004.jpeg": {
+    "mtime": 1784586173.4388106,
+    "ast_hash": "a8242179761d2437f3a04c885005ebb7",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/agent-builder/img-001.jpeg": {
+    "mtime": 1784586179.223883,
+    "ast_hash": "b8cfca8df7b353f5a87b1f2a1c2a10db",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/agent-builder/img-002.jpeg": {
+    "mtime": 1784586179.6051066,
+    "ast_hash": "36c508205ffa6df7bd1ba4b7f6abd0a8",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/agent-builder/img-003.jpeg": {
+    "mtime": 1784586180.2917986,
+    "ast_hash": "e071ec0b52b7eb78e9e0a3101cee29ee",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/hero-centro-de-comando/img-001.jpeg": {
+    "mtime": 1784586173.8406844,
+    "ast_hash": "088b83db25195351ed3050c521b472d4",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/hero-centro-de-comando/img-002.jpeg": {
+    "mtime": 1784586174.3775256,
+    "ast_hash": "a37aecd0115eec6a6c5d918e6e28020b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/hero-centro-de-comando/img-003.jpeg": {
+    "mtime": 1784586174.541471,
+    "ast_hash": "9a1938ab0a720f56e48148db6c87fe2c",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/hero-centro-de-comando/img-004.jpeg": {
+    "mtime": 1784586174.8603702,
+    "ast_hash": "237285a6bef28c9ae7c1464b70103820",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-001.jpeg": {
+    "mtime": 1784586172.2551885,
+    "ast_hash": "e6d4974cdc8031bd6dc5bac9707089ae",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-002.jpeg": {
+    "mtime": 1784586172.3051715,
+    "ast_hash": "e258d75268aafba7bca540cb8ea72011",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-004.jpeg": {
+    "mtime": 1784586174.2285733,
+    "ast_hash": "df2eb6e6eb53ef7b55f840428cdf3eaf",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-005.jpeg": {
+    "mtime": 1784586176.6358037,
+    "ast_hash": "ac3109e8c85fd8410da65562332e7b7d",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-006.jpeg": {
+    "mtime": 1784586177.4545417,
+    "ast_hash": "82536ccb701ad5b7b3259072a8bc41e4",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-007.jpeg": {
+    "mtime": 1784586174.7324095,
+    "ast_hash": "38276be4f68c26584650a7ceb1dbba8a",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-008.jpeg": {
+    "mtime": 1784586177.2646036,
+    "ast_hash": "1acf326b012af992a450bdd0c66478ad",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-009.jpeg": {
+    "mtime": 1784586178.061349,
+    "ast_hash": "7eb85cf6bad4f6d1ce61b423969f6405",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-010.jpeg": {
+    "mtime": 1784586178.2123013,
+    "ast_hash": "27d3713613921823187aa0bc061c2d77",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-011.jpeg": {
+    "mtime": 1784586172.409139,
+    "ast_hash": "22c6bcdeb4348de2d8e5c17c5be4cd6e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-013.jpeg": {
+    "mtime": 1784586172.770024,
+    "ast_hash": "db396842a4e156ec1157f79319082a57",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-014.jpeg": {
+    "mtime": 1784586176.1429608,
+    "ast_hash": "2dc265b7f9c6fc629da82728801ea57b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-015.jpeg": {
+    "mtime": 1784586177.6024947,
+    "ast_hash": "8003e089aecc13cf8f4b845c66bf5141",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-016.jpeg": {
+    "mtime": 1784586177.7104602,
+    "ast_hash": "a5b7cb586f37dbbf672e232d58135490",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-017.jpeg": {
+    "mtime": 1784586178.2962735,
+    "ast_hash": "f0b66a8ecaa1394268c88bd92805cd79",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-019.jpeg": {
+    "mtime": 1784586170.880947,
+    "ast_hash": "77ea97f16294e6cd0d5c1e5dbc7ce800",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-020.jpeg": {
+    "mtime": 1784586170.9529226,
+    "ast_hash": "ac96764b4834f6c28ed4c517a3ec5b9e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-021.jpeg": {
+    "mtime": 1784586171.0398934,
+    "ast_hash": "07a6448cc0363ad0e4ab6d032995d618",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-022.jpeg": {
+    "mtime": 1784586171.4467645,
+    "ast_hash": "06ac54ca663b6812bbb6c43df6d16e77",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-023.jpeg": {
+    "mtime": 1784586171.704682,
+    "ast_hash": "ea0fff4d91b7aa0c9ee4dc147d342d69",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-024.jpeg": {
+    "mtime": 1784586171.8416398,
+    "ast_hash": "9f529b5fd1ec0890987894c68b37b1fd",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-025.jpeg": {
+    "mtime": 1784586172.0342603,
+    "ast_hash": "13506ff00d33074225dadd696854f677",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-026.jpeg": {
+    "mtime": 1784586179.741282,
+    "ast_hash": "477133080538dcf64205e17712dcacd9",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-027.jpeg": {
+    "mtime": 1784586180.2008252,
+    "ast_hash": "a5fd4d1a5fea8409110c31376c2e8688",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-028.jpeg": {
+    "mtime": 1784586180.367772,
+    "ast_hash": "cda584a4f1b148d0f5e1f38c2848c0a4",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-029.jpeg": {
+    "mtime": 1784586180.5117266,
+    "ast_hash": "29158ebe2cf2911eb8af05675874cce0",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-030.jpeg": {
+    "mtime": 1784581080.9117484,
+    "ast_hash": "8178f769afc67af085973b87df8ec2e8",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-031.jpeg": {
+    "mtime": 1784586174.9563403,
+    "ast_hash": "563aaacf48af5ca834d50d594d3644f6",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-032.jpeg": {
+    "mtime": 1784586176.896721,
+    "ast_hash": "6a42f1ce41281a59740752b6b58fd51e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-033.jpeg": {
+    "mtime": 1784586177.0816607,
+    "ast_hash": "fb40632300d03c575250d2bb49660cdd",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-035.jpeg": {
+    "mtime": 1784586170.7090003,
+    "ast_hash": "5b05e312dab4cb83a5aae31da214a6c3",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-036.jpeg": {
+    "mtime": 1784586178.8309028,
+    "ast_hash": "e50e41f7606df57f4f7d27073a74441f",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-037.jpeg": {
+    "mtime": 1784586178.96586,
+    "ast_hash": "522b15837f1f85c93fa9b6c4c7cbc63d",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-038.jpeg": {
+    "mtime": 1784586179.5173135,
+    "ast_hash": "c12f824ee58af0eddfd2360ea3f9129a",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-039.jpeg": {
+    "mtime": 1784586179.8339424,
+    "ast_hash": "3bdd3db077a1827b5fabe022241c44bf",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-041.jpeg": {
+    "mtime": 1784586171.9286108,
+    "ast_hash": "8c8f3d2b0ccfbe45cb48da19bc0e2853",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-042.jpeg": {
+    "mtime": 1784586172.1192315,
+    "ast_hash": "b238a7e0f24f3f2b06aef9c4443129ab",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-043.jpeg": {
+    "mtime": 1784586172.2082026,
+    "ast_hash": "03a13a2117377c98df4ee73a99ad6ee7",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-044.jpeg": {
+    "mtime": 1784586175.6701126,
+    "ast_hash": "d2379a3fedc980c73ba2623746259d46",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-046.jpeg": {
+    "mtime": 1784586179.9089181,
+    "ast_hash": "e7b3906d0d0999d920c4e379f2afaa70",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-047.jpeg": {
+    "mtime": 1784586180.0548723,
+    "ast_hash": "82bd2aeb628c9385f105a91740ebba6d",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-048.jpeg": {
+    "mtime": 1784586180.44175,
+    "ast_hash": "24185fa2819be2f4a1ccff2ce734adde",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-049.jpeg": {
+    "mtime": 1784586180.5807042,
+    "ast_hash": "90feabc24ad439e1525d6241ac88dae0",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-050.jpeg": {
+    "mtime": 1784586172.8589952,
+    "ast_hash": "44f101aaecfcaef7a01d3994145bcf6e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-051.jpeg": {
+    "mtime": 1784586173.5437763,
+    "ast_hash": "07dea1a4f5478ac7f91732634097bf55",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-052.jpeg": {
+    "mtime": 1784586173.7367167,
+    "ast_hash": "bcac388e3dbcf18fe1ffabc29136775f",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-053.jpeg": {
+    "mtime": 1784586173.9526587,
+    "ast_hash": "1eaf0f94be74037f84c55af3cb6c8c6a",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-054.jpeg": {
+    "mtime": 1784586172.505108,
+    "ast_hash": "e988fa26b82885d69876a6059c615ef1",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-056.jpeg": {
+    "mtime": 1784586178.7569275,
+    "ast_hash": "81b9859762d553d2584a84f8ae457194",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-058.jpeg": {
+    "mtime": 1784586179.0389063,
+    "ast_hash": "58b62e7b327f8fae28ad13c33600bc69",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/img-059.jpeg": {
+    "mtime": 1784586179.133912,
+    "ast_hash": "7653b1e4fd8cb6d5d2b1fe996261c2ce",
+    "semantic_hash": ""
+  },
+  "landing/assets/qh-arquitectura-sistema.jpeg": {
+    "mtime": 1784586170.7090003,
+    "ast_hash": "5b05e312dab4cb83a5aae31da214a6c3",
+    "semantic_hash": ""
+  },
+  "landing/assets/qh-dark-texture.jpeg": {
+    "mtime": 1784586172.9729583,
+    "ast_hash": "8290755b486001f0850f1dcd24f63e01",
+    "semantic_hash": ""
+  },
+  "landing/assets/qh-dashboard-agi.jpeg": {
+    "mtime": 1784586173.8406844,
+    "ast_hash": "088b83db25195351ed3050c521b472d4",
+    "semantic_hash": ""
+  },
+  "landing/assets/qh-honeycomb-bg.jpeg": {
+    "mtime": 1784581080.9117484,
+    "ast_hash": "8178f769afc67af085973b87df8ec2e8",
+    "semantic_hash": ""
+  },
+  "landing/assets/qh-honeycomb-gold.jpeg": {
+    "mtime": 1784581080.9117484,
+    "ast_hash": "8178f769afc67af085973b87df8ec2e8",
+    "semantic_hash": ""
+  },
+  "landing/assets/qh-honeycomb-mobile.jpeg": {
+    "mtime": 1784586172.8589952,
+    "ast_hash": "44f101aaecfcaef7a01d3994145bcf6e",
+    "semantic_hash": ""
+  },
+  "landing/assets/qh-honeycomb-organic-01.jpeg": {
+    "mtime": 1784586171.9286108,
+    "ast_hash": "8c8f3d2b0ccfbe45cb48da19bc0e2853",
+    "semantic_hash": ""
+  },
+  "landing/assets/qh-honeycomb-ui-01.jpeg": {
+    "mtime": 1784586179.741282,
+    "ast_hash": "477133080538dcf64205e17712dcacd9",
+    "semantic_hash": ""
+  },
+  "landing/assets/qh-lockup-completo.jpeg": {
+    "mtime": 1784586172.3051715,
+    "ast_hash": "e258d75268aafba7bca540cb8ea72011",
+    "semantic_hash": ""
+  },
+  "landing/assets/qh-lockup-dorado.jpeg": {
+    "mtime": 1784586172.2551885,
+    "ast_hash": "e6d4974cdc8031bd6dc5bac9707089ae",
+    "semantic_hash": ""
+  },
+  "landing/assets/qh-login-cover.jpeg": {
+    "mtime": 1784586179.9089181,
+    "ast_hash": "e7b3906d0d0999d920c4e379f2afaa70",
+    "semantic_hash": ""
+  },
+  "landing/assets/qh-neural-viva.jpeg": {
+    "mtime": 1784586174.9563403,
+    "ast_hash": "563aaacf48af5ca834d50d594d3644f6",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/video/video-001.mp4": {
+    "mtime": 1784580158.6669998,
+    "ast_hash": "30adcceb18762821fe33f769259cd91e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/video/video-002.mp4": {
+    "mtime": 1784586178.658091,
+    "ast_hash": "d489f342a468fe2fcad5a94a04231451",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/video/video-003.mp4": {
+    "mtime": 1784586177.8714097,
+    "ast_hash": "7b410b1943d3fe45179057269c1a0e24",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/video/video-004.mp4": {
+    "mtime": 1784586178.5406933,
+    "ast_hash": "798a8b012d158a36f17c4d2c4e64b0d9",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/vid-012.mp4": {
+    "mtime": 1784580158.6669998,
+    "ast_hash": "30adcceb18762821fe33f769259cd91e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/vid-040.mp4": {
+    "mtime": 1784586178.658091,
+    "ast_hash": "d489f342a468fe2fcad5a94a04231451",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/vid-045.mp4": {
+    "mtime": 1784586177.8714097,
+    "ast_hash": "7b410b1943d3fe45179057269c1a0e24",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/vid-055.mp4": {
+    "mtime": 1784586178.5406933,
+    "ast_hash": "798a8b012d158a36f17c4d2c4e64b0d9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/CORTADOS/idle 1.mp4": {
+    "mtime": 1784230078.9874253,
+    "ast_hash": "ba89526d077ee32d95f21e5dfffd0cc7",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/CORTADOS/idle 3 acomodandose el pelo (online-video-cutter.com).mp4": {
+    "mtime": 1784249785.99973,
+    "ast_hash": "24b8a215067e03daee19c8f4cf83c540",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/CORTADOS/idle 3.mp4": {
+    "mtime": 1784248795.2102723,
+    "ast_hash": "4867230c95391bb566fbec364a041e53",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/CORTADOS/idle 4.mp4": {
+    "mtime": 1784251432.1870234,
+    "ast_hash": "964583b5bdd80e4019bde1dc920dabda",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/CORTADOS/idle 5 cuando tarda mucho (online-video-cutter.com).mp4": {
+    "mtime": 1784250949.8286538,
+    "ast_hash": "0ceff84c1ba30f2fbc7df4cc97d79473",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/CORTADOS/idle6.mp4": {
+    "mtime": 1784266041.9372492,
+    "ast_hash": "9d77661a64352cd521cb2392f229a58d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/CORTADOS/invitacion a charlar.mp4": {
+    "mtime": 1784261422.968,
+    "ast_hash": "5f17a1a6992d6896e2818ffe3ab6f160",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/CORTADOS/mirando derecha.mp4": {
+    "mtime": 1784260928.4769294,
+    "ast_hash": "d1bff341a80cdbd68012c47e432d1e15",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/CORTADOS/mirando izquierda.mp4": {
+    "mtime": 1784260461.2517898,
+    "ast_hash": "44de6e3d6ddb120f55a6ecf693af617d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/CORTADOS/saludo bienvenida.mp4": {
+    "mtime": 1784250379.7299793,
+    "ast_hash": "02bd514cf6f5949a41e7f4845f5386f3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/CORTADOS/saludo despedida.mp4": {
+    "mtime": 1784250639.970713,
+    "ast_hash": "b2a67d35fde74da2e46b40ea8eec0e91",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-run/CORTADOS/tomando pedido (online-video-cutter.com).mp4": {
+    "mtime": 1784249440.6227305,
+    "ast_hash": "6ae9f1e1157a2cc2ce204ef53fef51c5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/public/avatar-videos/sol/v1/connector_farewell_cut.webm": {
+    "mtime": 1784305825.381994,
+    "ast_hash": "0d281728eee4dfabe039c8bafcadeda9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/public/avatar-videos/sol/v1/connector_idle_cut_1.webm": {
+    "mtime": 1784305825.473966,
+    "ast_hash": "473a0b5fd7298e8bcf31f3cbd00ff81d",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/public/avatar-videos/sol/v1/connector_idle_cut_3.webm": {
+    "mtime": 1784305825.4999592,
+    "ast_hash": "aca0527220d74242dd6222a260477fd3",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/public/avatar-videos/sol/v1/connector_idle_cut_4.webm": {
+    "mtime": 1784305825.5589395,
+    "ast_hash": "7fe5631ff177a0955c53aa52121c75ff",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/public/avatar-videos/sol/v1/connector_idle_cut_6.webm": {
+    "mtime": 1784305825.6089227,
+    "ast_hash": "12a272cc89ea9e554f49d2df46254af9",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/public/avatar-videos/sol/v1/connector_idle_cut_hair.webm": {
+    "mtime": 1784305825.646912,
+    "ast_hash": "c02d5f3e7ea3f0da3d7b951c4d8602ae",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/public/avatar-videos/sol/v1/connector_idle_cut_wait.webm": {
+    "mtime": 1784305825.6848965,
+    "ast_hash": "971abc770e886a7e482815d66c1a1d95",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/public/avatar-videos/sol/v1/connector_live_invite_cut.webm": {
+    "mtime": 1784305825.7308846,
+    "ast_hash": "9f408387dcbdb69f69cf8fce6888ce85",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/public/avatar-videos/sol/v1/connector_look_left_cut.webm": {
+    "mtime": 1784305825.7428794,
+    "ast_hash": "a4d2a4f1d13d142fbe375fc586e018dc",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/public/avatar-videos/sol/v1/connector_look_right_cut.webm": {
+    "mtime": 1784305825.7588744,
+    "ast_hash": "4e4f7fd41229ee07a45715073ae36867",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/public/avatar-videos/sol/v1/connector_taking_order_cut.webm": {
+    "mtime": 1784305825.8238554,
+    "ast_hash": "fb97154fe3cfe51efdff06e41df68dee",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/motor-avatares-video-test/public/avatar-videos/sol/v1/connector_welcome_cut.webm": {
+    "mtime": 1784305825.8458574,
+    "ast_hash": "2c10a91a7c99f210a5ff5f3559256ef8",
+    "semantic_hash": ""
+  },
+  "landing/assets/qh-honeycomb-video.mp4": {
+    "mtime": 1784580158.6669998,
+    "ast_hash": "30adcceb18762821fe33f769259cd91e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/superpowers/plans/2026-07-22-dominus-brain-router-hibrido.md": {
+    "mtime": 1784765473.112221,
+    "ast_hash": "4eb9832d8bd4a9bd1ea7dd63695e4e62",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/brainRouter.ts": {
+    "mtime": 1785006048.567408,
+    "ast_hash": "f04da11f17ff58dd6ba31d484ffc492b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/brain-router.test.ts": {
+    "mtime": 1785007451.0655215,
+    "ast_hash": "2daefa5ea97728924e29e474ca73ecdc",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/dominusContext.ts": {
+    "mtime": 1785000697.5232556,
+    "ast_hash": "dc0b7c78ef87d98aabd954f936c13547",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/dominus-context.test.ts": {
+    "mtime": 1784758825.2611976,
+    "ast_hash": "48b903751775c227961a758cfa001dc4",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/deployment-runtime.test.ts": {
+    "mtime": 1784764563.4669294,
+    "ast_hash": "9fb4a287bd60a0eace1e0035d3b3c3e5",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/ApiProviders.tsx": {
+    "mtime": 1785144641.0066023,
+    "ast_hash": "7b71f242e1e1e21e393ddd448527c5fb",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/api-providers-ui.test.ts": {
+    "mtime": 1784869497.3925068,
+    "ast_hash": "ae23f9aaa911be71aa663343dedcb782",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/chat-command-ui.test.ts": {
+    "mtime": 1785118522.6597967,
+    "ast_hash": "afb67b54633db585dfed6f4c38484fe9",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-23T04-10-51-867Z.yml": {
+    "mtime": 1784779851.874284,
+    "ast_hash": "dde6ece934fa0897e294dfb8597b9f05",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-23T06-44-48-310Z.yml": {
+    "mtime": 1784789088.311967,
+    "ast_hash": "85aba6a666c5421f4fdcf977f950829c",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-23T07-04-12-310Z.yml": {
+    "mtime": 1784790253.6122904,
+    "ast_hash": "61eb0108284f239b0ab3185a64f4ddb7",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/superpowers/plans/2026-07-23-brain-router-medium.md": {
+    "mtime": 1784797051.1393628,
+    "ast_hash": "258f87cd35cf97d03986c8dcfa18df52",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/superpowers/specs/2026-07-23-brain-router-medium-design.md": {
+    "mtime": 1784797051.1253688,
+    "ast_hash": "b52f6ee884890ac4832d59b46abdf01c",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/custom/fondo-chat.jpeg": {
+    "mtime": 1784586178.8968816,
+    "ast_hash": "4f49119c7093d3a64292357b635db742",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/brand/custom/quantumhive_isotipo_v01_transparente_recortado.png": {
+    "mtime": 1782675658.0,
+    "ast_hash": "da8eb1a7496293de3d63e26762a5fe98",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/BARRA SUPERIOR.jpeg": {
+    "mtime": 1784586178.3782492,
+    "ast_hash": "14e87bba14c771a6073b44bbf4ca0a4b",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/FONDO CHAT.jpeg": {
+    "mtime": 1784586178.8968816,
+    "ast_hash": "4f49119c7093d3a64292357b635db742",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/FONDO LANDING.jpeg": {
+    "mtime": 1784586170.7959757,
+    "ast_hash": "c85ac01e68b1d2d214fdd3c24683d56f",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/elementos-visuales/HERO.jpeg": {
+    "mtime": 1784586174.0586245,
+    "ast_hash": "1273204299e8782fbc7c6278a5ebb68b",
+    "semantic_hash": ""
+  },
+  "landing/assets/barra-superior.jpeg": {
+    "mtime": 1784586178.3782492,
+    "ast_hash": "14e87bba14c771a6073b44bbf4ca0a4b",
+    "semantic_hash": ""
+  },
+  "landing/assets/fondo-landing.jpeg": {
+    "mtime": 1784586170.7959757,
+    "ast_hash": "c85ac01e68b1d2d214fdd3c24683d56f",
+    "semantic_hash": ""
+  },
+  "landing/assets/hero-fondo.jpeg": {
+    "mtime": 1784586174.0586245,
+    "ast_hash": "1273204299e8782fbc7c6278a5ebb68b",
+    "semantic_hash": ""
+  },
+  "quantumcore-chat-foundry-compact.png": {
+    "mtime": 1784780062.2356331,
+    "ast_hash": "29c46baa87c551e2204b661fbe6ae6c5",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/aiProviders.ts": {
+    "mtime": 1785005182.5806367,
+    "ast_hash": "5b349f338cc804546bfe8f1da140ff93",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/server/routes/providers.ts": {
+    "mtime": 1784884317.4643416,
+    "ast_hash": "e4a9e5b09092beac79f85ca4e8d26027",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/gcp-vertex-models.test.ts": {
+    "mtime": 1785007388.8585148,
+    "ast_hash": "3514b668e36cb5cb3fdb996d2a35fc35",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/superpowers/plans/2026-07-24-provider-manager-github.md": {
+    "mtime": 1784881904.7745624,
+    "ast_hash": "5875822e663a275ea934dfec23283825",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/superpowers/specs/2026-07-24-provider-manager-github-design.md": {
+    "mtime": 1784881240.7483184,
+    "ast_hash": "46a54d54c7cd2f06e272f471478239c6",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/provider-manager.test.ts": {
+    "mtime": 1784882543.809159,
+    "ast_hash": "61d9e8b810edb69820a3255af1b95704",
+    "semantic_hash": ""
+  },
+  ".superpowers/sdd/progress.md": {
+    "mtime": 1784887676.734311,
+    "ast_hash": "721db35e241dc19533fff2df6b4d23b1",
+    "semantic_hash": ""
+  },
+  ".superpowers/sdd/task-1-brief.md": {
+    "mtime": 1784882460.5217643,
+    "ast_hash": "7c2d9e9261024f90d19b7415082700da",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/providerClients.ts": {
+    "mtime": 1785144887.0230062,
+    "ast_hash": "15c15f9e6f9804d21f173ade81ee43b9",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/providerRouter.ts": {
+    "mtime": 1785144594.6157937,
+    "ast_hash": "ccf572b976f2c1ba6e531628ddf76322",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/provider-router.test.ts": {
+    "mtime": 1785007112.9487612,
+    "ast_hash": "7824cb14b4c3bc836f98567da3ab6e20",
+    "semantic_hash": ""
+  },
+  ".superpowers/sdd/task-1-report.md": {
+    "mtime": 1784882882.8053398,
+    "ast_hash": "a341bd4f3a25ea7e3fac330bb3b5e6a3",
+    "semantic_hash": ""
+  },
+  ".superpowers/sdd/task-2-brief.md": {
+    "mtime": 1784883411.22275,
+    "ast_hash": "8a755978dc18cb55ddd4559c7ad899a0",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/provider-api.test.ts": {
+    "mtime": 1784884291.0843458,
+    "ast_hash": "fad778ee8712040dfc6dbac40c6fefbd",
+    "semantic_hash": ""
+  },
+  ".superpowers/sdd/task-2-report.md": {
+    "mtime": 1784883913.2543092,
+    "ast_hash": "c8fb7b44015151249bddfb9ec106d500",
+    "semantic_hash": ""
+  },
+  ".superpowers/sdd/task-3-brief.md": {
+    "mtime": 1784884200.8450997,
+    "ast_hash": "a5d3c7e8a21d6aa78ce0b5e4d36ed15d",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/chat-provider-selection.test.ts": {
+    "mtime": 1784884942.3283982,
+    "ast_hash": "aaec679acf36fbb04a680a9b96df547f",
+    "semantic_hash": ""
+  },
+  ".superpowers/sdd/task-3-report.md": {
+    "mtime": 1784884503.0239208,
+    "ast_hash": "90147d5039ab163643b1d09553f4bdac",
+    "semantic_hash": ""
+  },
+  ".superpowers/sdd/task-4-brief.md": {
+    "mtime": 1784884872.4701178,
+    "ast_hash": "66056010c25ebfe84a3daaea2b669d32",
+    "semantic_hash": ""
+  },
+  ".superpowers/sdd/task-4-fix-brief.md": {
+    "mtime": 1784885878.9749427,
+    "ast_hash": "68362bbb7d314851a229cefc9b263df9",
+    "semantic_hash": ""
+  },
+  ".superpowers/sdd/task-4-report.md": {
+    "mtime": 1784886258.050763,
+    "ast_hash": "72d852381b5cf2b5995fb6d331d599ec",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/server/routes/github.ts": {
+    "mtime": 1785115450.3376226,
+    "ast_hash": "5c74f7ddce2e034df34b54192c92211d",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/github-connector.test.ts": {
+    "mtime": 1785115322.154601,
+    "ast_hash": "b5065160755a28a6a96c3f8608c80d4a",
+    "semantic_hash": ""
+  },
+  ".superpowers/sdd/task-5-brief.md": {
+    "mtime": 1784886699.6990027,
+    "ast_hash": "7a9f908d4b618390c63e190ce72c17d3",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/provider-manager-ui.test.ts": {
+    "mtime": 1784887746.8100605,
+    "ast_hash": "6a5d77f817aff798d86d24af4188ead4",
+    "semantic_hash": ""
+  },
+  ".superpowers/sdd/task-5-report.md": {
+    "mtime": 1784887169.1582727,
+    "ast_hash": "dcc650be2bc17903e6d38555814f45e6",
+    "semantic_hash": ""
+  },
+  ".superpowers/sdd/task-6-brief.md": {
+    "mtime": 1784887676.745307,
+    "ast_hash": "6cf428240d688bb4c01610ad853570e2",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/repo-connector-ui.test.ts": {
+    "mtime": 1785115392.4349363,
+    "ast_hash": "15a847849ff8d0f4e831268982adce83",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/server/routes/graph.ts": {
+    "mtime": 1785000661.7265704,
+    "ast_hash": "33fb287f23813cc9f18d8b05f713cea4",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/graph-api.test.ts": {
+    "mtime": 1784952912.891407,
+    "ast_hash": "f51b28b58b40f663679eea3032e1ce04",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/asset definitivos de mesera/prompts de asssets.txt": {
+    "mtime": 1784957756.5596237,
+    "ast_hash": "72d1082407562e30b00945cee6b209d5",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/asset definitivos de mesera/saludo perfecto.mp4": {
+    "mtime": 1784954446.5176778,
+    "ast_hash": "2e60648bbd1d3021fdd64123f26ae0a1",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/asset definitivos de mesera/se\u00f1ala menu.mp4": {
+    "mtime": 1784955092.6296494,
+    "ast_hash": "cf8456584e7b3775df520b8405156540",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/asset definitivos de mesera/idle hablando moviendo la boca.mp4": {
+    "mtime": 1784958065.0777493,
+    "ast_hash": "9d22c0ac293a2f1b3d6886d10a15728e",
+    "semantic_hash": ""
+  },
+  "agencia/motor madre/asset definitivos de mesera/reaccion boton izquierdo.mp4": {
+    "mtime": 1784957643.7838235,
+    "ast_hash": "6b0599506585f463f566f258958ea83f",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/catalogIngestor.ts": {
+    "mtime": 1785081130.2872767,
+    "ast_hash": "1f3fa7c7635a8db78bcf2fdeb490744d",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/videoIngest.ts": {
+    "mtime": 1785028694.622187,
+    "ast_hash": "2d798741a2b761f113eef6f22fa7a99c",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/videoIngestStore.ts": {
+    "mtime": 1785029183.831233,
+    "ast_hash": "00eec0fb97c5024c1429ea6813caa128",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/server/routes/videoIngest.ts": {
+    "mtime": 1785081366.468137,
+    "ast_hash": "512b0bead3f9e935fa38d7a708135e72",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/catalog-ingestor-loop.test.ts": {
+    "mtime": 1785079820.617205,
+    "ast_hash": "a7d366271e68c1a524839da3c91e2aba",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/catalog-ingestor-visibility.test.ts": {
+    "mtime": 1785080977.6833346,
+    "ast_hash": "36937da9a9e7259d55f6803af225ef7c",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/catalog-taxonomy.test.ts": {
+    "mtime": 1785029245.5397434,
+    "ast_hash": "b3fa9c1e19bc9474da304ffff2f71aee",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/video-inbox-ui.test.ts": {
+    "mtime": 1785118876.8384366,
+    "ast_hash": "fd4629b67eaab929df0536618c196712",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/video-ingest-api.test.ts": {
+    "mtime": 1785081019.0371034,
+    "ast_hash": "fd686bd216507f94f6c1cbfc58270820",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/video-ingest.test.ts": {
+    "mtime": 1785028738.4374676,
+    "ast_hash": "8ff51219d7a6e7b9c639c699fae24d21",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-07-25-quantumcore-video-ingest-telegram-dominus.md": {
+    "mtime": 1785028483.6514266,
+    "ast_hash": "28c83fac5024b63ad4aa63dbd972beef",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-07-25-quantumcore-mapa-agentes-dominus-design.md": {
+    "mtime": 1785034613.431495,
+    "ast_hash": "cc8c71be0626f38d6580c4794b6370e5",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/graph-direct-link.test.ts": {
+    "mtime": 1785125149.0590363,
+    "ast_hash": "c84b38e8af3b9479c9f916e8ee244715",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/public/catalogo-pwa/index.html": {
+    "mtime": 1785113614.2282128,
+    "ast_hash": "6ed651c3b366e9cfbfb1821f861cbeb3",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/runner/index.ts": {
+    "mtime": 1785142676.4852934,
+    "ast_hash": "684ce66c417c74641e1b3534d60a1081",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/server/routes/runner.ts": {
+    "mtime": 1785142572.883771,
+    "ast_hash": "332154571e5550813cfa7f89cd4d7df6",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/README-RUNNER.md": {
+    "mtime": 1785140309.608068,
+    "ast_hash": "5f2848b64a3809bd78ccfbe6f46062ec",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/cloudbuild-root.yaml": {
+    "mtime": 1785125164.6099002,
+    "ast_hash": "c19a33c2d15b1439ba01fe3182281929",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/planes-a-llevar-a-cabo/2026-07-27-arquitectura-runner-y-rescate-entorno.md": {
+    "mtime": 1785137868.7364829,
+    "ast_hash": "35e7b0c043fd99f3d0c5cf006a1c2510",
+    "semantic_hash": ""
+  },
+  "agencia/productos/catalogo-pwa/catalogo desplegado en netlify.txt": {
+    "mtime": 1785128734.4458368,
+    "ast_hash": "ff0b28b324fd351a6c5cbdd8c0e57c8e",
+    "semantic_hash": ""
+  },
+  "directimport/charla de shopyfy vercion final directimport.txt": {
+    "mtime": 1785135021.7909286,
+    "ast_hash": "d3fdca8d601811220d9f9c90c52664fc",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/store/providerStore.ts": {
+    "mtime": 1785144618.7324343,
+    "ast_hash": "a183c63bf68342a906e40eaa19d41f5e",
     "semantic_hash": ""
   }
 }

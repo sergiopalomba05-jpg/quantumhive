@@ -14,5 +14,9 @@ Planes de implementación y specs de arquitectura pendientes de ejecutar.
 ### 3. Motor de LLMs (OpenRouter Local + Arena/Battle)
 - `2026-07-08-motor-llms-arena.md` - Plan completo desglosado
 
+### 4. Agente de Pantalla (Screen Copilot Overlay)
+- `2026-07-21-agente-avatar-pantalla-design.md` - Propuesta de arquitectura y viabilidad
+
 ## Documento original
 - `3 PLANES EN CONVERSACION.txt` - Conversación completa con detalles técnicos
+

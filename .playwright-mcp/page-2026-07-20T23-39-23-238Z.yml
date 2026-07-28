@@ -1,0 +1,153 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - heading "Welcome to QuantumHive Control Plane" [level=2] [ref=e10]
+      - paragraph [ref=e11]: Este panel centraliza tus ideas, proyectos, agentes, memoria, videos, herramientas, tareas, integraciones y decisiones para que no pierdas contexto entre sesiones.
+    - generic [ref=e12]:
+      - button "Iniciar tutorial interactivo" [ref=e13]
+      - button "Ver Manual / Help Center" [ref=e18]
+      - button "Explorar por mi cuenta" [ref=e22]
+  - generic [ref=e24]:
+    - complementary [ref=e25]:
+      - generic [ref=e26]:
+        - generic [ref=e37]:
+          - img "QuantumHive" [ref=e38]
+          - heading "QuantumHive" [level=1] [ref=e39]
+          - generic [ref=e40]: Control Plane
+        - generic [ref=e41]:
+          - generic [ref=e42]: Sala de Control
+          - combobox [ref=e43]:
+            - option "Principiante" [selected]
+            - option "Usuario Avanzado"
+            - option "Desarrollador"
+      - generic [ref=e44]:
+        - generic [ref=e45]:
+          - heading "Próxima Mejor Acción" [level=3] [ref=e47]
+          - paragraph [ref=e48]: Revisar Resumen Diario y confirmar 2 aprobaciones pendientes.
+        - generic [ref=e49]:
+          - heading "Favoritos" [level=3] [ref=e50]
+          - generic [ref=e53]:
+            - generic [ref=e54]:
+              - link "Chat Central" [ref=e55] [cursor=pointer]:
+                - /url: /chat
+              - button [ref=e59]
+            - generic [ref=e62]:
+              - link "Resumen Diario" [ref=e63] [cursor=pointer]:
+                - /url: /brief
+              - button [ref=e68]
+            - generic [ref=e71]:
+              - link "Inbox de Ideas" [ref=e72] [cursor=pointer]:
+                - /url: /ideas
+              - button [ref=e76]
+            - generic [ref=e79]:
+              - link "Tareas" [ref=e80] [cursor=pointer]:
+                - /url: /tasks
+              - button [ref=e85]
+        - generic [ref=e88]:
+          - generic [ref=e89]:
+            - button "A. Centro de Comando" [ref=e90]
+            - generic [ref=e94]:
+              - generic [ref=e95]:
+                - link "Panel" [ref=e96] [cursor=pointer]:
+                  - /url: /
+                - button [ref=e103]
+              - generic [ref=e106]:
+                - link "Empezar Acá" [ref=e107] [cursor=pointer]:
+                  - /url: /start
+                - button [ref=e111]
+              - generic [ref=e114]:
+                - link "Resumen Diario" [ref=e115] [cursor=pointer]:
+                  - /url: /brief
+                - button [ref=e120]
+              - generic [ref=e123]:
+                - link "Cola de Aprobación" [ref=e124] [cursor=pointer]:
+                  - /url: /approvals
+                - button [ref=e129]
+              - generic [ref=e132]:
+                - link "Actividad / Notificaciones" [ref=e133] [cursor=pointer]:
+                  - /url: /events
+                - button [ref=e137]
+          - generic [ref=e140]:
+            - button "B. Captura e Inbox" [ref=e141]
+            - generic [ref=e145]:
+              - generic [ref=e146]:
+                - link "Inbox de Ideas" [ref=e147] [cursor=pointer]:
+                  - /url: /ideas
+                - button [ref=e151]
+              - generic [ref=e154]:
+                - link "Bandeja de Videos" [ref=e155] [cursor=pointer]:
+                  - /url: /video-inbox
+                - button [ref=e160]
+              - generic [ref=e163]:
+                - link "Notas de Voz" [ref=e164] [cursor=pointer]:
+                  - /url: /voice
+                - button [ref=e169]
+          - button "C. Proyectos y Ejecución" [ref=e173]
+          - button "D. Agentes y Chat" [ref=e178]
+          - button "E. Conocimiento y Memoria" [ref=e183]
+          - button "G. Bases de Datos, Workspace e Integr." [ref=e188]
+    - generic [ref=e192]:
+      - banner [ref=e193]:
+        - generic [ref=e195]:
+          - text: Estado
+          - generic [ref=e197]: Óptimo
+        - generic [ref=e198]:
+          - button "Aprender" [ref=e199]
+          - button "Guía" [ref=e203]
+          - button "Reiniciar" [ref=e208]
+          - button "Contexto" [ref=e215]
+          - button "Exportar" [ref=e220]
+          - generic [ref=e225]: QH
+      - main [ref=e227]:
+        - generic [ref=e228]:
+          - generic [ref=e230]:
+            - generic [ref=e231]:
+              - generic [ref=e232]: QuantumHive Control Room
+              - heading "Sala de control para agentes, decisiones y ejecución segura." [level=2] [ref=e236]
+              - paragraph [ref=e237]: "Visión operativa del sistema: proyectos activos, CEOs digitales, bloqueos y eventos recientes sin ejecutar acciones destructivas fuera de la cola de aprobación."
+            - generic [ref=e238]:
+              - generic [ref=e239]: Estado del Núcleo
+              - generic [ref=e240]: ÓPTIMO
+              - generic [ref=e244]:
+                - generic [ref=e245]: Mock seguro
+                - generic [ref=e246]: Auditado
+          - generic [ref=e247]:
+            - generic [ref=e248]:
+              - generic [ref=e249]: Proyectos Activos
+              - generic [ref=e250]: "03"
+            - generic [ref=e251]:
+              - generic [ref=e252]: CEOs Activos
+              - generic [ref=e253]: "05"
+            - generic [ref=e254]:
+              - generic [ref=e255]: Eventos Recientes
+              - generic [ref=e256]: "02"
+            - generic [ref=e257]:
+              - generic [ref=e258]: Tareas Pendientes
+              - generic [ref=e259]: "02"
+            - generic [ref=e260]:
+              - generic [ref=e261]: Bloqueos
+              - generic [ref=e262]: "01"
+          - generic [ref=e263]:
+            - generic [ref=e264]:
+              - heading "Proyectos y próximas acciones" [level=3] [ref=e265]
+              - generic [ref=e268]:
+                - generic [ref=e269]:
+                  - generic [ref=e270]: Carta Viva MVP
+                  - generic [ref=e271]: "Siguiente: Hacer videos de Sol manualmente"
+                - generic [ref=e272]:
+                  - generic [ref=e273]: QuantumHive Control Plane
+                  - generic [ref=e274]: "Siguiente: Diseñar frontend AI Studio"
+                - generic [ref=e275]:
+                  - generic [ref=e276]: Avatar Cache Engine
+                  - generic [ref=e277]: "Siguiente: Integrar en MVP"
+            - generic [ref=e278]:
+              - heading "Eventos recientes en vivo" [level=3] [ref=e279]
+              - generic [ref=e283]:
+                - generic [ref=e284]:
+                  - generic [ref=e285]: "[20:38:30]"
+                  - generic [ref=e286]: "project.created:"
+                  - generic [ref=e287]: Proyecto QuantumHive inicializado
+                - generic [ref=e288]:
+                  - generic [ref=e289]: "[20:37:40]"
+                  - generic [ref=e290]: "idea.created:"
+                  - generic [ref=e291]: Idea creada HumanIA World

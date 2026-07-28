@@ -1,0 +1,88 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety Net catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // User Profile
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId) 
+        && incoming().uid == request.auth.uid
+        && incoming().email is string
+        && incoming().availableSeconds is number
+        && incoming().isMemoryPlanActive is bool;
+      allow update: if isOwner(userId)
+        && incoming().uid == existing().uid
+        && incoming().email == existing().email
+        && (
+          incoming().diff(existing()).affectedKeys().hasOnly(['availableSeconds']) ||
+          incoming().diff(existing()).affectedKeys().hasOnly(['isMemoryPlanActive']) ||
+          incoming().diff(existing()).affectedKeys().hasOnly(['displayName']) ||
+          incoming().diff(existing()).affectedKeys().hasOnly(['availableSeconds', 'isMemoryPlanActive']) ||
+          incoming().diff(existing()).affectedKeys().hasOnly(['availableSeconds', 'displayName']) ||
+          incoming().diff(existing()).affectedKeys().hasOnly(['isMemoryPlanActive', 'displayName']) ||
+          incoming().diff(existing()).affectedKeys().hasOnly(['availableSeconds', 'isMemoryPlanActive', 'displayName'])
+        );
+      allow delete: if false; // Users cannot be deleted from client
+    }
+
+    // Contact Node (Agents & Imported Contacts)
+    match /users/{userId}/contacts/{contactId} {
+      allow list, get: if isOwner(userId);
+      allow create: if isOwner(userId)
+        && isValidId(contactId)
+        && incoming().id is string
+        && incoming().name is string
+        && incoming().name.size() > 0
+        && incoming().name.size() <= 200;
+      allow update: if isOwner(userId)
+        && incoming().id == existing().id
+        && (
+          incoming().diff(existing()).affectedKeys().hasOnly(['hasMemory']) ||
+          incoming().diff(existing()).affectedKeys().hasOnly(['lastMessage', 'lastMessageTime']) ||
+          incoming().diff(existing()).affectedKeys().hasOnly(['isActive', 'statusText']) ||
+          incoming().diff(existing()).affectedKeys().hasOnly(['hasMemory', 'lastMessage', 'lastMessageTime'])
+        );
+      allow delete: if isOwner(userId);
+    }
+
+    // Messages subcollection
+    match /users/{userId}/contacts/{contactId}/messages/{messageId} {
+      allow list: if isOwner(userId);
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId)
+        && isValidId(contactId)
+        && isValidId(messageId)
+        && incoming().id is string
+        && incoming().sender in ['user', 'assistant']
+        && incoming().content is string
+        && incoming().content.size() <= 10000;
+      allow update, delete: if false; // Messages are immutable once written
+    }
+  }
+}

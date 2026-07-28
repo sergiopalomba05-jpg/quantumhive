@@ -254,7 +254,6 @@ export function SkillAdvisor() {
               </span>
             </div>
           ))}
-          ))}
 
           {showAddSource ? (
             <div className="p-4 bg-black/40 rounded-lg border border-emerald-500/30 space-y-3">

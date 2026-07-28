@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-brand-bg: #06080c;
+  --color-brand-surface: #0f121a;
+  --color-brand-primary: #d4af37;
+  --color-brand-primary-hover: #b5942b;
+  --color-brand-teal-dark: #1b212c;
+  --color-brand-teal-light: #ffd700;
+  --color-brand-red: #ff3b30;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer utilities {
+  .glass-panel {
+    background: rgba(18, 27, 34, 0.75);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  
+  .glass-panel-light {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .glass-control {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .glass-control:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+  }
+  
+  /* Custom scrollbar to keep it sleek */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+}
+
+@keyframes voice-ripple {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.5;
+  }
+}
+
+.animate-voice {
+  animation: voice-ripple 2s infinite ease-in-out;
+}
+
+@keyframes breath-cycle {
+  0% {
+    transform: scale(1);
+    background-color: rgba(212, 175, 55, 0.1);
+    box-shadow: 0 0 20px 2px rgba(212, 175, 55, 0.2);
+  }
+  40% {
+    transform: scale(1.35);
+    background-color: rgba(212, 175, 55, 0.25);
+    box-shadow: 0 0 40px 10px rgba(212, 175, 55, 0.45);
+  }
+  60% {
+    transform: scale(1.35);
+    background-color: rgba(212, 175, 55, 0.25);
+    box-shadow: 0 0 40px 10px rgba(212, 175, 55, 0.45);
+  }
+  100% {
+    transform: scale(1);
+    background-color: rgba(212, 175, 55, 0.1);
+    box-shadow: 0 0 20px 2px rgba(212, 175, 55, 0.2);
+  }
+}
+
+.animate-breath {
+  animation: breath-cycle 8s infinite ease-in-out;
+}
+

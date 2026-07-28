@@ -1,0 +1,88 @@
+- generic [ref=e1]:
+  - link "Omitir e ir al contenido" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=e6]:
+    - generic [ref=e8]:
+      - navigation "Barra lateral":
+        - generic:
+          - generic:
+            - generic:
+              - button "Abrir barra lateral"
+        - generic:
+          - generic:
+            - link "Nuevo chat":
+              - /url: /
+          - generic: Buscar chats
+          - generic:
+            - link "Imágenes":
+              - /url: /images
+        - generic:
+          - generic:
+            - button "Abrir el menú de perfil"
+      - generic [ref=e9]:
+        - heading "Historial del chat" [level=2] [ref=e10]
+        - navigation "Historial del chat" [ref=e12]:
+          - generic [ref=e15]:
+            - link "Local" [ref=e16] [cursor=pointer]:
+              - /url: /
+            - generic [ref=e19]:
+              - button "Buscar chats" [ref=e20] [cursor=pointer]
+              - button "Cerrar barra lateral" [expanded] [ref=e23]
+          - list [ref=e27]:
+            - listitem [ref=e28]:
+              - link "Nuevo chat" [ref=e29] [cursor=pointer]:
+                - /url: /
+            - listitem
+          - link "Imágenes" [ref=e36] [cursor=pointer]:
+            - /url: /images
+          - generic [ref=e43]:
+            - link "Complementos" [ref=e44] [cursor=pointer]:
+              - /url: /plugins
+            - generic [ref=e51] [cursor=pointer]: Investigación avanzada
+          - generic [ref=e58]:
+            - link [ref=e59] [cursor=pointer]:
+              - /url: https://openai.com/chatgpt/pricing/
+            - generic [ref=e67] [cursor=pointer]: Configuración
+            - generic [ref=e71] [cursor=pointer]: Ayuda
+          - generic [ref=e81]:
+            - generic [ref=e82]:
+              - paragraph [ref=e83]: Obtén respuestas adaptadas a ti
+              - paragraph [ref=e84]: Inicia sesión para obtener respuestas basadas en chats guardados, además de crear imágenes y cargar archivos.
+            - button "Iniciar sesión" [ref=e86] [cursor=pointer]
+    - generic [ref=e90]:
+      - generic [ref=e91]:
+        - banner:
+          - button "Selector de modelo" [ref=e93] [cursor=pointer]:
+            - generic [ref=e94]: ChatGPT
+          - generic [ref=e102]:
+            - button "Iniciar sesión" [ref=e103] [cursor=pointer]
+            - button "Registrarse gratis" [ref=e105] [cursor=pointer]
+      - main [ref=e108]:
+        - generic [ref=e110]:
+          - generic:
+            - generic:
+              - generic:
+                - button
+            - generic [ref=e113]:
+              - text: ChatGPT es una IA. Al usar ChatGPT, aceptas nuestros
+              - link "Términos" [ref=e114] [cursor=pointer]:
+                - /url: https://openai.com/terms
+              - text: y la
+              - link "Política de privacidad" [ref=e115] [cursor=pointer]:
+                - /url: https://openai.com/privacy
+              - text: . Podemos revisar los chats y usarlos para mejorar nuestros modelos de IA.
+              - link "Más información" [ref=e116] [cursor=pointer]:
+                - /url: https://help.openai.com/en/articles/5722486-how-your-data-is-used-to-improve-model-performance
+            - generic [ref=e118]:
+              - generic [ref=e122]:
+                - button "Añadir archivos y más" [ref=e125] [cursor=pointer]
+                - textbox "Chatear con ChatGPT" [active] [ref=e128]:
+                  - /placeholder: Envía un mensaje a ChatGPT
+                - generic [ref=e130]:
+                  - button "Inicio del dictado" [ref=e131] [cursor=pointer]
+                  - button "Iniciar Voz" [ref=e134] [cursor=pointer]:
+                    - generic [ref=e138]: Voz
+              - button [ref=e139]
+              - button [ref=e140]
+  - alert [ref=e141]
+  - status [ref=e142]

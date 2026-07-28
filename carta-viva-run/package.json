@@ -1,0 +1,14 @@
+{
+  "name": "carta-viva-run",
+  "version": "1.0.0",
+  "description": "Carta QR Viva with Dialogflow Vertex AI",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "google-auth-library": "^9.0.0"
+  }
+}

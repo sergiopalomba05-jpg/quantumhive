@@ -47,6 +47,7 @@ capacitor.config.json
 # OpenCode
 .opencode/plugin/
 .codex/
+.worktrees/
 
 # Temporales locales de subida/sincronizacion
 .tmp.driveupload/

@@ -1,0 +1,122 @@
+[    7456ms] [ERROR] Error: [signal] Must read signal with useObserve() or untracked() within React component
+    at mOe (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:60619)
+    at https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:66558
+    at https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:75437
+    at https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:72080
+    at mK (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:201:119156)
+    at M (https://chatgpt.com/cdn/assets/share._shareId.(_action)-gby0lkju.js:1:902)
+    at Yo (https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:36:48770)
+    at Hc (https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:36:71449)
+    at sl (https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:36:82099)
+    at Gd (https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:36:126899) undefined @ https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:27
+[    7734ms] [ERROR] Error: [signal] Cannot update signal value directly within React component
+    at hOe (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:60846)
+    at Nl.c.set (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:65380)
+    at Tke.i.set (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:73275)
+    at Proxy.<anonymous> (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:75542)
+    at Proxy.<anonymous> (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:72270)
+    at https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:201:122667
+    at Ewe (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:4574)
+    at Cc (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:10220)
+    at Ll (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:65980)
+    at mK (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:201:122656) undefined @ https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:27
+[    7746ms] [ERROR] Error: [signal] Cannot update signal value directly within React component
+    at hOe (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:60846)
+    at Nl.c.set (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:65380)
+    at Proxy.<anonymous> (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:75542)
+    at Proxy.<anonymous> (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:72270)
+    at https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:201:122771
+    at Ewe (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:4574)
+    at Cc (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:10220)
+    at Ll (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:65980)
+    at mK (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:201:122656)
+    at M (https://chatgpt.com/cdn/assets/share._shareId.(_action)-gby0lkju.js:1:902) undefined @ https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:27
+[    7789ms] [ERROR] Error: [signal] Cannot update signal value directly within React component
+    at hOe (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:60846)
+    at Nl.c.set (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:65380)
+    at Proxy.<anonymous> (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:75542)
+    at Proxy.<anonymous> (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:72270)
+    at https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:201:122784
+    at Ewe (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:4574)
+    at Cc (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:10220)
+    at Ll (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:65980)
+    at mK (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:201:122656)
+    at M (https://chatgpt.com/cdn/assets/share._shareId.(_action)-gby0lkju.js:1:902) undefined @ https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:27
+[    7793ms] [ERROR] Error: [signal] Cannot update signal value directly within React component
+    at hOe (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:60846)
+    at Nl.c.set (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:65380)
+    at Proxy.<anonymous> (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:75542)
+    at Proxy.<anonymous> (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:72270)
+    at https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:201:122813
+    at Ewe (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:4574)
+    at Cc (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:10220)
+    at Ll (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:65980)
+    at mK (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:201:122656)
+    at M (https://chatgpt.com/cdn/assets/share._shareId.(_action)-gby0lkju.js:1:902) undefined @ https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:27
+[    7794ms] [ERROR] Error: [signal] Cannot update signal value directly within React component
+    at hOe (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:60846)
+    at Nl.c.set (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:65380)
+    at Proxy.<anonymous> (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:75542)
+    at Proxy.<anonymous> (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:72270)
+    at https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:201:122842
+    at Ewe (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:4574)
+    at Cc (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:10220)
+    at Ll (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:65980)
+    at mK (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:201:122656)
+    at M (https://chatgpt.com/cdn/assets/share._shareId.(_action)-gby0lkju.js:1:902) undefined @ https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:27
+[    7800ms] [ERROR] Error: [signal] Cannot update signal value directly within React component
+    at hOe (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:60846)
+    at Nl.c.set (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:65380)
+    at Proxy.<anonymous> (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:75542)
+    at Proxy.<anonymous> (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:72270)
+    at https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:201:122870
+    at Ewe (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:4574)
+    at Cc (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:10220)
+    at Ll (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:65980)
+    at mK (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:201:122656)
+    at M (https://chatgpt.com/cdn/assets/share._shareId.(_action)-gby0lkju.js:1:902) undefined @ https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:27
+[    7805ms] [ERROR] Error: [signal] Cannot update signal value directly within React component
+    at hOe (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:60846)
+    at Nl.c.set (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:65380)
+    at Proxy.<anonymous> (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:75542)
+    at Proxy.<anonymous> (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:72270)
+    at https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:201:122882
+    at Ewe (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:4574)
+    at Cc (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:10220)
+    at Ll (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:65980)
+    at mK (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:201:122656)
+    at M (https://chatgpt.com/cdn/assets/share._shareId.(_action)-gby0lkju.js:1:902) undefined @ https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:27
+[    7806ms] [ERROR] Error: [signal] Must read signal with useObserve() or untracked() within React component
+    at mOe (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:60619)
+    at https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:66558
+    at https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:5:75437
+    at Fon (https://chatgpt.com/cdn/assets/conversation-small-emtjaz7bidr8cyai.js:86:12246)
+    at s.<anonymous> (https://chatgpt.com/cdn/assets/conversation-small-emtjaz7bidr8cyai.js:86:12376)
+    at s.emit (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:60:144950)
+    at cC.publish (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:60:149231)
+    at mK (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:201:123232)
+    at M (https://chatgpt.com/cdn/assets/share._shareId.(_action)-gby0lkju.js:1:902)
+    at Yo (https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:36:48770) undefined @ https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:27
+[    9281ms] [ERROR] Kt: [@formatjs/intl Error MISSING_TRANSLATION] Missing message: "meta.description.Jul2026Update" for locale "es-ES", using default message (Use ChatGPT to answer questions, write, create images, complete work, and code—all in one place. Get started for free or download the app.) as fallback.
+
+    at new Kt (https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:20:79)
+    at Xt (https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:24:287)
+    at Fn (https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:24:5318)
+    at Q5e (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:60:18079)
+    at Yo (https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:36:48770)
+    at Hc (https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:36:71449)
+    at sl (https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:36:82099)
+    at Gd (https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:36:126899)
+    at Wd (https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:36:126872)
+    at Ud (https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:36:126731) @ https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:27
+[  482977ms] [ERROR] QuotaExceededError: Failed to execute 'setItem' on 'Storage': Setting the value of 'cache/user-tJPis4UDcPGEWLudygxDzeP8/15c531f9-9aab-457a-b1a2-85b819368be7/system-connectors' exceeded the quota.
+    at r2e (https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:52:18639)
+    at https://chatgpt.com/cdn/assets/4813494d-jrwxsf8zjr329eup.js:52:63443
+    at https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:62:60271
+    at Set.forEach (<anonymous>)
+    at https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:62:60259
+    at Object.batch (https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:62:28760)
+    at gN.notify (https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:62:60233)
+    at https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:62:33796
+    at Object.batch (https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:62:28760)
+    at Bj.Dj (https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:62:33727) {key: system-connectors} @ https://chatgpt.com/cdn/assets/2340486e-ni1pln8xn96fj9kd.js:27

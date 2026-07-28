@@ -1,16 +1,16 @@
-# Graph Report - boveda obsidian  (2026-07-15)
+# Graph Report - boveda obsidian  (2026-07-27)
 
 ## Corpus Check
-- 966 files · ~47,699,197 words
+- 1275 files · ~53,105,702 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 5888 nodes · 6619 edges · 667 communities (587 shown, 80 thin omitted)
+- 6721 nodes · 7926 edges · 716 communities (626 shown, 90 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 93 edges (avg confidence: 0.84)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `eb6276d1`
+- Built from commit: `8a28eba0`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -600,18 +600,62 @@
 - [[_COMMUNITY_Community 623|Community 623]]
 - [[_COMMUNITY_Community 624|Community 624]]
 - [[_COMMUNITY_Community 625|Community 625]]
+- [[_COMMUNITY_Community 667|Community 667]]
+- [[_COMMUNITY_Community 668|Community 668]]
+- [[_COMMUNITY_Community 669|Community 669]]
+- [[_COMMUNITY_Community 670|Community 670]]
+- [[_COMMUNITY_Community 672|Community 672]]
+- [[_COMMUNITY_Community 673|Community 673]]
+- [[_COMMUNITY_Community 674|Community 674]]
+- [[_COMMUNITY_Community 675|Community 675]]
+- [[_COMMUNITY_Community 676|Community 676]]
+- [[_COMMUNITY_Community 677|Community 677]]
+- [[_COMMUNITY_Community 679|Community 679]]
+- [[_COMMUNITY_Community 681|Community 681]]
+- [[_COMMUNITY_Community 682|Community 682]]
+- [[_COMMUNITY_Community 683|Community 683]]
+- [[_COMMUNITY_Community 684|Community 684]]
+- [[_COMMUNITY_Community 685|Community 685]]
+- [[_COMMUNITY_Community 687|Community 687]]
+- [[_COMMUNITY_Community 688|Community 688]]
+- [[_COMMUNITY_Community 689|Community 689]]
+- [[_COMMUNITY_Community 690|Community 690]]
+- [[_COMMUNITY_Community 691|Community 691]]
+- [[_COMMUNITY_Community 692|Community 692]]
+- [[_COMMUNITY_Community 693|Community 693]]
+- [[_COMMUNITY_Community 694|Community 694]]
+- [[_COMMUNITY_Community 695|Community 695]]
+- [[_COMMUNITY_Community 696|Community 696]]
+- [[_COMMUNITY_Community 697|Community 697]]
+- [[_COMMUNITY_Community 698|Community 698]]
+- [[_COMMUNITY_Community 699|Community 699]]
+- [[_COMMUNITY_Community 700|Community 700]]
+- [[_COMMUNITY_Community 701|Community 701]]
+- [[_COMMUNITY_Community 702|Community 702]]
+- [[_COMMUNITY_Community 703|Community 703]]
+- [[_COMMUNITY_Community 704|Community 704]]
+- [[_COMMUNITY_Community 707|Community 707]]
+- [[_COMMUNITY_Community 708|Community 708]]
+- [[_COMMUNITY_Community 709|Community 709]]
+- [[_COMMUNITY_Community 711|Community 711]]
+- [[_COMMUNITY_Community 713|Community 713]]
+- [[_COMMUNITY_Community 715|Community 715]]
+- [[_COMMUNITY_Community 716|Community 716]]
+- [[_COMMUNITY_Community 718|Community 718]]
+- [[_COMMUNITY_Community 724|Community 724]]
+- [[_COMMUNITY_Community 725|Community 725]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `CORE DIRECTIVE: IMAGE-FIRST WEBSITE DESIGN TO CODE` - 39 edges
-2. `CORE DIRECTIVE: PREMIUM MOBILE APP IMAGE DIRECTION` - 39 edges
-3. `Directimport Project` - 29 edges
-4. `AsyncClient` - 26 edges
-5. `AsyncClient` - 26 edges
+1. `cn()` - 48 edges
+2. `useStore` - 46 edges
+3. `CORE DIRECTIVE: IMAGE-FIRST WEBSITE DESIGN TO CODE` - 39 edges
+4. `CORE DIRECTIVE: PREMIUM MOBILE APP IMAGE DIRECTION` - 39 edges
+5. `Directimport Project` - 29 edges
 6. `AsyncClient` - 26 edges
 7. `AsyncClient` - 26 edges
-8. `CORE DIRECTIVE: AWWWARDS-LEVEL IMAGE ART DIRECTION` - 22 edges
-9. `QuantumHive` - 22 edges
-10. `Hermes` - 22 edges
+8. `AsyncClient` - 26 edges
+9. `AsyncClient` - 26 edges
+10. `CORE DIRECTIVE: AWWWARDS-LEVEL IMAGE ART DIRECTION` - 22 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Spec — Asistente de Catálogo Vivo de QuantumHive` --conceptually_related_to--> `hermes-agent`  [INFERRED]
@@ -628,7 +672,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (667 total, 80 thin omitted)
+## Communities (716 total, 90 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.06
@@ -639,16 +683,16 @@ Cohesion: 0.08
 Nodes (23): FotoItem, Metrica, NodoNivel, ProductoForm(), Props, DashboardLayout(), navItems, DashboardPage() (+15 more)
 
 ### Community 2 - "Community 2"
-Cohesion: 0.20
-Nodes (10): devDependencies, @eslint/js, eslint-plugin-react-hooks, eslint-plugin-react-refresh, globals, @types/node, @types/react, @types/react-dom (+2 more)
+Cohesion: 0.07
+Nodes (27): dependencies, @capacitor/android, @capacitor/cli, @capacitor/core, @capacitor/ios, react, react-dom, @supabase/supabase-js (+19 more)
 
 ### Community 3 - "Community 3"
 Cohesion: 0.11
 Nodes (12): supabase, CartItem, Producto, Revendedor, Rubro, SubFiltro, Props, Producto (+4 more)
 
 ### Community 4 - "Community 4"
-Cohesion: 0.19
-Nodes (11): agente_investigador.py, APIFY_API_TOKEN, apify-client, python-dotenv, Requests library, GEMINI_API_KEY, gspread, pytest (+3 more)
+Cohesion: 0.07
+Nodes (29): 1. Clonar y preparar repo, 1. Verificar Git, 2. Preparar app test, 2. Verificar Runtime En D, 3. Deploy a Cloud Run, 3. Si Hay Lock Stale En Cache, 4. No Usar `download_weights.bat` Directo, 4. Verificar deploy (+21 more)
 
 ### Community 5 - "Community 5"
 Cohesion: 0.07
@@ -679,8 +723,8 @@ Cohesion: 0.10
 Nodes (19): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+11 more)
 
 ### Community 12 - "Community 12"
-Cohesion: 0.13
-Nodes (20): Agente Mundial Pipeline B2B, Agente Mundial README, AGI TELEGRAM, AIDER, Apify actor compass/crawler-google-places, CEO Message (2026-06-11), data/leads_crudo.csv, data/leads_procesado.csv (+12 more)
+Cohesion: 0.14
+Nodes (19): Agente Mundial Pipeline B2B, Agente Mundial README, AGI TELEGRAM, AIDER, Apify actor compass/crawler-google-places, CEO Message (2026-06-11), data/leads_crudo.csv, data/leads_procesado.csv (+11 more)
 
 ### Community 13 - "Community 13"
 Cohesion: 0.11
@@ -703,8 +747,8 @@ Cohesion: 0.09
 Nodes (24): Bot API de Telegram, Chatterbox (Resemble AI), config.yaml, cron\, Edge TTS, faster-whisper, ffmpeg, Gemini 2.5 Flash (+16 more)
 
 ### Community 18 - "Community 18"
-Cohesion: 0.11
-Nodes (17): dependencies, @capacitor/android, @capacitor/cli, @capacitor/core, @capacitor/ios, react, react-dom, @supabase/supabase-js (+9 more)
+Cohesion: 0.18
+Nodes (10): name, private, scripts, build, clean, dev, lint, start (+2 more)
 
 ### Community 19 - "Community 19"
 Cohesion: 0.11
@@ -715,20 +759,20 @@ Cohesion: 0.13
 Nodes (14): dependencies, next, react, react-dom, @supabase/ssr, @supabase/supabase-js, name, private (+6 more)
 
 ### Community 21 - "Community 21"
-Cohesion: 0.11
-Nodes (17): 10. Camino de upgrade (local → nube 24/7), 11. Fases de construcción (resumen; el plan detallado va aparte), 1. Objetivo, 2. Fuera de alcance (no-goals), 3. Arquitectura, 4. Modelo de datos (Supabase), 5.1 Ingesta de un reel, 5.2 Deduplicación y reemplazo (curator) (+9 more)
+Cohesion: 0.08
+Nodes (24): 10. Camino de upgrade (local → nube 24/7), 11. Fases de construcción (resumen; el plan detallado va aparte), 1. Objetivo, 2. Fuera de alcance (no-goals), 3. Arquitectura, 4. Modelo de datos (Supabase), 5.1 Ingesta de un reel, 5.2 Deduplicación y reemplazo (curator) (+16 more)
 
 ### Community 22 - "Community 22"
 Cohesion: 0.12
 Nodes (9): Deploy on Vercel, Getting Started, Learn More, app/page.tsx, create-next-app, Geist Font, next/font, Next.js Project (+1 more)
 
 ### Community 23 - "Community 23"
-Cohesion: 0.09
-Nodes (24): agencia/clientes/, agencia/clientes/README.md, agencia/core/, agencia/productos/, Agencia de servicios IA, bazar, docs/superpowers/, GitHub (+16 more)
+Cohesion: 0.08
+Nodes (25): agencia/clientes/, agencia/clientes/README.md, agencia/productos/, Agencia de servicios IA, bazar, agencia/core — Agentes QuantumHive, Agentes, Orquestación (+17 more)
 
 ### Community 24 - "Community 24"
-Cohesion: 0.18
-Nodes (13): Agente Investigador, Apify, apify/instagram-scraper, compass/crawler-google-places (Apify actor), Gemini 1.5 Pro, Investigación de Marca, investigador, Agente Investigador Brief técnico (+5 more)
+Cohesion: 0.08
+Nodes (30): agencia/core/, Agente Investigador, Agente Legal, Apify, apify/instagram-scraper, Apps Móviles, Asistente In-App, compass/crawler-google-places (Apify actor) (+22 more)
 
 ### Community 25 - "Community 25"
 Cohesion: 0.17
@@ -747,8 +791,8 @@ Cohesion: 0.24
 Nodes (9): Catalogo B2B App, https://directimport-app.onrender.com, Install Directimport Page, new QRCode() call, Panel Admin App, qr1 canvas element, qr2 canvas element, QRCode.js Library (+1 more)
 
 ### Community 29 - "Community 29"
-Cohesion: 0.31
-Nodes (9): Automatizaciones n8n, Chatbot Humanizado, Claude API, DeepSeek vía NVIDIA, Groq, n8n, Railway, Telegram Bot API (+1 more)
+Cohesion: 0.11
+Nodes (19): @vitejs/plugin-react, @vitejs/plugin-react, @vitejs/plugin-react, dependencies, dotenv, express, @google-cloud/vertexai, lucide-react (+11 more)
 
 ### Community 30 - "Community 30"
 Cohesion: 0.22
@@ -783,12 +827,12 @@ Cohesion: 0.25
 Nodes (6): Carta QR PyME, Carta QR Viva, agente-telefonico/, bot-whatsapp/, carta-viva/, quantumhive
 
 ### Community 38 - "Community 38"
-Cohesion: 0.11
-Nodes (17): @react-three/fiber, @react-three/fiber, @directimport420, directimport/catalogador/, Drei, frontend-design, License, Open Design Integration (+9 more)
+Cohesion: 0.12
+Nodes (14): @directimport420, directimport/catalogador/, Drei, frontend-design, License, Open Design Integration, Source, Workflow (+6 more)
 
 ### Community 39 - "Community 39"
-Cohesion: 0.29
-Nodes (7): Firecrawl, Next.js, Photoroom API, R3F + Drei, Vercel, Webs & Landings, Zustand
+Cohesion: 0.19
+Nodes (11): agente_investigador.py, APIFY_API_TOKEN, apify-client, python-dotenv, GEMINI_API_KEY, gspread, pytest, Python 3.10+ (+3 more)
 
 ### Community 40 - "Community 40"
 Cohesion: 0.06
@@ -832,7 +876,7 @@ Nodes (9): _brain_request(), _brain_stream_once(), _BrainUnavailable, ChatTurn, 
 
 ### Community 64 - "Community 64"
 Cohesion: 0.12
-Nodes (16): AFIP Lookup, Agente Catalogador de Fábricas, Apify, APIFY_API_TOKEN, apify/website-content-crawler, Bicicletas Category, Directorios Industriales Argentinos, Gemini 1.5 Pro (+8 more)
+Nodes (17): AFIP Lookup, Agente Catalogador de Fábricas, Apify, APIFY_API_TOKEN, apify/website-content-crawler, Bicicletas Category, Directorios Industriales Argentinos, Gemini 1.5 Pro (+9 more)
 
 ### Community 65 - "Community 65"
 Cohesion: 0.14
@@ -851,8 +895,8 @@ Cohesion: 0.08
 Nodes (24): 10. Riesgos y cómo se mitigan, 1. Objetivo, 2. Arquitectura, 3. Estructura de archivos, 4. Script 1 — `scrape_maps.py`, 5. Script 2 — `procesar_leads.py`, 6. Configuración, 7. Tests (TDD-lite) (+16 more)
 
 ### Community 69 - "Community 69"
-Cohesion: 0.06
-Nodes (32): dependencies, dotenv, express, gaxios, gtoken, lucide-react, motion, react (+24 more)
+Cohesion: 0.15
+Nodes (13): dependencies, dotenv, express, gaxios, gtoken, lucide-react, motion, react (+5 more)
 
 ### Community 70 - "Community 70"
 Cohesion: 0.67
@@ -1015,12 +1059,12 @@ Cohesion: 0.12
 Nodes (27): HTTPError, Path, audio_duration(), _build_multipart(), extract_audio(), load_api_key(), plan_chunks(), _post_whisper() (+19 more)
 
 ### Community 111 - "Community 111"
-Cohesion: 0.25
-Nodes (7): Config (sin secretos), Donde vive (en la PC real de Sergio), Hermes — AGI de QuantumHive (Fase 1), Keys, ⚠️ Leccion clave (sandbox de Claude Code), Upgrade (PC nueva / VPS), Voz
+Cohesion: 0.08
+Nodes (23): Alcance Del Paso 1, API Backend, API Directa, Chat Dominus, Cloud Provider, Concepto De Producto, Entrega Esperada, Error Handling (+15 more)
 
 ### Community 112 - "Community 112"
-Cohesion: 0.25
-Nodes (8): Agente Investigador, Output, Pendientes (próxima iteración), Qué hace, Regla #6 de CLAUDE.md, Setup, Uso, Variables de entorno
+Cohesion: 0.24
+Nodes (11): generateWithOpenAICompatible(), generateWithProvider(), generateWithVertex(), ProviderChatRequest, ProviderChatResult, ProviderSelectionResult, enqueueRunnerJob(), jobs (+3 more)
 
 ### Community 113 - "Community 113"
 Cohesion: 0.25
@@ -1063,8 +1107,8 @@ Cohesion: 0.53
 Nodes (4): cmd_divisiones(), cmd_objetivo(), cmd_texto(), _get()
 
 ### Community 123 - "Community 123"
-Cohesion: 0.12
-Nodes (16): devDependencies, eslint, eslint-config-next, tailwindcss, @tailwindcss/postcss, @types/node, @types/react, @types/react-dom (+8 more)
+Cohesion: 0.20
+Nodes (9): Dominus Brain Router Hibrido Implementation Plan, File Structure, Global Constraints, Self-Review, Task 1: Brain Router Core, Task 2: Dominus Context Pack Builder, Task 3: Dominus Chat Endpoint, Task 4: ChatCentral Visual Brain Selector (+1 more)
 
 ### Community 124 - "Community 124"
 Cohesion: 0.12
@@ -1155,8 +1199,8 @@ Cohesion: 0.31
 Nodes (3): Path, read(), YasPapeoPromptAndProposalTest
 
 ### Community 169 - "Community 169"
-Cohesion: 0.14
-Nodes (22): AsyncClient, _cartesia_synth(), ClienteRequest, _deepinfra_tts_synth(), _elevenlabs_synth(), get_cliente(), _memoria_get(), _memoria_on() (+14 more)
+Cohesion: 0.17
+Nodes (16): AsyncClient, _cartesia_synth(), _deepinfra_tts_synth(), _elevenlabs_synth(), _minimax_synth(), Genera el MP3 con MiniMax T2A v2. stream:False → un solo JSON con el audio (sin, Genera el MP3 con ElevenLabs. Devuelve audio/mpeg directo (no hace falta decodif, Genera el MP3 con Cartesia (endpoint /tts/bytes). Requiere CARTESIA_VOICE (voice (+8 more)
 
 ### Community 170 - "Community 170"
 Cohesion: 0.08
@@ -1199,8 +1243,8 @@ Cohesion: 0.39
 Nodes (3): CartaVivaPremiumDemoVisualTest, embedded_menu(), source()
 
 ### Community 181 - "Community 181"
-Cohesion: 0.12
-Nodes (16): eslintConfig, typescript, typescript, typescript, typescript, devDependencies, autoprefixer, esbuild (+8 more)
+Cohesion: 0.09
+Nodes (18): @google/genai, @google/genai, @google/genai, dependencies, dotenv, express, @google/genai, lucide-react (+10 more)
 
 ### Community 182 - "Community 182"
 Cohesion: 0.09
@@ -1227,8 +1271,8 @@ Cohesion: 0.10
 Nodes (20): Accessibility and responsive (gsap.matchMedia()), Common vars, Core Tween Methods, Custom: use CustomEase (plugin), Defaults, Do Not, Easing, Function-based values (+12 more)
 
 ### Community 188 - "Community 188"
-Cohesion: 0.11
-Nodes (18): @vitejs/plugin-react, @vitejs/plugin-react, @vitejs/plugin-react, @vitejs/plugin-react, dependencies, dotenv, express, @google/genai (+10 more)
+Cohesion: 0.10
+Nodes (19): devDependencies, autoprefixer, esbuild, tailwindcss, tsx, @types/express, @types/node, typescript (+11 more)
 
 ### Community 189 - "Community 189"
 Cohesion: 0.12
@@ -1267,8 +1311,8 @@ Cohesion: 0.10
 Nodes (19): 1. Greeting pre-grabado (splash screen), 2. Respuestas dinámicas del chat, 3. Voice Cloning SaaS (futuro), Arquitectura, Casos de Uso, Código Base (FastAPI), Endpoints API, Estructura de Carpetas (+11 more)
 
 ### Community 202 - "Community 202"
-Cohesion: 0.10
-Nodes (19): devDependencies, autoprefixer, esbuild, tailwindcss, tsx, @types/express, @types/node, typescript (+11 more)
+Cohesion: 0.50
+Nodes (4): directimport/app (Vite/PWA), Abstract Layered Squares Logo, React Logo, Vite Logo
 
 ### Community 205 - "Community 205"
 Cohesion: 0.10
@@ -1315,8 +1359,8 @@ Cohesion: 0.13
 Nodes (14): Almacenamiento, API Endpoint, Bloqueos Actuales, Calidad del Audio de Referencia, F5-TTS en VM GPU, FASE 6: Crear Voz (Clonación), Flujo, Instalación (pendiente) (+6 more)
 
 ### Community 221 - "Community 221"
-Cohesion: 0.21
-Nodes (12): delete_video(), get_supabase_client(), get_video_url(), list_videos(), Módulo de Upload a Supabase Storage ==================================== Sube vi, Lista todos los videos de un restaurante., Obtiene la URL pública de un video existente., Crea un cliente de Supabase. (+4 more)
+Cohesion: 0.13
+Nodes (18): Firecrawl, Next.js, Photoroom API, R3F + Drei, delete_video(), get_supabase_client(), get_video_url(), list_videos() (+10 more)
 
 ### Community 222 - "Community 222"
 Cohesion: 0.14
@@ -1359,8 +1403,8 @@ Cohesion: 0.18
 Nodes (14): _normalize_for_tts(), Expande abreviaturas de unidad (pegadas o separadas del número) para que la, Identidad de la voz PRINCIPAL (1er proveedor de la cadena) para el hash del cach, Identidades compatibles para LEER cache. No cambian el proveedor de generación:, tts(), _tts_cache_get(), _tts_cache_key(), _tts_cache_key_for_identity() (+6 more)
 
 ### Community 232 - "Community 232"
-Cohesion: 0.09
-Nodes (22): dependencies, dotenv, express, @google-cloud/vertexai, @google/genai, lucide-react, motion, react (+14 more)
+Cohesion: 0.07
+Nodes (41): buildCatalogIngestionResult(), CatalogIngestionResult, CatalogIngestStatus, CatalogPricing, CatalogTaxonomyPlacement, CatalogToolDraft, CatalogToolScore, clampScore() (+33 more)
 
 ### Community 233 - "Community 233"
 Cohesion: 0.22
@@ -1391,24 +1435,24 @@ Cohesion: 0.29
 Nodes (6): El Proceso es Repetible, Estado Actual, Estructura de la Carpeta, Flujo General, Pipeline de Ingesta de Cartas, Stack Técnico
 
 ### Community 240 - "Community 240"
-Cohesion: 0.25
-Nodes (7): 1. Modelo Gemini para análisis profundo de video, 2. Límite de 20 MB del Bot API de Telegram, 3. Verificar ffmpeg, 4. Ingesta por link (alternativa al archivo), 5. SOUL.md — manejo de links de IG antes de tener la ingesta lista, Notas técnicas para la Fase 2 (catálogo + ingesta de video), Pendientes vivos (al 2026-06-15)
+Cohesion: 0.09
+Nodes (21): Agentes Iniciales, Creacion Inicial de Agentes, Datos y Contratos Existentes, Dominus, Ejecutor Dev, Explorador de Recursos, Fabrica de Agentes, Flujo Telegram (+13 more)
 
 ### Community 242 - "Community 242"
-Cohesion: 0.10
-Nodes (19): devDependencies, autoprefixer, esbuild, tailwindcss, tsx, @types/express, @types/node, @types/ws (+11 more)
+Cohesion: 0.13
+Nodes (11): ApiProviders(), ProviderItem, ProviderModel, ChatCentral(), ChatProvider, ChatProviderModel, ChatRepo, ReasoningLevel (+3 more)
 
 ### Community 244 - "Community 244"
-Cohesion: 0.22
-Nodes (9): devDependencies, autoprefixer, esbuild, tailwindcss, tsx, @types/express, @types/node, @types/ws (+1 more)
+Cohesion: 0.08
+Nodes (25): Arquitectura Base, Arquitectura De Grafo Y Memoria, Brain Router, Cloud Router, Context Pack Dinamico, Definicion Central, Doble Router, Ejemplo De Decision De Cerebro (+17 more)
 
 ### Community 245 - "Community 245"
 Cohesion: 0.29
 Nodes (7): Response, _next_gemini_key(), _post_with_retry(), POST con reintentos en 429 (cupo/ráfaga) y 503 (caído) con backoff exponencial., Transcribe audio con Gemini. Más confiable que Web Speech API en iOS., stt(), STTRequest
 
 ### Community 246 - "Community 246"
-Cohesion: 0.18
-Nodes (11): dependencies, dotenv, express, @google-cloud/vertexai, lucide-react, motion, react, react-dom (+3 more)
+Cohesion: 0.03
+Nodes (102): CHANNEL_ICONS, STATUS_COLORS, AppState, initialState, SEED_AGENT_DB_BINDINGS, SEED_AGENT_WORKER_BINDINGS, SEED_AGENTS, SEED_BRAIN_PROVIDERS (+94 more)
 
 ### Community 247 - "Community 247"
 Cohesion: 0.11
@@ -1419,8 +1463,8 @@ Cohesion: 0.12
 Nodes (16): Fase 0: Validación (1-2 semanas), Fase 1: Prototipo Funcional (2-4 semanas), Fase 2: Multi-usuario (4-8 semanas), Fase 3: Escala (8-16 semanas), Global Constraints, Motor de Avatares — Plan de Implementación, Task 0.1: Configurar entorno de desarrollo en la VM, Task 0.2: Validar que Gemini Live API funciona (+8 more)
 
 ### Community 252 - "Community 252"
-Cohesion: 0.20
-Nodes (5): @google/genai, @google/genai, google-genai, @google/genai, Spike manual: valida la key de Gemini y la forma del SDK antes de construir. Uso
+Cohesion: 0.15
+Nodes (12): File Structure, Global Constraints, Provider Manager + GitHub Repo Connector Implementation Plan, Self-Review, Task 1: Provider Domain And Secret-Safe Registry, Task 2: Provider Router And Execution Clients, Task 3: Provider API Routes, Task 4: Chat Route Provider Selection (+4 more)
 
 ### Community 253 - "Community 253"
 Cohesion: 0.20
@@ -1443,8 +1487,8 @@ Cohesion: 0.29
 Nodes (6): 1. Cubiq ComfyUI Workflows, 2. Comfy-Org Workflow Templates, Cómo usar estos repos con agentes, Descarga local (opcional), Repos Guardados como Guía de Agentes, Repositorios de Referencia para ComfyUI
 
 ### Community 258 - "Community 258"
-Cohesion: 0.29
-Nodes (6): Agente Legal, Apps Móviles, Asistente In-App, Contenido IA, QuantumHive — Agencia IA, Voz Clonada
+Cohesion: 0.25
+Nodes (7): Config (sin secretos), Donde vive (en la PC real de Sergio), Hermes — AGI de QuantumHive (Fase 1), Keys, ⚠️ Leccion clave (sandbox de Claude Code), Upgrade (PC nueva / VPS), Voz
 
 ### Community 259 - "Community 259"
 Cohesion: 0.29
@@ -1491,8 +1535,8 @@ Cohesion: 0.14
 Nodes (16): Any, _build_categorias_autoguiado(), build_flujos_guiados(), build_guion_autoguiado(), build_system_prompt(), _format_price(), guion(), _memoria_note() (+8 more)
 
 ### Community 282 - "Community 282"
-Cohesion: 0.17
-Nodes (16): AsyncClient, _cartesia_synth(), _deepinfra_tts_synth(), _elevenlabs_synth(), _minimax_synth(), Genera el MP3 con MiniMax T2A v2. stream:False → un solo JSON con el audio (sin, Genera el MP3 con ElevenLabs. Devuelve audio/mpeg directo (no hace falta decodif, Genera el MP3 con Cartesia (endpoint /tts/bytes). Requiere CARTESIA_VOICE (voice (+8 more)
+Cohesion: 0.14
+Nodes (22): AsyncClient, _cartesia_synth(), ClienteRequest, _deepinfra_tts_synth(), _elevenlabs_synth(), get_cliente(), _memoria_get(), _memoria_on() (+14 more)
 
 ### Community 283 - "Community 283"
 Cohesion: 0.33
@@ -1559,8 +1603,8 @@ Cohesion: 0.18
 Nodes (14): _normalize_for_tts(), Expande abreviaturas de unidad (pegadas o separadas del número) para que la, Identidad de la voz PRINCIPAL (1er proveedor de la cadena) para el hash del cach, Identidades compatibles para LEER cache. No cambian el proveedor de generación:, tts(), _tts_cache_get(), _tts_cache_key(), _tts_cache_key_for_identity() (+6 more)
 
 ### Community 299 - "Community 299"
-Cohesion: 0.18
-Nodes (14): _normalize_for_tts(), Expande abreviaturas de unidad (pegadas o separadas del número) para que la, Identidad de la voz PRINCIPAL (1er proveedor de la cadena) para el hash del cach, Identidades compatibles para LEER cache. No cambian el proveedor de generación:, tts(), _tts_cache_get(), _tts_cache_key(), _tts_cache_key_for_identity() (+6 more)
+Cohesion: 0.13
+Nodes (18): API_SECRET_ENV_KEYS, findProviderModel(), GCP_VERTEX_MODELS, getProviderRegistry(), getProviderTemplates(), ModelConnectionStatus, ProviderDefinition, ProviderKind (+10 more)
 
 ### Community 300 - "Community 300"
 Cohesion: 0.14
@@ -1587,8 +1631,8 @@ Cohesion: 0.14
 Nodes (13): 1. Constants — define once at the top of the export script, 2. The Cursor primitive, 3. Hero slides — budget centering, not cursor flow, 4. Footer is always pinned, never advanced, 5. Box height ≠ text height — but tight is better than loose, 6. Italic preservation — only EN serif, never CJK, 7.1 Cover / hero with vertical center, 7.2 Content with pipeline (4–5 step horizontal flow) (+5 more)
 
 ### Community 306 - "Community 306"
-Cohesion: 0.15
-Nodes (13): dependencies, dotenv, express, gaxios, gtoken, lucide-react, motion, react (+5 more)
+Cohesion: 0.12
+Nodes (16): dependencies, dotenv, express, gaxios, gtoken, lucide-react, motion, react (+8 more)
 
 ### Community 307 - "Community 307"
 Cohesion: 0.15
@@ -1623,8 +1667,8 @@ Cohesion: 0.17
 Nodes (12): 4.10 Quotes & Testimonials, 4.11 Page Theme Lock (Light / Dark Mode Consistency), 4.1 Typography, 4.2 Color Calibration, 4.3 Layout Diversification, 4.4 Materiality, Shadows, Cards, 4.5 Interactive UI States, 4.6 Data & Form Patterns (+4 more)
 
 ### Community 316 - "Community 316"
-Cohesion: 0.24
-Nodes (10): _brain_request(), _brain_stream_once(), _BrainUnavailable, ChatTurn, _gemini_chat_body(), _openai_messages(), El cerebro no pudo arrancar (429/503/4xx/error) → probar el siguiente de la cade, (url, headers, body) para una llamada NO streaming al carril dado (prov/model/ke (+2 more)
+Cohesion: 0.27
+Nodes (9): _brain_request(), _brain_stream_once(), _BrainUnavailable, ChatTurn, _gemini_chat_body(), _openai_messages(), El cerebro no pudo arrancar (429/503/4xx/error) → probar el siguiente de la cade, (url, headers, body) para una llamada NO streaming al carril dado (prov/model/ke (+1 more)
 
 ### Community 317 - "Community 317"
 Cohesion: 0.44
@@ -1635,8 +1679,8 @@ Cohesion: 0.18
 Nodes (11): 0.A Read these signals first, 0.B Output a one-line "Design Read" before generating, 0. BRIEF INFERENCE (Read the Room Before Anything Else), 0.C If the brief is ambiguous, ask one question, do not guess, 0.D Anti-Default Discipline, 13. OUT OF SCOPE, 14. FINAL PRE-FLIGHT CHECK, 2.A When to reach for a real design system (use official packages) (+3 more)
 
 ### Community 319 - "Community 319"
-Cohesion: 0.27
-Nodes (9): _brain_request(), _brain_stream_once(), _BrainUnavailable, ChatTurn, _gemini_chat_body(), _openai_messages(), El cerebro no pudo arrancar (429/503/4xx/error) → probar el siguiente de la cade, (url, headers, body) para una llamada NO streaming al carril dado (prov/model/ke (+1 more)
+Cohesion: 0.24
+Nodes (10): _brain_request(), _brain_stream_once(), _BrainUnavailable, ChatTurn, _gemini_chat_body(), _openai_messages(), El cerebro no pudo arrancar (429/503/4xx/error) → probar el siguiente de la cade, (url, headers, body) para una llamada NO streaming al carril dado (prov/model/ke (+2 more)
 
 ### Community 320 - "Community 320"
 Cohesion: 0.24
@@ -1819,8 +1863,8 @@ Cohesion: 0.29
 Nodes (7): _deepinfra_stt(), _gemini_stt(), _gemini_stt_key_order(), Orden rotativo para STT: si una key está en ráfaga/cuota, probar las demás antes, Transcribe audio con la cadena STT: DeepInfra Whisper primero, Gemini como fallb, stt(), STTRequest
 
 ### Community 367 - "Community 367"
-Cohesion: 0.29
-Nodes (7): _deepinfra_stt(), _gemini_stt(), _gemini_stt_key_order(), Orden rotativo para STT: si una key está en ráfaga/cuota, probar las demás antes, Transcribe audio con la cadena STT: DeepInfra Whisper primero, Gemini como fallb, stt(), STTRequest
+Cohesion: 0.31
+Nodes (9): Automatizaciones n8n, Chatbot Humanizado, Claude API, DeepSeek vía NVIDIA, Groq, n8n, Railway, Telegram Bot API (+1 more)
 
 ### Community 368 - "Community 368"
 Cohesion: 0.29
@@ -1923,8 +1967,8 @@ Cohesion: 0.33
 Nodes (5): Encuadres principales, Evitar, Fondos permitidos, Reglas obligatorias, Reglas visuales
 
 ### Community 394 - "Community 394"
-Cohesion: 0.53
-Nodes (6): ClienteRequest, get_cliente(), _memoria_get(), _memoria_on(), _memoria_upsert(), post_cliente()
+Cohesion: 0.10
+Nodes (20): devDependencies, autoprefixer, esbuild, tailwindcss, tsx, @types/express, @types/node, @types/three (+12 more)
 
 ### Community 395 - "Community 395"
 Cohesion: 0.33
@@ -2073,10 +2117,6 @@ Nodes (4): competitive-ads-extractor, How to use, Source, What it does
 ### Community 431 - "Community 431"
 Cohesion: 0.40
 Nodes (4): copywriting, How to use, Source, What it does
-
-### Community 432 - "Community 432"
-Cohesion: 0.40
-Nodes (4): agencia/core — Agentes QuantumHive, Agentes, Orquestación, Reglas
 
 ### Community 433 - "Community 433"
 Cohesion: 0.40
@@ -2555,8 +2595,8 @@ Cohesion: 0.50
 Nodes (4): health(), pregrabar(), Pre-genera y cachea el MP3 de CADA texto del autoguiado (saludo + cada plato) en, _tts_cache_enabled()
 
 ### Community 553 - "Community 553"
-Cohesion: 0.50
-Nodes (4): health(), pregrabar(), Pre-genera y cachea el MP3 de CADA texto del autoguiado (saludo + cada plato) en, _tts_cache_enabled()
+Cohesion: 0.11
+Nodes (24): PlannerTab, VisualPlanner(), VisualNode, WORKFLOW_NODE_LIBRARY, WorkflowNodeLibraryItem, createStarterAgentWorkflow(), exportWorkflowJson(), now() (+16 more)
 
 ### Community 554 - "Community 554"
 Cohesion: 0.50
@@ -2579,8 +2619,8 @@ Cohesion: 0.50
 Nodes (3): Open Design · 2026 路线图, Q1-Q4 关键指标, 一句话
 
 ### Community 559 - "Community 559"
-Cohesion: 0.50
-Nodes (4): directimport/app (Vite/PWA), Abstract Layered Squares Logo, React Logo, Vite Logo
+Cohesion: 0.14
+Nodes (13): Alcance De Esta Primera Version, Backend Design, Criterio De Aceptacion, Data Flow, Decisiones De Producto, Dominus + Brain Router Hibrido Visual - Design, Error Handling, Estado Actual Confirmado (+5 more)
 
 ### Community 560 - "Community 560"
 Cohesion: 0.50
@@ -2643,32 +2683,172 @@ Cohesion: 0.50
 Nodes (3): Ejecucion real, kling_logo_motion.py, Scripts del Logo Motion Kit
 
 ### Community 575 - "Community 575"
-Cohesion: 0.50
-Nodes (4): 1.A Dial Inference (design read → dial values), 1.B Use-Case Presets, 1.C How the Dials Drive Output, 1. THE THREE DIALS (Core Configuration)
+Cohesion: 0.18
+Nodes (11): dependencies, dotenv, express, @google-cloud/vertexai, lucide-react, motion, react, react-dom (+3 more)
 
 ### Community 576 - "Community 576"
 Cohesion: 0.50
 Nodes (4): 7. DIAL DEFINITIONS (Technical Reference), DESIGN_VARIANCE (Level 1-10), MOTION_INTENSITY (Level 1-10), VISUAL_DENSITY (Level 1-10)
 
+### Community 615 - "Community 615"
+Cohesion: 0.24
+Nodes (8): ApprovalQueue(), LiveAssistant(), SAFE_ACTIONS, SystemService, ApprovalRequest, AuditLogAction, AuditLogModule, EventSeverity
+
+### Community 667 - "Community 667"
+Cohesion: 0.05
+Nodes (54): HelpArticle, helpArticles, HelpCenter(), resolveLiveSocketUrl(), cn(), STATUS_LABELS, tStatus(), SeccionMemoriaYOrganizacion() (+46 more)
+
+### Community 668 - "Community 668"
+Cohesion: 0.15
+Nodes (12): Arquitectura Mental, Canvas Propio, Capa Simple Sobre Clouds Empresariales, Criterio de Exito Inmediato, Doble Router, Orden de Evolucion, Principio Principal, Proposito (+4 more)
+
+### Community 669 - "Community 669"
+Cohesion: 0.09
+Nodes (22): dependencies, clsx, date-fns, dotenv, express, firebase, google-auth-library, googleapis (+14 more)
+
+### Community 670 - "Community 670"
+Cohesion: 0.10
+Nodes (21): ContextualAssistantWidget(), SectionAssistantPrompt(), getSectionAssistantPrompt(), SECTION_PROMPTS, SectionAssistantPromptModel, Breadcrumbs(), CommandPalette(), Layout() (+13 more)
+
+### Community 672 - "Community 672"
+Cohesion: 0.14
+Nodes (13): File Structure, Global Constraints, QuantumCore Video Ingest Telegram Dominus Implementation Plan, Self-Review, Task 1: Core Video Ingest Parser, Task 2: Server-Side Supabase Draft Store, Task 3: Video Ingest API Routes, Task 4: Gemini Structured Analysis Worker (+5 more)
+
+### Community 673 - "Community 673"
+Cohesion: 0.21
+Nodes (10): BRAIN_MODELS, BrainMode, BrainModelDefinition, BrainModelStatus, BrainSelectionRequest, recommendModelId(), resolveBrainSelection(), ResolvedBrainSelection (+2 more)
+
+### Community 674 - "Community 674"
+Cohesion: 0.10
+Nodes (19): devDependencies, autoprefixer, esbuild, tailwindcss, tsx, @types/express, @types/node, @types/ws (+11 more)
+
+### Community 675 - "Community 675"
+Cohesion: 0.25
+Nodes (8): scripts, build, clean, dev, lint, preview, start, test
+
+### Community 676 - "Community 676"
+Cohesion: 0.08
+Nodes (24): Autonomia Y Aprobaciones, Brain Router Y Cloud Router, Busqueda Web, Comunicacion, Directiva Final, Dominus Prime Constitution, Ejecucion Antes Que Expansion, Embajadores De Nubes (+16 more)
+
+### Community 677 - "Community 677"
+Cohesion: 0.22
+Nodes (9): BuildDominusContextInput, buildDominusContextPack(), DominusAgentContext, DominusMemoryContext, extractMemoryProposal(), GraphNodeContext, MemoryProposal, RepoContext (+1 more)
+
+### Community 679 - "Community 679"
+Cohesion: 0.12
+Nodes (16): compilerOptions, allowImportingTsExtensions, allowJs, experimentalDecorators, isolatedModules, jsx, lib, module (+8 more)
+
+### Community 681 - "Community 681"
+Cohesion: 0.18
+Nodes (14): _normalize_for_tts(), Expande abreviaturas de unidad (pegadas o separadas del número) para que la, Identidad de la voz PRINCIPAL (1er proveedor de la cadena) para el hash del cach, Identidades compatibles para LEER cache. No cambian el proveedor de generación:, tts(), _tts_cache_get(), _tts_cache_key(), _tts_cache_key_for_identity() (+6 more)
+
+### Community 682 - "Community 682"
+Cohesion: 0.15
+Nodes (13): devDependencies, autoprefixer, esbuild, tailwindcss, @tailwindcss/vite, tsx, @types/express, @types/multer (+5 more)
+
+### Community 683 - "Community 683"
+Cohesion: 0.12
+Nodes (17): ConversationCorrelation, ConversationKeyPoint, CorrelationCandidate, extractConversationKeyPoints(), findConversationCorrelations(), slugify(), STOP_WORDS, tokenize() (+9 more)
+
+### Community 685 - "Community 685"
+Cohesion: 0.22
+Nodes (8): TooltipInfo(), Ideas(), SkillAdvisor(), IdeaPriority, IdeaStatus, IdeaType, MacroDivision, SkillDefinition
+
+### Community 687 - "Community 687"
+Cohesion: 0.18
+Nodes (5): chatRouter, githubRouter, providersRouter, visionRouter, app
+
+### Community 688 - "Community 688"
+Cohesion: 0.22
+Nodes (4): app, auth, db, provider
+
+### Community 689 - "Community 689"
+Cohesion: 0.23
+Nodes (11): CachedGraph, computeStats(), ensureCache(), getGraphPath(), GraphifyEdge, GraphifyGraph, GraphifyNode, graphRouter (+3 more)
+
+### Community 690 - "Community 690"
+Cohesion: 0.40
+Nodes (4): name, private, type, version
+
+### Community 691 - "Community 691"
+Cohesion: 0.29
+Nodes (6): Brain Router Medium Implementation Plan, Global Constraints, Task 1: Responsive Chat Header, Task 2: Real V.S 2 Gemini Execution, Task 3: AI Providers / API Providers Page, Task 4: Verification And Deploy
+
+### Community 692 - "Community 692"
+Cohesion: 0.53
+Nodes (6): ClienteRequest, get_cliente(), _memoria_get(), _memoria_on(), _memoria_upsert(), post_cliente()
+
+### Community 693 - "Community 693"
+Cohesion: 0.25
+Nodes (4): ErrorBoundary, Props, State, App()
+
+### Community 695 - "Community 695"
+Cohesion: 0.40
+Nodes (4): Paso 0 - Autenticacion GCP Y Service Account, Paso 1 - Menu Lateral En Espanol, Paso 2 - Modulo Memoria Y Organizacion De 6 Capas, QuantumCore Historial De Implementacion
+
+### Community 696 - "Community 696"
+Cohesion: 0.40
+Nodes (4): Goal, Out Of Scope, Safety, Scope
+
+### Community 697 - "Community 697"
+Cohesion: 0.18
+Nodes (14): ConnectedRepo, ConnectedRepoMemoryPayload, ConnectedRepoMemoryRow, createConnectedRepoMemoryPayload(), deleteConnectedRepo(), fallbackConnectedRepos, forgetFallbackRepo(), GitHubRepoMetadata (+6 more)
+
+### Community 698 - "Community 698"
+Cohesion: 0.12
+Nodes (16): eslintConfig, typescript, typescript, devDependencies, autoprefixer, esbuild, tailwindcss, tsx (+8 more)
+
+### Community 702 - "Community 702"
+Cohesion: 0.29
+Nodes (7): _deepinfra_stt(), _gemini_stt(), _gemini_stt_key_order(), Orden rotativo para STT: si una key está en ráfaga/cuota, probar las demás antes, Transcribe audio con la cadena STT: DeepInfra Whisper primero, Gemini como fallb, stt(), STTRequest
+
+### Community 708 - "Community 708"
+Cohesion: 0.29
+Nodes (7): tours, TourStep, OnboardingModal(), TourContext, TourContextType, TourProvider(), useTour()
+
+### Community 709 - "Community 709"
+Cohesion: 0.43
+Nodes (5): getServerPort(), ai, startServer(), setupLiveWebSocket(), setupFrontendRoutes()
+
+### Community 713 - "Community 713"
+Cohesion: 0.22
+Nodes (9): devDependencies, autoprefixer, esbuild, tailwindcss, tsx, @types/express, @types/node, typescript (+1 more)
+
+### Community 715 - "Community 715"
+Cohesion: 0.50
+Nodes (4): health(), pregrabar(), Pre-genera y cachea el MP3 de CADA texto del autoguiado (saludo + cada plato) en, _tts_cache_enabled()
+
+### Community 718 - "Community 718"
+Cohesion: 0.12
+Nodes (16): devDependencies, eslint, eslint-config-next, tailwindcss, @tailwindcss/postcss, @types/node, @types/react, @types/react-dom (+8 more)
+
+### Community 724 - "Community 724"
+Cohesion: 0.83
+Nodes (3): execAsync, executeTool(), pollJobs()
+
+### Community 725 - "Community 725"
+Cohesion: 0.50
+Nodes (4): 1.A Dial Inference (design read → dial values), 1.B Use-Case Presets, 1.C How the Dials Drive Output, 1. THE THREE DIALS (Core Configuration)
+
 ## Knowledge Gaps
-- **3170 isolated node(s):** `build-skill.sh script`, `Path`, `CompletedProcess`, `Namespace`, `Image` (+3165 more)
+- **3565 isolated node(s):** `ProviderChatResult`, `ProviderSelectionRequest`, `ProviderModel`, `ProviderItem`, `ReasoningLevel` (+3560 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **80 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **90 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `google-genai` connect `Community 252` to `Community 65`, `Community 4`, `Community 6`, `Community 232`, `Community 172`, `Community 176`, `Community 94`, `Community 188`, `Community 62`?**
-  _High betweenness centrality (0.035) - this node is a cross-community bridge._
-- **Why does `procesar_leads.py` connect `Community 12` to `Community 24`, `Community 4`?**
-  _High betweenness centrality (0.009) - this node is a cross-community bridge._
-- **Why does `Telegram` connect `Community 17` to `Community 91`, `Community 6`?**
-  _High betweenness centrality (0.009) - this node is a cross-community bridge._
-- **What connects `build-skill.sh script`, `Path`, `Fetch metadata and best available VTT captions without downloading video.` to the rest of the system?**
-  _3450 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `google-genai` connect `Community 181` to `Community 65`, `Community 6`, `Community 39`, `Community 172`, `Community 176`, `Community 338`, `Community 62`, `Community 94`?**
+  _High betweenness centrality (0.060) - this node is a cross-community bridge._
+- **Why does `Zustand` connect `Community 684` to `Community 242`, `Community 221`, `Community 246`?**
+  _High betweenness centrality (0.042) - this node is a cross-community bridge._
+- **Why does `dependencies` connect `Community 669` to `Community 690`, `Community 684`, `Community 181`?**
+  _High betweenness centrality (0.037) - this node is a cross-community bridge._
+- **What connects `ProviderChatResult`, `ProviderSelectionRequest`, `ProviderModel` to the rest of the system?**
+  _3845 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.05974025974025974 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
   _Cohesion score 0.07965860597439545 - nodes in this community are weakly interconnected._
-- **Should `Community 3` be split into smaller, more focused modules?**
-  _Cohesion score 0.11462450592885376 - nodes in this community are weakly interconnected._
+- **Should `Community 2` be split into smaller, more focused modules?**
+  _Cohesion score 0.07142857142857142 - nodes in this community are weakly interconnected._

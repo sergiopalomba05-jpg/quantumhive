@@ -1,0 +1,6 @@
+{
+  "name": "La Escaloneta — Carta Viva",
+  "description": "Menú interactivo con cartas ilustradas y mozo virtual por voz en español rioplatense.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

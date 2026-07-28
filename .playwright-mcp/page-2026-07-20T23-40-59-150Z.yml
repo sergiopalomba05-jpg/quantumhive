@@ -1,0 +1,144 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e16]:
+        - img "QuantumHive" [ref=e17]
+        - heading "QuantumHive" [level=1] [ref=e18]
+        - generic [ref=e19]: Control Plane
+      - generic [ref=e20]:
+        - generic [ref=e21]: Sala de Control
+        - combobox [ref=e22]:
+          - option "Principiante" [selected]
+          - option "Usuario Avanzado"
+          - option "Desarrollador"
+    - generic [ref=e23]:
+      - generic [ref=e24]:
+        - heading "Próxima Mejor Acción" [level=3] [ref=e26]
+        - paragraph [ref=e27]: Revisar Resumen Diario y confirmar 2 aprobaciones pendientes.
+      - generic [ref=e28]:
+        - heading "Favoritos" [level=3] [ref=e29]
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - link "Chat Central" [ref=e34] [cursor=pointer]:
+              - /url: /chat
+            - button [ref=e38]
+          - generic [ref=e41]:
+            - link "Resumen Diario" [ref=e42] [cursor=pointer]:
+              - /url: /brief
+            - button [ref=e47]
+          - generic [ref=e50]:
+            - link "Inbox de Ideas" [ref=e51] [cursor=pointer]:
+              - /url: /ideas
+            - button [ref=e55]
+          - generic [ref=e58]:
+            - link "Tareas" [ref=e59] [cursor=pointer]:
+              - /url: /tasks
+            - button [ref=e64]
+      - generic [ref=e67]:
+        - generic [ref=e68]:
+          - button "A. Centro de Comando" [ref=e69]
+          - generic [ref=e73]:
+            - generic [ref=e74]:
+              - link "Panel" [ref=e75] [cursor=pointer]:
+                - /url: /
+              - button [ref=e82]
+            - generic [ref=e85]:
+              - link "Empezar Acá" [ref=e86] [cursor=pointer]:
+                - /url: /start
+              - button [ref=e90]
+            - generic [ref=e93]:
+              - link "Resumen Diario" [ref=e94] [cursor=pointer]:
+                - /url: /brief
+              - button [ref=e99]
+            - generic [ref=e102]:
+              - link "Cola de Aprobación" [ref=e103] [cursor=pointer]:
+                - /url: /approvals
+              - button [ref=e108]
+            - generic [ref=e111]:
+              - link "Actividad / Notificaciones" [ref=e112] [cursor=pointer]:
+                - /url: /events
+              - button [ref=e116]
+        - generic [ref=e119]:
+          - button "B. Captura e Inbox" [ref=e120]
+          - generic [ref=e124]:
+            - generic [ref=e125]:
+              - link "Inbox de Ideas" [ref=e126] [cursor=pointer]:
+                - /url: /ideas
+              - button [ref=e130]
+            - generic [ref=e133]:
+              - link "Bandeja de Videos" [ref=e134] [cursor=pointer]:
+                - /url: /video-inbox
+              - button [ref=e139]
+            - generic [ref=e142]:
+              - link "Notas de Voz" [ref=e143] [cursor=pointer]:
+                - /url: /voice
+              - button [ref=e148]
+        - button "C. Proyectos y Ejecución" [ref=e152]
+        - button "D. Agentes y Chat" [ref=e157]
+        - button "E. Conocimiento y Memoria" [ref=e162]
+        - button "G. Bases de Datos, Workspace e Integr." [ref=e167]
+  - generic [ref=e171]:
+    - banner [ref=e172]:
+      - generic [ref=e174]:
+        - text: Estado
+        - generic [ref=e176]: Óptimo
+      - generic [ref=e177]:
+        - button "Aprender" [ref=e178]
+        - button "Guía" [ref=e182]
+        - button "Reiniciar" [ref=e187]
+        - button "Contexto" [ref=e194]
+        - button "Exportar" [ref=e199]
+        - generic [ref=e204]: QH
+    - main [ref=e206]:
+      - generic [ref=e207]:
+        - generic [ref=e209]:
+          - generic [ref=e210]:
+            - generic [ref=e211]: QuantumHive Control Room
+            - heading "Sala de control para agentes, decisiones y ejecución segura." [level=2] [ref=e215]
+            - paragraph [ref=e216]: "Visión operativa del sistema: proyectos activos, CEOs digitales, bloqueos y eventos recientes sin ejecutar acciones destructivas fuera de la cola de aprobación."
+          - generic [ref=e217]:
+            - generic [ref=e218]: Estado del Núcleo
+            - generic [ref=e219]: ÓPTIMO
+            - generic [ref=e223]:
+              - generic [ref=e224]: Mock seguro
+              - generic [ref=e225]: Auditado
+        - generic [ref=e226]:
+          - generic [ref=e227]:
+            - generic [ref=e228]: Proyectos Activos
+            - generic [ref=e229]: "03"
+          - generic [ref=e230]:
+            - generic [ref=e231]: CEOs Activos
+            - generic [ref=e232]: "05"
+          - generic [ref=e233]:
+            - generic [ref=e234]: Eventos Recientes
+            - generic [ref=e235]: "02"
+          - generic [ref=e236]:
+            - generic [ref=e237]: Tareas Pendientes
+            - generic [ref=e238]: "02"
+          - generic [ref=e239]:
+            - generic [ref=e240]: Bloqueos
+            - generic [ref=e241]: "01"
+        - generic [ref=e242]:
+          - generic [ref=e243]:
+            - heading "Proyectos y próximas acciones" [level=3] [ref=e244]
+            - generic [ref=e247]:
+              - generic [ref=e248]:
+                - generic [ref=e249]: Carta Viva MVP
+                - generic [ref=e250]: "Siguiente: Hacer videos de Sol manualmente"
+              - generic [ref=e251]:
+                - generic [ref=e252]: QuantumHive Control Plane
+                - generic [ref=e253]: "Siguiente: Diseñar frontend AI Studio"
+              - generic [ref=e254]:
+                - generic [ref=e255]: Avatar Cache Engine
+                - generic [ref=e256]: "Siguiente: Integrar en MVP"
+          - generic [ref=e257]:
+            - heading "Eventos recientes en vivo" [level=3] [ref=e258]
+            - generic [ref=e262]:
+              - generic [ref=e263]:
+                - generic [ref=e264]: "[20:38:30]"
+                - generic [ref=e265]: "project.created:"
+                - generic [ref=e266]: Proyecto QuantumHive inicializado
+              - generic [ref=e267]:
+                - generic [ref=e268]: "[20:37:40]"
+                - generic [ref=e269]: "idea.created:"
+                - generic [ref=e270]: Idea creada HumanIA World

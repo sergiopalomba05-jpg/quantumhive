@@ -1,0 +1,137 @@
+- generic [active] [ref=f10e1]:
+  - link "Saltar al contenido" [ref=f10e2] [cursor=pointer]:
+    - /url: "#contenido"
+  - banner [ref=f10e3]:
+    - link "Volver al inicio de QuantumHive" [ref=f10e4] [cursor=pointer]:
+      - /url: "#inicio"
+      - img "QuantumHive" [ref=f10e5]
+      - generic [ref=f10e6]: QuantumHive
+    - navigation "Principal" [ref=f10e7]:
+      - link "Sistema" [ref=f10e8] [cursor=pointer]:
+        - /url: "#sistema"
+      - link "Presencia" [ref=f10e9] [cursor=pointer]:
+        - /url: "#presencia"
+      - link "Frentes" [ref=f10e10] [cursor=pointer]:
+        - /url: "#frentes"
+      - link "Contacto" [ref=f10e11] [cursor=pointer]:
+        - /url: "#contacto"
+    - button "Ver intro" [ref=f10e12] [cursor=pointer]
+  - main [ref=f10e13]:
+    - generic [ref=f10e18]:
+      - generic [ref=f10e19]:
+        - generic [ref=f10e20]: Vanguardia global en IA
+        - heading "La inteligencia deja de verse como software cuando empieza a tener presencia." [level=1] [ref=f10e21]
+        - paragraph [ref=f10e22]: QuantumHive construye asistentes de IA humanizados con voz en tiempo real, vision en tiempo real, presencia avatar y arquitectura multiagente para una nueva clase de operacion, relacion y ejecucion.
+        - generic [ref=f10e23]:
+          - button "Abrir secuencia" [ref=f10e24] [cursor=pointer]
+          - link "Explorar arquitectura" [ref=f10e25] [cursor=pointer]:
+            - /url: "#sistema"
+        - generic "Capacidades principales" [ref=f10e26]:
+          - article [ref=f10e27]:
+            - generic [ref=f10e28]: Voz
+            - strong [ref=f10e29]: Interaccion natural con latencia baja
+          - article [ref=f10e30]:
+            - generic [ref=f10e31]: Vision
+            - strong [ref=f10e32]: Contexto visual para leer y actuar
+          - article [ref=f10e33]:
+            - generic [ref=f10e34]: Avatar
+            - strong [ref=f10e35]: Presencia humanizada para interfaces nuevas
+      - generic [ref=f10e36]:
+        - generic [ref=f10e37]:
+          - generic [ref=f10e38]: Infraestructura viva
+          - strong [ref=f10e39]: Voz, vision, avatar, contexto y decision
+        - generic [ref=f10e40]:
+          - generic [ref=f10e41]: Principio
+          - strong [ref=f10e42]: Presencia antes que chatbot
+        - img "Isotipo QuantumHive" [ref=f10e48]
+        - generic [ref=f10e49]:
+          - generic [ref=f10e50]: Secuencia de apertura
+          - strong [ref=f10e51]: 19 segundos de manifiesto tecnologico
+          - button "Abrir completa" [ref=f10e52] [cursor=pointer]
+    - region "Señales de QuantumHive" [ref=f10e53]:
+      - generic [ref=f10e54]: IA humanizada
+      - generic [ref=f10e55]: Tiempo real
+      - generic [ref=f10e56]: Vision contextual
+      - generic [ref=f10e57]: Presencia avatar
+      - generic [ref=f10e58]: Orquestacion multiagente
+      - generic [ref=f10e59]: Infraestructura aplicada
+    - generic [ref=f10e60]:
+      - generic [ref=f10e61]:
+        - generic [ref=f10e62]: Sistema QuantumHive
+        - heading "No es una demo. Es una capa expandible de inteligencia aplicada." [level=2] [ref=f10e63]
+      - generic [ref=f10e64]:
+        - article [ref=f10e65]:
+          - paragraph [ref=f10e66]: La parte visible puede hablar, mirar o habitar una interfaz. La parte no visible decide, conecta, ejecuta y sostiene el criterio de toda la experiencia.
+        - article [ref=f10e67]:
+          - generic [ref=f10e68]:
+            - generic [ref=f10e69]: Entrada
+            - strong [ref=f10e70]: voz / vision / texto / eventos
+          - generic [ref=f10e71]:
+            - generic [ref=f10e72]: Nucleo
+            - strong [ref=f10e73]: contexto / memoria / decision / coordinacion
+          - generic [ref=f10e74]:
+            - generic [ref=f10e75]: Salida
+            - strong [ref=f10e76]: habla / avatar / flujo / interfaz / accion
+          - generic [ref=f10e77]:
+            - generic [ref=f10e78]: Resultado
+            - strong [ref=f10e79]: presencia inteligente en tiempo real
+        - article [ref=f10e80]:
+          - generic [ref=f10e81]: Dirección
+          - paragraph [ref=f10e82]: Menos chat flotante. Más sistema con identidad, criterio y capacidad de operar en el mundo real.
+    - generic [ref=f10e83]:
+      - generic [ref=f10e84]:
+        - generic [ref=f10e85]: Nueva interfaz
+        - heading "Cuando la IA adquiere voz, mirada y forma, cambia la percepción del sistema entero." [level=2] [ref=f10e86]
+      - generic [ref=f10e87]:
+        - article [ref=f10e88]:
+          - generic [ref=f10e89]: Presencia
+          - heading "Una inteligencia que se siente viva." [level=3] [ref=f10e90]
+          - paragraph [ref=f10e91]: QuantumHive no se limita a responder texto. Construye una presencia capaz de conversar, observar, guiar, explicar y sostener una relación más rica entre empresa, interfaz y usuario.
+        - article [ref=f10e92]:
+          - generic [ref=f10e93]: "01"
+          - strong [ref=f10e94]: Voz con identidad
+          - paragraph [ref=f10e95]: Menos sintetico, mas cercano, mas memorable.
+        - article [ref=f10e96]:
+          - generic [ref=f10e97]: "02"
+          - strong [ref=f10e98]: Vision con contexto
+          - paragraph [ref=f10e99]: Lee escena, interfaz o situación antes de responder.
+        - article [ref=f10e100]:
+          - generic [ref=f10e101]: "03"
+          - strong [ref=f10e102]: Avatar con rol
+          - paragraph [ref=f10e103]: No un truco visual. Una capa real de presencia de marca.
+    - generic [ref=f10e104]:
+      - generic [ref=f10e105]:
+        - generic [ref=f10e106]: Frentes de expansión
+        - heading "Una sola arquitectura. Multiples superficies de negocio." [level=2] [ref=f10e107]
+      - generic [ref=f10e108]:
+        - article [ref=f10e109]:
+          - generic [ref=f10e110]: Modelo
+          - heading "QuantumHive no nace para un nicho. Nace para ocupar una categoría." [level=3] [ref=f10e111]
+          - paragraph [ref=f10e112]: La misma capa de inteligencia puede convertirse en empleado virtual, interfaz comercial, operador asistido o presencia premium de marca sin perder coherencia.
+        - article [ref=f10e113]:
+          - generic [ref=f10e114]: "01"
+          - heading "Empleados virtuales" [level=3] [ref=f10e115]
+          - paragraph [ref=f10e116]: Recepción, ventas, soporte, guiado y seguimiento con una presencia mucho más avanzada que un bot plano.
+        - article [ref=f10e117]:
+          - generic [ref=f10e118]: "02"
+          - heading "Interfaces comerciales" [level=3] [ref=f10e119]
+          - paragraph [ref=f10e120]: Sistemas que explican, convierten y sostienen conversaciones con identidad propia.
+        - article [ref=f10e121]:
+          - generic [ref=f10e122]: "03"
+          - heading "Inteligencia operacional" [level=3] [ref=f10e123]
+          - paragraph [ref=f10e124]: Agentes que ordenan, coordinan, activan flujos y conectan decisión con ejecución.
+    - paragraph [ref=f10e126]: QuantumHive combina presencia humana, operación en tiempo real y arquitectura aplicada para moverse donde la IA deja de ser promesa y empieza a parecer inevitable.
+    - generic [ref=f10e128]:
+      - generic [ref=f10e129]:
+        - generic [ref=f10e130]: Contacto
+        - heading "Si querés construir la próxima interfaz de tu empresa, empecemos por ahí." [level=2] [ref=f10e131]
+        - paragraph [ref=f10e132]: QuantumHive está diseñado para compañías que quieren salir del modelo de interfaz vieja y entrar en una capa nueva de voz, visión, avatar y sistemas coordinados.
+      - generic [ref=f10e133]:
+        - link "hello@quantumhive.com.ar" [ref=f10e134] [cursor=pointer]:
+          - /url: mailto:hello@quantumhive.com.ar
+        - button "Ver intro otra vez" [ref=f10e135] [cursor=pointer]
+    - generic [ref=f10e136]:
+      - generic [ref=f10e137]: QuantumHive
+      - generic [ref=f10e138]: IA humanizada en tiempo real
+      - link "hello@quantumhive.com.ar" [ref=f10e140] [cursor=pointer]:
+        - /url: mailto:hello@quantumhive.com.ar

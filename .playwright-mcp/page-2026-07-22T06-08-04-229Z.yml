@@ -1,0 +1,878 @@
+- generic [ref=f8e1]:
+  - link "Omitir e ir al contenido" [ref=f8e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=f8e6]:
+    - generic [ref=f8e8]:
+      - navigation "Barra lateral":
+        - generic:
+          - generic:
+            - generic:
+              - button "Abrir barra lateral"
+        - generic:
+          - generic:
+            - link "Nuevo chat":
+              - /url: /
+          - generic:
+            - button "Buscar"
+          - generic:
+            - button "Recientes"
+        - generic:
+          - generic:
+            - button "Abrir el menú de perfil":
+              - generic:
+                - generic:
+                  - img "Imagen de perfil"
+      - generic [ref=f8e9]:
+        - heading "Historial del chat" [level=2] [ref=f8e10]
+        - generic [ref=f8e11]:
+          - navigation "Historial del chat" [ref=f8e12]:
+            - generic [ref=f8e15]:
+              - link "Local" [ref=f8e16] [cursor=pointer]:
+                - /url: /
+                - generic [ref=f8e17]: ChatGPT Plus
+              - generic [ref=f8e18]:
+                - button "Buscar" [ref=f8e19] [cursor=pointer]
+                - button "Cerrar barra lateral" [expanded] [ref=f8e22]
+            - list [ref=f8e26]:
+              - listitem [ref=f8e27]:
+                - link "Nuevo chat Control Mayúsculas O" [ref=f8e124] [cursor=pointer]:
+                  - /url: /
+                  - generic [ref=f8e125]: Nuevo chat
+                  - generic [ref=f8e132]:
+                    - generic "Control" [ref=f8e133]:
+                      - generic [ref=f8e134]: Ctrl
+                      - text: +
+                    - generic "Mayúsculas" [ref=f8e135]:
+                      - generic [ref=f8e136]: Shift
+                      - text: +
+                    - generic [ref=f8e137]: O
+              - listitem
+            - link "Biblioteca" [ref=f8e35] [cursor=pointer]:
+              - /url: /library
+            - link "Proyectos Nuevo proyecto" [ref=f8e139] [cursor=pointer]:
+              - /url: /projects
+              - generic [ref=f8e140]: Proyectos
+              - button "Nuevo proyecto" [ref=f8e148]
+            - link "Programadas" [ref=f8e42] [cursor=pointer]:
+              - /url: /scheduled
+            - link "Complementos" [ref=f8e49] [cursor=pointer]:
+              - /url: /plugins
+            - generic [ref=f8e56]: Más
+            - generic [ref=f8e152]:
+              - generic [ref=f8e153]:
+                - button [expanded] [ref=f8e154] [cursor=pointer]:
+                  - heading "Recientes" [level=2] [ref=f8e155]
+                - generic [ref=f8e156]:
+                  - button "Organizar chats" [ref=f8e157] [cursor=pointer]
+                  - link "Nuevo chat" [ref=f8e161] [cursor=pointer]:
+                    - /url: /
+              - list [ref=f8e166]:
+                - listitem [ref=f8e167]:
+                  - link "Crear aplicación con Google AI" [ref=f8e168] [cursor=pointer]:
+                    - /url: /c/6a5edc4f-008c-83e9-90f1-a47d0dc5d7db
+                    - generic [ref=f8e172]:
+                      - button "Anclar Crear aplicación con Google AI" [ref=f8e173]
+                      - button "Abrir las opciones de conversación de Crear aplicación con Google AI" [ref=f8e481]
+                - listitem [ref=f8e177]:
+                  - link "Subsidios para Startups IA" [ref=f8e178] [cursor=pointer]:
+                    - /url: /c/6a6043ff-1ce8-83e9-bbb8-5a5d2543985d
+                    - generic [ref=f8e182]:
+                      - button "Anclar Subsidios para Startups IA" [ref=f8e183]
+                      - button "Abrir las opciones de conversación de Subsidios para Startups IA" [ref=f8e485]
+                - listitem [ref=f8e187]:
+                  - link "Saludo entre usuario y asistente, chat en el proyecto quantumhive" [ref=f8e188] [cursor=pointer]:
+                    - /url: /c/6a5ef724-1f78-83e9-b97b-77237a984722
+                    - generic [ref=f8e191]:
+                      - generic [ref=f8e192]: Saludo entre usuario y asistente
+                      - generic [ref=f8e193]: quantumhive
+                    - generic [ref=f8e195]:
+                      - button "Anclar Saludo entre usuario y asistente" [ref=f8e196]
+                      - button "Abrir las opciones de conversación de Saludo entre usuario y asistente" [ref=f8e489]
+                - listitem [ref=f8e200]:
+                  - link "Hablar como rioplatense" [ref=f8e201] [cursor=pointer]:
+                    - /url: /c/6a5ee0cf-3c60-83e9-917e-baaa269036af
+                    - generic [ref=f8e205]:
+                      - button "Anclar Hablar como rioplatense" [ref=f8e206]
+                      - button "Abrir las opciones de conversación de Hablar como rioplatense" [ref=f8e493]
+                - listitem [ref=f8e210]:
+                  - link "Record & Replay Función" [ref=f8e211] [cursor=pointer]:
+                    - /url: /c/6a553f1f-ba0c-83e9-a8b4-e9d213ca776d
+                    - generic [ref=f8e215]:
+                      - button "Anclar Record & Replay Función" [ref=f8e216]
+                      - button "Abrir las opciones de conversación de Record & Replay Función" [ref=f8e497]
+                - listitem [ref=f8e220]:
+                  - link "Optimización agente QuantumHive" [ref=f8e221] [cursor=pointer]:
+                    - /url: /c/6a565b0f-23cc-83e9-8a87-6cac924ad486
+                    - generic [ref=f8e225]:
+                      - button "Anclar Optimización agente QuantumHive" [ref=f8e226]
+                      - button "Abrir las opciones de conversación de Optimización agente QuantumHive" [ref=f8e501]
+                - listitem [ref=f8e230]:
+                  - link "Herramienta open source" [ref=f8e231] [cursor=pointer]:
+                    - /url: /c/957d2795-458d-4eec-a29f-ac770b390dbb
+                    - generic [ref=f8e235]:
+                      - button "Anclar Herramienta open source" [ref=f8e236]
+                      - button "Abrir las opciones de conversación de Herramienta open source" [ref=f8e505]
+                - listitem [ref=f8e240]:
+                  - link "Primeros pasos, Work" [ref=f8e241] [cursor=pointer]:
+                    - /url: /c/6a551dae-0a7c-83e9-8045-04a1fabba29b
+                    - generic [ref=f8e242]: Primeros pasos
+                    - generic [ref=f8e247]:
+                      - button "Anclar Primeros pasos" [ref=f8e248]
+                      - button "Abrir las opciones de conversación de Primeros pasos" [ref=f8e509]
+                - listitem [ref=f8e252]:
+                  - link "Plantilla avatar referencia" [ref=f8e253] [cursor=pointer]:
+                    - /url: /c/6a54610d-4f68-83e9-b804-8fe5d30b5aa7
+                    - generic [ref=f8e257]:
+                      - button "Anclar Plantilla avatar referencia" [ref=f8e258]
+                      - button "Abrir las opciones de conversación de Plantilla avatar referencia" [ref=f8e513]
+                - listitem [ref=f8e262]:
+                  - link "Imagen referencia IA" [ref=f8e263] [cursor=pointer]:
+                    - /url: /c/6a532efc-d760-83e9-bf25-c3a5a628bcf8
+                    - generic [ref=f8e267]:
+                      - button "Anclar Imagen referencia IA" [ref=f8e268]
+                      - button "Abrir las opciones de conversación de Imagen referencia IA" [ref=f8e517]
+                - listitem [ref=f8e272]:
+                  - link "Mapa visual para avatar" [ref=f8e273] [cursor=pointer]:
+                    - /url: /c/6a515869-581c-83e9-8b50-f9f34e6fa559
+                    - generic [ref=f8e277]:
+                      - button "Anclar Mapa visual para avatar" [ref=f8e278]
+                      - button "Abrir las opciones de conversación de Mapa visual para avatar" [ref=f8e521]
+                - listitem [ref=f8e282]:
+                  - link "Fuente iluminada nocturna" [ref=f8e283] [cursor=pointer]:
+                    - /url: /c/6a492c5c-3fe0-83e9-a41d-39b375d49c15
+                    - generic [ref=f8e287]:
+                      - button "Anclar Fuente iluminada nocturna" [ref=f8e288]
+                      - button "Abrir las opciones de conversación de Fuente iluminada nocturna" [ref=f8e525]
+                - listitem [ref=f8e292]:
+                  - link "Desactivación servidor OpenCode, chat en el proyecto quantumhive" [ref=f8e293] [cursor=pointer]:
+                    - /url: /c/6a45ac51-5af0-83e9-9cb5-5725d8e73c6c
+                    - generic [ref=f8e296]:
+                      - generic [ref=f8e297]: Desactivación servidor OpenCode
+                      - generic: quantumhive
+                    - generic [ref=f8e299]:
+                      - button "Anclar Desactivación servidor OpenCode" [ref=f8e300]
+                      - button "Abrir las opciones de conversación de Desactivación servidor OpenCode" [ref=f8e529]
+                - listitem [ref=f8e304]:
+                  - link "Estrategia venta cartas QR, chat en el proyecto quantumhive" [ref=f8e305] [cursor=pointer]:
+                    - /url: /c/6a457c00-680c-83e9-8f14-a76b6f8ef36c
+                    - generic [ref=f8e308]:
+                      - generic [ref=f8e309]: Estrategia venta cartas QR
+                      - generic [ref=f8e310]: quantumhive
+                    - generic [ref=f8e312]:
+                      - button "Anclar Estrategia venta cartas QR" [ref=f8e313]
+                      - button "Abrir las opciones de conversación de Estrategia venta cartas QR" [ref=f8e533]
+                - listitem [ref=f8e317]:
+                  - link "Estrategia de venta bot" [ref=f8e318] [cursor=pointer]:
+                    - /url: /c/6a4558d4-185c-83e9-9eda-0e8ecdcbd6c1
+                    - generic [ref=f8e322]:
+                      - button "Anclar Estrategia de venta bot" [ref=f8e323]
+                      - button "Abrir las opciones de conversación de Estrategia de venta bot" [ref=f8e537]
+                - listitem [ref=f8e327]:
+                  - link "Logo QuantumHive ajuste, chat en el proyecto quantumhive" [ref=f8e328] [cursor=pointer]:
+                    - /url: /c/6a414c11-03ec-83e9-a7c7-e516ddead055
+                    - generic [ref=f8e331]:
+                      - generic [ref=f8e332]: Logo QuantumHive ajuste
+                      - generic [ref=f8e333]: quantumhive
+                    - generic [ref=f8e335]:
+                      - button "Anclar Logo QuantumHive ajuste" [ref=f8e336]
+                      - button "Abrir las opciones de conversación de Logo QuantumHive ajuste" [ref=f8e541]
+                - listitem [ref=f8e340]:
+                  - link "Herramientas para crear videos" [ref=f8e341] [cursor=pointer]:
+                    - /url: /c/6a430a17-1b2c-83e9-b1a6-3ab995ae1fed
+                    - generic [ref=f8e345]:
+                      - button "Anclar Herramientas para crear videos" [ref=f8e346]
+                      - button "Abrir las opciones de conversación de Herramientas para crear videos" [ref=f8e545]
+                - listitem [ref=f8e350]:
+                  - link "AVATAR Y CONTEXO GENERAL ORGANISANDO, chat en el proyecto quantumhive" [ref=f8e351] [cursor=pointer]:
+                    - /url: /c/6a3e8f71-2d50-83e9-a428-1fe0cb7ca8d3
+                    - generic [ref=f8e354]:
+                      - generic [ref=f8e355]: AVATAR Y CONTEXO GENERAL ORGANISANDO
+                      - generic: quantumhive
+                    - generic [ref=f8e357]:
+                      - button "Anclar AVATAR Y CONTEXO GENERAL ORGANISANDO" [ref=f8e358]
+                      - button "Abrir las opciones de conversación de AVATAR Y CONTEXO GENERAL ORGANISANDO" [ref=f8e549]
+                - listitem [ref=f8e362]:
+                  - link "Contexto QuantumHive, chat en el proyecto quantumhive" [ref=f8e363] [cursor=pointer]:
+                    - /url: /c/6a3e1bcb-ba70-83e9-9fea-5725e0a6a544
+                    - generic [ref=f8e366]:
+                      - generic [ref=f8e367]: Contexto QuantumHive
+                      - generic [ref=f8e368]: quantumhive
+                    - generic [ref=f8e370]:
+                      - button "Anclar Contexto QuantumHive" [ref=f8e371]
+                      - button "Abrir las opciones de conversación de Contexto QuantumHive" [ref=f8e553]
+                - listitem [ref=f8e375]:
+                  - link "Edición de video con avatar" [ref=f8e376] [cursor=pointer]:
+                    - /url: /g/g-h8l4uLHFQ-video-ai-by-invideo/c/6a3e1794-db94-83e9-8e97-2ed2104f305e
+                    - generic [ref=f8e380]:
+                      - button "Anclar Edición de video con avatar" [ref=f8e381]
+                      - button "Abrir las opciones de conversación de Edición de video con avatar" [ref=f8e557]
+                - listitem [ref=f8e385]:
+                  - link "Análisis y mejora HTML" [ref=f8e386] [cursor=pointer]:
+                    - /url: /c/6a33f415-4b3c-83e9-a2f8-d61e989790a8
+                    - generic [ref=f8e390]:
+                      - button "Anclar Análisis y mejora HTML" [ref=f8e391]
+                      - button "Abrir las opciones de conversación de Análisis y mejora HTML" [ref=f8e561]
+                - listitem [ref=f8e395]:
+                  - link "Revisión de conversación compartida" [ref=f8e396] [cursor=pointer]:
+                    - /url: /c/6a336d0b-1138-83e9-a276-01b6ccb628ff
+                    - generic [ref=f8e400]:
+                      - button "Anclar Revisión de conversación compartida" [ref=f8e401]
+                      - button "Abrir las opciones de conversación de Revisión de conversación compartida" [ref=f8e565]
+                - listitem [ref=f8e405]:
+                  - link "Diseño de perfil tecnológico" [ref=f8e406] [cursor=pointer]:
+                    - /url: /c/6a2b9589-06f4-83e9-843f-625e9acdd2ea
+                    - generic [ref=f8e410]:
+                      - button "Anclar Diseño de perfil tecnológico" [ref=f8e411]
+                      - button "Abrir las opciones de conversación de Diseño de perfil tecnológico" [ref=f8e569]
+                - listitem [ref=f8e415]:
+                  - link "Cambio de fondo foto" [ref=f8e416] [cursor=pointer]:
+                    - /url: /c/6a1f9f36-67e0-83e9-8038-43273fc27e55
+                    - generic [ref=f8e420]:
+                      - button "Anclar Cambio de fondo foto" [ref=f8e421]
+                      - button "Abrir las opciones de conversación de Cambio de fondo foto" [ref=f8e573]
+                - listitem [ref=f8e425]:
+                  - link "Mejorar foto perfil" [ref=f8e426] [cursor=pointer]:
+                    - /url: /c/6a17e0d8-d71c-83e9-a438-e838960b6306
+                    - generic [ref=f8e430]:
+                      - button "Anclar Mejorar foto perfil" [ref=f8e431]
+                      - button "Abrir las opciones de conversación de Mejorar foto perfil" [ref=f8e577]
+                - listitem [ref=f8e435]:
+                  - link "Solicitud de ajuste foto" [ref=f8e436] [cursor=pointer]:
+                    - /url: /c/6a140720-f32c-83e9-ae43-958ac30e88ef
+                    - generic [ref=f8e440]:
+                      - button "Anclar Solicitud de ajuste foto" [ref=f8e441]
+                      - button "Abrir las opciones de conversación de Solicitud de ajuste foto" [ref=f8e581]
+                - listitem [ref=f8e445]:
+                  - link "Pareja millonaria recién casada" [ref=f8e446] [cursor=pointer]:
+                    - /url: /c/6a138e33-0930-83e9-b7ef-8895f5faf835
+                    - generic [ref=f8e450]:
+                      - button "Anclar Pareja millonaria recién casada" [ref=f8e451]
+                      - button "Abrir las opciones de conversación de Pareja millonaria recién casada" [ref=f8e585]
+                - listitem [ref=f8e455]:
+                  - link "Creación de Dashboard Empresarial" [ref=f8e456] [cursor=pointer]:
+                    - /url: /c/69f6c02d-c2c0-83e9-84e1-de1c516b5e65
+                    - generic [ref=f8e460]:
+                      - button "Anclar Creación de Dashboard Empresarial" [ref=f8e461]
+                      - button "Abrir las opciones de conversación de Creación de Dashboard Empresarial" [ref=f8e589]
+          - button "Sergio Palomb Plus, abrir menú de perfil" [ref=f8e465] [cursor=pointer]:
+            - generic [ref=f8e68]:
+              - img "Imagen de perfil" [ref=f8e466]
+              - generic [ref=f8e71]:
+                - generic [ref=f8e72]: Sergio Palomb
+                - generic [ref=f8e74]: Plus
+            - button "Descargar aplicaciones" [ref=f8e79]
+    - generic [ref=f8e85]:
+      - generic [ref=f8e86]:
+        - banner
+      - main [ref=f8e96]:
+        - generic [ref=f8e98]:
+          - generic [ref=f8e593]:
+            - paragraph [ref=f8e595]: Esta es una copia de una conversación compartida de ChatGPT.
+            - button "Informar sobre la conversación" [ref=f8e597] [cursor=pointer]
+            - generic [ref=f8e598]:
+              - generic [ref=f8e602]:
+                - button "Prompt 1" [ref=f8e603] [cursor=pointer]
+                - button "Prompt 2" [ref=f8e604] [cursor=pointer]
+                - button "Prompt 3" [ref=f8e605] [cursor=pointer]
+                - button "Prompt 4" [ref=f8e606] [cursor=pointer]
+                - button "Prompt 5" [ref=f8e607] [cursor=pointer]
+                - button "Prompt 6" [ref=f8e608] [cursor=pointer]
+                - button "Prompt 7" [ref=f8e609] [cursor=pointer]
+                - button "Prompt 8" [ref=f8e610] [cursor=pointer]
+                - button "Prompt 9" [ref=f8e611] [cursor=pointer]
+                - button "Prompt 10" [ref=f8e612] [cursor=pointer]
+                - button "Prompt 11" [ref=f8e613] [cursor=pointer]
+                - button "Prompt 12" [ref=f8e614] [cursor=pointer]
+                - button "Prompt 13" [ref=f8e615] [cursor=pointer]
+                - button "Prompt 14" [ref=f8e616] [cursor=pointer]
+                - button "Prompt 15" [ref=f8e617] [cursor=pointer]
+                - button "Prompt 16" [ref=f8e618] [cursor=pointer]
+                - button "Prompt 17" [ref=f8e619] [cursor=pointer]
+                - button "Prompt 18" [ref=f8e620] [cursor=pointer]
+                - button "Prompt 19" [ref=f8e621] [cursor=pointer]
+                - button "Prompt 20" [ref=f8e622] [cursor=pointer]
+                - button "Prompt 21" [ref=f8e623] [cursor=pointer]
+                - button "Prompt 22" [ref=f8e624] [cursor=pointer]
+                - button "Prompt 23" [ref=f8e625] [cursor=pointer]
+                - button "Prompt 24" [ref=f8e626] [cursor=pointer]
+                - button "Prompt 25" [ref=f8e627] [cursor=pointer]
+                - button "Prompt 26" [ref=f8e628] [cursor=pointer]
+                - button "Prompt 27" [ref=f8e629] [cursor=pointer]
+                - button "Prompt 28" [ref=f8e630] [cursor=pointer]
+                - button "Prompt 29" [ref=f8e631] [cursor=pointer]
+                - button "Prompt 30" [ref=f8e632] [cursor=pointer]
+                - button "Prompt 31" [ref=f8e633] [cursor=pointer]
+                - button "Prompt 32" [ref=f8e634] [cursor=pointer]
+                - button "Prompt 33" [ref=f8e635] [cursor=pointer]
+                - button "Prompt 34" [ref=f8e636] [cursor=pointer]
+                - button "Prompt 35" [ref=f8e637] [cursor=pointer]
+                - button "Prompt 36" [ref=f8e638] [cursor=pointer]
+                - button "Prompt 37" [ref=f8e639] [cursor=pointer]
+                - button "Prompt 38" [ref=f8e640] [cursor=pointer]
+                - button "Prompt 39" [ref=f8e641] [cursor=pointer]
+                - button "Prompt 40" [ref=f8e642] [cursor=pointer]
+                - button "Prompt 41" [ref=f8e643] [cursor=pointer]
+                - button "Prompt 42" [ref=f8e644] [cursor=pointer]
+                - button "Prompt 43" [ref=f8e645] [cursor=pointer]
+                - button "Prompt 44" [ref=f8e646] [cursor=pointer]
+                - button "Prompt 45" [ref=f8e647] [cursor=pointer]
+                - button "Prompt 46" [ref=f8e648] [cursor=pointer]
+                - button "Prompt 47" [ref=f8e649] [cursor=pointer]
+                - button "Prompt 48" [ref=f8e650] [cursor=pointer]
+                - button "Prompt 49" [ref=f8e651] [cursor=pointer]
+                - button "Prompt 50" [ref=f8e652] [cursor=pointer]
+                - button "Prompt 51" [ref=f8e653] [cursor=pointer]
+                - button "Prompt 52" [ref=f8e654] [cursor=pointer]
+                - button "Prompt 53" [ref=f8e655] [cursor=pointer]
+                - button "Prompt 54" [ref=f8e656] [cursor=pointer]
+                - button "Prompt 55" [ref=f8e657] [cursor=pointer]
+                - button "Prompt 56" [ref=f8e658] [cursor=pointer]
+                - button "Prompt 57" [ref=f8e659] [cursor=pointer]
+                - button "Prompt 58" [ref=f8e660] [cursor=pointer]
+                - button "Prompt 59" [ref=f8e661] [cursor=pointer]
+                - button "Prompt 60" [ref=f8e662] [cursor=pointer]
+                - button "Prompt 61" [ref=f8e663] [cursor=pointer]
+                - button "Prompt 62" [ref=f8e664] [cursor=pointer]
+                - button "Prompt 63" [ref=f8e665] [cursor=pointer]
+                - button "Prompt 64" [ref=f8e666] [cursor=pointer]
+                - button "Prompt 65" [ref=f8e667] [cursor=pointer]
+                - button "Prompt 66" [ref=f8e668] [cursor=pointer]
+                - button "Prompt 67" [ref=f8e669] [cursor=pointer]
+                - button "Prompt 68" [ref=f8e670] [cursor=pointer]
+                - button "Prompt 69" [ref=f8e671] [cursor=pointer]
+                - button "Prompt 70" [ref=f8e672] [cursor=pointer]
+                - button "Prompt 71" [ref=f8e673] [cursor=pointer]
+                - button "Prompt 72" [ref=f8e674] [cursor=pointer]
+                - button "Prompt 73" [ref=f8e675] [cursor=pointer]
+                - button "Prompt 74" [ref=f8e676] [cursor=pointer]
+                - button "Prompt 75" [ref=f8e677] [cursor=pointer]
+                - button "Prompt 76" [ref=f8e678] [cursor=pointer]
+                - button "Prompt 77" [ref=f8e679] [cursor=pointer]
+                - button "Prompt 78" [ref=f8e680] [cursor=pointer]
+                - button "Prompt 79" [ref=f8e681] [cursor=pointer]
+                - button "Prompt 80" [ref=f8e682] [cursor=pointer]
+                - button "Prompt 81" [ref=f8e683] [cursor=pointer]
+                - button "Prompt 82" [ref=f8e684] [cursor=pointer]
+                - button "Prompt 83" [ref=f8e685] [cursor=pointer]
+                - button "Prompt 84" [ref=f8e686] [cursor=pointer]
+                - button "Prompt 85" [ref=f8e687] [cursor=pointer]
+                - button "Prompt 86" [ref=f8e688] [cursor=pointer]
+                - button "Prompt 87" [ref=f8e689] [cursor=pointer]
+                - button "Prompt 88" [ref=f8e690] [cursor=pointer]
+                - button "Prompt 89" [ref=f8e691] [cursor=pointer]
+                - button "Prompt 90" [ref=f8e692] [cursor=pointer]
+                - button "Prompt 91" [ref=f8e693] [cursor=pointer]
+                - button "Prompt 92" [ref=f8e694] [cursor=pointer]
+                - button "Prompt 93" [ref=f8e695] [cursor=pointer]
+                - button "Prompt 94" [ref=f8e696] [cursor=pointer]
+                - button "Prompt 95" [ref=f8e697] [cursor=pointer]
+                - button "Prompt 96" [ref=f8e698] [cursor=pointer]
+                - button "Prompt 97" [ref=f8e699] [cursor=pointer]
+                - button "Prompt 98" [ref=f8e700] [cursor=pointer]
+                - button "Prompt 99" [ref=f8e701] [cursor=pointer]
+                - button "Prompt 100" [ref=f8e702] [cursor=pointer]
+                - button "Prompt 101" [ref=f8e703] [cursor=pointer]
+                - button "Prompt 102" [ref=f8e704] [cursor=pointer]
+                - button "Prompt 103" [ref=f8e705] [cursor=pointer]
+                - button "Prompt 104" [ref=f8e706] [cursor=pointer]
+                - button "Prompt 105" [ref=f8e707] [cursor=pointer]
+                - button "Prompt 106" [ref=f8e708] [cursor=pointer]
+                - button "Prompt 107" [ref=f8e709] [cursor=pointer]
+                - button "Prompt 108" [ref=f8e710] [cursor=pointer]
+                - button "Prompt 109" [ref=f8e711] [cursor=pointer]
+                - button "Prompt 110" [ref=f8e712] [cursor=pointer]
+                - button "Prompt 111" [ref=f8e713] [cursor=pointer]
+                - button "Prompt 112" [ref=f8e714] [cursor=pointer]
+                - button "Prompt 113" [ref=f8e715] [cursor=pointer]
+                - button "Prompt 114" [ref=f8e716] [cursor=pointer]
+                - button "Prompt 115" [ref=f8e717] [cursor=pointer]
+                - button "Prompt 116" [ref=f8e718] [cursor=pointer]
+                - button "Prompt 117" [ref=f8e719] [cursor=pointer]
+                - button "Prompt 118" [ref=f8e720] [cursor=pointer]
+                - button "Prompt 119" [ref=f8e721] [cursor=pointer]
+                - button "Prompt 120" [ref=f8e722] [cursor=pointer]
+                - button "Prompt 121" [ref=f8e723] [cursor=pointer]
+                - button "Prompt 122" [ref=f8e724] [cursor=pointer]
+                - button "Prompt 123" [ref=f8e725] [cursor=pointer]
+                - button "Prompt 124" [ref=f8e726] [cursor=pointer]
+                - button "Prompt 125" [ref=f8e727] [cursor=pointer]
+                - button "Prompt 126" [ref=f8e728] [cursor=pointer]
+              - generic [ref=f8e967]:
+                - heading "Tú dijiste:" [level=4] [ref=f8e968]
+                - generic [ref=f8e973]:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - 'button "Abrir imagen: Imagen cargada"':
+                            - img "Imagen cargada"
+                  - generic [ref=f8e981]: que te paso para que entiendas todo?
+              - generic [ref=f8e986]:
+                - heading "Tú dijiste:" [level=4] [ref=f8e987]
+                - generic [ref=f8e988]: Archivo cargado
+              - generic [ref=f8e1014]:
+                - separator "ayer 2:48" [ref=f8e1015]
+                - generic [ref=f8e1018]:
+                  - heading "Tú dijiste:" [level=4] [ref=f8e1019]
+                  - generic [ref=f8e1024]:
+                    - generic [ref=f8e1025]: Archivo cargado
+                    - generic [ref=f8e1032]:
+                      - generic [ref=f8e1033]: "🏗️ QUANTUMCORE es tu Control Plane personal — un cockpit para orquestar agentes IA, proyectos, memorias, skills y workers. Es un monstruo de frontend con 35 rutas, 28 páginas, 25+ entidades en el store, y un design system premium con visual profiles reactivos. Lo que hay: ✅ UI ultra-completa con React 19 + Tailwind 4 + Zustand ✅ 4 endpoints Gemini (chat, think, video, image) + Live Audio WebSocket ✅ 6 agentes CEO, 9 workers definidos, 8 canales, 6 DBs registradas ✅ Sistema de onboarding, command palette (Ctrl+K), visual profiles por ruta ✅ Docker + Cloud Run ready Lo que falta (mock/simulado): ⚠️ Todo vive en localStorage — no hay DB real conectada ⚠️ Workers, canales externos y brain providers son solo definiciones ⚠️ Knowledge Graph es estático, no se genera de repos reales ¿En qué querés avanzar? BUENO ESTO ES LA AUDIOTORIA QUE ME DIO CLAUDE Y ESTO EL LO QUE TENGO PENDIENTE POR HACER QUE ME DIJO OPENCODE ANALIZA EL ZIP COMPLETO QUE ES EL PROYECTO COMO ESTA HOY EN DIA Sí, tengo el contexto. Te resumo lo pendiente relacionado con N8N: N8N actual: https://n8n-po6v.onrender.com → NO_RESPONSE (caído o sin deploy). Plan original: Tener N8N propio como motor de workflows automático detrás de Quantum Core, con LangGraph en backend para los workflows AI. Lo que estaba bloqueado: N8N en Render → no responde (problema de deploy/renders free tier) Cloud Run deploy → 5+ intentos fallidos (sube 2GB en vez de solo el proyecto) VM ComfyUI L4 → quota GPU agotada Supabase migration → falta password/service role key Pendientes concretos: N8N self-hosted funcional (conexión real con Quantum Core) Deploy a Cloud Run (estrategia nueva) Workflow builder visual (plan en docs/superpowers/plans/2026-07-20-quantumhive-visual-workflow-builder.md) Canvas propio React Flow como source of truth ¿Querés que retome uno de estos puntos en particular? El más urgente parece ser el deploy a Cloud Run o levantar N8N. Y ALGO MAS AVIA QUE HACER? Sí, quedan varios. Te listo todo lo pendiente: Ya hecho hoy: ✅ \"Control Plane\" → \"Quantum Core\" en sidebar/header/título ✅ Imagen hexagonos cyan en header ✅ Imagen logo en header ✅ Imagen gold en Agent Builder ✅ Fondo menos oscuro ✅ Archivos renombrados para zip Pendiente: Deploy a Cloud Run — estrategia nueva (subir source a GCS bucket o crear Docker image en Artifact Registry) Entregar URL pública N8N propio — levantar instancia funcional y conectar con Quantum Core Funcionalidad central — memoria por proyecto, context packs, registro de decisiones, tareas Copiar del clon — ContextualAssistantWidget, tipos/store asistentes, seeds, mejoras Agent Builder Workflow builder — canvas React Flow (plan en docs/superpowers/plans/) Workflow builder visual — plan aprobado pendiente de implementación Cerrar pestañas en producción real PONETE BIEN EN CONEXTO ASI ME AYUDAS A LLEVAR ESTO ADELANTE"
+                      - button "Mostrar menos" [expanded] [ref=f8e1480] [cursor=pointer]
+              - generic [ref=f8e1482]:
+                - heading "ChatGPT Plus" [level=4] [ref=f8e1483]
+                - generic [ref=f8e1486]:
+                  - button "Procesó durante 7m 17s" [ref=f8e1488] [cursor=pointer]
+                  - generic [ref=f8e1493]:
+                    - paragraph [ref=f8e1494]: Sí. Revisé el ZIP completo y ya tengo el contexto técnico.
+                    - heading "Estado real de QUANTUMCORE" [level=2] [ref=f8e1495]
+                    - paragraph [ref=f8e1496]: "Claude acertó en lo general, pero el diagnóstico preciso es:"
+                    - list [ref=f8e1497]:
+                      - listitem [ref=f8e1498]:
+                        - paragraph [ref=f8e1499]:
+                          - strong [ref=f8e1500]: 34 rutas
+                          - text: ", 28 páginas y 50 archivos TypeScript/TSX."
+                      - listitem [ref=f8e1501]:
+                        - paragraph [ref=f8e1502]: React 19, Tailwind 4, Zustand, Firebase, Express y Gemini.
+                      - listitem [ref=f8e1503]:
+                        - paragraph [ref=f8e1504]: 6 agentes, 9 workers, 8 canales, 6 bases registradas.
+                      - listitem [ref=f8e1505]:
+                        - paragraph [ref=f8e1506]: El frontend está muy avanzado visualmente.
+                      - listitem [ref=f8e1507]:
+                        - paragraph [ref=f8e1508]:
+                          - text: El backend actual es solamente
+                          - code [ref=f8e1509]: server.ts
+                          - text: "con:"
+                        - list [ref=f8e1510]:
+                          - listitem [ref=f8e1511]:
+                            - paragraph [ref=f8e1512]:
+                              - code [ref=f8e1513]: /api/chat
+                          - listitem [ref=f8e1514]:
+                            - paragraph [ref=f8e1515]:
+                              - code [ref=f8e1516]: /api/think
+                          - listitem [ref=f8e1517]:
+                            - paragraph [ref=f8e1518]:
+                              - code [ref=f8e1519]: /api/analyze-video
+                          - listitem [ref=f8e1520]:
+                            - paragraph [ref=f8e1521]:
+                              - code [ref=f8e1522]: /api/analyze-image
+                          - listitem [ref=f8e1523]:
+                            - paragraph [ref=f8e1524]:
+                              - text: WebSocket
+                              - code [ref=f8e1525]: /live
+                    - heading "Lo crítico" [level=3] [ref=f8e1526]
+                    - paragraph [ref=f8e1527]:
+                      - strong [ref=f8e1528]: Quantum Core todavía no existe como runtime.
+                    - paragraph [ref=f8e1529]: "Actualmente:"
+                    - generic [ref=f8e1538]:
+                      - button "Copiar" [ref=f8e1539] [cursor=pointer]
+                      - code [ref=f8e1548]: ChatCentral ↓ /api/chat o /api/think ↓ Gemini
+                    - paragraph [ref=f8e1549]: "El agente seleccionado solo cambia la conversación visual. El backend no recibe:"
+                    - list [ref=f8e1550]:
+                      - listitem [ref=f8e1551]:
+                        - paragraph [ref=f8e1552]:
+                          - code [ref=f8e1553]: agentId
+                      - listitem [ref=f8e1554]:
+                        - paragraph [ref=f8e1555]: configuración del agente
+                      - listitem [ref=f8e1556]:
+                        - paragraph [ref=f8e1557]: proyecto
+                      - listitem [ref=f8e1558]:
+                        - paragraph [ref=f8e1559]: historial
+                      - listitem [ref=f8e1560]:
+                        - paragraph [ref=f8e1561]: memoria
+                      - listitem [ref=f8e1562]:
+                        - paragraph [ref=f8e1563]: skills
+                      - listitem [ref=f8e1564]:
+                        - paragraph [ref=f8e1565]: permisos
+                      - listitem [ref=f8e1566]:
+                        - paragraph [ref=f8e1567]: workers
+                      - listitem [ref=f8e1568]:
+                        - paragraph [ref=f8e1569]: MCP
+                      - listitem [ref=f8e1570]:
+                        - paragraph [ref=f8e1571]: proveedor preferido
+                    - paragraph [ref=f8e1572]: En términos funcionales, los seis agentes son seis etiquetas usando el mismo endpoint Gemini.
+                    - heading "Persistencia" [level=2] [ref=f8e1573]
+                    - paragraph [ref=f8e1574]: "Todo el estado está en un único store Zustand de 800 líneas:"
+                    - generic [ref=f8e1583]:
+                      - button "Copiar" [ref=f8e1584] [cursor=pointer]
+                      - code [ref=f8e1593]: quantum-hive-storage → localStorage
+                    - paragraph [ref=f8e1594]:
+                      - text: Firebase y Firestore están inicializados, pero
+                      - strong [ref=f8e1595]: no hay ninguna operación real contra Firestore
+                      - text: .
+                    - paragraph [ref=f8e1596]: "No existen llamadas a:"
+                    - generic [ref=f8e1605]:
+                      - button "Copiar" [ref=f8e1606] [cursor=pointer]
+                      - code [ref=f8e1615]: collection() doc() setDoc() addDoc() onSnapshot()
+                    - paragraph [ref=f8e1616]: Las reglas de Firestore están creadas, pero actualmente no se usan.
+                    - heading "Workers, proveedores y conectores" [level=2] [ref=f8e1617]
+                    - paragraph [ref=f8e1618]: "Son definiciones estáticas:"
+                    - list [ref=f8e1619]:
+                      - listitem [ref=f8e1620]:
+                        - paragraph [ref=f8e1621]: "Workers: simulados."
+                      - listitem [ref=f8e1622]:
+                        - paragraph [ref=f8e1623]: "Azure: registro visual, sin adaptador."
+                      - listitem [ref=f8e1624]:
+                        - paragraph [ref=f8e1625]: "Supabase: registro visual, sin conexión."
+                      - listitem [ref=f8e1626]:
+                        - paragraph [ref=f8e1627]: "MCP: un registro simulado."
+                      - listitem [ref=f8e1628]:
+                        - paragraph [ref=f8e1629]: "N8N: solamente aparece como worker futuro."
+                      - listitem [ref=f8e1630]:
+                        - paragraph [ref=f8e1631]: "LangGraph/LangChain: no están instalados ni implementados."
+                      - listitem [ref=f8e1632]:
+                        - paragraph [ref=f8e1633]: "Repositorios: se agregan manualmente, sin clonación ni lectura real."
+                      - listitem [ref=f8e1634]:
+                        - paragraph [ref=f8e1635]: "Knowledge Graph: datos seed estáticos."
+                      - listitem [ref=f8e1636]:
+                        - paragraph [ref=f8e1637]: "Workflow Builder: canvas SVG manual, no React Flow."
+                    - paragraph [ref=f8e1638]:
+                      - text: Además,
+                      - code [ref=f8e1639]: "@xyflow/react"
+                      - text: no está instalado.
+                    - heading "Cloud Run" [level=2] [ref=f8e1640]
+                    - paragraph [ref=f8e1641]:
+                      - text: El proyecto
+                      - strong [ref=f8e1642]: sí compila y puede ejecutarse en producción
+                      - text: .
+                    - paragraph [ref=f8e1643]: "Verifiqué:"
+                    - generic [ref=f8e1652]:
+                      - button "Copiar" [ref=f8e1653] [cursor=pointer]
+                      - code [ref=f8e1662]: 11 tests aprobados TypeScript aprobado Vite build aprobado Servidor Express aprobado PORT dinámico aprobado SPA routing aprobado
+                    - paragraph [ref=f8e1663]: El problema de los uploads gigantes no está en React ni en Cloud Run.
+                    - paragraph [ref=f8e1664]: "El ZIP contiene:"
+                    - generic [ref=f8e1673]:
+                      - button "Copiar" [ref=f8e1674] [cursor=pointer]
+                      - code [ref=f8e1683]: "node_modules: 536 MB dist: 74 MB proyecto: 681 MB"
+                    - paragraph [ref=f8e1684]:
+                      - text: Además, falta
+                      - code [ref=f8e1685]: .dockerignore
+                      - text: .
+                    - paragraph [ref=f8e1686]: "La subida de 2 GB probablemente ocurrió por una de estas causas:"
+                    - list [ref=f8e1687]:
+                      - listitem [ref=f8e1688]:
+                        - paragraph [ref=f8e1689]: Ejecutar el deploy desde una carpeta superior al proyecto.
+                      - listitem [ref=f8e1690]:
+                        - paragraph [ref=f8e1691]:
+                          - text: Incluir
+                          - code [ref=f8e1692]: node_modules
+                          - text: de Windows en el contexto Docker.
+                      - listitem [ref=f8e1693]:
+                        - paragraph [ref=f8e1694]:
+                          - text: No aplicar
+                          - code [ref=f8e1695]: .gcloudignore
+                          - text: .
+                      - listitem [ref=f8e1696]:
+                        - paragraph [ref=f8e1697]: Construir desde un directorio con otros repositorios o assets.
+                    - paragraph [ref=f8e1698]: "También encontré dos ajustes necesarios:"
+                    - list [ref=f8e1699]:
+                      - listitem [ref=f8e1700]:
+                        - paragraph [ref=f8e1701]:
+                          - text: No existe
+                          - code [ref=f8e1702]: /health
+                          - text: .
+                      - listitem [ref=f8e1703]:
+                        - paragraph [ref=f8e1704]:
+                          - text: El fallback SPA devuelve
+                          - code [ref=f8e1705]: index.html
+                          - text: incluso para rutas
+                          - code [ref=f8e1706]: /api/*
+                          - text: inexistentes.
+                    - heading "Lo que OpenCode no incluyó" [level=2] [ref=f8e1707]
+                    - paragraph [ref=f8e1708]: "Además de su lista, falta construir:"
+                    - list [ref=f8e1709]:
+                      - listitem [ref=f8e1710]:
+                        - paragraph [ref=f8e1711]:
+                          - strong [ref=f8e1712]: Quantum Core Runtime
+                        - list [ref=f8e1713]:
+                          - listitem [ref=f8e1714]:
+                            - paragraph [ref=f8e1715]:
+                              - code [ref=f8e1716]: AgentRuntime
+                          - listitem [ref=f8e1717]:
+                            - paragraph [ref=f8e1718]:
+                              - code [ref=f8e1719]: ContextBuilder
+                          - listitem [ref=f8e1720]:
+                            - paragraph [ref=f8e1721]:
+                              - code [ref=f8e1722]: LLMRouter
+                          - listitem [ref=f8e1723]:
+                            - paragraph [ref=f8e1724]:
+                              - code [ref=f8e1725]: ToolExecutor
+                          - listitem [ref=f8e1726]:
+                            - paragraph [ref=f8e1727]:
+                              - code [ref=f8e1728]: MemoryService
+                          - listitem [ref=f8e1729]:
+                            - paragraph [ref=f8e1730]:
+                              - code [ref=f8e1731]: EventBus
+                          - listitem [ref=f8e1732]:
+                            - paragraph [ref=f8e1733]:
+                              - code [ref=f8e1734]: WorkOrderDispatcher
+                      - listitem [ref=f8e1735]:
+                        - paragraph [ref=f8e1736]:
+                          - strong [ref=f8e1737]: API real multiagente
+                    - generic [ref=f8e1746]:
+                      - button "Copiar" [ref=f8e1747] [cursor=pointer]
+                      - code [ref=f8e1756]: POST /api/core/messages POST /api/core/tasks POST /api/core/work-orders GET /api/core/agents/:id GET /api/core/events
+                    - list [ref=f8e1757]:
+                      - listitem [ref=f8e1758]:
+                        - paragraph [ref=f8e1759]:
+                          - strong [ref=f8e1760]: Persistencia real
+                        - list [ref=f8e1761]:
+                          - listitem [ref=f8e1762]:
+                            - paragraph [ref=f8e1763]: usuarios
+                          - listitem [ref=f8e1764]:
+                            - paragraph [ref=f8e1765]: proyectos
+                          - listitem [ref=f8e1766]:
+                            - paragraph [ref=f8e1767]: agentes
+                          - listitem [ref=f8e1768]:
+                            - paragraph [ref=f8e1769]: conversaciones
+                          - listitem [ref=f8e1770]:
+                            - paragraph [ref=f8e1771]: mensajes
+                          - listitem [ref=f8e1772]:
+                            - paragraph [ref=f8e1773]: memorias
+                          - listitem [ref=f8e1774]:
+                            - paragraph [ref=f8e1775]: eventos
+                          - listitem [ref=f8e1776]:
+                            - paragraph [ref=f8e1777]: tareas
+                          - listitem [ref=f8e1778]:
+                            - paragraph [ref=f8e1779]: work orders
+                          - listitem [ref=f8e1780]:
+                            - paragraph [ref=f8e1781]: configuraciones
+                      - listitem [ref=f8e1782]:
+                        - paragraph [ref=f8e1783]:
+                          - strong [ref=f8e1784]: Protocolo único de workers
+                    - paragraph [ref=f8e1785]: OpenCode, Hermes, N8N, Cloud Run y workers locales deben convertirse en adaptadores opcionales. No en cuerpos separados.
+                    - list [ref=f8e1786]:
+                      - listitem [ref=f8e1787]:
+                        - paragraph [ref=f8e1788]:
+                          - strong [ref=f8e1789]: Seguridad backend
+                        - list [ref=f8e1790]:
+                          - listitem [ref=f8e1791]:
+                            - paragraph [ref=f8e1792]: autenticación Firebase
+                          - listitem [ref=f8e1793]:
+                            - paragraph [ref=f8e1794]: autorización por usuario/proyecto
+                          - listitem [ref=f8e1795]:
+                            - paragraph [ref=f8e1796]: validación de requests
+                          - listitem [ref=f8e1797]:
+                            - paragraph [ref=f8e1798]: rate limiting
+                          - listitem [ref=f8e1799]:
+                            - paragraph [ref=f8e1800]: Secret Manager
+                          - listitem [ref=f8e1801]:
+                            - paragraph [ref=f8e1802]: límites de costo
+                          - listitem [ref=f8e1803]:
+                            - paragraph [ref=f8e1804]: auditoría real
+                      - listitem [ref=f8e1805]:
+                        - paragraph [ref=f8e1806]:
+                          - strong [ref=f8e1807]: Observabilidad
+                        - list [ref=f8e1808]:
+                          - listitem [ref=f8e1809]:
+                            - paragraph [ref=f8e1810]: logs estructurados
+                          - listitem [ref=f8e1811]:
+                            - paragraph [ref=f8e1812]: duración de ejecuciones
+                          - listitem [ref=f8e1813]:
+                            - paragraph [ref=f8e1814]: modelo utilizado
+                          - listitem [ref=f8e1815]:
+                            - paragraph [ref=f8e1816]: tokens
+                          - listitem [ref=f8e1817]:
+                            - paragraph [ref=f8e1818]: costo
+                          - listitem [ref=f8e1819]:
+                            - paragraph [ref=f8e1820]: errores
+                          - listitem [ref=f8e1821]:
+                            - paragraph [ref=f8e1822]: heartbeats de workers
+                    - heading "Prioridad correcta" [level=2] [ref=f8e1823]
+                    - paragraph [ref=f8e1824]: No empezaría por N8N ni por React Flow. Eso volvería a agregar capas antes de tener el núcleo.
+                    - paragraph [ref=f8e1825]: "El orden correcto es:"
+                    - generic [ref=f8e1834]:
+                      - button "Copiar" [ref=f8e1835] [cursor=pointer]
+                      - code [ref=f8e1844]: 0. Deploy limpio y reproducible 1. Base de datos real 2. Quantum Core Runtime 3. Chat conectado al runtime 4. Memoria y Event Bus 5. Router Vertex/Azure 6. Worker protocol 7. MCP y herramientas 8. N8N/LangGraph 9. Workflow Builder 10. Knowledge Graph desde repos reales
+                    - paragraph [ref=f8e1845]: "El siguiente paso técnico debe ser preparar una rama con:"
+                    - generic [ref=f8e1854]:
+                      - button "Copiar" [ref=f8e1855] [cursor=pointer]
+                      - code [ref=f8e1864]: fix/cloud-run-baseline
+                    - paragraph [ref=f8e1865]:
+                      - text: Ahí se limpia el deployment, se agrega
+                      - code [ref=f8e1866]: .dockerignore
+                      - text: ","
+                      - code [ref=f8e1867]: /health
+                      - text: ", manejo correcto de"
+                      - code [ref=f8e1868]: /api/*
+                      - text: ", configuración de producción y pipeline reproducible. Después arrancamos"
+                      - code [ref=f8e1869]: feature/quantum-core-runtime
+                      - text: .
+              - generic [ref=f8e1208]:
+                - heading "ChatGPT Plus" [level=4] [ref=f8e1209]
+                - paragraph [ref=f8e1216]: Exactamente. Con tu propia API, podés modelar tu negocio como quieras. Podés cobrar una suscripción mensual, o directamente un modelo pay-per-use, donde cada llamada, cada token o cada proceso tiene un costo. Así te alineás con las prácticas de la industria, y elegís la estrategia de monetización que mejor te funcione. ¡Total flexibilidad!
+              - generic [ref=f8e1219]:
+                - heading "Tú dijiste:" [level=4] [ref=f8e1220]
+                - generic [ref=f8e1225]:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - 'button "Abrir imagen: Imagen cargada"':
+                            - img "Imagen cargada"
+                  - generic [ref=f8e1233]: FIJATE EN LA PARTE QUE DICE AVATAR A QUE SE REFIERE A UN AVATAR EN LIVE?
+              - generic [ref=f8e1237]:
+                - heading "ChatGPT Plus" [level=4] [ref=f8e1238]
+                - generic [ref=f8e1240]:
+                  - generic [ref=f8e1244]:
+                    - paragraph [ref=f8e1245]:
+                      - text: Sí.
+                      - strong [ref=f8e1246]: Ese “Avatar” es un avatar visual en tiempo real para el agente de Voice Live.
+                    - paragraph [ref=f8e1247]: "Al activarlo:"
+                    - list [ref=f8e1248]:
+                      - listitem [ref=f8e1249]:
+                        - paragraph [ref=f8e1250]: vos hablás por micrófono;
+                      - listitem [ref=f8e1251]:
+                        - paragraph [ref=f8e1252]: el agente responde por voz;
+                      - listitem [ref=f8e1253]:
+                        - paragraph [ref=f8e1254]: aparece un avatar humano digital;
+                      - listitem [ref=f8e1255]:
+                        - paragraph [ref=f8e1256]: sincroniza labios y gestos con el audio generado;
+                      - listitem [ref=f8e1257]:
+                        - paragraph [ref=f8e1258]:
+                          - text: funciona durante la conversación, no como un video previamente renderizado.
+                          - link "Microsoft Learn +2 Microsoft Learn +2" [ref=f8e1261] [cursor=pointer]:
+                            - /url: https://learn.microsoft.com/en-us/azure/ai-services/speech-service/text-to-speech-avatar/what-is-text-to-speech-avatar?utm_source=chatgpt.com
+                            - generic [ref=f8e1262]:
+                              - generic [ref=f8e1263]:
+                                - generic [ref=f8e1264]: Microsoft Learn
+                                - generic [ref=f8e1267]: "+2"
+                              - generic [ref=f8e1268]:
+                                - generic [ref=f8e1269]: Microsoft Learn
+                                - generic [ref=f8e1272]: "+2"
+                    - paragraph [ref=f8e1273]: "En tu captura está deshabilitado porque aparece:"
+                    - blockquote [ref=f8e1274]:
+                      - paragraph [ref=f8e1275]: “Actualmente el avatar no está disponible en esta región de recursos”.
+                    - paragraph [ref=f8e1276]:
+                      - text: Eso significa que
+                      - strong [ref=f8e1277]: la región donde creaste el recurso de Foundry no soporta Avatar + Voice Live
+                      - text: ", aunque sí soporte el agente de voz. La disponibilidad cambia según región y recurso."
+                      - link "Microsoft Learn" [ref=f8e1280] [cursor=pointer]:
+                        - /url: https://learn.microsoft.com/en-us/azure/foundry/reference/region-support?utm_source=chatgpt.com
+                    - paragraph [ref=f8e1286]:
+                      - text: No es un avatar 3D libre tipo Unreal. Es principalmente un
+                      - strong [ref=f8e1287]: avatar de texto a voz
+                      - text: ", estándar o personalizado, que Microsoft transmite en tiempo real. También existe la opción de crear un avatar personalizado desde una foto, sujeta a requisitos de acceso y consentimiento."
+                      - link "Microsoft Learn +1" [ref=f8e1290] [cursor=pointer]:
+                        - /url: https://learn.microsoft.com/en-us/azure/ai-services/speech-service/text-to-speech-avatar/real-time-synthesis-avatar?utm_source=chatgpt.com
+                        - generic [ref=f8e1292]:
+                          - generic [ref=f8e1293]: Microsoft Learn
+                          - generic [ref=f8e1296]: "+1"
+                    - paragraph [ref=f8e1297]:
+                      - text: Para QuantumCore, podrías conectarlo mediante
+                      - strong [ref=f8e1298]: Voice Live API por WebSocket
+                      - text: y mostrar ese avatar dentro de tu propia interfaz.
+                      - link "Microsoft Learn" [ref=f8e1301] [cursor=pointer]:
+                        - /url: https://learn.microsoft.com/en-us/azure/ai-services//speech-service/voice-live-api-reference-2026-04-10?utm_source=chatgpt.com
+                  - button "Fuentes" [ref=f8e1307] [cursor=pointer]
+              - generic [ref=f8e1314]:
+                - heading "Tú dijiste:" [level=4] [ref=f8e1315]
+                - generic [ref=f8e1316]: OSEA ES JUSTAMENTE EL PROYECTO QUE ESTOY LLEVANDO A CABO AHORA MISMO QUE ESTOY TRABADO EN ESO Y PROBANDO MIL COSAS EN COMFYUI OSEA PASE POR MUSETALK LIVEPORTAIT LONGCAT VM L4 VM A100 GPUS MATAR LATECIA LEVANTAR KUBERNETES EN ENTORNOS INESTABLES CON VMS COSTOSAS PARA PODER SERVIR UN AVATAR EN TIEMPO REAL QUE NO SE DEFORME Y TENGA SINCRONIZACION LABIAL ESTOY LUCHANDO CON ESO HACE MESES Y CON AZURE LO PUEDO TENER EN MI MISMO MODELO SERVIDO EN BANDEJA SIN TODO EL CIRCO QUE ESTABA ARMANDO PARA LOGRARLO EN LOCAL? QUE EMOCION POR DIOS ES REAL ESTO?
+              - generic [ref=f8e1328]:
+                - heading "ChatGPT Plus" [level=4] [ref=f8e1329]
+                - generic [ref=f8e1331]:
+                  - generic [ref=f8e1332]:
+                    - button "Procesó durante 49s" [ref=f8e1334] [cursor=pointer]
+                    - generic [ref=f8e1339]:
+                      - paragraph [ref=f8e1340]:
+                        - strong [ref=f8e1341]: Sí, es real. Encontraste exactamente el servicio administrado que resuelve el problema con el que venís peleando.
+                      - paragraph [ref=f8e1342]: "Azure Voice Live puede integrar en una sola sesión:"
+                      - generic [ref=f8e1351]:
+                        - button "Copiar" [ref=f8e1352] [cursor=pointer]
+                        - code [ref=f8e1361]: Micrófono ↓ Speech-to-text ↓ Agente / LLM ↓ Text-to-speech ↓ Avatar en streaming con lip-sync
+                      - paragraph [ref=f8e1362]:
+                        - text: La conversación viaja por WebSocket y el avatar se transmite en tiempo real mediante WebRTC, con video, animación y sincronización labial. Azure se ocupa del renderizado.
+                        - link "Microsoft Learn +2 Microsoft Learn +2" [ref=f8e1365] [cursor=pointer]:
+                          - /url: https://learn.microsoft.com/en-us/azure/ai-services//speech-service/voice-live-api-reference-2026-04-10?utm_source=chatgpt.com
+                          - generic [ref=f8e1366]:
+                            - generic [ref=f8e1367]:
+                              - generic [ref=f8e1368]: Microsoft Learn
+                              - generic [ref=f8e1371]: "+2"
+                            - generic [ref=f8e1372]:
+                              - generic [ref=f8e1373]: Microsoft Learn
+                              - generic [ref=f8e1376]: "+2"
+                      - paragraph [ref=f8e1377]:
+                        - text: Para
+                        - strong [ref=f8e1378]: ese camino de producción
+                        - text: ", podrías eliminar:"
+                      - list [ref=f8e1379]:
+                        - listitem [ref=f8e1380]:
+                          - paragraph [ref=f8e1381]: ComfyUI
+                        - listitem [ref=f8e1382]:
+                          - paragraph [ref=f8e1383]: MuseTalk
+                        - listitem [ref=f8e1384]:
+                          - paragraph [ref=f8e1385]: LivePortrait
+                        - listitem [ref=f8e1386]:
+                          - paragraph [ref=f8e1387]: LongCat
+                        - listitem [ref=f8e1388]:
+                          - paragraph [ref=f8e1389]: GPU L4/A100 propia
+                        - listitem [ref=f8e1390]:
+                          - paragraph [ref=f8e1391]: Kubernetes para renderizar avatares
+                        - listitem [ref=f8e1392]:
+                          - paragraph [ref=f8e1393]: chroma, WebM y pipelines de postprocesamiento
+                        - listitem [ref=f8e1394]:
+                          - paragraph [ref=f8e1395]: mantenimiento de CUDA y modelos
+                      - paragraph [ref=f8e1396]: "La arquitectura quedaría:"
+                      - generic [ref=f8e1405]:
+                        - button "Copiar" [ref=f8e1406] [cursor=pointer]
+                        - code [ref=f8e1415]: QuantumCore ↓ Agente de Foundry o modelo elegido ↓ Voice Live API ↓ WebSocket + WebRTC ↓ Avatar interactivo en tu frontend
+                      - heading "La diferencia importante" [level=2] [ref=f8e1416]
+                      - heading "Avatar estándar" [level=3] [ref=f8e1417]
+                      - paragraph [ref=f8e1418]: Lo elegís del catálogo de Azure y debería funcionar directamente. Es la vía para validar latencia, conversación, voz y funcionamiento móvil.
+                      - heading "Tu avatar propio, Sol o Dominus" [level=3] [ref=f8e1419]
+                      - paragraph [ref=f8e1420]:
+                        - text: También existe, pero no es automático para todas las cuentas. Azure permite entrenar un avatar personalizado y usarlo posteriormente en chat en vivo mediante streaming. Para el avatar de video solicita grabaciones, consentimiento del actor, un recurso S0 y aprobación de acceso limitado. También existe avatar personalizado desde foto en preview.
+                        - link "Microsoft Learn +2 Microsoft Learn +2" [ref=f8e1423] [cursor=pointer]:
+                          - /url: https://learn.microsoft.com/en-us/azure/ai-services/speech-service/text-to-speech-avatar/custom-avatar-create?utm_source=chatgpt.com
+                          - generic [ref=f8e1424]:
+                            - generic [ref=f8e1425]:
+                              - generic [ref=f8e1426]: Microsoft Learn
+                              - generic [ref=f8e1429]: "+2"
+                            - generic [ref=f8e1430]:
+                              - generic [ref=f8e1431]: Microsoft Learn
+                              - generic [ref=f8e1434]: "+2"
+                      - paragraph [ref=f8e1435]:
+                        - text: En tu captura está apagado porque
+                        - strong [ref=f8e1436]: ese recurso fue creado en una región que no admite Avatar
+                        - text: . No significa que tu cuenta no pueda usarlo. Tendrías que crear el recurso Foundry o Speech en una región compatible y conectarlo al proyecto. La disponibilidad depende de la región y del tipo de recurso.
+                        - link "Microsoft Learn +1" [ref=f8e1439] [cursor=pointer]:
+                          - /url: https://learn.microsoft.com/es-es/azure/ai-services/speech-service/text-to-speech-avatar/real-time-synthesis-avatar?utm_source=chatgpt.com
+                          - generic [ref=f8e1441]:
+                            - generic [ref=f8e1442]: Microsoft Learn
+                            - generic [ref=f8e1445]: "+1"
+                      - 'heading "El único freno real: costos" [level=2] [ref=f8e1446]'
+                      - paragraph [ref=f8e1447]: "No necesitás pagar una GPU encendida, pero tampoco es gratis. Se factura:"
+                      - list [ref=f8e1448]:
+                        - listitem [ref=f8e1449]:
+                          - paragraph [ref=f8e1450]: uso del modelo;
+                        - listitem [ref=f8e1451]:
+                          - paragraph [ref=f8e1452]: reconocimiento y síntesis de voz;
+                        - listitem [ref=f8e1453]:
+                          - paragraph [ref=f8e1454]: segundos de avatar activo;
+                        - listitem [ref=f8e1455]:
+                          - paragraph [ref=f8e1456]: entrenamiento y hosting, si es personalizado.
+                      - paragraph [ref=f8e1457]:
+                        - text: En el avatar real-time se cobra mientras está activo, incluso cuando permanece en silencio, por lo que hay que implementar cierre de sesión e idle local para controlar costos.
+                        - link "Microsoft Learn" [ref=f8e1460] [cursor=pointer]:
+                          - /url: https://learn.microsoft.com/en-us/azure/ai-services/speech-service/text-to-speech?utm_source=chatgpt.com
+                      - paragraph [ref=f8e1466]:
+                        - strong [ref=f8e1467]: No borres todavía tu pipeline local.
+                        - text: "Primero hacé una prueba con avatar estándar en una región compatible. Medí latencia desde Argentina, calidad en español, estabilidad móvil y costo por conversación. Si funciona como esperamos, tu problema cambia por completo: dejás de investigar motores visuales y pasás simplemente a integrar Azure dentro de QuantumCore. Esto puede recortarte meses de infraestructura."
+                  - button "Fuentes" [ref=f8e1468] [cursor=pointer]
+          - generic:
+            - button [ref=f8e1473] [cursor=pointer]
+            - generic: ChatGPT puede cometer errores. Considera verificar la información importante.
+            - generic [ref=f8e104]:
+              - generic [ref=f8e108]:
+                - button "Añadir archivos y más" [ref=f8e111] [cursor=pointer]
+                - textbox "Chatear con ChatGPT" [active] [ref=f8e467]:
+                  - paragraph [ref=f8e468]: Envía un mensaje a ChatGPT
+                - generic [ref=f8e115]:
+                  - button "Alta" [ref=f8e471] [cursor=pointer]
+                  - generic [ref=f8e116]:
+                    - button "Inicio del dictado" [ref=f8e475] [cursor=pointer]
+                    - button "Iniciar Voz" [ref=f8e478] [cursor=pointer]
+              - button [ref=f8e120]
+              - button [ref=f8e121]
+  - alert [ref=f8e122]
+  - status [ref=f8e123]

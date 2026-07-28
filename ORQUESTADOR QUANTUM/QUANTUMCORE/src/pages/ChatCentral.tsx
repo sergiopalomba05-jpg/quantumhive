@@ -8,6 +8,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { cn } from '../lib/utils';
 import { BRAIN_MODELS, type BrainMode, type BrainModelStatus } from '../core/brainRouter';
+import { TeamworkPanel } from '../components/chat/TeamworkPanel';
 
 type ReasoningLevel = 'normal' | 'high';
 
@@ -630,6 +631,11 @@ export function ChatCentral() {
 
         {/* Background Pattern */}
         <div className="chat-bg-pattern-disabled absolute inset-0 z-[-1] pointer-events-none" />
+      </div>
+      
+      {/* Teamwork Panel (Absolute position floating on the right edge or next to chat area) */}
+      <div className="absolute right-0 top-16 bottom-0 md:relative md:top-0 h-full">
+         <TeamworkPanel />
       </div>
     </div>
   );
