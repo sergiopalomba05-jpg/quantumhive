@@ -8830,8 +8830,8 @@
     "semantic_hash": ""
   },
   "landing/index.html": {
-    "mtime": 1785144300.4053926,
-    "ast_hash": "21f9e72bd0774c1a98410a783444a1a4",
+    "mtime": 1785281999.227374,
+    "ast_hash": "8736a1d98f3f521f22d0264780312042",
     "semantic_hash": ""
   },
   ".playwright-mcp/Gemini-Generated-Image-nngh5fnngh5fnngh.png": {
@@ -13785,8 +13785,8 @@
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/package.json": {
-    "mtime": 1785140093.698415,
-    "ast_hash": "fd6c8ef09f8741c7d873be8c67c82b69",
+    "mtime": 1785147104.0696354,
+    "ast_hash": "ffc77cbb6d1f5ff985e4c4cb9acee1b3",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/server.ts": {
@@ -13825,8 +13825,8 @@
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/components/Sidebar.tsx": {
-    "mtime": 1785080199.0816562,
-    "ast_hash": "044ff7d6f09b41a6419c1503094457e7",
+    "mtime": 1785234298.3196638,
+    "ast_hash": "d938a925ec38e8b614dcf620a98375fc",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/components/assistants/ContextualAssistantWidget.tsx": {
@@ -13890,8 +13890,8 @@
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/providers/supabase.ts": {
-    "mtime": 1784758960.5309546,
-    "ast_hash": "ef29e5e217a4e8ac26d84dce509b4e29",
+    "mtime": 1785175959.0691307,
+    "ast_hash": "51489400fbe418e2d11dce566cac917c",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/data/helpContent.ts": {
@@ -13970,8 +13970,8 @@
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/ChatCentral.tsx": {
-    "mtime": 1785144669.926762,
-    "ast_hash": "76a0035274d31a30a528064cac1fa862",
+    "mtime": 1785147681.9623682,
+    "ast_hash": "5bcdb3ea9a96f193b71b83f437bb9bed",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/CommunicationChannels.tsx": {
@@ -14035,8 +14035,8 @@
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/McpHub.tsx": {
-    "mtime": 1784858617.3352275,
-    "ast_hash": "34e037e55114bdf79c0246a935791db3",
+    "mtime": 1785147376.9102106,
+    "ast_hash": "30a262d181044ba4b9bec4f5bfd8e021",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/Projects.tsx": {
@@ -14060,8 +14060,8 @@
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/SkillAdvisor.tsx": {
-    "mtime": 1784858617.8360662,
-    "ast_hash": "04b685a92c4a3263003340fc1c5162f6",
+    "mtime": 1785147475.2731948,
+    "ast_hash": "0b68b1c0178098771d41ff810f981682",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/pages/StartHere.tsx": {
@@ -14100,8 +14100,8 @@
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/server/routes/chat.ts": {
-    "mtime": 1785134778.2291734,
-    "ast_hash": "b4eced36b4c423022e9cfeb39d30ae8d",
+    "mtime": 1785257195.8669121,
+    "ast_hash": "d6b329afaa0de78e140f846df4d5b496",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/server/routes/live.ts": {
@@ -14120,8 +14120,8 @@
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/store/useStore.ts": {
-    "mtime": 1785081112.1205816,
-    "ast_hash": "f8ddfa50a1c11560b6beb4f55ba127a2",
+    "mtime": 1785255986.9788077,
+    "ast_hash": "6b770889ef5c7fb760cb76e5e788fcc2",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/types/index.ts": {
@@ -15685,18 +15685,18 @@
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/brainRouter.ts": {
-    "mtime": 1785006048.567408,
-    "ast_hash": "f04da11f17ff58dd6ba31d484ffc492b",
+    "mtime": 1785255986.9603634,
+    "ast_hash": "240f2e914709908b76d0067cef2183fe",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/brain-router.test.ts": {
-    "mtime": 1785007451.0655215,
-    "ast_hash": "2daefa5ea97728924e29e474ca73ecdc",
+    "mtime": 1785256071.9621606,
+    "ast_hash": "3ec21748917f4adf984aeeaef4ed77d8",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/dominusContext.ts": {
-    "mtime": 1785000697.5232556,
-    "ast_hash": "dc0b7c78ef87d98aabd954f936c13547",
+    "mtime": 1785176011.1215014,
+    "ast_hash": "69d2982776c2c599aa1217342f7344c2",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/dominus-context.test.ts": {
@@ -15720,8 +15720,8 @@
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/chat-command-ui.test.ts": {
-    "mtime": 1785118522.6597967,
-    "ast_hash": "afb67b54633db585dfed6f4c38484fe9",
+    "mtime": 1785237884.6835063,
+    "ast_hash": "1a9f562e1a73dd489bdeb3312520b4ea",
     "semantic_hash": ""
   },
   ".playwright-mcp/page-2026-07-23T04-10-51-867Z.yml": {
@@ -15800,8 +15800,8 @@
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/aiProviders.ts": {
-    "mtime": 1785005182.5806367,
-    "ast_hash": "5b349f338cc804546bfe8f1da140ff93",
+    "mtime": 1785255986.9603634,
+    "ast_hash": "755e4050a8ad47649df17939e57b112e",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/server/routes/providers.ts": {
@@ -15810,8 +15810,8 @@
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/gcp-vertex-models.test.ts": {
-    "mtime": 1785007388.8585148,
-    "ast_hash": "3514b668e36cb5cb3fdb996d2a35fc35",
+    "mtime": 1785256071.9704764,
+    "ast_hash": "d5c5f4b4180c4b00484e58e5b677d3c3",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/superpowers/plans/2026-07-24-provider-manager-github.md": {
@@ -15840,18 +15840,18 @@
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/providerClients.ts": {
-    "mtime": 1785144887.0230062,
-    "ast_hash": "15c15f9e6f9804d21f173ade81ee43b9",
+    "mtime": 1785255986.9408512,
+    "ast_hash": "f6be8fcd4a2ba5222c3e6ebe25ab8605",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/providerRouter.ts": {
-    "mtime": 1785144594.6157937,
-    "ast_hash": "ccf572b976f2c1ba6e531628ddf76322",
+    "mtime": 1785255986.9593568,
+    "ast_hash": "fb57cf89e9775d372abd5e5ce1e3e2c5",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/provider-router.test.ts": {
-    "mtime": 1785007112.9487612,
-    "ast_hash": "7824cb14b4c3bc836f98567da3ab6e20",
+    "mtime": 1785255926.6685424,
+    "ast_hash": "93ffcd971fd86d8abcf9e7f0642121c2",
     "semantic_hash": ""
   },
   ".superpowers/sdd/task-1-report.md": {
@@ -15880,8 +15880,8 @@
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/chat-provider-selection.test.ts": {
-    "mtime": 1784884942.3283982,
-    "ast_hash": "aaec679acf36fbb04a680a9b96df547f",
+    "mtime": 1785257026.1391768,
+    "ast_hash": "96254ef9f2be896cffe054be3eb4a24a",
     "semantic_hash": ""
   },
   ".superpowers/sdd/task-3-report.md": {
@@ -15940,8 +15940,8 @@
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/server/routes/graph.ts": {
-    "mtime": 1785000661.7265704,
-    "ast_hash": "33fb287f23813cc9f18d8b05f713cea4",
+    "mtime": 1785147731.6246834,
+    "ast_hash": "c8ecfda2803a907db7ae34ff0bf7ed3b",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/graph-api.test.ts": {
@@ -15985,13 +15985,13 @@
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/videoIngestStore.ts": {
-    "mtime": 1785029183.831233,
-    "ast_hash": "00eec0fb97c5024c1429ea6813caa128",
+    "mtime": 1785303347.892625,
+    "ast_hash": "6a7cba3f4fdf35cbfc50e6e05b13d6a5",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/server/routes/videoIngest.ts": {
-    "mtime": 1785081366.468137,
-    "ast_hash": "512b0bead3f9e935fa38d7a708135e72",
+    "mtime": 1785256122.9380813,
+    "ast_hash": "b8fc51b632044d30cb6aeb7734fa8277",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/catalog-ingestor-loop.test.ts": {
@@ -16045,13 +16045,13 @@
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/runner/index.ts": {
-    "mtime": 1785142676.4852934,
-    "ast_hash": "684ce66c417c74641e1b3534d60a1081",
+    "mtime": 1785147352.9903336,
+    "ast_hash": "b205a0d9e49933643d20d088414f7ca3",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/server/routes/runner.ts": {
-    "mtime": 1785142572.883771,
-    "ast_hash": "332154571e5550813cfa7f89cd4d7df6",
+    "mtime": 1785147156.7119083,
+    "ast_hash": "7dcc33e322f66b332b3a67fe503b90ae",
     "semantic_hash": ""
   },
   "ORQUESTADOR QUANTUM/QUANTUMCORE/README-RUNNER.md": {
@@ -16082,6 +16082,121 @@
   "ORQUESTADOR QUANTUM/QUANTUMCORE/src/store/providerStore.ts": {
     "mtime": 1785144618.7324343,
     "ast_hash": "a183c63bf68342a906e40eaa19d41f5e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/scripts/create_investor_agent.ts": {
+    "mtime": 1785228553.041759,
+    "ast_hash": "0be74bb5a5946d95ceb147b9b4ebc29d",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/scripts/list_agents.ts": {
+    "mtime": 1785228815.8663216,
+    "ast_hash": "4dd855dc82e44f0d8cde0cd06b882b27",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/scripts/seed_ingestors.ts": {
+    "mtime": 1785228971.4896538,
+    "ast_hash": "6d47f3597bdc0184f065b29d3b8c0e19",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/components/chat/TeamworkPanel.tsx": {
+    "mtime": 1785147646.8926811,
+    "ast_hash": "af633e2c43e4b7cc5af350b79442c9ee",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/cloudExecutor.ts": {
+    "mtime": 1785175949.7822254,
+    "ast_hash": "652bdb72b1cca88a94a4142ac18277fb",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/mementoClient.ts": {
+    "mtime": 1785175984.5506423,
+    "ast_hash": "2600e9b8b78c6784d6a96621b916e77d",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/providers/dbRouter.ts": {
+    "mtime": 1785256030.18538,
+    "ast_hash": "c970e756802d41579a251aa89a1156be",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/core/workerManager.ts": {
+    "mtime": 1785238376.3832152,
+    "ast_hash": "aeb5bfe01448850876e4d620e08a8cf1",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/runner/mcpManager.ts": {
+    "mtime": 1785147206.5883932,
+    "ast_hash": "52e6f84c36b9cae6899a27dffefcb4cf",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/src/runner/skillManager.ts": {
+    "mtime": 1785147220.5281098,
+    "ast_hash": "75b08f07f1bf97937ee4eaa7619bd34e",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/tests/provider-clients-vertex.test.ts": {
+    "mtime": 1785255926.6655147,
+    "ast_hash": "8e533cd40b5b3f344c5cbc3535d64b7a",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-07-27T09-39-36-198Z.yml": {
+    "mtime": 1785145176.2018917,
+    "ast_hash": "86cf6977d948047ab27afa100a20ad60",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/agents/pitch_master_constitution.md": {
+    "mtime": 1785228364.7327454,
+    "ast_hash": "fe3d4196cee1c8bf8b5ed8a5474c97b0",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/agents/pitch_master_system_core.md": {
+    "mtime": 1785228354.7513115,
+    "ast_hash": "23bfbb40a2a24d53b4518ffb0f6f077a",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/inversores/ACELERADORAS.md": {
+    "mtime": 1785228226.144012,
+    "ast_hash": "35083d4698ea4053444ef065eb486eed",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/inversores/CAPITAL_SEMILLA.md": {
+    "mtime": 1785228214.3731282,
+    "ast_hash": "b097edd638824d8cb8187b173d63dbd8",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/inversores/INVERSORES_ANGELES.md": {
+    "mtime": 1785228200.9427114,
+    "ast_hash": "d8587b10ee975144eef1f670d9ed04ac",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/inversores/LIBRO_BLANCO.md": {
+    "mtime": 1785228043.1921005,
+    "ast_hash": "8c83087656dbcc4cdac65ae1718066f1",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/inversores/MATRIZ_CARACTERISTICAS.md": {
+    "mtime": 1785228055.6982417,
+    "ast_hash": "9ea4a40bd4f38193435d7518156f809c",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/inversores/PRESENTACION_INVERSORES.md": {
+    "mtime": 1785173901.6881783,
+    "ast_hash": "9c05bc93a39abc097892d21825d653e0",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/inversores/PROGRAMA_STARTUPS.md": {
+    "mtime": 1785228190.1119447,
+    "ast_hash": "264da7c47ac16ee393ddebfce59cbac6",
+    "semantic_hash": ""
+  },
+  "ORQUESTADOR QUANTUM/QUANTUMCORE/docs/inversores/RESUMEN_EJECUTIVO.md": {
+    "mtime": 1785228049.4677904,
+    "ast_hash": "b952f2386301cbd88e3c8672e6330f7b",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-07-28-quantumcore-sidebar-concept-network.md": {
+    "mtime": 1785234210.78518,
+    "ast_hash": "f3aa11a80388a7f245368970a472f16c",
     "semantic_hash": ""
   }
 }

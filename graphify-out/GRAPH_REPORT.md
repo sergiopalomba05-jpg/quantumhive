@@ -1,16 +1,16 @@
-# Graph Report - boveda obsidian  (2026-07-27)
+# Graph Report - boveda obsidian  (2026-07-29)
 
 ## Corpus Check
-- 1275 files · ~53,105,702 words
+- 1297 files · ~53,117,955 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 6721 nodes · 7926 edges · 716 communities (626 shown, 90 thin omitted)
+- 6722 nodes · 7927 edges · 716 communities (626 shown, 90 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 93 edges (avg confidence: 0.84)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `8a28eba0`
+- Built from commit: `72c37cf9`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -610,6 +610,7 @@
 - [[_COMMUNITY_Community 675|Community 675]]
 - [[_COMMUNITY_Community 676|Community 676]]
 - [[_COMMUNITY_Community 677|Community 677]]
+- [[_COMMUNITY_Community 678|Community 678]]
 - [[_COMMUNITY_Community 679|Community 679]]
 - [[_COMMUNITY_Community 681|Community 681]]
 - [[_COMMUNITY_Community 682|Community 682]]
@@ -636,7 +637,6 @@
 - [[_COMMUNITY_Community 704|Community 704]]
 - [[_COMMUNITY_Community 707|Community 707]]
 - [[_COMMUNITY_Community 708|Community 708]]
-- [[_COMMUNITY_Community 709|Community 709]]
 - [[_COMMUNITY_Community 711|Community 711]]
 - [[_COMMUNITY_Community 713|Community 713]]
 - [[_COMMUNITY_Community 715|Community 715]]
@@ -1403,8 +1403,8 @@ Cohesion: 0.18
 Nodes (14): _normalize_for_tts(), Expande abreviaturas de unidad (pegadas o separadas del número) para que la, Identidad de la voz PRINCIPAL (1er proveedor de la cadena) para el hash del cach, Identidades compatibles para LEER cache. No cambian el proveedor de generación:, tts(), _tts_cache_get(), _tts_cache_key(), _tts_cache_key_for_identity() (+6 more)
 
 ### Community 232 - "Community 232"
-Cohesion: 0.07
-Nodes (41): buildCatalogIngestionResult(), CatalogIngestionResult, CatalogIngestStatus, CatalogPricing, CatalogTaxonomyPlacement, CatalogToolDraft, CatalogToolScore, clampScore() (+33 more)
+Cohesion: 0.15
+Nodes (16): sanitizeCatalogUrl(), buildVideoAnalysisPrompt(), detectVideoSource(), extractUrls(), normalizeTelegramMessage(), SupportedVideoSource, TelegramUpdate, validateStructuredVideoAnalysis() (+8 more)
 
 ### Community 233 - "Community 233"
 Cohesion: 0.22
@@ -2715,8 +2715,8 @@ Cohesion: 0.14
 Nodes (13): File Structure, Global Constraints, QuantumCore Video Ingest Telegram Dominus Implementation Plan, Self-Review, Task 1: Core Video Ingest Parser, Task 2: Server-Side Supabase Draft Store, Task 3: Video Ingest API Routes, Task 4: Gemini Structured Analysis Worker (+5 more)
 
 ### Community 673 - "Community 673"
-Cohesion: 0.21
-Nodes (10): BRAIN_MODELS, BrainMode, BrainModelDefinition, BrainModelStatus, BrainSelectionRequest, recommendModelId(), resolveBrainSelection(), ResolvedBrainSelection (+2 more)
+Cohesion: 0.11
+Nodes (19): BRAIN_MODELS, BrainMode, BrainModelDefinition, BrainModelStatus, BrainSelectionRequest, recommendModelId(), resolveBrainSelection(), ResolvedBrainSelection (+11 more)
 
 ### Community 674 - "Community 674"
 Cohesion: 0.10
@@ -2731,8 +2731,12 @@ Cohesion: 0.08
 Nodes (24): Autonomia Y Aprobaciones, Brain Router Y Cloud Router, Busqueda Web, Comunicacion, Directiva Final, Dominus Prime Constitution, Ejecucion Antes Que Expansion, Embajadores De Nubes (+16 more)
 
 ### Community 677 - "Community 677"
-Cohesion: 0.22
-Nodes (9): BuildDominusContextInput, buildDominusContextPack(), DominusAgentContext, DominusMemoryContext, extractMemoryProposal(), GraphNodeContext, MemoryProposal, RepoContext (+1 more)
+Cohesion: 0.18
+Nodes (17): buildCatalogIngestionResult(), CatalogIngestionResult, CatalogIngestStatus, CatalogPricing, CatalogTaxonomyPlacement, CatalogToolDraft, CatalogToolScore, clampScore() (+9 more)
+
+### Community 678 - "Community 678"
+Cohesion: 0.27
+Nodes (8): NormalizedVideoInput, StructuredVideoAnalysis, buildPendingReviewTool(), CatalogDraftInsert, saveVideoDraft(), SupabaseInsertClient, analysisFixture, inputFixture
 
 ### Community 679 - "Community 679"
 Cohesion: 0.12
@@ -2755,16 +2759,16 @@ Cohesion: 0.22
 Nodes (8): TooltipInfo(), Ideas(), SkillAdvisor(), IdeaPriority, IdeaStatus, IdeaType, MacroDivision, SkillDefinition
 
 ### Community 687 - "Community 687"
-Cohesion: 0.18
-Nodes (5): chatRouter, githubRouter, providersRouter, visionRouter, app
+Cohesion: 0.13
+Nodes (11): getServerPort(), ai, startServer(), chatRouter, githubRouter, graphRouter, setupLiveWebSocket(), providersRouter (+3 more)
 
 ### Community 688 - "Community 688"
 Cohesion: 0.22
 Nodes (4): app, auth, db, provider
 
 ### Community 689 - "Community 689"
-Cohesion: 0.23
-Nodes (11): CachedGraph, computeStats(), ensureCache(), getGraphPath(), GraphifyEdge, GraphifyGraph, GraphifyNode, graphRouter (+3 more)
+Cohesion: 0.25
+Nodes (10): CachedGraph, computeStats(), ensureCache(), getGraphPath(), GraphifyEdge, GraphifyGraph, GraphifyNode, GraphStats (+2 more)
 
 ### Community 690 - "Community 690"
 Cohesion: 0.40
@@ -2806,10 +2810,6 @@ Nodes (7): _deepinfra_stt(), _gemini_stt(), _gemini_stt_key_order(), Orden rotat
 Cohesion: 0.29
 Nodes (7): tours, TourStep, OnboardingModal(), TourContext, TourContextType, TourProvider(), useTour()
 
-### Community 709 - "Community 709"
-Cohesion: 0.43
-Nodes (5): getServerPort(), ai, startServer(), setupLiveWebSocket(), setupFrontendRoutes()
-
 ### Community 713 - "Community 713"
 Cohesion: 0.22
 Nodes (9): devDependencies, autoprefixer, esbuild, tailwindcss, tsx, @types/express, @types/node, typescript (+1 more)
@@ -2831,7 +2831,7 @@ Cohesion: 0.50
 Nodes (4): 1.A Dial Inference (design read → dial values), 1.B Use-Case Presets, 1.C How the Dials Drive Output, 1. THE THREE DIALS (Core Configuration)
 
 ## Knowledge Gaps
-- **3565 isolated node(s):** `ProviderChatResult`, `ProviderSelectionRequest`, `ProviderModel`, `ProviderItem`, `ReasoningLevel` (+3560 more)
+- **3565 isolated node(s):** `root`, `ProviderChatResult`, `ProviderSelectionRequest`, `ProviderModel`, `ProviderItem` (+3560 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **90 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -2841,10 +2841,10 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `google-genai` connect `Community 181` to `Community 65`, `Community 6`, `Community 39`, `Community 172`, `Community 176`, `Community 338`, `Community 62`, `Community 94`?**
   _High betweenness centrality (0.060) - this node is a cross-community bridge._
 - **Why does `Zustand` connect `Community 684` to `Community 242`, `Community 221`, `Community 246`?**
-  _High betweenness centrality (0.042) - this node is a cross-community bridge._
+  _High betweenness centrality (0.039) - this node is a cross-community bridge._
 - **Why does `dependencies` connect `Community 669` to `Community 690`, `Community 684`, `Community 181`?**
-  _High betweenness centrality (0.037) - this node is a cross-community bridge._
-- **What connects `ProviderChatResult`, `ProviderSelectionRequest`, `ProviderModel` to the rest of the system?**
+  _High betweenness centrality (0.035) - this node is a cross-community bridge._
+- **What connects `root`, `ProviderChatResult`, `ProviderSelectionRequest` to the rest of the system?**
   _3845 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.05974025974025974 - nodes in this community are weakly interconnected._
