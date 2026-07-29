@@ -17,6 +17,12 @@ import { searchTools, getCatalogStats } from "../../core/videoIngestStore.js";
 
 export const chatRouter = Router();
 
+const DOMINUS_PRIME_AGENT_ID = "11111111-1111-4111-8111-111111111111";
+
+function normalizeAgentId(agentId: string): string {
+  return agentId === "dominus-prime" ? DOMINUS_PRIME_AGENT_ID : agentId;
+}
+
 chatRouter.get("/workers/status", (req, res) => {
   res.json({ workers: getActiveWorkers() });
 });
@@ -105,7 +111,7 @@ chatRouter.post("/think", async (req, res) => {
 
 chatRouter.post("/agents/:agentId/chat", async (req, res) => {
   try {
-    const { agentId } = req.params;
+    const agentId = normalizeAgentId(req.params.agentId);
     const { message, brainMode, modelId, vsModelIds, providerId, repoId } = req.body;
 
     if (!message || typeof message !== "string") {
