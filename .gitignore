@@ -100,6 +100,7 @@ agencia/motor madre/quantumhive-town/
 # Secretos y artefactos pesados locales
 humania/humania-deployer-key.json
 humania/latentsync/
+ORQUESTADOR QUANTUM/QUANTUMCORE.zip
 
 # Pipeline de videos: trackear codigo/assets finales, no outputs crudos ni entornos/modelos pesados
 agencia/motor madre/PIPELINE INGESTA MENUS/output/
